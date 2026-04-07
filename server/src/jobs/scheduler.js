@@ -45,4 +45,19 @@ cron.schedule("*/5 * * * *", async () => {
     }
 });
 
+/* =========================
+   ☕ 3. KEEP-ALIVE SYSTEM (Prevent Sleep)
+   Runs every 5 minutes to keep Render Free Tier awake
+========================= */
+import axios from "axios";
+cron.schedule("*/5 * * * *", async () => {
+    try {
+        const url = process.env.BACKEND_URL || "https://offlinestorewebsite.onrender.com";
+        await axios.get(`${url}/api/products`); // Simple lightweight hit
+        console.log("☕ Keep-alive ping sent to:", url);
+    } catch (err) {
+        console.error("❌ Keep-alive error:", err.message);
+    }
+});
+
 console.log("🚀 Cron jobs initialized");
