@@ -107,12 +107,8 @@ Designed for scalability, this ERP employs isolated infrastructure deployment. E
 
 ### 2. Environment Variables (`server/.env`)
 ```env
-# Database Configuration (Unique per store instance)
-DB_NAME=erp_system
-DB_USER=postgres
-DB_PASSWORD=your_secure_password
-DB_HOST=localhost
-DB_DIALECT=postgres
+# Database Configuration (Cloud Supabase)
+DATABASE_URL=your_supabase_connection_string
 
 # Security & Sessions
 JWT_SECRET=your_jwt_signing_key
@@ -124,6 +120,10 @@ RAZORPAY_KEY=your_rzp_key
 RAZORPAY_SECRET=your_rzp_secret
 EMAIL=store_instance@gmail.com
 EMAIL_PASS=your_app_password
+
+# Deployment (Vercel Integration)
+FRONTEND_URL=https://your-project.vercel.app
+VITE_API_URL=https://your-api-server.com/api
 ```
 
 ### 3. Execution
