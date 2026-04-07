@@ -96,12 +96,11 @@ export default function OtpPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} id="otp-form">
+        <form id="otp-form" onSubmit={handleSubmit}>
           <div className="otp-inputs">
             {otp.map((digit, i) => (
               <input
                 key={i}
-                id={`otp-input-${i}`}
                 ref={(el) => (inputRefs.current[i] = el)}
                 type="text"
                 inputMode="numeric"
@@ -122,21 +121,21 @@ export default function OtpPage() {
             disabled={storeLoading || otp.some((d) => !d)}
           >
             {storeLoading
-              ? <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} />
+              ? <span className="spinner" style={{ width: 22, height: 22, borderWidth: 2 }} />
               : "Verify OTP →"}
           </button>
         </form>
 
         <div className="auth-card__footer">
-          <div style={{ marginBottom: '20px', padding: '15px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-            <p style={{ fontSize: '13px', margin: 0, color: '#64748b' }}>
+          <div className="otp-resend-container">
+            <p className="otp-resend-text">
               Didn't get the code?{" "}
               {resendTimer > 0 ? (
-                <span style={{ fontWeight: 700, color: 'var(--primary)' }}>Wait {resendTimer}s</span>
+                <span className="otp-timer">Wait {resendTimer}s</span>
               ) : (
                 <button 
                   onClick={handleResend} 
-                  style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 800, cursor: 'pointer', padding: 0, fontSize: '13px', textDecoration: 'underline' }}
+                  className="btn-resend"
                 >
                   Resend OTP
                 </button>
@@ -144,10 +143,10 @@ export default function OtpPage() {
             </p>
           </div>
           
-          <p style={{ fontSize: '13px' }}>
-            Wrong email? <Link to="/auth/register" className="auth-link" style={{ fontWeight: 600 }}>Register again</Link>
+          <p style={{ fontSize: '14px' }}>
+            Wrong email? <Link to="/auth/register" className="auth-link">Register again</Link>
           </p>
-          <p style={{ marginTop: 10, fontSize: '13px' }}>
+          <p style={{ marginTop: 12, fontSize: '14px' }}>
             <Link to="/auth/login" className="auth-link">Back to Login</Link>
           </p>
         </div>
