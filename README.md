@@ -5,7 +5,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-> A high-end, nature-inspired ERP solution designed for agricultural retail and industrial supply chain management. Built with a focus on visual excellence, data integrity, and professional financial logic.
+> A high-end, nature-inspired ERP solution designed for agricultural retail and industrial supply chain management. Developed to professionalize offline agricultural stores with advanced financial, inventory, and analytics operations.
 
 ---
 
@@ -22,36 +22,51 @@
 The storefront features a "Digital Forest" aesthetic with smooth gradients and a professional product grid.
 ![Home Page](docs/screenshots/home.png)
 
-### 🚜 Product Discovery
-High-performance product listing with real-time stock status and tiered pricing visualization.
-![Products Page](docs/screenshots/products.png)
+### 🚜 Product Discovery & Cart
+High-performance product listing with real-time stock status and a persistent slide-out cart for seamless shopping.
+| Products Listing | Interactive Cart Drawer |
+| :--- | :--- |
+| ![Products Page](docs/screenshots/products.png) | ![Cart Drawer](docs/screenshots/cart.png) |
 
-### 🔐 Multi-Tier Authentication
-A secure portal for customers and administrators, featuring OTP verification and Google OAuth integration.
-![Login Portal](docs/screenshots/login.png)
+### 🔐 Authentication & Profile
+A secure portal featuring OTP verification, Google OAuth, and personalized customer profiles with spend tracking.
+| Secure Login | Customer Profile |
+| :--- | :--- |
+| ![Login Portal](docs/screenshots/login.png) | ![User Profile](docs/screenshots/profile.png) |
+
+### 📦 Order Management
+Full-lifecycle order tracking with real-time status updates and PDF invoice access.
+![Orders Page](docs/screenshots/orders.png)
+
+### 📊 Admin Control Center (Command Center)
+Powerful administrative tools including real-time revenue analytics and granular inventory management.
+| Revenue Analytics | Inventory Management |
+| :--- | :--- |
+| ![Admin Dashboard](docs/screenshots/admin_dashboard.png) | ![Admin Products](docs/screenshots/admin_products.png) |
 
 ---
 
-## 🚀 Core Features
+## 🚀 Key Services & Technical Solutions
 
-### 1. Advanced Authentication & Security
-- **OTP Verification**: 6-digit email OTPs via Nodemailer with 10-minute expiration.
-- **Google OAuth 2.0**: One-tap professional login integration.
-- **State Management**: **Zustand** driven auth state with persistent sessions.
+### 💎 Financial Core Service
+- **Atomic Transactions**: Orders, inventory updates, and ledger entries are executed within a single SQL transaction ensuring 100% data integrity.
+- **GST Logic Engine**: Automatic calculation of 18% GST, internally split into **CGST (9%)** and **SGST (9%)** for accurate tax reporting.
+- **Dynamic Discount Engine**: Real-time pricing adjustments from **5% to 15%** triggered by order volume thresholds.
+- **Payment Lifecycle**: Full **Razorpay** integration with automated webhook verification and payment receipt generation.
 
-### 2. Intelligent Financial Engine
-- **Automated GST**: Precision 18% GST (9% CGST / 9% SGST) calculation.
-- **Dynamic Discounts**: Auto-tiered savings (5% to 15%) based on order volume.
-- **Razorpay Integration**: Fully functional secure payment gateway for credit/debit/UPI.
+### 📦 Inventory & Logistics Service
+- **Double-Entry Ledger**: Every stock change is double-logged as an `IN/OUT` event with parent reference IDs.
+- **Low Stock Sentinel**: Hard-coded safety thresholds (20 units) that trigger immediate visual alerts and reordering notifications.
+- **Supplier Sourcing**: Direct linking of products to verified suppliers for streamlined procurement.
 
-### 3. Management & Logistics
-- **Inventory Ledger**: Real-time tracking of `IN/OUT` stock movements.
-- **Low Stock Guard**: Automated thresholds (20 units) with dashboard alerts.
-- **PDF Invoicing**: Server-side generation of industrial-grade invoices.
+### 📊 Data Intelligence Service
+- **Revenue Analytics**: Monthly trend analysis and growth percentage calculations via raw SQL reporting.
+- **Customer CLV**: Spend-based ranking (VIP/NEW/DUE) to identify top agricultural partners.
+- **Funnel Analysis**: Tracking conversion metrics from product view to payment success.
 
-### 4. Data-Driven Analytics
-- **Sales Intelligence**: Revenue growth charts and monthly trends via **Recharts**.
-- **Customer CLV**: Spend-based ranking to identify high-value agricultural partners.
+### 📩 Communication & Utility Service
+- **OTP Security**: 6-digit email verification with strict 10-minute session TTL.
+- **Invoice Engine**: Server-side PDF generation of professional industrial invoices stored in a secure cloud bucket or local storage.
 
 ---
 
@@ -61,31 +76,20 @@ A secure portal for customers and administrators, featuring OTP verification and
 .
 ├── client/                 # Frontend (React + Vite)
 │   ├── src/
-│   │   ├── components/     # High-end UI Components
-│   │   ├── pages/          # Shop & Admin Views
-│   │   ├── store/          # Zustand State Management
-│   │   └── services/       # Axios API Handlers
-│   └── public/             # Static Assets
+│   │   ├── components/     # High-end UI Components (Cart, Layout, Common)
+│   │   ├── pages/          # Shop, Admin, & Auth Views
+│   │   ├── store/          # Zustand State (Auth, Cart, Toast)
+│   │   └── services/       # Axios API Gateways
 ├── server/                 # Backend (Node.js + Express)
 │   ├── src/
-│   │   ├── controllers/    # Request Handling
-│   │   ├── services/       # Core Business Logic (Brain)
-│   │   ├── models/         # Sequelize (PostgreSQL) Models
+│   │   ├── controllers/    # API Request Handlers
+│   │   ├── services/       # Core Brain (Order, Report, Inventory logic)
+│   │   ├── models/         # Sequelize Postgres Schema
 │   │   └── routes/         # REST API Endpoints
-├── database/               # SQL Schemas & Seed Data
-├── docs/                   # Visual Documentation & Diagrams
-└── scripts/                # Database Sync & Test Utilities
+├── database/               # SQL Schemas, Migrations & Deep Seed Data
+├── docs/                   # Diagrams & Persistent Screenshots
+└── scripts/                # Sync & Maintenance Utilities
 ```
-
----
-
-## 🛠️ Tech Stack
-
-- **Frontend**: React 19, Vite, Zustand, Lucide Icons, Recharts.
-- **Backend**: Node.js, Express, Sequelize ORM.
-- **Database**: PostgreSQL (Relational).
-- **Security**: JWT, BcryptJS, Google OAuth.
-- **Operations**: Docker, Nodemailer, Razorpay SDK.
 
 ---
 
@@ -100,7 +104,7 @@ A secure portal for customers and administrators, featuring OTP verification and
    npm install && cd client && npm install && cd ../server && npm install
    ```
 3. **Configure Environment**:
-   Create a `.env` in the `server/` directory with your DB and SMTP credentials.
+   Create a `.env` in the `server/` directory with your `DB_NAME`, `DB_PASSWORD`, and `GOOGLE_CLIENT_ID`.
 4. **Run the Engine**:
    ```bash
    npm run dev
