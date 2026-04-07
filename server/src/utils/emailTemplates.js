@@ -1,3 +1,5 @@
+import { FRONTEND_URL } from "../config/env.js";
+
 export const getOtpEmailTemplate = (otp, name = "Farmer") => {
   return `
   <div style="font-family: Arial, sans-serif; background-color: #f4f8f5; padding: 20px;">
@@ -204,7 +206,7 @@ export const getOrderConfirmationTemplate = (name = "Farmer", order_id, final_am
         </p>
 
         <div style="margin-top: 25px;">
-          <a href="http://localhost:5173/orders/${order_id}" style="display: inline-block; background: #2e7d32; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 100px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2);">
+          <a href="${FRONTEND_URL}/orders/${order_id}" style="display: inline-block; background: #2e7d32; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 100px; font-weight: bold; font-size: 14px; box-shadow: 0 4px 6px rgba(46, 125, 50, 0.2);">
             View Order Status
           </a>
         </div>

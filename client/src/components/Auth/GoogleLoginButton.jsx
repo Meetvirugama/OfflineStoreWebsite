@@ -3,8 +3,8 @@ import "./GoogleLoginButton.css";
 
 const GoogleLoginButton = () => {
   const handleClick = () => {
-    // Exact URL based on backend route implementation
-    window.location.href = "http://localhost:5001/api/auth/google";
+    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5001/api";
+    window.location.href = `${apiBase}/auth/google`;
   };
 
   return (
