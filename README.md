@@ -1,58 +1,111 @@
-# Single-Tenant Offline Store Management System
+# 🌱 AgroMart: Comprehensive ERP & Store Management System
 
-This repository contains the source code for a comprehensive ERP and Store Management Website. 
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-**Important Architectural Note:** 
-This application is **not** a universal/multi-tenant SaaS platform. It is a **white-label, single-tenant system**. 
+> A high-end, nature-inspired ERP solution designed for agricultural retail and industrial supply chain management. Built with a focus on visual excellence, data integrity, and professional financial logic.
 
-It is designed to be deployed individually for different physical offline stores. Each store instance receives:
-- **Its own dedicated website**
-- **Its own separate cloud deployment** (database, backend, frontend)
-- **Its own separate domain name**
+---
 
-This isolation ensures complete data privacy for each business, allows highly customized configurations for individual stores, and eliminates shared-resource bottlenecks (e.g. rate limits).
+## 👨‍💻 Project Identity
+- **Author**: Meetvirugama
+- **Institution**: **DA-IICT** (Dhirubhai Ambani Institute of Information and Communication Technology)
+- **Topic**: Modernized ERP for Offline Agricultural Stores
 
-## Features
+---
 
-- **Store Dashboard & Analytics:** Comprehensive overview of revenue, custom charts, and store activity metrics.
-- **Order Management:** Tools to track, update, and manage incoming customer orders and inventory statuses.
-- **Customer Management:** Maintain records of customers, purchase histories, and limits.
-- **Cart & Checkout Systems:** Integrated service for processing offline or pickup orders.
-- **Automated Notifications:** Email notification lifecycles, payment remainders, and localized alerts.
-- **Google OAuth Authentication:** Secure login for both Store Admins and internal staff.
+## 🖼️ Visual Gallery
 
-## Technology Stack
+### 🏠 Public Storefront
+The storefront features a "Digital Forest" aesthetic with smooth gradients and a professional product grid.
+![Home Page](docs/screenshots/home.png)
 
-- **Frontend:** React (Vite-based), tailored for high-end "nature-inspired" / "digital forest" interactive UI or customizable per store.
-- **Backend:** Node.js & Express.js.
-- **Database:** Relational Database with Sequelize ORM.
-- **Payments / Gateway:** Razorpay / Custom localized integrations.
+### 🚜 Product Discovery
+High-performance product listing with real-time stock status and tiered pricing visualization.
+![Products Page](docs/screenshots/products.png)
 
-## Getting Started Locally
+### 🔐 Multi-Tier Authentication
+A secure portal for customers and administrators, featuring OTP verification and Google OAuth integration.
+![Login Portal](docs/screenshots/login.png)
 
-Because this is a bespoke deployment model, you will need to set up environment variables distinct to the specific store you are spinning up.
+---
 
-1. **Install Dependencies:**
+## 🚀 Core Features
+
+### 1. Advanced Authentication & Security
+- **OTP Verification**: 6-digit email OTPs via Nodemailer with 10-minute expiration.
+- **Google OAuth 2.0**: One-tap professional login integration.
+- **State Management**: **Zustand** driven auth state with persistent sessions.
+
+### 2. Intelligent Financial Engine
+- **Automated GST**: Precision 18% GST (9% CGST / 9% SGST) calculation.
+- **Dynamic Discounts**: Auto-tiered savings (5% to 15%) based on order volume.
+- **Razorpay Integration**: Fully functional secure payment gateway for credit/debit/UPI.
+
+### 3. Management & Logistics
+- **Inventory Ledger**: Real-time tracking of `IN/OUT` stock movements.
+- **Low Stock Guard**: Automated thresholds (20 units) with dashboard alerts.
+- **PDF Invoicing**: Server-side generation of industrial-grade invoices.
+
+### 4. Data-Driven Analytics
+- **Sales Intelligence**: Revenue growth charts and monthly trends via **Recharts**.
+- **Customer CLV**: Spend-based ranking to identify high-value agricultural partners.
+
+---
+
+## 📂 Project Architecture
+
+```text
+.
+├── client/                 # Frontend (React + Vite)
+│   ├── src/
+│   │   ├── components/     # High-end UI Components
+│   │   ├── pages/          # Shop & Admin Views
+│   │   ├── store/          # Zustand State Management
+│   │   └── services/       # Axios API Handlers
+│   └── public/             # Static Assets
+├── server/                 # Backend (Node.js + Express)
+│   ├── src/
+│   │   ├── controllers/    # Request Handling
+│   │   ├── services/       # Core Business Logic (Brain)
+│   │   ├── models/         # Sequelize (PostgreSQL) Models
+│   │   └── routes/         # REST API Endpoints
+├── database/               # SQL Schemas & Seed Data
+├── docs/                   # Visual Documentation & Diagrams
+└── scripts/                # Database Sync & Test Utilities
+```
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 19, Vite, Zustand, Lucide Icons, Recharts.
+- **Backend**: Node.js, Express, Sequelize ORM.
+- **Database**: PostgreSQL (Relational).
+- **Security**: JWT, BcryptJS, Google OAuth.
+- **Operations**: Docker, Nodemailer, Razorpay SDK.
+
+---
+
+## 🏁 Getting Started
+
+1. **Clone the repository**:
    ```bash
-   npm install       # Root (concurrently etc)
-   cd client && npm install
-   cd ../server && npm install
+   git clone https://github.com/Meetvirugama/OfflineStoreWebsite.git
    ```
-
-2. **Environment Configuration:**
-   Configure your `.env` files in both the `server` and `client` directories with the appropriate credentials (DB, OAuth keys, etc.) for the specific store deployment.
-
-3. **Run the Application Locally:**
-   From the root of the project, run:
+2. **Install Dependencies**:
+   ```bash
+   npm install && cd client && npm install && cd ../server && npm install
+   ```
+3. **Configure Environment**:
+   Create a `.env` in the `server/` directory with your DB and SMTP credentials.
+4. **Run the Engine**:
    ```bash
    npm run dev
    ```
-   This uses `concurrently` to spin up both the Vite (React) client and the Express backend simultaneously.
 
-## Deployment Strategy
+---
 
-When deploying for a **new store**:
-1. Provision a new database instance.
-2. Provision a new server/cloud app instance (e.g., AWS, Render, Heroku) scaling to the individual store's needs.
-3. Configure domain rules and link the store's unique custom domain.
-4. Set independent `.env` secrets.
+Developed with ❤️ by **Meetvirugama** at **DA-IICT**.
