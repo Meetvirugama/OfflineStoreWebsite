@@ -14,11 +14,7 @@ if (!process.env.RAZORPAY_KEY) {
 }
 
 export const JWT_SECRET = process.env.JWT_SECRET || 'agromart_forest_system_2026_secure_key';
-export const DB_NAME = process.env.DB_NAME || 'erp_system';
-export const DB_USER = process.env.DB_USER || 'postgres';
-export const DB_PASSWORD = process.env.DB_PASSWORD || '09012007';
-export const DB_HOST = process.env.DB_HOST || 'localhost';
-export const DB_DIALECT = process.env.DB_DIALECT || 'postgres';
+export const DATABASE_URL = process.env.DATABASE_URL;
 export const RAZORPAY_KEY = process.env.RAZORPAY_KEY || '';
 export const RAZORPAY_SECRET = process.env.RAZORPAY_SECRET || '';
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
