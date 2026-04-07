@@ -1,132 +1,140 @@
-# 🌱 AgroMart: Industrial-Grade ERP & Store Management System
+# 🏪 AgroMart: Independent Offline Store ERP System
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-> A high-end, nature-inspired ERP solution designed for agricultural retail and industrial supply chain management. This system professionalizes offline stores with advanced financial, inventory, and analytics operations.
+> **A highly scalable, production-ready ERP system designed explicitly for offline stores. Built with an independent-instance architecture, the system is engineered to be deployed individually for different physical stores, each provisioned with its own dedicated cloud infrastructure, database, and domain name.**
+
+*The current implementation showcases **AgroMart**, a high-end, nature-inspired instance fully customized for the agricultural supply chain and retail sector.*
 
 ---
 
-## 👨‍💻 Project Identity
-- **Author**: Meetvirugama
+## 👨‍💻 Project Identity & Academic Context
+- **Developer**: Meetvirugama
 - **Institution**: **DA-IICT** (Dhirubhai Ambani Institute of Information and Communication Technology)
 - **Course**: B.Tech (ICT) Project
-- **Topic**: Enterprise Resource Planning (ERP) for the Agricultural Sector
+- **Domain**: Enterprise Resource Planning (ERP), Cloud Infrastructure, Offline-to-Digital Business Transformation.
 
 ---
+
+## 🎨 Aesthetic & Design Language
+The platform utilizes a **"Living Digital Forest"** and **"Sun-Drenched Forest"** gradient identity, featuring the elegant **Comfortaa** font. It emphasizes modern UI/UX with CSS-driven micro-animations (e.g., leaf sprout effects) and a centralized notification strategy, completely replacing standard browser popups with beautiful, custom-branded UI components.
 
 ## 🖼️ Visual Gallery
 
-### 🏠 Public Storefront & Discovery
-The storefront features a "Digital Forest" aesthetic with smooth gradients and a high-performance product discovery grid.
+### 🏠 Public Storefront & Product Discovery
+A high-performance product browsing grid crafted for an organic, smooth shopping experience.
 | Home Page | Products Grid |
 | :--- | :--- |
 | ![Home Page](docs/screenshots/home.png) | ![Products Page](docs/screenshots/products.png) |
 
-### 🛒 Real-Time Cart & Pricing
-An interactive side-drawer cart that calculates tiered discounts and GST in real-time as users add items.
+### 🛒 Real-Time Cart & Checkout
+An interactive side-drawer cart calculating tiered volume discounts and dynamic intrastate GST in real-time.
 ![Cart Drawer](docs/screenshots/cart.png)
 
-### 🔐 Secure Portals
-Multi-role authentication system featuring 6-digit OTP verification and Google OAuth 2.0.
-| Login Gateway | Customer Profile |
+### 🔐 Secure Multi-Role Portal
+State-of-the-art gateway providing robust Google OAuth 2.0 integration alongside secure 6-digit OTP fallbacks.
+| Login Gateway (OAuth + OTP) | Customer Profile |
 | :--- | :--- |
 | ![Login Portal](docs/screenshots/login.png) | ![User Profile](docs/screenshots/profile.png) |
 
-### 📊 Admin Intelligence (Insights)
-Powerful administrative dashboards with data visualization for revenue, order trends, and inventory health.
+### 📊 Admin Intelligence & ERP Insights
+A powerful administrative dashboard displaying financial analytics, inventory health, and order lifecycles with pixel-perfect accuracy.
 | Analytics Dashboard | Inventory Management |
 | :--- | :--- |
 | ![Admin Dashboard](docs/screenshots/admin_dashboard.png) | ![Admin Products](docs/screenshots/admin_products.png) |
 
 ---
 
-## 🚀 Key Services & Technical Specifications
+## 🚀 Enterprise Features & Technical Specifications
 
-### 💎 Financial Core Service
-- **Atomic Transactions**: All order operations use **SQL Transactions** (Sequelize) ensuring that inventory updates and ledger entries succeed or fail together.
-- **Taxation Engine**: Internal logic automatically calculates **18% GST**, split into **CGST (9%)** and **SGST (9%)** for intrastate compliance.
-- **Tiered Discounts**: Volume-based savings automatically applied (Orders > ₹2k: 5%, >₹5k: 10%, >₹10k: 15%).
-- **Razorpay SDK**: Integrated payment gateway with checksum verification for secure digital transactions.
+### 💎 Financial & Checkout Engine
+- **Atomic SQL Transactions**: Ensures database integrity using Sequelize operations—all inventory deductions and ledger adjustments succeed or fail simultaneously.
+- **Smart Taxation**: Automatic calculation of **18% GST** (split into 9% CGST and 9% SGST).
+- **Automated Tiered Discounts**: Volume-based discounts automatically trigger based on cart subtotal (e.g., >₹2k: 5%, >₹5k: 10%, >₹10k: 15%).
+- **Unlimited Customer Procurement**: Credit limit restrictions have been completely eliminated to support high-volume, unrestricted bulk orders.
+- **Payment Gateway**: Integrated with **Razorpay SDK** for secure, checksum-verified digital transactions.
 
-### 📦 Inventory & Logistics Service
-- **Dual-Entry Ledger**: Every stock movement is double-logged (`IN/OUT`) with reference IDs to Orders or Purchases.
-- **Low-Stock Sentinel**: Automated health checks flagging items below **20 units** in the admin dashboard for immediate reordering.
-- **Supplier Sourcing**: Seamlessly link products to suppliers for streamlined procurement workflows.
+### 📦 Inventory & Operations
+- **Dual-Entry Supply Chain Ledger**: Stock movements are accurately tracked via `IN`/`OUT` actions with exact references to purchases and sales.
+- **Low-Stock Sentinel**: Automated health monitoring flags inventory dipping below a **20-unit threshold** within the admin interface.
+- **PDF Invoicing**: Server-side generation of professional PDF invoices securely archived in `server/storage/invoices/`.
 
-### 📊 Data Intelligence Service
-- **Revenue Analytics**: Real-time sales trend visualization and growth percentage calculation via **Recharts**.
-- **Customer CLV**: Spend-based ranking system (VIP, Regular, New) to prioritize high-value agricultural partners.
-- **Performance Reporting**: Raw SQL optimization for generating complex monthly financial reports.
+### 📊 Data Intelligence & Dashboard
+- **Revenue Analytics**: Real-time aggregation of sales metrics and business growth visualization via **Recharts**.
+- **Customer Lifetime Value (CLV)**: Dynamic ranking models tracking cumulative spends to categorize top-tier retail partners.
+- **Custom Dashboard UI**: Advanced layout and design consistency, seamlessly integrating custom modals and toasts.
 
-### 📩 Utilities & Security
-- **OTP Gateway**: 6-digit email OTPs via **Nodemailer** for secure user registration.
-- **PDF Invoicing**: Server-side generation of professional PDF invoices (stored in `server/storage/invoices/`).
-- **Stateless Auth**: JWT (JSON Web Tokens) for persistent, role-based session management.
+### 📩 Communications & Security
+- **Automated Email Lifecycles**: Comprehensive transactional communications powered by **Nodemailer** (Welcome emails, Order Confirmations, active Payment Reminders, and Invoice Deliveries).
+- **Authentication**: Stateless Role-Based Access Control (RBAC) via **JWT**, augmented with **Google OAuth 2.0** verification and OTP systems.
 
 ---
 
-## 📂 Project Architecture
+## 📂 System Architecture
 
 ```text
 .
-├── client/                 # Frontend Environment (React 19 + Vite)
+├── client/                 # Frontend Environment (React 19 + Vite + Zustand)
 │   ├── src/
-│   │   ├── components/     # Reusable UI (Cart, Navbar, Layouts)
-│   │   ├── store/          # Zustand State (Auth, Cart, Toast)
-│   │   └── services/       # Persistent API Gateways (Axios)
+│   │   ├── components/     # Reusable UI, Modals, custom notification Toasts
+│   │   ├── store/          # Zustand Global State (Auth, Cart, Async Flow)
+│   │   └── styles/         # CSS & Living Forest Themes
 ├── server/                 # Backend Environment (Node.js + Express)
 │   ├── src/
-│   │   ├── controllers/    # API Request Processing
-│   │   ├── services/       # Core Logic (The "Brain")
-│   │   ├── models/         # Postgres Schema (Sequelize)
-│   │   └── routes/         # endpoint Definitions
-├── database/               # Migrations, SQL Schemas, & Seed Data
-└── infrastructure/         # Deployment (Docker & Compose)
+│   │   ├── controllers/    # API Request Management & Validations
+│   │   ├── services/       # Core Business Logic (Transactions, Mailers)
+│   │   ├── models/         # Relational Postgres Schemas (Sequelize)
+│   │   └── middlewares/    # Security, Validations & RBAC pipelines
+├── database/               # SQL Schemas, Configuration files, Seeders
+├── docs/                   # Visual Gallery Assets & Artifacts
+└── infrastructure/         # Deployment templates (Isolated Instances)
 ```
 
 ---
 
-## 🏁 Installation & Configuration
+## 🏁 Deployment & Configuration
 
-### 1. Prerequisites
+Designed for scalability, this ERP employs isolated infrastructure deployment. Every new physical store receives its own dedicated, private clone of this environment.
+
+### 1. Requirements
 - **Node.js**: v18+
 - **PostgreSQL**: v14+
-- **Google Cloud Console**: Client ID for OAuth.
+- **Google Cloud Console**: Active Client ID & Secret for OAuth.
+- **Razorpay**: Production/Test API credentials.
 
-### 2. Environment Setup
-Create a `.env` file in the `server/` directory:
+### 2. Environment Variables (`server/.env`)
 ```env
-# Database Configuration
+# Database Configuration (Unique per store instance)
 DB_NAME=erp_system
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=your_secure_password
 DB_HOST=localhost
 DB_DIALECT=postgres
 
-# Security & Secrets
-JWT_SECRET=your_secret_key
-GOOGLE_CLIENT_ID=your_google_id
-GOOGLE_CLIENT_SECRET=your_google_secret
+# Security & Sessions
+JWT_SECRET=your_jwt_signing_key
+GOOGLE_CLIENT_ID=your_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_oauth_client_secret
 
-# Third-Party API Keys
+# Third-Party Integrations
 RAZORPAY_KEY=your_rzp_key
 RAZORPAY_SECRET=your_rzp_secret
-EMAIL=your_email@gmail.com
+EMAIL=store_instance@gmail.com
 EMAIL_PASS=your_app_password
 ```
 
 ### 3. Execution
 ```bash
-# Install root dependencies
+# 1. Install workspace dependencies
 npm install
 
-# Run Client and Server concurrently
+# 2. Launch Client & Server concurrently
 npm run dev
 ```
 
 ---
 
-Developed with ❤️ by **Meetvirugama** at **DA-IICT**, Gandhinagar.
+*Engineered with precision for performance, aesthetics, and robust scale. Developed by **Meetvirugama** at **DA-IICT**, Gandhinagar.*
