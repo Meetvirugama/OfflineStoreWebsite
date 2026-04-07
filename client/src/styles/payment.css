@@ -1,0 +1,23 @@
+.payment-page {
+  max-width: 400px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+.payment-page input,
+.payment-page select {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+.payment-page button {
+  width: 100%;
+  padding: 12px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}

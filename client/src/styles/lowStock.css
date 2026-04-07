@@ -1,0 +1,43 @@
+.lowstock-container {
+  padding: 20px;
+}
+
+.lowstock-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #b91c1c;
+  margin-bottom: 16px;
+}
+
+.lowstock-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.lowstock-card {
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  padding: 14px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.lowstock-card:hover {
+  transform: translateY(-3px);
+}
+
+.lowstock-name {
+  font-weight: 600;
+}
+
+.lowstock-brand {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.lowstock-count {
+  color: #dc2626;
+  font-weight: bold;
+  margin-top: 8px;
+}

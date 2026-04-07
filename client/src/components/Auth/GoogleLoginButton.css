@@ -1,0 +1,71 @@
+/* Adjusted Google Login Button to align with Premium Auth System */
+.google-login-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  height: 54px !important; /* Match standard button height */
+  padding: 0 24px !important;
+  background-color: #ffffff !important;
+  border: 1.5px solid var(--auth-border, #e2e8f0) !important;
+  border-radius: 12px !important; /* Match system radius */
+  color: #334155 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  font-family: 'Outfit', 'Inter', sans-serif !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  margin-top: 8px !important; /* Reduced from 16px */
+}
+
+.google-login-btn:hover {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+  transform: translateY(-2px) !important;
+}
+
+.google-login-btn:active {
+  transform: translateY(0) !important;
+  background-color: #f1f5f9 !important;
+}
+
+.google-icon {
+  width: 22px !important;
+  height: 22px !important;
+  display: block !important;
+}
+
+/* Elegant Divider */
+.auth-divider {
+  display: flex !important;
+  align-items: center !important;
+  margin: 16px 0 8px !important; /* Reduced from 32px 0 16px */
+  color: #94a3b8 !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-weight: 800 !important;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "" !important;
+  flex: 1 !important;
+  height: 1px !important;
+  background: linear-gradient(to right, transparent, #e2e8f0, transparent) !important;
+}
+
+.auth-divider::before {
+  background: linear-gradient(to right, transparent, #e2e8f0) !important;
+}
+
+.auth-divider::after {
+  background: linear-gradient(to left, transparent, #e2e8f0) !important;
+}
+
+.auth-divider span {
+  padding: 0 20px !important;
+}

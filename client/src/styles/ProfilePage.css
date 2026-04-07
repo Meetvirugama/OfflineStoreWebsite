@@ -1,0 +1,266 @@
+.profile-page {
+  padding: 40px 20px 80px;
+}
+
+.profile-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.profile-page__title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+
+.profile-page__layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+}
+
+/* PROFILE CARD */
+.profile-card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 40px 24px;
+  text-align: center;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+
+.profile-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-200);
+}
+
+.profile-card__avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--primary), var(--emerald-600));
+  color: #fff;
+  font-size: 40px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.25);
+  transform: rotate(-3deg);
+  transition: transform var(--transition-fast);
+}
+
+.profile-card:hover .profile-card__avatar {
+  transform: rotate(0deg) scale(1.05);
+}
+
+.profile-card__name {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.profile-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+.profile-card__info-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.profile-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* STATS */
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-stat-card {
+  background: var(--card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: 24px 16px;
+  text-align: center;
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* COLOR-CODED STATS */
+.profile-stat-card--purchases { border-color: var(--primary-200); background: linear-gradient(to bottom right, #ffffff, #ecfdf5); }
+.profile-stat-card--purchases .profile-stat-card__icon { background: #d1fae5; color: #059669; }
+
+.profile-stat-card--paid { border-color: #bae6fd; background: linear-gradient(to bottom right, #ffffff, #f0f9ff); }
+.profile-stat-card--paid .profile-stat-card__icon { background: #e0f2fe; color: #0284c7; }
+
+.profile-stat-card--due { border-color: #fde68a; background: linear-gradient(to bottom right, #ffffff, #fffbeb); }
+.profile-stat-card--due .profile-stat-card__icon { background: #fef3c7; color: #d97706; }
+
+.profile-stat-card--discount { border-color: #c7d2fe; background: linear-gradient(to bottom right, #ffffff, #eef2ff); }
+.profile-stat-card--discount .profile-stat-card__icon { background: #e0e7ff; color: #4f46e5; }
+
+.profile-stat-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+}
+
+.profile-stat-card::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; width: 40px; height: 40px;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.8), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.profile-stat-card:hover::after { opacity: 1; }
+
+.profile-stat-card__icon {
+  color: var(--primary-600);
+  background: var(--primary-50);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.profile-stat-card__val {
+  font-family: var(--font-heading);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--slate-800);
+}
+
+.profile-stat-card__label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* EDIT SECTION */
+.profile-edit {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 32px;
+}
+
+.profile-edit__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-edit__header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--slate-800);
+}
+
+.profile-edit__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.profile-edit__actions {
+  grid-column: span 2;
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* VIEW MODE */
+.profile-edit__view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.profile-edit__view-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: var(--slate-50);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all var(--transition-base);
+}
+
+.profile-edit__view-row:hover {
+  background: #fff;
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-edit__view-row span {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-edit__view-row strong {
+  color: var(--slate-800);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .profile-page__layout { grid-template-columns: 1fr; }
+  .profile-card { position: static; max-width: 400px; margin: 0 auto; }
+  .profile-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .profile-edit__form,
+  .profile-edit__view { grid-template-columns: 1fr; }
+  .profile-edit__actions { flex-direction: column; }
+  .profile-edit__actions button { width: 100%; }
+}

@@ -1,0 +1,39 @@
+.detail-container {
+  display: flex;
+  gap: 40px;
+  padding: 30px;
+}
+
+.detail-image {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  background: #f3f4f6;
+  border-radius: 12px;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.detail-brand {
+  color: #6b7280;
+}
+
+.detail-price {
+  color: #166534;
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.detail-stock {
+  margin-top: 10px;
+  font-size: 14px;
+}
