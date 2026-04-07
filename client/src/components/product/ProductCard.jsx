@@ -4,7 +4,7 @@ import { ShoppingCart, CheckCircle, XCircle } from "lucide-react";
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 import useToastStore from "../../store/toastStore";
-import "../../styles/ProductCard.css";
+import "../../styles/productCard.css";
 
 function calcDiscount(mrp, selling) {
   if (!mrp || !selling || mrp <= selling) return 0;
