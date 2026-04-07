@@ -100,8 +100,8 @@ export default function LoginPage() {
 
         <GoogleLoginButton />
 
-        <div className="auth-card__footer" style={{ marginTop: '16px' }}>
-          <p style={{ fontSize: '14px', color: '#64748b' }}>
+        <div className="auth-card__footer">
+          <p className="auth-footer-text">
             New to AgroMart?{" "}
             <Link to="/auth/register" className="auth-link" id="go-register-link">
               Create Account

@@ -132,8 +132,8 @@ export default function RegisterPage() {
 
         <GoogleLoginButton />
 
-        <div className="auth-card__footer" style={{ marginTop: '16px' }}>
-          <p>
+        <div className="auth-card__footer">
+          <p className="auth-footer-text">
             Already have an account?{" "}
             <Link to="/auth/login" className="auth-link" id="go-login-link">Login</Link>
           </p>

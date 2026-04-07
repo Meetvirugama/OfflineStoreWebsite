@@ -160,11 +160,39 @@
   filter: grayscale(0.5);
 }
 
+.btn-full {
+  width: 100%;
+}
+
+/* AUTH DIVIDER */
+.auth-divider {
+  margin: 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--auth-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-divider::before, 
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--auth-border);
+}
+
 /* FOOTER */
 .auth-card__footer {
   margin-top: 32px;
   text-align: center;
   font-size: 15px;
+  color: var(--auth-text-muted);
+}
+
+.auth-footer-text {
+  font-size: 14px;
   color: var(--auth-text-muted);
 }
 
