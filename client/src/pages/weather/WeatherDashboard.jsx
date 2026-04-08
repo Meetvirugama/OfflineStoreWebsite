@@ -57,131 +57,105 @@ const WeatherDashboard = () => {
             {/* AMBIENT BACKGROUND ELEMENTS */}
             <div style={{
                 position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
-                pointerEvents: 'none', zIndex: 0, opacity: 0.4,
-                background: 'radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 70%)'
+                pointerEvents: 'none', zIndex: 0, opacity: 0.3,
+                background: 'radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%)'
             }} />
 
             {/* HEADER & SEARCH */}
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem', position: 'relative', zIndex: 1}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', position: 'relative', zIndex: 1}}>
                 <div>
-                    <h1 className="agri-title">Weather Command Center</h1>
-                    <p style={{opacity: 0.6, fontSize: '1.1rem', letterSpacing: '0.02em'}}>Precision atmosphere telemetry & growth indicators.</p>
+                    <h1 className="agri-title">Weather Intelligence</h1>
+                    <p style={{opacity: 0.5, fontSize: '0.95rem'}}>Atmosphere telemetry & precision indicators.</p>
                 </div>
 
-                <div style={{position: 'relative', width: '400px'}}>
-                    <div className="agri-card" style={{padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255,255,255,0.02)'}}>
-                        <Search size={22} className="agri-green" style={{opacity: 0.7}} />
+                <div style={{position: 'relative', width: '320px'}}>
+                    <div className="agri-card" style={{padding: '0.6rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', background: 'rgba(255,255,255,0.02)'}}>
+                        <Search size={18} className="agri-green" style={{opacity: 0.7}} />
                         <input 
                             type="text" 
-                            placeholder="Enter Village / City / State..." 
+                            placeholder="Search Village / City..." 
                             value={searchQuery}
                             onChange={handleSearch}
-                            style={{background: 'transparent', border: 'none', color: '#fff', width: '100%', outline: 'none', fontSize: '1.1rem'}}
+                            style={{background: 'transparent', border: 'none', color: '#fff', width: '100%', outline: 'none', fontSize: '0.95rem'}}
                         />
                     </div>
-                    {searchResults.length > 0 && (
-                        <div className="agri-card" style={{position: 'absolute', top: '120%', left: 0, right: 0, zIndex: 100, padding: '0.5rem', background: 'rgba(15, 23, 42, 0.98)', border: '1px solid var(--agri-green)'}}>
-                            {searchResults.map((res, i) => (
-                                <div 
-                                    key={i} 
-                                    onClick={() => selectResult(res)}
-                                    style={{padding: '1rem', cursor: 'pointer', borderRadius: '0.8rem', transition: 'all 0.2s'}}
-                                    className="hover-bg"
-                                >
-                                    <div style={{fontWeight: 700}}>{res.name}</div>
-                                    <div style={{fontSize: '0.8rem', opacity: 0.5}}>Regional Coordinates: {res.lat.toFixed(2)}, {res.lon.toFixed(2)}</div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
             </div>
 
             {loading && !currentWeather ? (
-                <div style={{textAlign: 'center', padding: '12rem 0', position: 'relative', zIndex: 1}}>
-                    <div className="spinner" style={{width: '60px', height: '60px', margin: '0 auto 3rem', borderWidth: '4px'}}></div>
-                    <h2 style={{fontSize: '2rem', fontWeight: 800}}>Synchronizing Climate Data...</h2>
-                    <p style={{opacity: 0.5, marginTop: '1rem'}}>Aggregating satellite telemetry and local station metrics.</p>
+                <div style={{textAlign: 'center', padding: '8rem 0'}}>
+                    <div className="spinner" style={{width: '40px', height: '40px', margin: '0 auto 2rem', borderWidth: '3px'}}></div>
+                    <p style={{opacity: 0.5}}>Synchronizing Climate Data...</p>
                 </div>
             ) : (
                 <div style={{position: 'relative', zIndex: 1}}>
                 {/* HERO SECTION */}
-                <div className="stats-grid">
+                <div className="stats-grid" style={{gridTemplateColumns: 'repeat(3, 1fr)'}}>
                     <div className="agri-card" style={{
                         gridColumn: 'span 2', 
                         display: 'flex', 
                         justifyContent: 'space-between', 
                         alignItems: 'center',
-                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 78, 59, 0.3))',
-                        padding: '3rem'
+                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 78, 59, 0.2))',
+                        padding: '2rem'
                     }}>
-                        <div style={{display: 'flex', gap: '4rem', alignItems: 'center'}}>
+                        <div style={{display: 'flex', gap: '2.5rem', alignItems: 'center'}}>
                             <div style={{
-                                width: '160px', height: '160px', borderRadius: '50%', 
+                                width: '100px', height: '100px', borderRadius: '50%', 
                                 background: 'rgba(255,255,255,0.03)', display: 'flex', 
                                 alignItems: 'center', justifyContent: 'center',
-                                border: '1px solid rgba(255,255,255,0.1)',
-                                boxShadow: 'inset 0 0 40px rgba(0,0,0,0.2)'
+                                border: '1px solid rgba(255,255,255,0.1)'
                             }}>
-                                {currentWeather?.weather[0]?.main === 'Rain' ? <CloudRain size={90} className="icon-gradient-sky" /> : <Sun size={90} style={{color: '#fbbf24', filter: 'drop-shadow(0 0 20px rgba(251, 191, 36, 0.4))'}} />}
+                                {currentWeather?.weather[0]?.main === 'Rain' ? <CloudRain size={50} className="icon-gradient-sky" /> : <Sun size={50} style={{color: '#fbbf24'}} />}
                             </div>
                             <div>
-                                <div style={{display: 'flex', alignItems: 'baseline', gap: '0.5rem'}}>
-                                    <h1 style={{fontSize: '7rem', fontWeight: 900, marginBottom: '0', color: '#fff', letterSpacing: '-0.05em'}}>
+                                <div style={{display: 'flex', alignItems: 'baseline', gap: '0.8rem'}}>
+                                    <span style={{fontSize: '4.5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.03em'}}>
                                         {Math.round(currentWeather?.main?.temp || 0)}°
-                                    </h1>
-                                    <div style={{opacity: 0.6, fontSize: '1.5rem', fontWeight: 700}}>
+                                    </span>
+                                    <div style={{opacity: 0.6, fontSize: '1.1rem', fontWeight: 600}}>
                                         <div style={{color: '#f87171'}}>↑ {Math.round(currentWeather?.main?.temp_max || 0)}°</div>
                                         <div style={{color: '#60a5fa'}}>↓ {Math.round(currentWeather?.main?.temp_min || 0)}°</div>
                                     </div>
                                 </div>
-                                <p style={{fontSize: '1.8rem', opacity: 0.9, fontWeight: 800, textTransform: 'capitalize', marginTop: '0.5rem'}}>
+                                <p style={{fontSize: '1.2rem', opacity: 0.8, fontWeight: 700, textTransform: 'capitalize'}}>
                                     {currentWeather?.weather[0]?.description}
                                 </p>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '1.5rem'}}>
-                                    <div className="weather-badge">
-                                        <MapPin size={16} /> {currentWeather?.name || 'Local Station'}
-                                    </div>
-                                    <div className="weather-badge" style={{background: 'rgba(255,255,255,0.05)', color: '#fff', borderColor: 'rgba(255,255,255,0.1)'}}>
-                                        {new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}
-                                    </div>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '1rem'}}>
+                                    <MapPin size={14} className="agri-green" /> 
+                                    <span style={{fontSize: '0.9rem', opacity: 0.7}}>{currentWeather?.name || 'Local Station'}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div style={{display: 'flex', gap: '3rem'}}>
-                            <div style={{textAlign: 'center', minWidth: '100px'}}>
-                                <div style={{width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem'}}>
-                                    <Droplets size={28} color="#34d399" />
-                                </div>
-                                <p style={{fontSize: '1.8rem', fontWeight: 800}}>{currentWeather?.main?.humidity}%</p>
-                                <p style={{fontSize: '0.9rem', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.1em'}}>Humidity</p>
+                        <div style={{display: 'flex', gap: '2rem'}}>
+                            <div style={{textAlign: 'center'}}>
+                                <Droplets size={22} className="agri-green" style={{marginBottom: '0.5rem'}} />
+                                <p style={{fontSize: '1.4rem', fontWeight: 700}}>{currentWeather?.main?.humidity}%</p>
+                                <p style={{fontSize: '0.75rem', opacity: 0.4, textTransform: 'uppercase'}}>Humidity</p>
                             </div>
-                            <div style={{textAlign: 'center', minWidth: '100px'}}>
-                                 <div style={{width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem'}}>
-                                    <Wind size={28} color="#34d399" />
-                                </div>
-                                <p style={{fontSize: '1.8rem', fontWeight: 800}}>{currentWeather?.wind?.speed}</p>
-                                <p style={{fontSize: '0.9rem', opacity: 0.5, textTransform: 'uppercase', letterSpacing: '0.1em'}}>KM/H WIND</p>
+                            <div style={{textAlign: 'center'}}>
+                                <Wind size={22} className="agri-green" style={{marginBottom: '0.5rem'}} />
+                                <p style={{fontSize: '1.4rem', fontWeight: 700}}>{currentWeather?.wind?.speed}</p>
+                                <p style={{fontSize: '0.75rem', opacity: 0.4, textTransform: 'uppercase'}}>Wind km/h</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="agri-card" style={{border: '1px solid rgba(245, 158, 11, 0.2)'}}>
-                        <h3 style={{marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '1.4rem'}}>
-                            <Zap size={22} style={{color: 'var(--agri-accent)'}} /> Growth Insights
+                    <div className="agri-card">
+                        <h3 style={{marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.1rem'}}>
+                            <Zap size={18} style={{color: 'var(--agri-accent)'}} /> Insights
                         </h3>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '1.2rem'}}>
-                            {insights.map((insight, i) => (
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem'}}>
+                            {insights.slice(0, 2).map((insight, i) => (
                                 <div key={i} style={{
-                                    padding: '1.2rem', 
+                                    padding: '1rem', 
                                     background: 'rgba(255,255,255,0.02)', 
-                                    borderRadius: '1.2rem', 
-                                    border: '1px solid rgba(255,255,255,0.05)',
-                                    borderLeft: `4px solid ${insight.type === 'WARNING' ? '#f87171' : '#10b981'}`
+                                    borderRadius: '0.8rem', 
+                                    borderLeft: `3px solid ${insight.type === 'WARNING' ? '#f87171' : '#10b981'}`
                                 }}>
-                                    <h4 style={{fontSize: '1rem', marginBottom: '0.4rem', color: insight.type === 'WARNING' ? '#f87171' : '#34d399'}}>{insight.title}</h4>
-                                    <p style={{fontSize: '0.9rem', opacity: 0.7, lineHeight: 1.5}}>{insight.message}</p>
+                                    <h4 style={{fontSize: '0.85rem', marginBottom: '0.2rem', color: insight.type === 'WARNING' ? '#f87171' : '#34d399'}}>{insight.title}</h4>
+                                    <p style={{fontSize: '0.8rem', opacity: 0.6, lineHeight: 1.4}}>{insight.message}</p>
                                 </div>
                             ))}
                         </div>
@@ -189,38 +163,33 @@ const WeatherDashboard = () => {
                 </div>
 
                 {/* VISUALS SECTION */}
-                <div className="stats-grid" style={{marginTop: '3rem'}}>
+                <div className="stats-grid" style={{marginTop: '2rem', gridTemplateColumns: '1.8fr 1.2fr'}}>
                     {/* HOURLY CHART */}
-                    <div className="agri-card" style={{gridColumn: 'span 2'}}>
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem'}}>
-                            <h3 style={{fontSize: '1.4rem'}}>24-Hour Predictive Trends</h3>
-                            <div style={{display: 'flex', gap: '1.5rem', fontSize: '0.8rem'}}>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}><div style={{width: '12px', height: '12px', background: '#fbbf24', borderRadius: '3px'}}></div> TEMPERATURE</div>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}><div style={{width: '12px', height: '12px', background: '#60a5fa', borderRadius: '3px'}}></div> RAIN PROBABILITY</div>
+                    <div className="agri-card">
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
+                            <h3 style={{fontSize: '1.1rem'}}>24-Hour Forecast</h3>
+                            <div style={{display: 'flex', gap: '1rem', fontSize: '0.7rem', opacity: 0.6}}>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}><div style={{width: '8px', height: '8px', background: '#fbbf24', borderRadius: '2px'}}></div> TEMP</div>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}><div style={{width: '8px', height: '8px', background: '#60a5fa', borderRadius: '2px'}}></div> RAIN</div>
                             </div>
                         </div>
-                        <div style={{height: '350px', width: '100%'}}>
+                        <div style={{height: '220px', width: '100%'}}>
                             <ResponsiveContainer>
                                 <AreaChart data={hourlyData}>
                                     <defs>
                                         <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#fbbf24" stopOpacity={0.4}/>
+                                            <stop offset="5%" stopColor="#fbbf24" stopOpacity={0.2}/>
                                             <stop offset="95%" stopColor="#fbbf24" stopOpacity={0}/>
                                         </linearGradient>
-                                        <linearGradient id="colorRain" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.2}/>
-                                            <stop offset="95%" stopColor="#60a5fa" stopOpacity={0}/>
-                                        </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                                    <XAxis dataKey="time" axisLine={false} tickLine={false} stroke="rgba(255,255,255,0.3)" tick={{fontSize: 11}} />
-                                    <YAxis axisLine={false} tickLine={false} stroke="rgba(255,255,255,0.3)" tick={{fontSize: 11}} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
+                                    <XAxis dataKey="time" axisLine={false} tickLine={false} stroke="rgba(255,255,255,0.2)" tick={{fontSize: 10}} />
+                                    <YAxis axisLine={false} tickLine={false} stroke="rgba(255,255,255,0.2)" tick={{fontSize: 10}} />
                                     <Tooltip 
-                                        contentStyle={{background: 'rgba(15, 23, 42, 0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.2rem', padding: '1rem'}}
-                                        itemStyle={{fontWeight: 700}}
+                                        contentStyle={{background: 'rgba(15, 23, 42, 0.98)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0.8rem', fontSize: '0.8rem'}}
                                     />
-                                    <Area type="monotone" dataKey="temp" name="Temperature (°C)" stroke="#fbbf24" fillOpacity={1} fill="url(#colorTemp)" strokeWidth={4} />
-                                    <Area type="monotone" dataKey="rain" name="Precipitation (%)" stroke="#60a5fa" fillOpacity={1} fill="url(#colorRain)" strokeWidth={2} strokeDasharray="5 5" />
+                                    <Area type="monotone" dataKey="temp" stroke="#fbbf24" fillOpacity={1} fill="url(#colorTemp)" strokeWidth={2} />
+                                    <Area type="monotone" dataKey="rain" stroke="#60a5fa" fill="transparent" strokeWidth={1.5} strokeDasharray="4 4" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>
@@ -228,29 +197,28 @@ const WeatherDashboard = () => {
 
                     {/* 7-DAY FORECAST */}
                     <div className="agri-card">
-                        <h3 style={{marginBottom: '2.5rem', fontSize: '1.4rem'}}>Synoptic 8-Day Forecast</h3>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                        <h3 style={{marginBottom: '1.5rem', fontSize: '1.1rem'}}>8-Day Outlook</h3>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
                             {forecast?.daily?.map((day, i) => (
                                 <div key={i} style={{
                                     display: 'flex', 
                                     justifyContent: 'space-between', 
                                     alignItems: 'center',
-                                    padding: '0.8rem 1rem',
-                                    borderRadius: '1rem',
-                                    transition: 'all 0.2s'
+                                    padding: '0.5rem 0.8rem',
+                                    borderRadius: '0.6rem',
                                 }} className="hover-bg">
-                                    <p style={{width: '70px', fontWeight: 500, opacity: 0.8}}>{i === 0 ? 'Today' : new Date(day.dt * 1000).toLocaleDateString('en-US', {weekday: 'short'})}</p>
-                                    <div style={{display: 'flex', alignItems: 'center', gap: '1.2rem'}}>
-                                        <div style={{width: '30px', display: 'flex', justifyContent: 'center'}}>
-                                            {day.weather[0].main === 'Rain' ? <CloudRain size={20} color="#60a5fa" /> : <Sun size={20} color="#fbbf24" />}
+                                    <span style={{width: '60px', fontSize: '0.85rem', opacity: 0.6}}>{i === 0 ? 'Today' : new Date(day.dt * 1000).toLocaleDateString('en-US', {weekday: 'short'})}</span>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
+                                        <div style={{width: '24px', display: 'flex', justifyContent: 'center'}}>
+                                            {day.weather[0].main === 'Rain' ? <CloudRain size={16} color="#60a5fa" /> : <Sun size={16} color="#fbbf24" />}
                                         </div>
-                                        <div style={{display: 'flex', gap: '0.8rem', width: '90px'}}>
-                                            <p style={{fontWeight: 800, color: '#fff'}}>{Math.round(day.temp.max)}°</p>
-                                            <p style={{fontWeight: 500, opacity: 0.4}}>{Math.round(day.temp.min)}°</p>
+                                        <div style={{display: 'flex', gap: '0.6rem', width: '70px', fontSize: '0.9rem'}}>
+                                            <span style={{fontWeight: 700}}>{Math.round(day.temp.max)}°</span>
+                                            <span style={{opacity: 0.3}}>{Math.round(day.temp.min)}°</span>
                                         </div>
                                     </div>
-                                    <div style={{background: 'rgba(255,255,255,0.03)', height: '6px', width: '70px', borderRadius: '10px', overflow: 'hidden'}}>
-                                        <div style={{background: '#60a5fa', height: '100%', width: `${Math.round((day.pop || 0) * 100)}%`, borderRadius: '10px', boxShadow: '0 0 10px rgba(96, 165, 250, 0.4)'}}></div>
+                                    <div style={{background: 'rgba(255,255,255,0.03)', height: '4px', width: '50px', borderRadius: '4px', overflow: 'hidden'}}>
+                                        <div style={{background: '#60a5fa', height: '100%', width: `${Math.round((day.pop || 0) * 100)}%`}}></div>
                                     </div>
                                 </div>
                             ))}
