@@ -71,6 +71,18 @@ A powerful administrative dashboard displaying financial analytics, inventory he
 - **Automated Email Lifecycles**: Comprehensive transactional communications powered by **Nodemailer** (Welcome emails, Order Confirmations, active Payment Reminders, and Invoice Deliveries).
 - **Authentication**: Stateless Role-Based Access Control (RBAC) via **JWT**, augmented with **Google OAuth 2.0** verification and OTP systems.
 
+### 🌱 Smart Agriculture Intelligence (Agri-Intel)
+- **Predictive Asset Velocity**: Real-time market telemetry tracking daily modal prices and volatility indices for over 12+ major crop categories.
+- **Neuro-Analytics Outlook**: AI-powered "Bullish/Bearish" market indicators with automated confidence scoring for crop assets.
+- **Adaptive Crop Profiles**: High-fidelity botanical data hub with floating magazine layouts, providing spacing geometries, photoperiod requirements, and harvesting windows.
+- **JSONB Caching Engine**: High-performance local caching of external API telemetry (GrowStuff, Agmarknet) to minimize latency and external dependency costs.
+
+### 🌦️ Weather Command Center
+- **Synoptic Telemetry**: Integration with **OpenWeather OneCall 3.0** for real-time temperature, 48-hour predictive trends, and 8-day outlooks.
+- **Triple-Mode Geolocation**: Precision tracking via high-resolution GPS, intelligent IP-fallback, and village-level manual search.
+- **Growth Indicators**: Specialized farming intelligence triggering alerts for Heat Stress, Irrigation pausing (Rain detection), and Pest Risk (High Humidity).
+- **Interactive Visuals**: Glassmorphism dashboard with glass-glow effects and dynamic Recharts-powered climate telemetry.
+
 ---
 
 ## 📂 System Architecture
