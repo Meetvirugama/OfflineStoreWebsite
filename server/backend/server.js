@@ -19,8 +19,11 @@ const startServer = async () => {
         }
 
         const PORT = ENV.PORT || 5001;
-        app.listen(PORT, () => {
-            console.log(`🚀 Modular Server running in ${ENV.NODE_ENV} mode on port ${PORT}`);
+        const HOST = '0.0.0.0'; // Explicitly bind for Render/Cloud compatibility
+
+        app.listen(PORT, HOST, () => {
+            console.log(`🚀 Modular Server running in ${ENV.NODE_ENV} mode`);
+            console.log(`📡 URL: http://${HOST}:${PORT}`);
         });
 
     } catch (err) {
