@@ -21,6 +21,8 @@ import WeatherCache from "./WeatherCache.js";
 
 
 
+import FarmingNews from "./FarmingNews.js";
+
 // =========================
 // CUSTOMER RELATIONS
 // =========================
@@ -117,5 +119,7 @@ export {
     MandiPrice,
     Crop,
     UserLocation,
-    WeatherCache
+    WeatherCache,
+    FarmingNews
 };
+

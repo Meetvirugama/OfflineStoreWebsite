@@ -76,6 +76,10 @@ A powerful administrative dashboard displaying financial analytics, inventory he
 - **Neuro-Analytics Outlook**: AI-powered "Bullish/Bearish" market indicators with automated confidence scoring for crop assets.
 - **Adaptive Crop Profiles**: High-fidelity botanical data hub with floating magazine layouts, providing spacing geometries, photoperiod requirements, and harvesting windows.
 - **JSONB Caching Engine**: High-performance local caching of external API telemetry (GrowStuff, Agmarknet) to minimize latency and external dependency costs.
+- **Farming News & Announcements**: A specialized intelligence hub featuring automated NewsAPI integration with strict recursive filtering for 100% farming-related content.
+- **Govt Scheme Sentinel**: Automatic identification and high-priority highlighting of government policies, subsidies, and "Yojanas" to keep farmers informed of critical state support.
+- **Voice-Enabled Accessibility**: Native Web Speech API integration for text-to-speech news reading, optimized for field accessibility.
+
 
 ### 🌦️ Weather Command Center
 - **Synoptic Telemetry**: Integration with **OpenWeather OneCall 3.0** for real-time temperature, 48-hour predictive trends, and 8-day outlooks.

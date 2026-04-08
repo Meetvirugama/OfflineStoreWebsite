@@ -34,6 +34,7 @@ import MandiPricesPage from "./pages/admin/MandiPricesPage";
 import MandiDashboardPage from "./pages/admin/MandiDashboardPage";
 import CropDetailsPage from "./pages/agriculture/CropDetailsPage";
 import AgriAnalyticsPage from "./pages/agriculture/AgriAnalyticsPage";
+import FarmingNewsPage from "./pages/agriculture/FarmingNewsPage";
 import WeatherDashboard from "./pages/weather/WeatherDashboard";
 import LoadingBar from "./components/common/LoadingBar";
 
@@ -48,6 +49,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/farming-news" element={<FarmingNewsPage />} />
 
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/register" element={<RegisterPage />} />
@@ -65,6 +67,7 @@ function App() {
           {/* SHARED AUTH ROUTES */}
           <Route path="/profile" element={<RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}><ProfilePage /></RoleGuard>} />
         </Route>
+
 
         {/* ADMIN (optional) */}
         <Route element={<RoleGuard allowedRoles={["ADMIN"]}><AdminLayout /></RoleGuard>}>

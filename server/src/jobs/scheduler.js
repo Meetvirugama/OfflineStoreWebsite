@@ -1,8 +1,11 @@
-import cron from "node-cron";
 import { runEngine, runAI } from "../services/notificationService.js";
+import { syncFarmingNews } from "../services/newsService.js";
+import { syncMandiData } from "../services/mandiService.js";
 import { Op } from "sequelize";
 import User from "../models/User.js";
 import Customer from "../models/Customer.js";
+
+
 
 /* =========================
    🔔 1. DAILY NOTIFICATION SYSTEM
@@ -18,7 +21,35 @@ cron.schedule("0 9 * * *", async () => {
 });
 
 /* =========================
-   🧹 2. OTP CLEANUP SYSTEM
+   📰 2. FARMING NEWS SYNC
+   Runs every 6 hours
+========================= */
+cron.schedule("0 */6 * * *", async () => {
+    try {
+        console.log("📰 Scheduled Trigger: Syncing Farming News...");
+        await syncFarmingNews();
+    } catch (err) {
+        console.error("❌ News sync error:", err.message);
+    }
+});
+
+/* =========================
+   📉 3. MANDI PRICE SYNC
+   Runs every day at 11 PM
+========================= */
+cron.schedule("0 23 * * *", async () => {
+    try {
+        console.log("📉 Scheduled Trigger: Nightly Mandi Sync Starting...");
+        await syncMandiData("Gujarat");
+        console.log("✅ Nightly Mandi Sync Finished.");
+    } catch (err) {
+        console.error("❌ Mandi sync error:", err.message);
+    }
+});
+
+
+/* =========================
+   🧹 3. OTP CLEANUP SYSTEM
    Runs every 5 minutes
 ========================= */
 cron.schedule("*/5 * * * *", async () => {
@@ -46,7 +77,7 @@ cron.schedule("*/5 * * * *", async () => {
 });
 
 /* =========================
-   ☕ 3. KEEP-ALIVE SYSTEM (Prevent Sleep)
+   ☕ 4. KEEP-ALIVE SYSTEM (Prevent Sleep)
    Runs every 5 minutes to keep Render Free Tier awake
 ========================= */
 import axios from "axios";
@@ -59,5 +90,6 @@ cron.schedule("*/5 * * * *", async () => {
         console.error("❌ Keep-alive error:", err.message);
     }
 });
+
 
 console.log("🚀 Cron jobs initialized");
