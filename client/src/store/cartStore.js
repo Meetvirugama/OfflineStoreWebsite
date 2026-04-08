@@ -30,7 +30,7 @@ const useCartStore = create((set, get) => ({
   },
 
   // ADD TO CART
-  addToCart: async (customerId, productId, quantity = 1) => {
+  addToCart: async (customerId, productId, quantity = 1, silent = false) => {
     try {
       await api.post("/cart/add", {
         customer_id: customerId,
@@ -38,7 +38,7 @@ const useCartStore = create((set, get) => ({
         quantity,
       });
       await get().fetchCart(customerId);
-      set({ open: true });
+      if (!silent) set({ open: true });
       return { success: true };
     } catch (err) {
       throw new Error(err.response?.data?.message || "Failed to add to cart");

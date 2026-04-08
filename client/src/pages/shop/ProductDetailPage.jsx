@@ -64,6 +64,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
   const [adding, setAdding] = useState(false);
+  const [buying, setBuying] = useState(false);
 
   const { customer, token } = useAuthStore();
   const { addToCart } = useCartStore();
@@ -94,6 +95,26 @@ export default function ProductDetailPage() {
       addToast(err.message, "error");
     } finally {
       setAdding(false);
+    }
+  };
+
+  const handleBuyNow = async () => {
+    if (!token || !customer) {
+      addToast("Please login to proceed with Buy Now", "info");
+      // Use state to remember where to return
+      navigate("/auth/login", { state: { from: { pathname: window.location.pathname } } });
+      return;
+    }
+
+    setBuying(true);
+    try {
+      // Add to cart silently (don't open drawer)
+      await addToCart(customer.id, product.id, qty, true);
+      navigate("/checkout");
+    } catch (err) {
+      addToast(err.message, "error");
+    } finally {
+      setBuying(false);
     }
   };
 
@@ -231,18 +252,19 @@ export default function ProductDetailPage() {
               <button
                 id="detail-buy-btn"
                 className="btn btn-accent btn-lg"
-                onClick={async () => {
-                  if (token && customer) {
-                    await handleAddToCart();
-                    navigate("/checkout");
-                  } else {
-                    handleAddToCart();
-                  }
-                }}
-                disabled={adding || product.stock <= 0}
+                onClick={handleBuyNow}
+                disabled={adding || buying || product.stock <= 0}
                 style={{ gap: '10px' }}
               >
-                <Zap size={20} /> Buy Now
+                {buying ? (
+                  <>
+                    <span className="spinner" style={{ width: 18, height: 18, borderTopColor: 'white' }} /> Processing...
+                  </>
+                ) : (
+                  <>
+                    <Zap size={20} /> Buy Now
+                  </>
+                )}
               </button>
             </div>
           </div>
