@@ -1,0 +1,35 @@
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  min-width: 280px;
+  max-width: 400px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  background: #fff;
+  border-left: 4px solid var(--success);
+}
+
+.toast--error { border-left-color: var(--danger); }
+.toast--warning { border-left-color: var(--warning); }
+.toast--info { border-left-color: var(--info); }
+
+.toast__icon { font-size: 16px; }
+
+.toast__msg { flex: 1; }
+
+.toast__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-muted);
+  padding: 0 4px;
+  line-height: 1;
+}
+
+.toast__close:hover { color: var(--text); }

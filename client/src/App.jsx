@@ -1,53 +1,58 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainLayout from "./components/layout/MainLayout";
-import AdminLayout from "./components/layout/AdminLayout";
-import RoleGuard from "./components/common/RoleGuard";
+import MainLayout from "@core/layout/MainLayout";
+import AdminLayout from "@core/layout/AdminLayout";
+import RoleGuard from "@core/guards/RoleGuard";
+import LoadingBar from "@core/components/LoadingBar";
 
-// Pages
-import HomePage from "./pages/shop/HomePage";
-import ProductsPage from "./pages/shop/ProductsPage";
-import ProductDetailPage from "./pages/shop/ProductDetailPage";
-import CheckoutPage from "./pages/checkout/CheckoutPage";
-import OrderSuccessPage from "./pages/checkout/OrderSuccessPage";
-import PaymentPage from "./pages/checkout/PaymentPage";
-import OrdersPage from "./pages/orders/OrdersPage";
-import OrderDetailsPage from "./pages/orders/OrderDetailsPage";
-import ProfilePage from "./pages/user/ProfilePage";
+// Features: Shop & Products
+import HomePage from "@features/shop/pages/HomePage";
+import ProductsPage from "@features/shop/pages/ProductsPage";
+import ProductDetailPage from "@features/shop/pages/ProductDetailPage";
 
-// Auth
-import LoginPage from "./pages/auth/LoginPage";
-import RegisterPage from "./pages/auth/RegisterPage";
-import OtpPage from "./pages/auth/OtpPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
-import GoogleSuccess from "./pages/GoogleSuccess";
+// Features: Checkout & Orders
+import CheckoutPage from "@features/checkout/pages/CheckoutPage";
+import OrderSuccessPage from "@features/checkout/pages/OrderSuccessPage";
+import PaymentPage from "@features/checkout/pages/PaymentPage";
+import OrdersPage from "@features/orders/pages/OrdersPage";
+import OrderDetailsPage from "@features/orders/pages/OrderDetailsPage";
 
-// ✅ Analytics & Admin
-import AnalyticsPage from "./pages/admin/AnalyticsPage";
-import AdminProductsPage from "./pages/admin/AdminProductsPage";
-import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
-import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
-import AdminProfilePage from "./pages/admin/AdminProfilePage";
-import SuppliersListPage from "./pages/admin/SuppliersListPage";
-import SupplierDetailsPage from "./pages/admin/SupplierDetailsPage";
-import MandiPricesPage from "./pages/admin/MandiPricesPage";
-import MandiDashboardPage from "./pages/admin/MandiDashboardPage";
-import CropDetailsPage from "./pages/agriculture/CropDetailsPage";
-import AgriAnalyticsPage from "./pages/agriculture/AgriAnalyticsPage";
-import FarmingNewsPage from "./pages/agriculture/FarmingNewsPage";
-import CropAdvisoryPage from "./pages/agriculture/CropAdvisoryPage";
-import PestDetectionPage from "./pages/agriculture/PestDetectionPage";
-import WeatherDashboard from "./pages/weather/WeatherDashboard";
+// Features: User & Profile
+import ProfilePage from "@features/user/pages/ProfilePage";
 
+// Features: Auth
+import LoginPage from "@features/auth/pages/LoginPage";
+import RegisterPage from "@features/auth/pages/RegisterPage";
+import OtpPage from "@features/auth/pages/OtpPage";
+import ForgotPasswordPage from "@features/auth/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@features/auth/pages/ResetPasswordPage";
+import GoogleSuccess from "./pages/GoogleSuccess"; 
 
-import LoadingBar from "./components/common/LoadingBar";
+// Features: Agriculture Intelligence
+import CropDetailsPage from "@features/agriculture/pages/CropDetailsPage";
+import AgriAnalyticsPage from "@features/agriculture/pages/AgriAnalyticsPage";
+import FarmingNewsPage from "@features/agriculture/pages/FarmingNewsPage";
+import CropAdvisoryPage from "@features/agriculture/pages/CropAdvisoryPage";
+import PestDetectionPage from "@features/agriculture/pages/PestDetectionPage";
+import NearbyMandisPage from "@features/agriculture/pages/NearbyMandisPage";
+import FarmerDashboardPage from "@features/agriculture/pages/FarmerDashboardPage";
+import WeatherDashboard from "@features/agriculture/pages/WeatherDashboard";
+
+// Features: Admin
+import AnalyticsPage from "@features/admin/pages/AnalyticsPage";
+import AdminProductsPage from "@features/admin/pages/AdminProductsPage";
+import AdminOrdersPage from "@features/admin/pages/AdminOrdersPage";
+import AdminOrderDetailsPage from "@features/admin/pages/AdminOrderDetailsPage";
+import AdminProfilePage from "@features/admin/pages/AdminProfilePage";
+import SuppliersListPage from "@features/admin/pages/SuppliersListPage";
+import SupplierDetailsPage from "@features/admin/pages/SupplierDetailsPage";
+import MandiPricesPage from "@features/admin/pages/MandiPricesPage";
+import MandiDashboardPage from "@features/admin/pages/MandiDashboardPage";
 
 function App() {
   return (
     <BrowserRouter>
       <LoadingBar />
       <Routes>
-
         {/* PUBLIC */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<HomePage />} />
@@ -56,8 +61,8 @@ function App() {
           <Route path="/farming-news" element={<FarmingNewsPage />} />
           <Route path="/crop-advisory" element={<CropAdvisoryPage />} />
           <Route path="/pest-detection" element={<PestDetectionPage />} />
-
-
+          <Route path="/nearby-mandis" element={<NearbyMandisPage />} />
+          <Route path="/farmer-dashboard" element={<FarmerDashboardPage />} />
 
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/register" element={<RegisterPage />} />
@@ -72,13 +77,11 @@ function App() {
           <Route path="/payment/:orderId" element={<RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}><PaymentPage /></RoleGuard>} />
           <Route path="/orders" element={<RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}><OrdersPage /></RoleGuard>} />
           <Route path="/orders/:id" element={<RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}><OrderDetailsPage /></RoleGuard>} />
-          {/* SHARED AUTH ROUTES */}
           <Route path="/profile" element={<RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}><ProfilePage /></RoleGuard>} />
         </Route>
 
-
-        {/* ADMIN (optional) */}
-        <Route element={<RoleGuard allowedRoles={["ADMIN"]}><AdminLayout /></RoleGuard>}>
+        {/* ADMIN */}
+        <Route element={<RoleGuard allowedRoles={["ADMIN"]}><AdminLayout />}>
           <Route path="/admin" element={<AnalyticsPage />} />
           <Route path="/admin/dashboard" element={<AnalyticsPage />} />
           <Route path="/admin/analytics" element={<AnalyticsPage />} />
@@ -91,12 +94,10 @@ function App() {
           <Route path="/admin/mandi" element={<MandiDashboardPage />} />
           <Route path="/admin/mandi/prices" element={<MandiPricesPage />} />
 
-          {/* 🌿 AGRI INTELLIGENCE */}
           <Route path="/admin/agri/analytics" element={<AgriAnalyticsPage />} />
           <Route path="/admin/weather" element={<WeatherDashboard />} />
           <Route path="/admin/agri/crop/:name" element={<CropDetailsPage />} />
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

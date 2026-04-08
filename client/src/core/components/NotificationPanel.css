@@ -1,0 +1,230 @@
+/* 
+   🌿 AGROMART PREMIUM NOTIFICATIONS
+   Sophisticated, nature-inspired alerts for the modern farmer.
+*/
+
+.notif-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -20px;
+  width: 420px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(2, 44, 34, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideInNotif 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
+}
+
+@keyframes slideInNotif {
+  from { opacity: 0; transform: translateY(15px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* HEADER */
+.notif-header {
+  padding: 24px 30px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+}
+
+.notif-title {
+  margin: 0;
+  font-size: 18px;
+  color: #0f172a;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+}
+
+.notif-header-badge {
+  background: #f0fdf4;
+  color: #10b981;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 50px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* LIST & SCROLL */
+.notif-list {
+  max-height: 480px;
+  overflow-y: auto;
+  background: white;
+}
+
+.notif-list::-webkit-scrollbar { width: 4px; }
+.notif-list::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 20px; }
+
+/* EMPTY STATE */
+.notif-empty {
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.notif-empty-icon {
+  width: 72px;
+  height: 72px;
+  background: #f8fafc;
+  color: #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 32px;
+}
+
+.notif-empty p {
+  margin: 0 0 4px;
+  color: #1e293b;
+  font-weight: 800;
+  font-size: 17px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.notif-empty span {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* ITEM */
+.notif-item {
+  padding: 20px 30px;
+  border-bottom: 1px solid #f8fafc;
+  cursor: pointer;
+  display: flex;
+  gap: 18px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.notif-item:hover {
+  background: #f8fafc;
+}
+
+.notif-item.unread {
+  background: #f0fdf4;
+}
+
+.notif-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #10b981;
+}
+
+.notif-item-icon {
+  width: 44px;
+  height: 44px;
+  background: white;
+  color: #10b981;
+  border-radius: 12px;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.notif-content { flex: 1; }
+
+.notif-message {
+  margin: 0 0 6px !important;
+  font-size: 14px !important;
+  color: #334155 !important;
+  line-height: 1.5 !important;
+  font-weight: 600 !important;
+}
+
+.notif-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notif-time {
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  font-weight: 700 !important;
+}
+
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.notif-delete-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  background: #fee2e2;
+  color: #ef4444;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s;
+  border: 1px solid rgba(239, 68, 68, 0.1);
+  cursor: pointer;
+}
+
+.notif-item:hover .notif-delete-btn {
+  opacity: 1;
+}
+
+.notif-delete-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* FOOTER */
+.notif-footer {
+  padding: 16px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+.notif-mark-all {
+  background: transparent;
+  border: none;
+  color: #10b981;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.notif-mark-all:hover {
+  color: #065f46;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .notif-panel { width: calc(100vw - 40px); right: -10vw; }
+}
