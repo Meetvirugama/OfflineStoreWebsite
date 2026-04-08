@@ -18,8 +18,10 @@ import {
   Home,
   Menu,
   X,
-  Newspaper
+  Newspaper,
+  Zap
 } from "lucide-react";
+
 
 
 
@@ -165,6 +167,10 @@ export default function Navbar() {
                           Admin Dashboard
                         </Link>
                       )}
+                      <Link to="/pest-detection" className="dropdown-item" onClick={() => setMenuOpen(false)}>
+                        <Zap size={16} style={{marginRight: 8}} />
+                        Pest Detection
+                      </Link>
                       <div className="dropdown-divider"></div>
                       <button onClick={handleLogout} className="dropdown-item text-danger">
                         <LogOut size={16} style={{marginRight: 8}} />

@@ -20,6 +20,7 @@ import UserLocation from "./UserLocation.js";
 import WeatherCache from "./WeatherCache.js";
 import FarmingNews from "./FarmingNews.js";
 import CropAdvisory from "./CropAdvisory.js";
+import PestDetection from "./PestDetection.js";
 
 // =========================
 // CUSTOMER RELATIONS
@@ -99,6 +100,10 @@ CartItem.belongsTo(Cart, { foreignKey: "cart_id" });
 User.hasMany(UserLocation, { foreignKey: "user_id" });
 UserLocation.belongsTo(User, { foreignKey: "user_id" });
 
+// User <-> PestDetection
+User.hasMany(PestDetection, { foreignKey: "user_id" });
+PestDetection.belongsTo(User, { foreignKey: "user_id" });
+
 export {
     sequelize,
     Customer,
@@ -119,5 +124,7 @@ export {
     UserLocation,
     WeatherCache,
     FarmingNews,
-    CropAdvisory
+    CropAdvisory,
+    PestDetection
 };
+

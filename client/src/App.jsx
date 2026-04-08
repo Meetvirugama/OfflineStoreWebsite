@@ -36,7 +36,9 @@ import CropDetailsPage from "./pages/agriculture/CropDetailsPage";
 import AgriAnalyticsPage from "./pages/agriculture/AgriAnalyticsPage";
 import FarmingNewsPage from "./pages/agriculture/FarmingNewsPage";
 import CropAdvisoryPage from "./pages/agriculture/CropAdvisoryPage";
+import PestDetectionPage from "./pages/agriculture/PestDetectionPage";
 import WeatherDashboard from "./pages/weather/WeatherDashboard";
+
 
 import LoadingBar from "./components/common/LoadingBar";
 
@@ -53,6 +55,8 @@ function App() {
           <Route path="/products/:id" element={<ProductDetailPage />} />
           <Route path="/farming-news" element={<FarmingNewsPage />} />
           <Route path="/crop-advisory" element={<CropAdvisoryPage />} />
+          <Route path="/pest-detection" element={<PestDetectionPage />} />
+
 
 
           <Route path="/auth/login" element={<LoginPage />} />

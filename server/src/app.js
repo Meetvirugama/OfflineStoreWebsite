@@ -29,6 +29,7 @@ import weatherRoutes from "./routes/weatherRoutes.js";
 import locationRoutes from "./routes/locationRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
 import advisoryRoutes from "./routes/advisoryRoutes.js";
+import pestRoutes from "./routes/pestDetectionRoutes.js";
 
 
 
@@ -52,6 +53,9 @@ app.use(cors({
 app.use(logger);
 app.use(express.json());
 app.use(cookieParser());
+
+// 📂 Serve static uploads
+app.use("/uploads", express.static("uploads"));
 
 
 // TEST ROUTE
@@ -83,6 +87,7 @@ app.use("/api/weather", weatherRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/farming-news", newsRoutes);
 app.use("/api/advisory", advisoryRoutes);
+app.use("/api/pest", pestRoutes);
 
 
 
