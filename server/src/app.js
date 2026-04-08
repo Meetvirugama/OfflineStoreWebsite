@@ -28,6 +28,8 @@ import cropRoutes from "./routes/cropRoutes.js";
 import weatherRoutes from "./routes/weatherRoutes.js";
 import locationRoutes from "./routes/locationRoutes.js";
 import newsRoutes from "./routes/newsRoutes.js";
+import advisoryRoutes from "./routes/advisoryRoutes.js";
+
 
 
 
@@ -80,6 +82,8 @@ app.use("/api/crops", cropRoutes);
 app.use("/api/weather", weatherRoutes);
 app.use("/api/locations", locationRoutes);
 app.use("/api/farming-news", newsRoutes);
+app.use("/api/advisory", advisoryRoutes);
+
 
 
 

@@ -17,8 +17,12 @@ import {
   PenTool,
   Home,
   Menu,
-  X
+  X,
+  Newspaper
 } from "lucide-react";
+
+
+
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 import useNotificationStore from "../../store/notificationStore";
@@ -227,10 +231,16 @@ export default function Navbar() {
             <BookOpen size={18} />
             <span>Organic Guide</span>
           </Link>
-          <Link to="/blog" className={`ribbon-tab ${isActive("/blog") ? "active" : ""}`} onClick={() => setMobileMenuOpen(false)}>
-            <PenTool size={18} />
-            <span>Farming Blog</span>
+          <Link to="/farming-news" className={`ribbon-tab ${isActive("/farming-news") ? "active" : ""}`} onClick={() => setMobileMenuOpen(false)}>
+            <Newspaper size={18} />
+            <span>Farming News</span>
           </Link>
+          <Link to="/crop-advisory" className={`ribbon-tab ${isActive("/crop-advisory") ? "active" : ""}`} onClick={() => setMobileMenuOpen(false)}>
+            <Sprout size={18} />
+            <span>Crop Advisory</span>
+          </Link>
+
+
           <Link to="/orders" className={`ribbon-tab ${isActive("/orders") ? "active" : ""}`} onClick={() => setMobileMenuOpen(false)}>
             <Package size={18} />
             <span>Track Orders</span>

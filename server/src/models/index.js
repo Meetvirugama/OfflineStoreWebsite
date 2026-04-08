@@ -18,10 +18,8 @@ import MandiPrice from "./MandiPrice.js";
 import Crop from "./Crop.js";
 import UserLocation from "./UserLocation.js";
 import WeatherCache from "./WeatherCache.js";
-
-
-
 import FarmingNews from "./FarmingNews.js";
+import CropAdvisory from "./CropAdvisory.js";
 
 // =========================
 // CUSTOMER RELATIONS
@@ -120,6 +118,6 @@ export {
     Crop,
     UserLocation,
     WeatherCache,
-    FarmingNews
+    FarmingNews,
+    CropAdvisory
 };
-

@@ -1,9 +1,12 @@
+import cron from "node-cron";
+import axios from "axios";
 import { runEngine, runAI } from "../services/notificationService.js";
 import { syncFarmingNews } from "../services/newsService.js";
 import { syncMandiData } from "../services/mandiService.js";
 import { Op } from "sequelize";
-import User from "../models/User.js";
-import Customer from "../models/Customer.js";
+import { User, Customer, CropAdvisory, Notification } from "../models/index.js";
+
+
 
 
 
@@ -32,6 +35,42 @@ cron.schedule("0 */6 * * *", async () => {
         console.error("❌ News sync error:", err.message);
     }
 });
+
+/* =========================
+   🌱 3. DAILY CROP ADVISORY
+   Runs every day at 7 AM
+========================= */
+cron.schedule("0 7 * * *", async () => {
+    try {
+        console.log("🌱 Scheduled Trigger: Generating Morning Crop Advisories...");
+        
+        // Find users who have generated an advisory in the last 30 days
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() - 30);
+
+        const activeFarmers = await CropAdvisory.findAll({
+            attributes: ['user_id', 'crop', 'location'],
+            where: {
+                created_at: { [Op.gte]: targetDate },
+                user_id: { [Op.not]: null }
+            },
+            group: ['user_id', 'crop', 'location']
+        });
+
+        for (const farm of activeFarmers) {
+            await Notification.create({
+                user_id: farm.user_id,
+                type: "CROP_ADVISORY",
+                message: `🌿 Your morning advisory for ${farm.crop} in ${farm.location} is ready.`,
+            });
+        }
+        
+        console.log(`✅ Morning advisories generated for ${activeFarmers.length} farmers.`);
+    } catch (err) {
+        console.error("❌ Advisory cron error:", err.message);
+    }
+});
+
 
 /* =========================
    📉 3. MANDI PRICE SYNC
@@ -80,8 +119,8 @@ cron.schedule("*/5 * * * *", async () => {
    ☕ 4. KEEP-ALIVE SYSTEM (Prevent Sleep)
    Runs every 5 minutes to keep Render Free Tier awake
 ========================= */
-import axios from "axios";
 cron.schedule("*/5 * * * *", async () => {
+
     try {
         const url = process.env.BACKEND_URL || "https://offlinestorewebsite.onrender.com";
         await axios.get(`${url}/api/products`); // Simple lightweight hit
