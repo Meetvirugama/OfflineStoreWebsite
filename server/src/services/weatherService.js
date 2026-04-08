@@ -119,3 +119,31 @@ export const getFarmingInsights = (weatherData) => {
 
     return insights;
 };
+
+/**
+ * WEATHER RECOMMENDATION (CROP-SPECIFIC)
+ */
+export const getWeatherRecommendation = async (cropName, lat, lon) => {
+    try {
+        const weather = await getCurrentWeather(lat, lon);
+        const insights = getFarmingInsights(weather);
+        
+        let recommendation = "Ideal conditions for growth. Ensure regular monitoring.";
+        if (weather.main.temp > 30) recommendation = `High heat detected for ${cropName}. Monitor soil moisture closely.`;
+        if (weather.weather[0].main === 'Rain') recommendation = `${cropName} needs drainage check due to active rainfall.`;
+
+        return {
+            crop: cropName,
+            recommendation,
+            weather: {
+                temperature: weather.main.temp,
+                humidity: weather.main.humidity,
+                condition: weather.weather[0].main
+            },
+            insights
+        };
+    } catch (err) {
+        console.error("❌ Recommendation Error:", err.message);
+        throw err;
+    }
+};
