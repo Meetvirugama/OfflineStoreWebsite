@@ -15,6 +15,8 @@ import { PurchaseItem } from "./PurchaseItem.js";
 import User from "./User.js";
 import { Notification } from "./Notification.js";
 import MandiPrice from "./MandiPrice.js";
+import Crop from "./Crop.js";
+
 
 
 // =========================
@@ -106,5 +108,6 @@ export {
     PurchaseItem,
     User,
     Notification,
-    MandiPrice
+    MandiPrice,
+    Crop
 };

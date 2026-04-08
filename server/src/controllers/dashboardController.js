@@ -1,4 +1,4 @@
-import { getTopCustomersService, getPendingPaymentsService, getLowStockService, getTopProductsService, getTotalSalesService, getTotalOrdersCount, getTotalCustomersCount } from "../services/dashboardService.js";
+import { getTopCustomersService, getPendingPaymentsService, getLowStockService, getTopProductsService, getTotalSalesService, getTotalOrdersCount, getTotalCustomersCount, getAgriInsightsService } from "../services/dashboardService.js";
 
 export const getDashboard = async (req, res) => {
     try {
@@ -17,7 +17,8 @@ export const getDashboard = async (req, res) => {
             getTopProductsService(),
             getLowStockService(),
             getTotalOrdersCount(),
-            getTotalCustomersCount()
+            getTotalCustomersCount(),
+            getAgriInsightsService()
         ]);
 
         res.json({
@@ -27,7 +28,8 @@ export const getDashboard = async (req, res) => {
             topProducts,
             lowStock,
             totalOrders,
-            totalCustomers
+            totalCustomers,
+            agriInsights
         });
 
     } catch (err) {

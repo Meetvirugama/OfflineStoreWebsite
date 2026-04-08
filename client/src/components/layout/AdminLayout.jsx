@@ -71,7 +71,17 @@ const NAV_ITEMS = [
       </svg>
     ) 
   },
+  { 
+    to: "/admin/agri/analytics", 
+    label: "Agri Intelligence", 
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9V3m-9 9a9 9 0 0 1 9-9"></path>
+      </svg>
+    ) 
+  },
 ];
+
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

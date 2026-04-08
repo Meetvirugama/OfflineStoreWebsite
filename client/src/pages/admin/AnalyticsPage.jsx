@@ -230,12 +230,65 @@ export default function AnalyticsPage() {
               <Bar dataKey="value" name="Count" radius={[0, 4, 4, 0]} barSize={24}>
                 {funnelData.map((entry, index) => (
                    <Cell key={`notif-cell-${index}`} fill={chartColors[index % chartColors.length]} />
-                ))}
+                 ))}
               </Bar>
             </BarChart>
           </Chart>
         )}
 
+      </div>
+
+      <div style={{ marginTop: '4rem', borderLeft: '4px solid #10b981', paddingLeft: '20px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#064e3b' }}>🌿 Agriculture Intelligence</h2>
+          <p style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>Live market price trends and crop-specific structural demand insights.</p>
+      </div>
+
+      <div className="analytics-grid" style={{ marginTop: '20px' }}>
+          <Chart title="Top Crops by Volume" subtitle="Most traded commodities across Mandis">
+            <BarChart data={safeDashboard.agriInsights?.topCrops || []}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+                <XAxis dataKey="commodity" axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} />
+                <Tooltip cursor={{fill: '#f4f6f8'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                <Bar dataKey="volume" name="Volume" fill="#10b981" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </Chart>
+
+          <Chart title="Global Price Trend" subtitle="Daily average modal price (last 7 days)">
+            <AreaChart data={safeDashboard.agriInsights?.trends || []}>
+                <defs>
+                    <linearGradient id="colorAgri" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#d9b356" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#d9b356" stopOpacity={0}/>
+                    </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+                <XAxis dataKey="date" axisLine={false} tickLine={false} />
+                <YAxis axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                <Area type="monotone" dataKey="avg_price" name="Avg Price (₹)" stroke="#d9b356" strokeWidth={3} fillOpacity={1} fill="url(#colorAgri)" />
+            </AreaChart>
+          </Chart>
+
+          <Chart title="Consumer Demand insights" subtitle="High movement categories based on sales">
+            <PieChart>
+                <Pie 
+                    data={safeDashboard.agriInsights?.demand || []} 
+                    dataKey="movement" 
+                    nameKey="category"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    label
+                >
+                    { (safeDashboard.agriInsights?.demand || []).map((entry, i) => (
+                        <Cell key={i} fill={chartColors[i % chartColors.length]} />
+                    ))}
+                </Pie>
+                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+                <Legend />
+            </PieChart>
+          </Chart>
       </div>
     </div>
   );

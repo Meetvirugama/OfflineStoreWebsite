@@ -108,7 +108,29 @@ export const runEngine = async () => {
             reference_id: p.id
         });
     }
+
+    // 🌿 AGRI ALERTS: PRICE SURGE
+    const [surges] = await sequelize.query(`
+        SELECT commodity, AVG(modal_price) avg_p
+        FROM mandi_prices
+        WHERE arrival_date >= CURRENT_DATE - INTERVAL '3 days'
+        GROUP BY commodity
+        HAVING AVG(modal_price) > (
+            SELECT AVG(modal_price) 
+            FROM mandi_prices 
+            WHERE arrival_date < CURRENT_DATE - INTERVAL '3 days'
+        ) * 1.2
+    `);
+
+    for (let s of surges) {
+        await Notification.create({
+            type: "PRICE_SURGE",
+            message: `📈 Price Surge! ${s.commodity} prices increased by over 20% lately.`,
+            reference_id: s.commodity
+        });
+    }
 };
+
 
 /* =========================
    🤖 AI SYSTEM

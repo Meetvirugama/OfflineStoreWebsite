@@ -58,3 +58,40 @@ export const getTotalOrdersCount = async () => {
 export const getTotalCustomersCount = async () => {
     return await Customer.count();
 };
+
+export const getAgriInsightsService = async () => {
+    // Top Crops by Mandi volume
+    const [topCrops] = await sequelize.query(`
+        SELECT commodity, COUNT(*) as volume, AVG(modal_price) as avg_price
+        FROM mandi_prices
+        GROUP BY commodity
+        ORDER BY volume DESC
+        LIMIT 5
+    `);
+
+    // Global Price Trends (Last 7 days)
+    const [trends] = await sequelize.query(`
+        SELECT arrival_date as date, AVG(modal_price) as avg_price
+        FROM mandi_prices
+        WHERE arrival_date >= CURRENT_DATE - INTERVAL '7 days'
+        GROUP BY arrival_date
+        ORDER BY arrival_date ASC
+    `);
+
+    // Demand Insights (Based on inventory movement)
+    const [demand] = await sequelize.query(`
+        SELECT p.category, SUM(ABS(i.quantity_change)) as movement
+        FROM inventory i
+        JOIN product p ON i.product_id = p.id
+        WHERE i.type = 'OUT'
+        GROUP BY p.category
+        ORDER BY movement DESC
+        LIMIT 3
+    `);
+
+    return {
+        topCrops,
+        trends,
+        demand
+    };
+};

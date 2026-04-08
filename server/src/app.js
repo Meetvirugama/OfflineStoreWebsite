@@ -24,6 +24,8 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import customerSelfRoutes from "./routes/customerSelfRoutes.js";
 import mandiRoutes from "./routes/mandiRoutes.js";
+import cropRoutes from "./routes/cropRoutes.js";
+
 
 
 
@@ -71,6 +73,8 @@ app.use("/api/invoice", invoiceRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/me", customerSelfRoutes);
 app.use("/api/mandi", mandiRoutes);
+app.use("/api/crops", cropRoutes);
+
 
 app.use("/api/suppliers", supplierRoutes);
 

@@ -276,3 +276,15 @@ CREATE INDEX idx_mandi_state ON mandi_prices(state);
 CREATE INDEX idx_mandi_district ON mandi_prices(district);
 CREATE INDEX idx_mandi_commodity ON mandi_prices(commodity);
 CREATE INDEX idx_mandi_date ON mandi_prices(arrival_date);
+
+-- =========================
+-- CROPS (AGRI INTEL)
+-- =========================
+CREATE TABLE crops (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    data JSONB NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_crop_name ON crops(name);

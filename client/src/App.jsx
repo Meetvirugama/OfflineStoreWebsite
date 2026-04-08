@@ -32,6 +32,8 @@ import SuppliersListPage from "./pages/admin/SuppliersListPage";
 import SupplierDetailsPage from "./pages/admin/SupplierDetailsPage";
 import MandiPricesPage from "./pages/admin/MandiPricesPage";
 import MandiDashboardPage from "./pages/admin/MandiDashboardPage";
+import CropDetailsPage from "./pages/agriculture/CropDetailsPage";
+import AgriAnalyticsPage from "./pages/agriculture/AgriAnalyticsPage";
 import LoadingBar from "./components/common/LoadingBar";
 
 function App() {
@@ -76,6 +78,10 @@ function App() {
           <Route path="/admin/suppliers/:id" element={<SupplierDetailsPage />} />
           <Route path="/admin/mandi" element={<MandiDashboardPage />} />
           <Route path="/admin/mandi/prices" element={<MandiPricesPage />} />
+
+          {/* 🌿 AGRI INTELLIGENCE */}
+          <Route path="/admin/agri/analytics" element={<AgriAnalyticsPage />} />
+          <Route path="/admin/agri/crop/:name" element={<CropDetailsPage />} />
         </Route>
 
       </Routes>
