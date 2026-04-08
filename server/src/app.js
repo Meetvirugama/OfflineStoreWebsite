@@ -25,6 +25,8 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import customerSelfRoutes from "./routes/customerSelfRoutes.js";
 import mandiRoutes from "./routes/mandiRoutes.js";
 import cropRoutes from "./routes/cropRoutes.js";
+import weatherRoutes from "./routes/weatherRoutes.js";
+import locationRoutes from "./routes/locationRoutes.js";
 
 
 
@@ -74,6 +76,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/me", customerSelfRoutes);
 app.use("/api/mandi", mandiRoutes);
 app.use("/api/crops", cropRoutes);
+app.use("/api/weather", weatherRoutes);
+app.use("/api/locations", locationRoutes);
 
 
 app.use("/api/suppliers", supplierRoutes);

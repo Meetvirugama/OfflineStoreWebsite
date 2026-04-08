@@ -288,3 +288,34 @@ CREATE TABLE crops (
 );
 
 CREATE INDEX idx_crop_name ON crops(name);
+
+-- =========================
+-- USER LOCATIONS
+-- =========================
+CREATE TABLE user_locations (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    lat DECIMAL(10, 8) NOT NULL,
+    lon DECIMAL(11, 8) NOT NULL,
+    is_default BOOLEAN DEFAULT FALSE,
+    village VARCHAR(100),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =========================
+-- WEATHER CACHE
+-- =========================
+CREATE TABLE weather_cache (
+    id SERIAL PRIMARY KEY,
+    lat_lon_key VARCHAR(50) UNIQUE NOT NULL,
+    data JSONB NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_weather_cache_key ON weather_cache(lat_lon_key);

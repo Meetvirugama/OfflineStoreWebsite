@@ -34,6 +34,7 @@ import MandiPricesPage from "./pages/admin/MandiPricesPage";
 import MandiDashboardPage from "./pages/admin/MandiDashboardPage";
 import CropDetailsPage from "./pages/agriculture/CropDetailsPage";
 import AgriAnalyticsPage from "./pages/agriculture/AgriAnalyticsPage";
+import WeatherDashboard from "./pages/weather/WeatherDashboard";
 import LoadingBar from "./components/common/LoadingBar";
 
 function App() {
@@ -81,6 +82,7 @@ function App() {
 
           {/* 🌿 AGRI INTELLIGENCE */}
           <Route path="/admin/agri/analytics" element={<AgriAnalyticsPage />} />
+          <Route path="/admin/weather" element={<WeatherDashboard />} />
           <Route path="/admin/agri/crop/:name" element={<CropDetailsPage />} />
         </Route>
 

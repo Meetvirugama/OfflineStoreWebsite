@@ -16,6 +16,8 @@ import User from "./User.js";
 import { Notification } from "./Notification.js";
 import MandiPrice from "./MandiPrice.js";
 import Crop from "./Crop.js";
+import UserLocation from "./UserLocation.js";
+import WeatherCache from "./WeatherCache.js";
 
 
 
@@ -93,6 +95,10 @@ CartItem.belongsTo(Cart, { foreignKey: "cart_id" });
 // =========================
 // EXPORT
 // =========================
+// User <-> UserLocation
+User.hasMany(UserLocation, { foreignKey: "user_id" });
+UserLocation.belongsTo(User, { foreignKey: "user_id" });
+
 export {
     sequelize,
     Customer,
@@ -109,5 +115,7 @@ export {
     User,
     Notification,
     MandiPrice,
-    Crop
+    Crop,
+    UserLocation,
+    WeatherCache
 };

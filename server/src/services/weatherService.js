@@ -1,59 +1,121 @@
 import axios from "axios";
+import { WeatherCache } from "../models/index.js";
+import { Op } from "sequelize";
+
+const API_KEY = process.env.WEATHER_API_KEY || "YOUR_OPENWEATHER_API_KEY";
+const BASE_URL = "https://api.openweathermap.org/data/2.5";
+const ONE_CALL_URL = "https://api.openweathermap.org/data/3.0/onecall";
 
 /**
- * FETCH WEATHER AND PROVIDE CROP RECOMMENDATIONS
+ * CACHE MANAGER
  */
-export const getWeatherRecommendation = async (cropName, lat = 22.3072, lon = 70.8022) => {
+const getCachedWeather = async (lat, lon, type) => {
+    const key = `${type}_${parseFloat(lat).toFixed(2)}_${parseFloat(lon).toFixed(2)}`;
+    const now = new Date();
+    
+    const cached = await WeatherCache.findOne({
+        where: {
+            lat_lon_key: key,
+            expires_at: { [Op.gt]: now }
+        }
+    });
+    
+    return cached ? cached.data : null;
+};
+
+const saveToCache = async (lat, lon, type, data, ttlMinutes = 10) => {
+    const key = `${type}_${parseFloat(lat).toFixed(2)}_${parseFloat(lon).toFixed(2)}`;
+    const expires_at = new Date();
+    expires_at.setMinutes(expires_at.getMinutes() + ttlMinutes);
+    
+    await WeatherCache.upsert({
+        lat_lon_key: key,
+        data,
+        expires_at
+    });
+};
+
+/**
+ * CORE SERVICES
+ */
+export const getCurrentWeather = async (lat, lon) => {
     try {
-        const apiKey = process.env.WEATHER_API_KEY;
-        let weatherData;
+        const cached = await getCachedWeather(lat, lon, "current");
+        if (cached) return cached;
 
-        if (!apiKey || apiKey === "YOUR_API_KEY") {
-            // Mock data for demonstration if API key is missing
-            console.log("⚠️ WEATHER_API_KEY missing. Using mock data.");
-            weatherData = {
-                main: { temp: 28, humidity: 65 },
-                weather: [{ description: "clear sky" }],
-                name: "Rajkot"
-            };
-        } else {
-            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
-            const response = await axios.get(url);
-            weatherData = response.data;
-        }
+        const res = await axios.get(`${BASE_URL}/weather`, {
+            params: { lat, lon, appid: API_KEY, units: "metric" }
+        });
 
-        const temp = weatherData.main.temp;
-        const humidity = weatherData.main.humidity;
-        const condition = weatherData.weather[0].description;
-
-        let recommendation = "";
-
-        // Simple logic based on crop requirements (can be expanded)
-        if (temp > 35) {
-            recommendation = `The temperature is high (${temp}°C). Ensure intensive irrigation and use shade nets if possible.`;
-        } else if (temp < 15) {
-            recommendation = `The weather is cool (${temp}°C). Good for crops like Wheat and Mustard. Protect sensitive crops from frost.`;
-        } else {
-            recommendation = `Conditions are optimal (${temp}°C, ${humidity}% humidity). Perfect time for maintenance and weeding.`;
-        }
-
-        if (condition.includes("rain")) {
-            recommendation += " Hold off on irrigation; natural rainfall detected.";
-        }
-
-        return {
-            crop: cropName,
-            recommendation,
-            weather: {
-                location: weatherData.name,
-                temperature: temp,
-                humidity: humidity,
-                condition: condition
-            }
-        };
-
+        const data = res.data;
+        await saveToCache(lat, lon, "current", data);
+        return data;
     } catch (err) {
-        console.error("❌ Weather Service Error:", err.message);
+        console.error("❌ Weather Service Error (Current):", err.message);
         throw err;
     }
+};
+
+export const getForecast = async (lat, lon) => {
+    try {
+        const cached = await getCachedWeather(lat, lon, "forecast");
+        if (cached) return cached;
+
+        // NOTE: This usually requires OneCall 3.0 API access
+        const res = await axios.get(ONE_CALL_URL, {
+            params: { lat, lon, exclude: "minutely", appid: API_KEY, units: "metric" }
+        });
+
+        const data = res.data;
+        await saveToCache(lat, lon, "forecast", data, 30); // Forecast cache for 30m
+        return data;
+    } catch (err) {
+        // Fallback or specific error handling for free tier fallback if needed
+        console.warn("⚠️ OneCall API failed, trying 5-day forecast fallback.");
+        const res = await axios.get(`${BASE_URL}/forecast`, {
+            params: { lat, lon, appid: API_KEY, units: "metric" }
+        });
+        return res.data;
+    }
+};
+
+export const getFarmingInsights = (weatherData) => {
+    const insights = [];
+    const temp = weatherData.main?.temp || weatherData.current?.temp;
+    const humidity = weatherData.main?.humidity || weatherData.current?.humidity;
+    const weather = weatherData.weather?.[0]?.main?.toLowerCase() || "";
+
+    if (temp > 35) {
+        insights.push({
+            type: "WARNING",
+            title: "Heat Stress Alert",
+            message: "High temperatures detected. Increase irrigation frequency to prevent crop wilting."
+        });
+    }
+
+    if (weather.includes("rain")) {
+        insights.push({
+            type: "ADVICE",
+            title: "Rain Detected",
+            message: "Natural rainfall expected. Pause automated irrigation systems to save water."
+        });
+    }
+
+    if (humidity > 85) {
+        insights.push({
+            type: "WARNING",
+            title: "Pest Risk High",
+            message: "High humidity levels favor fungal growth. Inspect crops for early signs of blight."
+        });
+    }
+
+    if (insights.length === 0) {
+        insights.push({
+            type: "INFO",
+            title: "Optimal Conditions",
+            message: "Weather conditions are stable. Good time for fertilizer application."
+        });
+    }
+
+    return insights;
 };
