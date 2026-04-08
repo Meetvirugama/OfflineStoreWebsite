@@ -10,4 +10,8 @@ router.post("/verify-otp", authController.verifyOtp);
 
 router.get("/me", protect, authController.getMe);
 
+// Google OAuth
+router.get("/google", authController.googleInit);
+router.get("/google/callback", authController.googleCallback);
+
 export default router;

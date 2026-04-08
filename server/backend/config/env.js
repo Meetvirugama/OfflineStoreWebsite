@@ -8,7 +8,10 @@ export const ENV = {
     JWT_SECRET: process.env.JWT_SECRET || 'your_super_secret_key',
     DATABASE_URL: process.env.DATABASE_URL,
     
-    // External APIs
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    REDIRECT_URI: process.env.REDIRECT_URI || 'http://localhost:5001/api/auth/google/callback',
+
     GOOGLE_PLACES_KEY: process.env.GOOGLE_PLACES_API_KEY,
     GOOGLE_GEO_KEY: process.env.GOOGLE_GEOCODING_API_KEY,
     PLANTNET_KEY: process.env.PLANTNET_API_KEY,

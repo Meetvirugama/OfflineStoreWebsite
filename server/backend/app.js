@@ -36,23 +36,23 @@ app.use(morgan("dev"));
 app.get("/health", (req, res) => res.send("AgroMart ERP API is alive 🌾"));
 
 // Mount Module Routes
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/users", userRoutes);
-app.use("/api/v1/customers", customerRoutes);
-app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/cart", cartRoutes);
-app.use("/api/v1/orders", orderRoutes);
-app.use("/api/v1/payments", paymentRoutes);
-app.use("/api/v1/ledger", ledgerRoutes);
-app.use("/api/v1/notifications", notificationRoutes);
-app.use("/api/v1/dashboard", dashboardRoutes);
-app.use("/api/v1/reports", reportRoutes);
-app.use("/api/v1/mandi", mandiRoutes);
-app.use("/api/v1/weather", weatherRoutes);
-app.use("/api/v1/crops", cropRoutes);
-app.use("/api/v1/profit", profitRoutes);
-app.use("/api/v1/alerts", alertRoutes);
-app.use("/api/v1/price", priceRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/customers", customerRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/ledger", ledgerRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/mandi", mandiRoutes);
+app.use("/api/weather", weatherRoutes);
+app.use("/api/crops", cropRoutes);
+app.use("/api/profit", profitRoutes);
+app.use("/api/alerts", alertRoutes);
+app.use("/api/price", priceRoutes);
 
 // Global Error Handler (Must be last)
 app.use(globalErrorHandler);

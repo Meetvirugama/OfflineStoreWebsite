@@ -57,3 +57,24 @@ export const verifyOtp = async (email, otp) => {
 
     return { message: "Email verified successfully" };
 };
+
+export const googleLogin = async (userData) => {
+    let user = await User.findOne({ where: { email: userData.email } });
+
+    if (!user) {
+        user = await User.create({
+            name: userData.name,
+            email: userData.email,
+            is_verified: true,
+            role: "CUSTOMER"
+        });
+    }
+
+    const token = jwt.sign(
+        { id: user.id, role: user.role, name: user.name },
+        ENV.JWT_SECRET,
+        { expiresIn: "7d" }
+    );
+
+    return { token, user: { id: user.id, name: user.name, role: user.role } };
+};
