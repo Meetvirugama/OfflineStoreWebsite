@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/axiosInstance";
 import useToastStore from "../../store/toastStore";
+import AgroLoader from "../../components/common/AgroLoader";
 import "../../styles/Admin.css";
 
 export default function AdminOrdersPage() {
@@ -69,7 +70,11 @@ export default function AdminOrdersPage() {
         }
     };
 
-    if (loading) return <div className="admin-page">Loading Order Ledger...</div>;
+    if (loading) return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', width: '100%' }}>
+            <AgroLoader text="Tracing order history..." />
+        </div>
+    );
 
     return (
         <div className="admin-page">

@@ -1,0 +1,69 @@
+/* 
+   🍃 AGROMART PREMIUM LOADER
+   Nature-inspired animations for a world-class ERP experience.
+*/
+
+.agro-loader-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 20px;
+}
+
+.agro-loader-spinner {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.agro-loader-spinner.small {
+  width: 32px;
+  height: 32px;
+}
+
+.agro-loader-ring {
+  position: absolute;
+  inset: 0;
+  border: 4px solid #f0fdf4; /* emerald-100 */
+  border-radius: 50%;
+}
+
+.agro-loader-segment {
+  position: absolute;
+  inset: 0;
+  border: 4px solid transparent;
+  border-top-color: #10b981; /* emerald-500 */
+  border-radius: 50%;
+  animation: agro-spin 1s linear infinite;
+}
+
+.agro-loader-pulse {
+  position: absolute;
+  inset: 16px;
+  background-color: #10b981;
+  border-radius: 50%;
+  opacity: 0.2;
+  animation: agro-pulse 1.5s ease-in-out infinite;
+}
+
+.agro-loader-text {
+  color: #064e3b; /* emerald-900 */
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-family: 'Outfit', sans-serif;
+  animation: agro-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes agro-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes agro-pulse {
+  0%, 100% { opacity: 0.2; transform: scale(0.95); }
+  50% { opacity: 0.4; transform: scale(1.05); }
+}

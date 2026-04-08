@@ -187,69 +187,94 @@ export const getPaymentAnalysis = async () => {
 
 // ================= ANALYTICS =================
 export const getDailyVisits = async () => {
-  const [data] = await sequelize.query(`
-    SELECT
-      DATE(created_at) AS day,
-      COUNT(*) AS visits
-    FROM analytics
-    WHERE type = 'VISIT'
-    GROUP BY day
-    ORDER BY day
-  `);
-  return data;
+  try {
+    const [data] = await sequelize.query(`
+      SELECT
+        DATE(created_at) AS day,
+        COUNT(*) AS visits
+      FROM analytics
+      WHERE type = 'VISIT'
+      GROUP BY day
+      ORDER BY day
+    `);
+    return data;
+  } catch (err) {
+    console.warn("⚠️ Analytics (Visits) unavailable:", err.message);
+    return [];
+  }
 };
 
 export const getClicksPerDayPerPage = async () => {
-  const [data] = await sequelize.query(`
-    SELECT
-      DATE(created_at) AS day,
-      page,
-      COUNT(*) AS clicks
-    FROM analytics
-    WHERE type = 'CLICK'
-    GROUP BY day, page
-    ORDER BY day, clicks DESC
-  `);
-  return data;
+  try {
+    const [data] = await sequelize.query(`
+      SELECT
+        DATE(created_at) AS day,
+        page,
+        COUNT(*) AS clicks
+      FROM analytics
+      WHERE type = 'CLICK'
+      GROUP BY day, page
+      ORDER BY day, clicks DESC
+    `);
+    return data;
+  } catch (err) {
+    console.warn("⚠️ Analytics (Clicks) unavailable:", err.message);
+    return [];
+  }
 };
 
 export const getHourlyTraffic = async () => {
-  const [data] = await sequelize.query(`
-    SELECT
-      EXTRACT(HOUR FROM created_at) AS hour,
-      COUNT(*) AS visits
-    FROM analytics
-    WHERE type='VISIT'
-    GROUP BY hour
-    ORDER BY hour
-  `);
-  return data;
+  try {
+    const [data] = await sequelize.query(`
+      SELECT
+        EXTRACT(HOUR FROM created_at) AS hour,
+        COUNT(*) AS visits
+      FROM analytics
+      WHERE type='VISIT'
+      GROUP BY hour
+      ORDER BY hour
+    `);
+    return data;
+  } catch (err) {
+    console.warn("⚠️ Analytics (Traffic) unavailable:", err.message);
+    return [];
+  }
 };
 
 export const getFunnel = async () => {
-  const [data] = await sequelize.query(`
-    SELECT
-      SUM(CASE WHEN page = '/' THEN 1 ELSE 0 END) AS home,
-      SUM(CASE WHEN page LIKE '/product%' THEN 1 ELSE 0 END) AS product,
-      SUM(CASE WHEN page = '/cart' THEN 1 ELSE 0 END) AS cart,
-      SUM(CASE WHEN page = '/checkout' THEN 1 ELSE 0 END) AS checkout
-    FROM analytics
-    WHERE type = 'CLICK'
-  `);
-  return data[0];
+  try {
+    const [data] = await sequelize.query(`
+      SELECT
+        SUM(CASE WHEN page = '/' THEN 1 ELSE 0 END) AS home,
+        SUM(CASE WHEN page LIKE '/product%' THEN 1 ELSE 0 END) AS product,
+        SUM(CASE WHEN page = '/cart' THEN 1 ELSE 0 END) AS cart,
+        SUM(CASE WHEN page = '/checkout' THEN 1 ELSE 0 END) AS checkout
+      FROM analytics
+      WHERE type = 'CLICK'
+    `);
+    return data[0];
+  } catch (err) {
+    console.warn("⚠️ Analytics (Funnel) unavailable:", err.message);
+    return { home: 0, product: 0, cart: 0, checkout: 0 };
+  }
 };
 
 export const getConversionRate = async () => {
-  const [data] = await sequelize.query(`
-    SELECT
-      (SELECT COUNT(*) FROM orders) AS total_orders,
-      (SELECT COUNT(*) FROM analytics WHERE type='VISIT') AS total_visits,
-      ROUND(
-        ((SELECT COUNT(*) FROM orders)::decimal /
-        NULLIF((SELECT COUNT(*) FROM analytics WHERE type='VISIT'),0) * 100)::numeric,
-      2) AS conversion_rate
-  `);
-  return data[0];
+  try {
+    const [data] = await sequelize.query(`
+      SELECT
+        (SELECT COUNT(*) FROM orders) AS total_orders,
+        (SELECT COUNT(*) FROM analytics WHERE type='VISIT') AS total_visits,
+        ROUND(
+          ((SELECT COUNT(*) FROM orders)::decimal /
+          NULLIF((SELECT COUNT(*) FROM analytics WHERE type='VISIT'),0) * 100)::numeric,
+        2) AS conversion_rate
+    `);
+    return data[0];
+  } catch (err) {
+    console.warn("⚠️ Analytics (Conversion) unavailable:", err.message);
+    return { total_orders: 0, total_visits: 0, conversion_rate: 0 };
+  }
 };
 
 // ================= EXTRA =================

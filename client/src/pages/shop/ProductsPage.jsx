@@ -91,7 +91,7 @@ export default function ProductsPage() {
           {/* PRODUCTS GRID */}
           <div className="products-page__main">
             {loading ? (
-              <div className="flex justify-center p-20">
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0', width: '100%' }}>
                 <AgroLoader text="Fetching nature's best..." />
               </div>
             ) : filtered.length === 0 ? (

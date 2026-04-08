@@ -26,7 +26,7 @@ export default function AnalyticsPage() {
   }, []);
 
   if (loading) return (
-    <div className="flex items-center justify-center min-h-[400px]">
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px', width: '100%' }}>
       <AgroLoader text="Compiling Executive Reports..." />
     </div>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../services/axiosInstance";
 import "../../styles/Admin.css"; // Basic minimal styles
 import useToastStore from "../../store/toastStore";
+import AgroLoader from "../../components/common/AgroLoader";
 
 export default function AdminProductsPage() {
     const [products, setProducts] = useState([]);
@@ -74,7 +75,11 @@ export default function AdminProductsPage() {
         }
     };
 
-    if (loading) return <div>Loading products...</div>;
+    if (loading) return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', width: '100%' }}>
+        <AgroLoader text="Fetching nature's inventory..." />
+      </div>
+    );
 
     return (
         <div className="admin-page">
