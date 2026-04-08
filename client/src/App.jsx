@@ -30,10 +30,12 @@ import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
 import SuppliersListPage from "./pages/admin/SuppliersListPage";
 import SupplierDetailsPage from "./pages/admin/SupplierDetailsPage";
+import LoadingBar from "./components/common/LoadingBar";
 
 function App() {
   return (
     <BrowserRouter>
+      <LoadingBar />
       <Routes>
 
         {/* PUBLIC */}

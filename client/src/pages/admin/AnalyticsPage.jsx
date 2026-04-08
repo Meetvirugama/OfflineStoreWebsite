@@ -1,13 +1,6 @@
 import { useEffect, useState } from "react";
 import useReportStore from "../../store/reportStore";
-import { getNotificationAnalytics } from "../../services/notificationApi";
-import "../../styles/analyticspage.css";
-
-import {
-  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
-  ResponsiveContainer, BarChart, Bar,
-  PieChart, Pie, Cell, AreaChart, Area, ComposedChart, Legend
-} from "recharts";
+import AgroLoader from "../../components/common/AgroLoader";
 
 export default function AnalyticsPage() {
   const {
@@ -32,7 +25,11 @@ export default function AnalyticsPage() {
     }).catch(console.error);
   }, []);
 
-  if (loading) return <div className="analytics-loading">Loading analytics...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <AgroLoader text="Compiling Executive Reports..." />
+    </div>
+  );
 
   // Defensive defaults to prevent crashes on initial render or missing data
   const safeDashboard = dashboard || {};

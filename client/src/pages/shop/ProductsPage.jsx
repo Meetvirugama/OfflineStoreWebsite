@@ -2,9 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import api from "../../services/axiosInstance";
 import ProductCard from "../../components/product/ProductCard";
+import AgroLoader from "../../components/common/AgroLoader";
 import "../../styles/ProductsPage.css";
-
-
 
 export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,7 +67,7 @@ export default function ProductsPage() {
                 : "All Products"}
             </h1>
             <p className="products-page__count">
-              {loading ? "Loading..." : `${filtered.length} products found`}
+              {loading ? "Discovering the best for you..." : `${filtered.length} products found`}
             </p>
           </div>
           <div className="products-page__sort">
@@ -92,7 +91,9 @@ export default function ProductsPage() {
           {/* PRODUCTS GRID */}
           <div className="products-page__main">
             {loading ? (
-              <div className="loading-center"><div className="spinner" /></div>
+              <div className="flex justify-center p-20">
+                <AgroLoader text="Fetching nature's best..." />
+              </div>
             ) : filtered.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-state-icon">🔍</div>
