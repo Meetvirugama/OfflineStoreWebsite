@@ -1,8 +1,15 @@
 import express from "express";
-import { addLocation, getMyLocations, updateDefault } from "../controllers/locationController.js";
+import { addLocation, getMyLocations, updateDefault, searchLocations } from "../controllers/locationController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
+
+/**
+ * @public
+ * @route GET /api/locations/search
+ * @desc Search for physical locations (Geocoding)
+ */
+router.get("/search", searchLocations);
 
 /**
  * @private

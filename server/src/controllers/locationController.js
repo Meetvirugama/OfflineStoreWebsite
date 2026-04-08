@@ -1,4 +1,18 @@
-import { saveUserLocation, listUserLocations, setDefaultLocation } from "../services/locationService.js";
+import { saveUserLocation, listUserLocations, setDefaultLocation, searchLocation } from "../services/locationService.js";
+
+/**
+ * SEARCH LOCATIONS (PUBLIC)
+ */
+export const searchLocations = async (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q) return res.status(400).json({ success: false, message: "Search query required" });
+        const results = await searchLocation(q);
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
 
 /**
  * SAVE LOCATION

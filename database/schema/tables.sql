@@ -319,3 +319,19 @@ CREATE TABLE weather_cache (
 );
 
 CREATE INDEX idx_weather_cache_key ON weather_cache(lat_lon_key);
+
+-- =========================
+-- MASTER LOCATIONS (VILLAGES)
+-- =========================
+CREATE TABLE master_locations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    district VARCHAR(100),
+    state VARCHAR(100) DEFAULT 'Gujarat',
+    lat DECIMAL(10, 8) NOT NULL,
+    lon DECIMAL(11, 8) NOT NULL,
+    type VARCHAR(50) DEFAULT 'VILLAGE',
+    UNIQUE (name, district)
+);
+
+CREATE INDEX idx_master_loc_name ON master_locations(name);
