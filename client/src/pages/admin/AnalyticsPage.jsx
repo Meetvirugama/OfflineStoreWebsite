@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import useReportStore from "../../store/reportStore";
 import AgroLoader from "../../components/common/AgroLoader";
+import { getNotificationAnalytics } from "../../services/notificationApi";
+import "../../styles/analyticspage.css";
+
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
+  ResponsiveContainer, BarChart, Bar,
+  PieChart, Pie, Cell, AreaChart, Area, ComposedChart, Legend
+} from "recharts";
 
 export default function AnalyticsPage() {
   const {
