@@ -9,7 +9,7 @@
 .agri-page {
   padding: 2rem;
   min-height: 100vh;
-  background: var(--dark-bg);
+  background: var(--bg-dark);
   color: #fff;
 }
 

@@ -5,7 +5,7 @@ import { TrendingUp, BarChart3, Filter } from 'lucide-react';
 import '../../styles/agriIntelligence.css';
 
 const AgriAnalyticsPage = () => {
-    const { trends, fetchCropTrends, loading } = useCropStore();
+    const { trends, fetchCropTrends, loading, error } = useCropStore();
     const [selectedCrop, setSelectedCrop] = useState('Wheat');
     const [days, setDays] = useState(30);
 
@@ -48,7 +48,11 @@ const AgriAnalyticsPage = () => {
                     </div>
                 </div>
             </div>
+            
+            {loading && <div className="agri-card" style={{textAlign: 'center', padding: '4rem'}}>Compiling Agriculture Intelligence...</div>}
+            {error && <div className="agri-card" style={{textAlign: 'center', padding: '4rem', color: '#f87171'}}>⚠️ {error}</div>}
 
+            {!loading && !error && (
             <div className="stats-grid">
                 <div className="agri-card" style={{gridColumn: 'span 2'}}>
                     <div style={{display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '2rem'}}>
@@ -121,6 +125,7 @@ const AgriAnalyticsPage = () => {
                     )}
                 </div>
             </div>
+            )}
         </div>
     );
 };
