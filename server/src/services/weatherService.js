@@ -56,34 +56,90 @@ export const getCurrentWeather = async (lat, lon) => {
     }
 };
 
+/**
+ * TRANSFORMATION UTILITY: 5-Day Forecast -> OneCall Mock
+ * Ensures frontend doesn't crash on free-tier keys
+ */
+const transform5DayToOneCall = (fiveDayData) => {
+    const list = fiveDayData.list || [];
+    
+    // 1. Map Hourly (next 24-48 hours)
+    const hourly = list.slice(0, 16).map(item => ({
+        dt: item.dt,
+        temp: item.main.temp,
+        main: {
+            temp: item.main.temp,
+            temp_min: item.main.temp_min,
+            temp_max: item.main.temp_max,
+            humidity: item.main.humidity
+        },
+        humidity: item.main.humidity,
+        weather: item.weather,
+        pop: item.pop || 0
+    }));
+
+    // 2. Map Daily (Aggregate by day)
+    const dailyMap = {};
+    list.forEach(item => {
+        const date = new Date(item.dt * 1000).toISOString().split('T')[0];
+        if (!dailyMap[date]) {
+            dailyMap[date] = {
+                dt: item.dt,
+                temp: { day: item.main.temp, min: item.main.temp, max: item.main.temp },
+                humidity: item.main.humidity,
+                weather: item.weather,
+                summary: item.weather[0].description
+            };
+        } else {
+            dailyMap[date].temp.min = Math.min(dailyMap[date].temp.min, item.main.temp);
+            dailyMap[date].temp.max = Math.max(dailyMap[date].temp.max, item.main.temp);
+        }
+    });
+
+    return {
+        lat: fiveDayData.city?.coord?.lat,
+        lon: fiveDayData.city?.coord?.lon,
+        timezone: "Asia/Kolkata",
+        current: hourly[0],
+        hourly,
+        daily: Object.values(dailyMap).slice(0, 8)
+    };
+};
+
 export const getForecast = async (lat, lon) => {
     try {
         const cached = await getCachedWeather(lat, lon, "forecast");
         if (cached) return cached;
 
-        // NOTE: This usually requires OneCall 3.0 API access
-        const res = await axios.get(ONE_CALL_URL, {
-            params: { lat, lon, exclude: "minutely", appid: API_KEY, units: "metric" }
-        });
-
-        const data = res.data;
-        await saveToCache(lat, lon, "forecast", data, 30); // Forecast cache for 30m
-        return data;
+        try {
+            // Attempt OneCall 3.0 (Paid/Subscription required)
+            const res = await axios.get(ONE_CALL_URL, {
+                params: { lat, lon, exclude: "minutely", appid: API_KEY, units: "metric" }
+            });
+            await saveToCache(lat, lon, "forecast", res.data, 30);
+            return res.data;
+        } catch (oneCallErr) {
+            console.warn("⚠️ OneCall API failed (likely free key). Using 5-day transformer fallback.");
+            
+            const res = await axios.get(`${BASE_URL}/forecast`, {
+                params: { lat, lon, appid: API_KEY, units: "metric" }
+            });
+            
+            const transformed = transform5DayToOneCall(res.data);
+            await saveToCache(lat, lon, "forecast", transformed, 30);
+            return transformed;
+        }
     } catch (err) {
-        // Fallback or specific error handling for free tier fallback if needed
-        console.warn("⚠️ OneCall API failed, trying 5-day forecast fallback.");
-        const res = await axios.get(`${BASE_URL}/forecast`, {
-            params: { lat, lon, appid: API_KEY, units: "metric" }
-        });
-        return res.data;
+        console.error("❌ Weather Service Error (Forecast):", err.message);
+        throw err;
     }
 };
 
 export const getFarmingInsights = (weatherData) => {
     const insights = [];
-    const temp = weatherData.main?.temp || weatherData.current?.temp;
-    const humidity = weatherData.main?.humidity || weatherData.current?.humidity;
-    const weather = weatherData.weather?.[0]?.main?.toLowerCase() || "";
+    const temp = weatherData.main?.temp || weatherData.current?.temp || (weatherData.temp?.day);
+    const humidity = weatherData.main?.humidity || weatherData.current?.humidity || weatherData.humidity;
+    const weather = (weatherData.weather?.[0]?.main || "").toLowerCase();
 
     if (temp > 35) {
         insights.push({
@@ -128,17 +184,20 @@ export const getWeatherRecommendation = async (cropName, lat, lon) => {
         const weather = await getCurrentWeather(lat, lon);
         const insights = getFarmingInsights(weather);
         
+        const temp = weather.main?.temp || weather.current?.temp;
+        const condition = weather.weather?.[0]?.main || "Clear";
+
         let recommendation = "Ideal conditions for growth. Ensure regular monitoring.";
-        if (weather.main.temp > 30) recommendation = `High heat detected for ${cropName}. Monitor soil moisture closely.`;
-        if (weather.weather[0].main === 'Rain') recommendation = `${cropName} needs drainage check due to active rainfall.`;
+        if (temp > 30) recommendation = `High heat detected for ${cropName}. Monitor soil moisture closely.`;
+        if (condition === 'Rain') recommendation = `${cropName} needs drainage check due to active rainfall.`;
 
         return {
             crop: cropName,
             recommendation,
             weather: {
-                temperature: weather.main.temp,
-                humidity: weather.main.humidity,
-                condition: weather.weather[0].main
+                temperature: temp,
+                humidity: weather.main?.humidity || weather.current?.humidity,
+                condition: condition
             },
             insights
         };

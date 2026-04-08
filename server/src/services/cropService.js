@@ -2,15 +2,13 @@ import axios from "axios";
 import { Crop, MandiPrice } from "../models/index.js";
 import { Op, fn, col } from "sequelize";
 
-const GROWSTUFF_API_URL = "https://www.growstuff.org/crops";
+const GROWSTUFF_API_URL = "https://www.growstuff.org/api/v1/crops";
 
 /**
  * FETCH CROP DATA (WITH DB CACHING)
  */
 export const getCropData = async (name) => {
     try {
-        const slug = name.toLowerCase().replace(/\s+/g, '-');
-        
         // 1. Check Database
         let crop = await Crop.findOne({ where: { name: { [Op.iLike]: name } } });
         if (crop) {
@@ -18,14 +16,21 @@ export const getCropData = async (name) => {
             return { success: true, crop: crop.data, source: "db" };
         }
 
-        // 2. Fetch from GrowStuff (which proxies OpenFarm data)
-        console.log(`🌐 Fetching GrowStuff data for ${slug}...`);
-        const response = await axios.get(`${GROWSTUFF_API_URL}/${slug}.json`);
-        const growData = response.data;
+        // 2. Search GrowStuff API
+        console.log(`🌐 Searching GrowStuff for ${name}...`);
+        const searchRes = await axios.get(`${GROWSTUFF_API_URL}/search.json`, {
+            params: { q: name }
+        });
 
-        if (!growData) {
+        const results = searchRes.data || [];
+        if (results.length === 0) {
             throw new Error(`Crop "${name}" not found in knowledge base`);
         }
+
+        // 3. Fetch Full Detail for First Result
+        const cropId = results[0].id;
+        const detailRes = await axios.get(`${GROWSTUFF_API_URL}/${cropId}.json`);
+        const growData = detailRes.data;
 
         const openFarm = growData.openfarm_data?.attributes || {};
 
