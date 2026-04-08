@@ -5,7 +5,7 @@ import { TrendingUp, BarChart3, Filter } from 'lucide-react';
 import '../../styles/agriIntelligence.css';
 
 const AgriAnalyticsPage = () => {
-    const { trends, fetchCropTrends, loading, error } = useCropStore();
+    const { trends, fetchCropTrends, loading, error, aiAnalysis, seasonal, fetchAIInsights, fetchSeasonalSuggestions } = useCropStore();
     const [selectedCrop, setSelectedCrop] = useState('Wheat');
     const [days, setDays] = useState(30);
 
@@ -13,7 +13,9 @@ const AgriAnalyticsPage = () => {
 
     useEffect(() => {
         fetchCropTrends(selectedCrop, days);
-    }, [selectedCrop, days, fetchCropTrends]);
+        fetchAIInsights(selectedCrop);
+        fetchSeasonalSuggestions();
+    }, [selectedCrop, days, fetchCropTrends, fetchAIInsights, fetchSeasonalSuggestions]);
 
     return (
         <div className="agri-page">
@@ -24,6 +26,12 @@ const AgriAnalyticsPage = () => {
                 </div>
                 
                 <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                    {seasonal && (
+                        <div className="agri-card" style={{padding: '0.5rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center', borderColor: 'var(--agri-accent)'}}>
+                            <span style={{fontSize: '0.8rem', opacity: 0.7}}>Current Season:</span>
+                            <span style={{fontSize: '0.9rem', fontWeight: 700}}>{seasonal.season}</span>
+                        </div>
+                    )}
                     <div className="agri-card" style={{padding: '0.5rem 1rem', display: 'flex', gap: '1rem', alignItems: 'center'}}>
                         <Filter size={18} className="agri-green" />
                         <select 
@@ -53,6 +61,7 @@ const AgriAnalyticsPage = () => {
             {error && <div className="agri-card" style={{textAlign: 'center', padding: '4rem', color: '#f87171'}}>⚠️ {error}</div>}
 
             {!loading && !error && (
+            <>
             <div className="stats-grid">
                 <div className="agri-card" style={{gridColumn: 'span 2'}}>
                     <div style={{display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '2rem'}}>
@@ -102,29 +111,58 @@ const AgriAnalyticsPage = () => {
                         <BarChart3 className="agri-accent" />
                         <h3>Market Insight</h3>
                     </div>
-                    {trends.length > 1 ? (
+                    {trends.length > 0 ? (
                         <div>
                             <div style={{marginBottom: '2rem'}}>
                                 <h4 style={{opacity: 0.6}}>Latest Entry</h4>
-                                <p style={{fontSize: '2rem', fontWeight: 700}}>₹{trends[trends.length - 1].price}</p>
+                                <p style={{fontSize: '2rem', fontWeight: 700}}>₹{trends[trends.length - 1]?.price}</p>
                             </div>
-                            <div>
-                                <h4 style={{opacity: 0.6}}>Weekly Change</h4>
-                                <p style={{
-                                    fontSize: '1.5rem', 
-                                    fontWeight: 600, 
-                                    color: trends[trends.length - 1].price >= trends[0].price ? '#10b981' : '#ef4444'
-                                }}>
-                                    {((trends[trends.length-1].price - trends[0].price) / trends[0].price * 100).toFixed(1)}%
-                                    {trends[trends.length-1].price >= trends[0].price ? ' ↗' : ' ↘'}
-                                </p>
-                            </div>
+                            {trends.length > 1 && (
+                                <div>
+                                    <h4 style={{opacity: 0.6}}>Weekly Change</h4>
+                                    <p style={{
+                                        fontSize: '1.5rem', 
+                                        fontWeight: 600, 
+                                        color: trends[trends.length - 1].price >= trends[0].price ? '#10b981' : '#ef4444'
+                                    }}>
+                                        {((trends[trends.length-1].price - trends[0].price) / trends[0].price * 100).toFixed(1)}%
+                                        {trends[trends.length-1].price >= trends[0].price ? ' ↗' : ' ↘'}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     ) : (
-                        <p>No enough data to show insights.</p>
+                        <p>No data available for the selected period.</p>
                     )}
                 </div>
             </div>
+
+            <div className="stats-grid" style={{marginTop: '2rem'}}>
+                {aiAnalysis && (
+                    <div className="agri-card" style={{borderLeft: '4px solid var(--agri-green)'}}>
+                        <h4 style={{marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                            🤖 AI Outlook: <span style={{color: aiAnalysis.outlook.includes('Bullish') ? '#10b981' : '#ef4444'}}>{aiAnalysis.outlook}</span>
+                        </h4>
+                        <p style={{opacity: 0.8}}>{aiAnalysis.ai_recommendation}</p>
+                        <p style={{fontSize: '0.7rem', marginTop: '1rem', opacity: 0.5}}>Confidence Score: {aiAnalysis.confidence_score}</p>
+                    </div>
+                )}
+
+                {seasonal && (
+                    <div className="agri-card" style={{borderLeft: '4px solid var(--agri-accent)'}}>
+                        <h4 style={{marginBottom: '1rem'}}>🍂 Suggested Seasonal Crops</h4>
+                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.5rem'}}>
+                            {seasonal.crops.map(crop => (
+                                <span key={crop} style={{background: 'rgba(245, 158, 11, 0.2)', color: 'var(--agri-accent)', padding: '0.2rem 0.6rem', borderRadius: '1rem', fontSize: '0.8rem'}}>
+                                    {crop}
+                                </span>
+                            ))}
+                        </div>
+                        <p style={{fontSize: '0.7rem', marginTop: '1rem', opacity: 0.5}}>Based on {seasonal.season} growth patterns.</p>
+                    </div>
+                )}
+            </div>
+            </>
             )}
         </div>
     );

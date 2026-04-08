@@ -1,4 +1,4 @@
-import { getCropData, getCropTrends } from "../services/cropService.js";
+import { getCropData, getCropTrends, getSeasonalSuggestions, getAIAnalysis } from "../services/cropService.js";
 import { getWeatherRecommendation } from "../services/weatherService.js";
 
 /**
@@ -41,3 +41,29 @@ export const getRecommendation = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
+
+/**
+ * GET SEASONAL SUGGESTIONS
+ */
+export const getSeasonalCrops = async (req, res) => {
+    try {
+        const data = getSeasonalSuggestions();
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+
+/**
+ * GET AI INSIGHTS
+ */
+export const getAIInsights = async (req, res) => {
+    try {
+        const { name } = req.params;
+        const data = await getAIAnalysis(name);
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+

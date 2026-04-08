@@ -12,4 +12,10 @@ router.get("/:name/trends", getCropTrendAnalytics);
 // 🌦️ WEATHER RECOMMENDATIONS
 router.get("/:name/recommendation", getRecommendation);
 
+// 🤖 AI GROWTH INSIGHTS
+router.get("/:name/ai-insights", getAIInsights);
+
+// 🍂 SEASONAL RECOMMENDATIONS
+router.get("/suggestions/seasonal", getSeasonalCrops);
+
 export default router;

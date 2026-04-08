@@ -8,6 +8,8 @@ export const useCropStore = create((set) => ({
     selectedCrop: null,
     trends: [],
     recommendation: null,
+    seasonal: null,
+    aiAnalysis: null,
     loading: false,
     error: null,
 
@@ -38,6 +40,24 @@ export const useCropStore = create((set) => ({
             set({ recommendation: res.data, loading: false });
         } catch (err) {
             set({ error: 'Failed to fetch recommendations', loading: false });
+        }
+    },
+
+    fetchSeasonalSuggestions: async () => {
+        try {
+            const res = await axios.get(`${API_URL}/crops/suggestions/seasonal`);
+            set({ seasonal: res.data });
+        } catch (err) {
+            console.error('Failed to fetch seasonal suggestions');
+        }
+    },
+
+    fetchAIInsights: async (name) => {
+        try {
+            const res = await axios.get(`${API_URL}/crops/${name}/ai-insights`);
+            set({ aiAnalysis: res.data });
+        } catch (err) {
+            console.error('Failed to fetch AI insights');
         }
     }
 }));
