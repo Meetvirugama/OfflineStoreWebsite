@@ -26,6 +26,13 @@ const AgriAnalyticsPage = () => {
                 </div>
                 
                 <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                    <button 
+                        onClick={() => window.location.href = `/admin/agri/crop/${selectedCrop}`}
+                        className="agri-card" 
+                        style={{padding: '0.5rem 1.5rem', background: 'var(--agri-green)', border: 'none', color: '#fff', fontWeight: 700, cursor: 'pointer'}}
+                    >
+                        View {selectedCrop} Identity
+                    </button>
                     {seasonal && (
                         <div className="agri-card" style={{padding: '0.5rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center', borderColor: 'var(--agri-accent)'}}>
                             <span style={{fontSize: '0.8rem', opacity: 0.7}}>Current Season:</span>
