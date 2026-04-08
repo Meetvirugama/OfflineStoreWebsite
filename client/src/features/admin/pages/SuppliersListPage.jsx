@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import "@/styles/Admin.css";
 import useToastStore from "@core/hooks/useToast";
 

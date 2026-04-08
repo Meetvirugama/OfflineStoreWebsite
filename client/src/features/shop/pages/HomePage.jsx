@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Sprout, Skull, Info, Leaf, ArrowRight, Star, Award, ShieldCheck } from "lucide-react";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
 import "@/styles/HomePage.css";
 

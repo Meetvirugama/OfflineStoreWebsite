@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNewsStore } from '../../store/newsStore';
-import { useWeatherStore } from '../../store/weatherStore';
+import useNewsStore from '@features/agriculture/news/news.store';
+import useWeatherStore from '@features/agriculture/weather/weather.store';
 import { 
     Newspaper, 
     Megaphone, 
@@ -15,7 +15,7 @@ import {
     ChevronRight,
     MapPin
 } from 'lucide-react';
-import '../../styles/agriIntelligence.css';
+import '@/styles/agriIntelligence.css';
 
 const FarmingNewsPage = () => {
     const { news, fetchNews, loading, error, syncNews } = useNewsStore();

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
 import AgroLoader from "@core/components/AgroLoader";
 import "@/styles/ProductsPage.css";

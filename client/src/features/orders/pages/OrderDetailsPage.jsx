@@ -12,7 +12,7 @@ import {
   MapPin,
   Calendar
 } from "lucide-react";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
 import "@/styles/OrdersPage.css";

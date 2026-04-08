@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import useAdvisoryStore from '../../store/advisoryStore';
+import useAdvisoryStore from '@features/agriculture/crop/advisory.store';
 import { 
     Sprout, 
     MapPin, 
@@ -27,7 +27,7 @@ import {
     AreaChart,
     Area
 } from 'recharts';
-import '../../styles/agriIntelligence.css';
+import '@/styles/agriIntelligence.css';
 
 const CROPS = ["Wheat", "Rice", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Maize"];
 const STAGES = ["Sowing", "Vegetative", "Flowering", "Fruiting", "Harvesting"];

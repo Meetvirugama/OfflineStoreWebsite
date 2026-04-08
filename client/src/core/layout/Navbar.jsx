@@ -29,7 +29,7 @@ import "@/styles/Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const location = location = useLocation();
+  const location = useLocation();
   const { token, user, logout } = useAuthStore();
   const { setDrawerOpen, items } = useCartStore();
   const { notifications, fetchNotifications } = useNotificationStore();

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useNotificationStore from "../../store/notificationStore";
+import useNotificationStore from "@features/notifications/store/notification.store";
 import "@/styles/notification.css";
 
 export default function NotificationPanel() {

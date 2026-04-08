@@ -13,7 +13,7 @@ import {
   Plus,
   Minus
 } from "lucide-react";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useCartStore from "@features/checkout/store/cart.store";
 import useToastStore from "@core/hooks/useToast";

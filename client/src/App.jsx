@@ -25,7 +25,7 @@ import RegisterPage from "@features/auth/pages/RegisterPage";
 import OtpPage from "@features/auth/pages/OtpPage";
 import ForgotPasswordPage from "@features/auth/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@features/auth/pages/ResetPasswordPage";
-import GoogleSuccess from "./pages/GoogleSuccess"; 
+import GoogleSuccessPage from "@features/auth/pages/GoogleSuccessPage";
 
 // Features: Agriculture Intelligence
 import CropDetailsPage from "@features/agriculture/pages/CropDetailsPage";
@@ -69,7 +69,7 @@ function App() {
           <Route path="/auth/verify-otp" element={<OtpPage />} />
           <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/google-success" element={<GoogleSuccess />} />
+          <Route path="/google-success" element={<GoogleSuccessPage />} />
 
           {/* CUSTOMER */}
           <Route path="/checkout" element={<RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}><CheckoutPage /></RoleGuard>} />
@@ -81,7 +81,7 @@ function App() {
         </Route>
 
         {/* ADMIN */}
-        <Route element={<RoleGuard allowedRoles={["ADMIN"]}><AdminLayout />}>
+        <Route element={<RoleGuard allowedRoles={["ADMIN"]}><AdminLayout /></RoleGuard>}>
           <Route path="/admin" element={<AnalyticsPage />} />
           <Route path="/admin/dashboard" element={<AnalyticsPage />} />
           <Route path="/admin/analytics" element={<AnalyticsPage />} />

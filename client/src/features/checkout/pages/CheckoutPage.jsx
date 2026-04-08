@@ -17,7 +17,7 @@ import {
 import useCartStore from "@features/checkout/store/cart.store";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import "@/styles/CheckoutPage.css";
 
 // ✅ Dynamically load Razorpay SDK if not already loaded

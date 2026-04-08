@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import "@/styles/Admin.css"; // Basic minimal styles
 import useToastStore from "@core/hooks/useToast";
 import AgroLoader from "@core/components/AgroLoader";

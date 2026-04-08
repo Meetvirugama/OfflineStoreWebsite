@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import usePestStore from '../../store/pestStore';
+import usePestStore from '@features/agriculture/crop/pest.store';
 import { 
     Camera, 
     Upload, 
@@ -16,7 +16,7 @@ import {
     X,
     Maximize2
 } from 'lucide-react';
-import '../../styles/agriIntelligence.css';
+import '@/styles/agriIntelligence.css';
 
 const CROPS = ["Cotton", "Groundnut", "Wheat", "Rice", "Sugarcane", "Mustard"];
 

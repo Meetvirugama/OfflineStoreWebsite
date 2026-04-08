@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useReportStore from "@features/admin/store/report.store";
 import AgroLoader from "@core/components/AgroLoader";
-import { getNotificationAnalytics } from "../../services/notificationApi";
+import { getNotificationAnalytics } from "@features/notifications/api/notification.service";
 import "@/styles/analyticspage.css";
 
 import {

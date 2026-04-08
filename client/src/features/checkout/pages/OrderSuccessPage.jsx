@@ -1,6 +1,6 @@
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import "@/styles/OrderSuccessPage.css";
 
 export default function OrderSuccessPage() {

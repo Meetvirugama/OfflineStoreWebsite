@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import apiClient from "../../../../core/api/client.js";
+import apiClient from "@core/api/client";
 
 const useMandiStore = create((set, get) => ({
     prices: [],

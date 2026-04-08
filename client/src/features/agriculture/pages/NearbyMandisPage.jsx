@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import { MapPin, Navigation, Store, Star, Loader2, AlertCircle } from 'lucide-react';
-import axiosInstance from '../../services/axiosInstance';
-import '../../styles/agriIntelligence.css';
+import apiClient from '@core/api/client';
+import '@/styles/agriIntelligence.css';
 
 const containerStyle = {
     width: '100%',
@@ -63,7 +63,7 @@ const NearbyMandisPage = () => {
     // 2. Fetch Mandis from Backend
     const fetchNearbyMandis = async (lat, lng) => {
         try {
-            const { data } = await axiosInstance.get(`/mandis/nearby?lat=${lat}&lng=${lng}&radius=30000`);
+            const { data } = await apiClient.get(`/mandis/nearby?lat=${lat}&lng=${lng}&radius=30000`);
             setMandis(data);
             setLoading(false);
         } catch (err) {

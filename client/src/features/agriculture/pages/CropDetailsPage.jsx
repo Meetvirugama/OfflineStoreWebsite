@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useCropStore } from '../../store/cropStore';
-import { MapPin, Thermometer, Droplets, Wheat, Info, Lightbulb } from 'lucide-react';
-import '../../styles/agriIntelligence.css';
+import useCropStore from '@features/agriculture/crop/crop.store';
+import { Sprout, Thermometer, Droplets, Sun, Calendar, Info, FlaskConical, Shovel, ShieldCheck, MapPin, Wind } from 'lucide-react';
+import '@/styles/agriIntelligence.css';
 
 const CropDetailsPage = () => {
     const { name } = useParams();

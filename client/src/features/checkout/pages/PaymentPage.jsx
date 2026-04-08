@@ -1,7 +1,7 @@
 // src/pages/checkout/PaymentPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
 

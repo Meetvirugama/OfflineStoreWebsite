@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import useFarmerStore from '../../store/farmerStore';
+import useFarmerStore from '@features/dashboard/store/farmer.store';
 import { 
     Activity, Sprout, TrendingUp, AlertTriangle, 
     Wallet, Plus, Trash2, CheckCircle2, CloudLightning, LineChart 
 } from 'lucide-react';
-import '../../styles/agriIntelligence.css';
+import '@/styles/agriIntelligence.css';
 
 const FarmerDashboardPage = () => {
     const { 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useWeatherStore } from '../../store/weatherStore';
+import useWeatherStore from '@features/agriculture/weather/weather.store';
 import { 
     Cloud, Sun, CloudRain, Wind, Droplets, Thermometer, 
     Navigation, MapPin, Calendar, Clock, AlertTriangle, 
@@ -9,7 +9,7 @@ import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, 
     ResponsiveContainer, BarChart, Bar 
 } from 'recharts';
-import '../../styles/agriIntelligence.css';
+import '@/styles/agriIntelligence.css';
 
 const WeatherDashboard = () => {
     const { 

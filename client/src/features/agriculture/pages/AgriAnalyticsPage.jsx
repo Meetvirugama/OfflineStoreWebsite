@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useCropStore } from '../../store/cropStore';
+import useCropStore from '@features/agriculture/crop/crop.store';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { TrendingUp, BarChart3, Filter } from 'lucide-react';
-import '../../styles/agriIntelligence.css';
+import '@/styles/agriIntelligence.css';
 
 const AgriAnalyticsPage = () => {
     const { trends, fetchCropTrends, loading, error, aiAnalysis, seasonal, fetchAIInsights, fetchSeasonalSuggestions } = useCropStore();

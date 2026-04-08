@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../../services/axiosInstance";
+import api from "@core/api/client";
 import useToastStore from "@core/hooks/useToast";
 import Modal from "@core/components/Modal";
 import "@/styles/Admin.css";
