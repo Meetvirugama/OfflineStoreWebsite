@@ -17,19 +17,28 @@ export const getCropData = async (name) => {
         }
 
         // 2. Search GrowStuff API
-        console.log(`🌐 Searching GrowStuff for ${name}...`);
-        const searchRes = await axios.get(`${GROWSTUFF_API_URL}/search.json`, {
-            params: { q: name }
+        const searchUrl = `https://www.growstuff.org/api/v1/crops.json`;
+        console.log(`🌐 Searching GrowStuff via: ${searchUrl}?term=${name}`);
+        
+        const searchRes = await axios.get(searchUrl, {
+            params: { term: name.toLowerCase() }
         });
 
         const results = searchRes.data || [];
-        if (results.length === 0) {
-            throw new Error(`Crop "${name}" not found in knowledge base`);
+        if (!Array.isArray(results) || results.length === 0) {
+            console.warn(`⚠️ No GrowStuff results found for crop: ${name}`);
+            throw new Error(`Crop "${name}" not found in our database or global knowledge base`);
         }
 
         // 3. Fetch Full Detail for First Result
         const cropId = results[0].id;
-        const detailRes = await axios.get(`${GROWSTUFF_API_URL}/${cropId}.json`);
+        if (!cropId) {
+            throw new Error(`Invalid data structure received for ${name}`);
+        }
+
+        const detailUrl = `https://www.growstuff.org/api/v1/crops/${cropId}.json`;
+        console.log(`🔍 Fetching detail from: ${detailUrl}`);
+        const detailRes = await axios.get(detailUrl);
         const growData = detailRes.data;
 
         const openFarm = growData.openfarm_data?.attributes || {};
