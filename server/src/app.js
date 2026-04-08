@@ -23,6 +23,7 @@ import googleAuthRoutes from "./routes/googleAuth.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import customerSelfRoutes from "./routes/customerSelfRoutes.js";
+import mandiRoutes from "./routes/mandiRoutes.js";
 
 
 
@@ -69,6 +70,7 @@ app.use("/api/auth", googleAuthRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/me", customerSelfRoutes);
+app.use("/api/mandi", mandiRoutes);
 
 app.use("/api/suppliers", supplierRoutes);
 

@@ -2,8 +2,9 @@ import express from "express";
 import {
   createProduct,
   getLowStock,
-  getProducts,
   getStock,
+  getProducts,
+  updateProduct
 } from "../controllers/productController.js";
 
 import { authMiddleware } from "../middlewares/authMiddleware.js";
@@ -27,6 +28,13 @@ router.post("/",
 router.get("/stock/:id",
   authMiddleware,
   getStock
+);
+
+
+// 🔒 ADMIN ONLY
+router.put("/:id",
+  authMiddleware,
+  updateProduct
 );
 
 

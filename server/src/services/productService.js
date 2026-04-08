@@ -92,6 +92,12 @@ export const getProductsService = async () => {
   return result;
 };
 
+export const updateProductService = async (id, data) => {
+  const product = await Product.findByPk(id);
+  if (!product) throw new Error("Product Not Found");
+  return await product.update(data);
+};
+
 // GET STOCK
 export const getStockService = async (product_id) => {
   const stock = await Inventory.sum("quantity_change", {

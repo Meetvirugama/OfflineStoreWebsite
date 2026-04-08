@@ -249,3 +249,30 @@ CREATE TABLE cart_item (
     FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES product(id)
 );
+
+-- =========================
+-- MANDI PRICES (MIST)
+-- =========================
+CREATE TABLE mandi_prices (
+    id SERIAL PRIMARY KEY,
+
+    state VARCHAR(100) NOT NULL,
+    district VARCHAR(100) NOT NULL,
+    market VARCHAR(100) NOT NULL,
+    commodity VARCHAR(100) NOT NULL,
+
+    min_price FLOAT NOT NULL,
+    max_price FLOAT NOT NULL,
+    modal_price FLOAT NOT NULL,
+    
+    arrival_date DATE NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE (market, commodity, arrival_date)
+);
+
+CREATE INDEX idx_mandi_state ON mandi_prices(state);
+CREATE INDEX idx_mandi_district ON mandi_prices(district);
+CREATE INDEX idx_mandi_commodity ON mandi_prices(commodity);
+CREATE INDEX idx_mandi_date ON mandi_prices(arrival_date);

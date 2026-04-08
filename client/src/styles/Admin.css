@@ -157,6 +157,16 @@
   transform: translateY(-1px);
 }
 
+.t-btn.edit {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.t-btn.edit:hover {
+  background: #bae6fd;
+  transform: translateY(-1px);
+}
+
 .t-btn.view {
   background: #e0f2fe;
   color: #0369a1;

@@ -12,6 +12,7 @@ export default function AdminProductsPage() {
     // Modals
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isAdjustOpen, setIsAdjustOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     // Form states
@@ -21,6 +22,10 @@ export default function AdminProductsPage() {
     
     // Adjust stock state
     const [adjustForm, setAdjustForm] = useState({ quantity: "", type: "IN", reference_type: "MANUAL" });
+
+    const [editForm, setEditForm] = useState({
+        name: "", category: "", brand: "", mrp: "", selling_price: "", image: ""
+    });
 
     const fetchProducts = async () => {
         try {
@@ -54,6 +59,22 @@ export default function AdminProductsPage() {
             fetchProducts();
         } catch (err) {
             addToast(err.response?.data?.message || "Failed to create product", "error");
+        }
+    };
+
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            await api.put(`/products/${selectedProduct.id}`, {
+                ...editForm,
+                mrp: Number(editForm.mrp),
+                selling_price: Number(editForm.selling_price)
+            });
+            addToast("Product updated successfully", "success");
+            setIsEditOpen(false);
+            fetchProducts();
+        } catch (err) {
+            addToast(err.response?.data?.message || "Update failed", "error");
         }
     };
 
@@ -118,9 +139,24 @@ export default function AdminProductsPage() {
                             <td>
                                 <div className="table-actions">
                                     <button
+                                        onClick={() => { 
+                                            setSelectedProduct(p); 
+                                            setEditForm({
+                                                name: p.name,
+                                                category: p.category,
+                                                brand: p.brand || "",
+                                                mrp: p.mrp,
+                                                selling_price: p.selling_price,
+                                                image: p.image || ""
+                                            });
+                                            setIsEditOpen(true); 
+                                        }}
+                                        className="t-btn edit"
+                                    >EDIT</button>
+                                    <button
                                         onClick={() => { setSelectedProduct(p); setAdjustForm({...adjustForm, type: 'IN'}); setIsAdjustOpen(true); }}
                                         className="t-btn add"
-                                    >+ ADD STOCK</button>
+                                    >+ STOCK</button>
                                     <button
                                         onClick={() => { setSelectedProduct(p); setAdjustForm({...adjustForm, type: 'OUT'}); setIsAdjustOpen(true); }}
                                         className="t-btn minus"
@@ -175,6 +211,29 @@ export default function AdminProductsPage() {
                             <div className="modal-actions">
                                 <button type="button" onClick={() => setIsAdjustOpen(false)}>Abort Change</button>
                                 <button type="submit" className="btn-elite primary">Confirm Injection</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Product Modal */}
+            {isEditOpen && selectedProduct && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Update Product: {selectedProduct.name}</h3>
+                        <form onSubmit={handleUpdate} className="modal-form">
+                            <input placeholder="Product Name" required value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} />
+                            <input placeholder="Category Group" required value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})} />
+                            <input placeholder="Manufacturer / Brand" value={editForm.brand} onChange={e => setEditForm({...editForm, brand: e.target.value})} />
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <input placeholder="MRP" type="number" required value={editForm.mrp} onChange={e => setEditForm({...editForm, mrp: e.target.value})} style={{flex: 1}} />
+                                <input placeholder="Selling List Price" type="number" required value={editForm.selling_price} onChange={e => setEditForm({...editForm, selling_price: e.target.value})} style={{flex: 1}} />
+                            </div>
+                            <input placeholder="Public Image URL" value={editForm.image} onChange={e => setEditForm({...editForm, image: e.target.value})} />
+                            <div className="modal-actions">
+                                <button type="button" onClick={() => setIsEditOpen(false)}>Discard</button>
+                                <button type="submit" className="btn-elite primary">Save Changes</button>
                             </div>
                         </form>
                     </div>

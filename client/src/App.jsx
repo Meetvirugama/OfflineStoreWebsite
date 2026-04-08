@@ -30,6 +30,8 @@ import AdminOrderDetailsPage from "./pages/admin/AdminOrderDetailsPage";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
 import SuppliersListPage from "./pages/admin/SuppliersListPage";
 import SupplierDetailsPage from "./pages/admin/SupplierDetailsPage";
+import MandiPricesPage from "./pages/admin/MandiPricesPage";
+import MandiDashboardPage from "./pages/admin/MandiDashboardPage";
 import LoadingBar from "./components/common/LoadingBar";
 
 function App() {
@@ -64,6 +66,7 @@ function App() {
         {/* ADMIN (optional) */}
         <Route element={<RoleGuard allowedRoles={["ADMIN"]}><AdminLayout /></RoleGuard>}>
           <Route path="/admin" element={<AnalyticsPage />} />
+          <Route path="/admin/dashboard" element={<AnalyticsPage />} />
           <Route path="/admin/analytics" element={<AnalyticsPage />} />
           <Route path="/admin/products" element={<AdminProductsPage />} />
           <Route path="/admin/orders" element={<AdminOrdersPage />} />
@@ -71,6 +74,8 @@ function App() {
           <Route path="/admin/profile" element={<AdminProfilePage />} />
           <Route path="/admin/suppliers" element={<SuppliersListPage />} />
           <Route path="/admin/suppliers/:id" element={<SupplierDetailsPage />} />
+          <Route path="/admin/mandi" element={<MandiDashboardPage />} />
+          <Route path="/admin/mandi/prices" element={<MandiPricesPage />} />
         </Route>
 
       </Routes>

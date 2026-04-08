@@ -2,7 +2,8 @@ import {
   createProductService,
   getLowStockService,
   getStockService,
-  getProductsService
+  getProductsService,
+  updateProductService
 } from "../services/productService.js";
 
 
@@ -35,6 +36,15 @@ export const getProducts = async (req, res) => {
   } catch (err) {
     console.log("ERROR:", err.message);
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  try {
+    const data = await updateProductService(req.params.id, req.body);
+    res.json(data);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 };
 
