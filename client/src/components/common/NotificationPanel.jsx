@@ -8,7 +8,8 @@ export default function NotificationPanel() {
     fetchNotifications,
     openNotification,
     clickNotification,
-    markAllAsRead
+    markAllAsRead,
+    deleteNotification
   } = useNotificationStore();
 
   useEffect(() => {
