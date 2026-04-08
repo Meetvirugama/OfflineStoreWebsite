@@ -19,7 +19,7 @@ export const RAZORPAY_KEY = process.env.RAZORPAY_KEY || '';
 export const RAZORPAY_SECRET = process.env.RAZORPAY_SECRET || '';
 export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-export const REDIRECT_URI = process.env.REDIRECT_URI || 'http://localhost:5001/api/auth/google/callback';
-export const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+export const REDIRECT_URI = process.env.REDIRECT_URI || 'https://offlinestorewebsite.onrender.com/api/auth/google/callback';
+export const FRONTEND_URL = process.env.FRONTEND_URL || 'https://offline-store-website.vercel.app';
 
 console.log("📂 Environment loaded and JWT_SECRET ready (hoisting fix active)");

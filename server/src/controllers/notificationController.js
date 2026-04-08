@@ -43,3 +43,16 @@ export const remind = async (req, res) => {
         res.status(500).json({ success: false, message: err.message });
     }
 };
+
+export const remove = async (req, res) => {
+    try {
+        const deleted = await Notification.destroy({ where: { id: req.params.id } });
+        if (deleted) {
+            res.json({ success: true, message: "Notification deleted" });
+        } else {
+            res.status(404).json({ success: false, message: "Notification not found" });
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};

@@ -172,6 +172,34 @@
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
 }
 
+.notif-delete-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  background: #fee2e2;
+  color: #ef4444;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s;
+  border: 1px solid rgba(239, 68, 68, 0.1);
+  cursor: pointer;
+}
+
+.notif-item:hover .notif-delete-btn {
+  opacity: 1;
+}
+
+.notif-delete-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.1);
+}
+
 /* FOOTER */
 .notif-footer {
   padding: 16px;

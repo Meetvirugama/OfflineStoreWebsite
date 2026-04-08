@@ -41,6 +41,17 @@ const useNotificationStore = create((set, get) => ({
     set({
       notifications: get().notifications.map(n => ({ ...n, is_opened: true }))
     });
+  },
+
+  deleteNotification: async (id) => {
+    try {
+      await api.deleteNotification(id);
+      set({
+        notifications: get().notifications.filter(n => n.id !== id)
+      });
+    } catch (err) {
+      console.error("Failed to delete notification:", err);
+    }
   }
 }));
 

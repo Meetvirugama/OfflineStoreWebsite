@@ -9,5 +9,8 @@ export const markOpen = (id) =>
 export const markClick = (id) =>
   axios.put(`/notifications/${id}/click`);
 
+export const deleteNotification = (id) =>
+  axios.delete(`/notifications/${id}`);
+
 export const getNotificationAnalytics = () =>
   axios.get("/notifications/analytics");
