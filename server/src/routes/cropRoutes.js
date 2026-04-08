@@ -1,5 +1,5 @@
 import express from "express";
-import { getCropInfo, getCropTrendAnalytics, getRecommendation } from "../controllers/cropController.js";
+import { getCropInfo, getCropTrendAnalytics, getRecommendation, getAIInsights, getSeasonalCrops } from "../controllers/cropController.js";
 
 const router = express.Router();
 
