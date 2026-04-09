@@ -5,6 +5,8 @@ import Product from "../product/product.model.js";
 import Customer from "../customer/customer.model.js";
 import * as cartService from "../cart/cart.service.js";
 
+import User from "../user/user.model.js";
+
 export const createFromCart = async (userId, incomingCustomerId) => {
     let customerId = incomingCustomerId;
     if (!customerId) {
@@ -60,13 +62,13 @@ export const createFromCart = async (userId, incomingCustomerId) => {
         // 4. Notifications (Post-Commit)
         try {
             const { notify } = await import("../notification/notification.service.js");
-            const { User } = await import("../user/user.model.js");
+            const { User: UserModel } = await import("../user/user.model.js");
 
             // User confirmation
             await notify(userId, "Order Confirmed! 🌾", `Your order #${order.id} for ₹${total.toFixed(2)} was placed successfully.`, "SUCCESS");
 
             // Admin alert
-            const admins = await User.findAll({ where: { role: "ADMIN" } });
+            const admins = await UserModel.findAll({ where: { role: "ADMIN" } });
             for (const admin of admins) {
                 await notify(admin.id, "New Order Received 📦", `Order #${order.id} has been placed by a customer.`, "INFO");
             }
@@ -90,7 +92,17 @@ export const getUserOrders = async (customerId) => {
 
 export const getAllOrders = async () => {
     return await Order.findAll({
-        include: [{ model: OrderItem, include: [Product] }, { model: Product, as: 'Product' }] // Adjust based on associations
+        include: [
+            { 
+                model: Customer, 
+                include: [{ model: User, attributes: ["name", "mobile", "email"] }] 
+            }, 
+            { 
+                model: OrderItem, 
+                include: [Product] 
+            }
+        ],
+        order: [["createdAt", "DESC"]]
     });
 };
 
