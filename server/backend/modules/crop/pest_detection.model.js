@@ -10,7 +10,15 @@ const PestDetection = sequelize.define("PestDetection", {
   image_url: { type: DataTypes.STRING },
   solution: { type: DataTypes.TEXT },
   organic_solution: { type: DataTypes.TEXT },
-  severity: { type: DataTypes.STRING } // Low, Medium, High
+  severity: { type: DataTypes.STRING }, // Low, Medium, High
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
 }, {
   tableName: "pest_detections",
   timestamps: true,

@@ -9,6 +9,14 @@ const SavedCrop = sequelize.define("SavedCrop", {
   area_acres: { type: DataTypes.FLOAT },
   planted_at: { type: DataTypes.DATEONLY },
   expected_harvest: { type: DataTypes.DATEONLY },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
 }, {
   tableName: "saved_crops",
   timestamps: true,

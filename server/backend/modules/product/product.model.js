@@ -16,7 +16,15 @@ const Product = sequelize.define("Product", {
   description: { type: DataTypes.TEXT },
   stock: { type: DataTypes.INTEGER, defaultValue: 0 },
   supplier_id: { type: DataTypes.INTEGER },
-  created_by: { type: DataTypes.INTEGER }
+  created_by: { type: DataTypes.INTEGER },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
 }, {
   tableName: "product",
   timestamps: true,

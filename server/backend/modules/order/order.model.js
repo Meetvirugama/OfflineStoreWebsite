@@ -16,7 +16,15 @@ const Order = sequelize.define("Order", {
   invoice_number: { type: DataTypes.STRING, unique: true },
   status: { type: DataTypes.STRING, defaultValue: "PENDING" },
   due_date: { type: DataTypes.DATE },
-  created_by: { type: DataTypes.INTEGER, allowNull: false }
+  created_by: { type: DataTypes.INTEGER, allowNull: false },
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
 }, {
   tableName: "orders",
   timestamps: true,

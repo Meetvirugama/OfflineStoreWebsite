@@ -7,7 +7,15 @@ const PriceAlert = sequelize.define("PriceAlert", {
   commodity: { type: DataTypes.STRING, allowNull: false },
   target_price: { type: DataTypes.FLOAT, allowNull: false },
   condition: { type: DataTypes.ENUM("ABOVE", "BELOW"), defaultValue: "ABOVE" },
-  is_active: { type: DataTypes.BOOLEAN, defaultValue: true }
+  is_active: { type: DataTypes.BOOLEAN, defaultValue: true },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
 }, {
   tableName: "price_alert",
   timestamps: true,

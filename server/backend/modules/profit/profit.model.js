@@ -9,7 +9,11 @@ const FarmerProfit = sequelize.define("FarmerProfit", {
     investment: { type: DataTypes.FLOAT, defaultValue: 0 },
     revenue: { type: DataTypes.FLOAT, defaultValue: 0 },
     profit: { type: DataTypes.FLOAT, defaultValue: 0 },
-    sold_at: { type: DataTypes.DATEONLY }
+    sold_at: { type: DataTypes.DATEONLY },
+    created_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    }
 }, {
     tableName: "farmer_profits",
     timestamps: true,

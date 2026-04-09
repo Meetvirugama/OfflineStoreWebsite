@@ -4,7 +4,11 @@ import sequelize from "../../config/db.js";
 const Cart = sequelize.define("Cart", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   customer_id: { type: DataTypes.INTEGER, allowNull: false, unique: true },
-  status: { type: DataTypes.STRING, defaultValue: "ACTIVE" }
+  status: { type: DataTypes.STRING, defaultValue: "ACTIVE" },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  }
 }, {
   tableName: "cart",
   timestamps: true,

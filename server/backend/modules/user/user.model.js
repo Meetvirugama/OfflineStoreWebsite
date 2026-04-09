@@ -49,6 +49,14 @@ const User = sequelize.define("User", {
       const rawValue = this.getDataValue("otp_expiry");
       return rawValue ? new Date(rawValue) : null;
     }
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
   }
 }, {
   tableName: "users",

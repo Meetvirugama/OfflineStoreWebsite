@@ -12,7 +12,7 @@ const Notification = sequelize.define("Notification", {
   is_clicked: { type: DataTypes.BOOLEAN, defaultValue: false },
   opened_at: { type: DataTypes.DATE },
   clicked_at: { type: DataTypes.DATE },
-  created_at: { type: DataTypes.DATE, allowNull: false }
+  created_at: { type: DataTypes.DATE, allowNull: true }
 }, {
   tableName: "notification",
   timestamps: false
