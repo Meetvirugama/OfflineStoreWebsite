@@ -148,6 +148,60 @@ export const getAgriDashboardStats = async () => {
 };
 
 /**
+ * Get Historical Price Trends for a specific Crop & District
+ */
+export const getHistoricalMandiTrends = async (commodity, district, days = 30) => {
+    const API_KEY = ENV.DATA_GOV_KEY;
+    const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
+
+    if (!API_KEY) return [];
+
+    try {
+        console.log(`📡 Fetching Historical Trends for ${commodity} in ${district} (${days} days)...`);
+        
+        const params = {
+            "api-key": API_KEY,
+            format: "json",
+            limit: 500, // Large enough sample size
+            sort: "arrival_date desc",
+            "filters[commodity]": commodity,
+            "filters[district]": district
+        };
+
+        const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, { params });
+        const records = response.data.records || [];
+
+        // Process and group by date (in case of multiple markets in same district)
+        const dateMap = {};
+        records.forEach(r => {
+            const dateStr = new Date(r.arrival_date).toISOString().split('T')[0];
+            if (!dateMap[dateStr]) {
+                dateMap[dateStr] = { date: dateStr, modal: 0, count: 0, min: 999999, max: 0 };
+            }
+            dateMap[dateStr].modal += parseFloat(r.modal_price) || 0;
+            dateMap[dateStr].count += 1;
+            dateMap[dateStr].min = Math.min(dateMap[dateStr].min, parseFloat(r.min_price) || 999999);
+            dateMap[dateStr].max = Math.max(dateMap[dateStr].max, parseFloat(r.max_price) || 0);
+        });
+
+        const trends = Object.values(dateMap)
+            .map(d => ({
+                date: new Date(d.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
+                modal: Math.round(d.modal / d.count),
+                min: d.min === 999999 ? 0 : d.min,
+                max: d.max
+            }))
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
+            .slice(-days); // Limit to requested days count
+
+        return trends;
+    } catch (err) {
+        console.error("Historical Trends Error:", err.message);
+        return [];
+    }
+};
+
+/**
  * Search Mandis via Text
  */
 export const searchMandis = async (query) => {

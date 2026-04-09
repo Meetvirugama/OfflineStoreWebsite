@@ -23,3 +23,11 @@ export const getPrices = asyncHandler(async (req, res) => {
     const prices = await mandiService.getLiveMandiPrices({ state, district, crop });
     sendResponse(res, 200, `Live prices fetched successfully`, prices);
 });
+
+export const getTrends = asyncHandler(async (req, res) => {
+    const { crop, district, days } = req.query;
+    if (!crop || !district) return sendResponse(res, 400, "Crop and District are required");
+    
+    const trends = await mandiService.getHistoricalMandiTrends(crop, district, parseInt(days) || 30);
+    sendResponse(res, 200, "Historical trends fetched successfully", trends);
+});

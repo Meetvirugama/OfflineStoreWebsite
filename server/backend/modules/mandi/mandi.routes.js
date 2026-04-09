@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/nearby", mandiController.getNearby);
 router.get("/search", mandiController.search);
-router.get("/prices/:crop", mandiController.getPrices);
+router.get("/prices", mandiController.getPrices);
+router.get("/trends", mandiController.getTrends);
 
 export default router;

@@ -10,6 +10,8 @@ const useMandiStore = create((set, get) => ({
         commodity: "",
     },
     summary: null,
+    trends: [],
+    trendsLoading: false,
 
     setFilters: (newFilters) => set((state) => ({ 
         filters: { ...state.filters, ...newFilters }
@@ -22,11 +24,23 @@ const useMandiStore = create((set, get) => ({
             const res = await apiClient.get("/mandi/prices", { 
                 params: { state, district, crop: commodity } 
             });
-            // Handle standardized { success, data } response
-            const priceData = res.data || res || [];
+            const priceData = res.data?.data || res.data || [];
             set({ prices: priceData, loading: false });
         } catch (err) {
             set({ loading: false });
+        }
+    },
+
+    fetchTrends: async (crop, district, days = 30) => {
+        set({ trendsLoading: true });
+        try {
+            const res = await apiClient.get("/mandi/trends", { 
+                params: { crop, district, days } 
+            });
+            const trendData = res.data?.data || res.data || [];
+            set({ trends: trendData, trendsLoading: false });
+        } catch (err) {
+            set({ trendsLoading: false, trends: [] });
         }
     },
 
