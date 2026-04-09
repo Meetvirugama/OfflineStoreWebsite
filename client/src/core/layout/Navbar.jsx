@@ -138,55 +138,66 @@ export default function Navbar() {
           </div>
 
           <div className="navbar-natural__actions">
-            <nav className="navbar-natural__nav">
-              <Link to="/farming-news" className={`nav-link ${isActive('/farming-news') ? 'active' : ''}`}>
-                <Newspaper size={20} />
-                <span>News</span>
-              </Link>
-              <Link to="/intelligence/mandi" className={`nav-link ${isActive('/intelligence/mandi') ? 'active' : ''}`}>
-                <Zap size={20} />
-                <span>Intelligence</span>
-              </Link>
-              <Link to="/pest-detection" className={`nav-link ${isActive('/pest-detection') ? 'active' : ''}`}>
-                <Skull size={20} />
-                <span>Pests</span>
-              </Link>
-            </nav>
+            <div className="action-pills-group">
+              <div className="action-btn cart-btn" onClick={() => setDrawerOpen && setDrawerOpen(true)}>
+                <ShoppingBag size={22} />
+                {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+              </div>
 
-            <div className="action-btn cart-btn" onClick={() => setDrawerOpen && setDrawerOpen(true)}>
-              <ShoppingBag size={24} />
-              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-            </div>
-
-            {token && user ? (
-              <>
-                <div className="action-btn notif-wrapper" ref={notifRef}>
-                  <div onClick={() => setShowNotif(!showNotif)}>
-                    <Bell size={22} />
-                    {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
-                  </div>
-                  {showNotif && <NotificationPanel />}
-                </div>
-
-                <div className="profile-menu" onClick={() => setMenuOpen(!menuOpen)}>
-                  <div className="profile-btn">
-                    <div className="avatar">{user.name?.[0].toUpperCase() || 'U'}</div>
-                    <ChevronDown size={16} />
-                  </div>
-                  {menuOpen && (
-                    <div className="profile-dropdown">
-                      <Link to="/profile" className="dropdown-item">Profile</Link>
-                      <Link to="/orders" className="dropdown-item">My Orders</Link>
-                      {user.role === "ADMIN" && <Link to="/admin" className="dropdown-item">Admin</Link>}
-                      <button onClick={handleLogout} className="dropdown-item text-danger">Logout</button>
+              {token && user ? (
+                <>
+                  <div className="action-btn notif-wrapper" ref={notifRef}>
+                    <div onClick={() => setShowNotif(!showNotif)}>
+                      <Bell size={22} />
+                      {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
                     </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <Link to="/auth/login" className="profile-btn">Sign In</Link>
-            )}
+                    {showNotif && <NotificationPanel />}
+                  </div>
+
+                  <div className="profile-menu" onClick={() => setMenuOpen(!menuOpen)}>
+                    <div className="profile-btn">
+                      <div className="avatar">{user.name?.[0].toUpperCase() || 'U'}</div>
+                      <ChevronDown size={14} />
+                    </div>
+                    {menuOpen && (
+                      <div className="profile-dropdown">
+                        <Link to="/profile" className="dropdown-item">Profile</Link>
+                        <Link to="/orders" className="dropdown-item">My Orders</Link>
+                        {user.role === "ADMIN" && <Link to="/admin" className="dropdown-item">Admin</Link>}
+                        <button onClick={handleLogout} className="dropdown-item text-danger">Logout</button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <Link to="/auth/login" className="profile-auth-btn">Sign In</Link>
+              )}
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* SECONDARY RIBBON: PUBLIC FEATURES HUB */}
+      <div className="navbar-natural__ribbon">
+        <div className="navbar-natural__container">
+          <nav className="ribbon-nav">
+            <Link to="/farming-news" className={`ribbon-link ${isActive('/farming-news') ? 'active' : ''}`}>
+              <Newspaper size={18} />
+              <span>News</span>
+            </Link>
+            <Link to="/intelligence/mandi" className={`ribbon-link ${isActive('/intelligence/mandi') ? 'active' : ''}`}>
+              <Zap size={18} />
+              <span>Intelligence Hub</span>
+            </Link>
+            <Link to="/nearby-mandis" className={`ribbon-link ${isActive('/nearby-mandis') ? 'active' : ''}`}>
+              <MapPin size={18} />
+              <span>Mandi Prices</span>
+            </Link>
+            <Link to="/pest-detection" className={`ribbon-link ${isActive('/pest-detection') ? 'active' : ''}`}>
+              <Skull size={18} />
+              <span>Pest Alerts</span>
+            </Link>
+          </nav>
         </div>
       </div>
     </header>
