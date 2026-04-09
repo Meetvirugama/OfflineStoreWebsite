@@ -4,7 +4,7 @@ import OrderItem from "./order_item.model.js";
 import Product from "../product/product.model.js";
 import * as cartService from "../cart/cart.service.js";
 
-export const createFromCart = async (userId) => {
+export const createFromCart = async (userId, customerId) => {
     const { items: cartItems } = await cartService.getCart(userId);
     if (!cartItems.length) throw new Error("Cart is empty");
 
@@ -19,11 +19,13 @@ export const createFromCart = async (userId) => {
                 throw new Error(`Insufficient stock for ${product.name}`);
             }
 
-            total += product.price * item.quantity;
+            const itemPrice = product.selling_price || product.mrp;
+            total += itemPrice * item.quantity;
             itemsToCreate.push({
                 product_id: item.product_id,
                 quantity: item.quantity,
-                price_at_purchase: product.price
+                price: itemPrice,
+                total: itemPrice * item.quantity
             });
 
             // Update Stock
@@ -31,9 +33,12 @@ export const createFromCart = async (userId) => {
         }
 
         const order = await Order.create({
-            user_id: userId,
+            customer_id: customerId || userId, // Fallback if no specific customer_id
             total_amount: total,
-            status: "PENDING"
+            final_amount: total, 
+            status: "PENDING",
+            created_by: userId,
+            order_date: new Date()
         }, { transaction: t });
 
         for (const item of itemsToCreate) {
@@ -50,9 +55,22 @@ export const createFromCart = async (userId) => {
     }
 };
 
-export const getUserOrders = async (userId) => {
+export const getUserOrders = async (customerId) => {
     return await Order.findAll({
-        where: { user_id: userId },
+        where: { customer_id: customerId },
         include: [{ model: OrderItem, include: [Product] }]
     });
+};
+
+export const getAllOrders = async () => {
+    return await Order.findAll({
+        include: [{ model: OrderItem, include: [Product] }, { model: Product, as: 'Product' }] // Adjust based on associations
+    });
+};
+
+export const updateOrderStatus = async (orderId, status) => {
+    const order = await Order.findByPk(orderId);
+    if (!order) throw new Error("Order not found");
+    order.status = status;
+    return await order.save();
 };

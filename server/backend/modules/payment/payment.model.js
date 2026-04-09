@@ -4,17 +4,14 @@ import sequelize from "../../config/db.js";
 const Payment = sequelize.define("Payment", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   order_id: { type: DataTypes.INTEGER, allowNull: false },
-  user_id: { type: DataTypes.INTEGER, allowNull: false },
   amount: { type: DataTypes.FLOAT, allowNull: false },
-  method: { type: DataTypes.STRING, defaultValue: "RAZORPAY" },
-  status: { type: DataTypes.ENUM("PENDING", "SUCCESS", "FAILED"), defaultValue: "PENDING" },
-  transaction_id: { type: DataTypes.STRING },
-  razorpay_payment_id: { type: DataTypes.STRING }
+  payment_mode: { type: DataTypes.STRING, allowNull: false }, // RAZORPAY, CASH, etc.
+  payment_date: { type: DataTypes.DATE },
+  reference_no: { type: DataTypes.STRING },
+  created_by: { type: DataTypes.INTEGER, allowNull: false }
 }, {
-  tableName: "payments",
-  timestamps: true,
-  createdAt: "created_at",
-  updatedAt: "updated_at",
+  tableName: "payment",
+  timestamps: false
 });
 
 export default Payment;

@@ -7,7 +7,7 @@ const CartItem = sequelize.define("CartItem", {
   product_id: { type: DataTypes.INTEGER, allowNull: false },
   quantity: { type: DataTypes.INTEGER, defaultValue: 1 }
 }, {
-  tableName: "cart_items",
+  tableName: "cart_item",
   timestamps: false
 });
 

@@ -6,9 +6,10 @@ const OrderItem = sequelize.define("OrderItem", {
   order_id: { type: DataTypes.INTEGER, allowNull: false },
   product_id: { type: DataTypes.INTEGER, allowNull: false },
   quantity: { type: DataTypes.INTEGER, allowNull: false },
-  price_at_purchase: { type: DataTypes.FLOAT, allowNull: false }
+  price: { type: DataTypes.FLOAT },
+  total: { type: DataTypes.FLOAT }
 }, {
-  tableName: "order_items",
+  tableName: "order_item",
   timestamps: false
 });
 

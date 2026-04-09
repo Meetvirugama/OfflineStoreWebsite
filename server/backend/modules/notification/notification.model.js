@@ -3,16 +3,18 @@ import sequelize from "../../config/db.js";
 
 const Notification = sequelize.define("Notification", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  user_id: { type: DataTypes.INTEGER, allowNull: false },
-  title: { type: DataTypes.STRING, allowNull: false },
-  message: { type: DataTypes.TEXT, allowNull: false },
-  type: { type: DataTypes.ENUM("INFO", "WARNING", "SUCCESS", "ALERT"), defaultValue: "INFO" },
-  is_read: { type: DataTypes.BOOLEAN, defaultValue: false }
+  type: { type: DataTypes.STRING },
+  message: { type: DataTypes.TEXT },
+  reference_id: { type: DataTypes.INTEGER },
+  is_read: { type: DataTypes.BOOLEAN, defaultValue: false },
+  is_opened: { type: DataTypes.BOOLEAN, defaultValue: false },
+  is_clicked: { type: DataTypes.BOOLEAN, defaultValue: false },
+  opened_at: { type: DataTypes.DATE },
+  clicked_at: { type: DataTypes.DATE },
+  created_at: { type: DataTypes.DATE, allowNull: false }
 }, {
-  tableName: "notifications",
-  timestamps: true,
-  createdAt: "created_at",
-  updatedAt: "updated_at",
+  tableName: "notification",
+  timestamps: false
 });
 
 export default Notification;

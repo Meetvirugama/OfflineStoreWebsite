@@ -4,15 +4,13 @@ import sequelize from "../../config/db.js";
 const Inventory = sequelize.define("Inventory", {
   id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
   product_id: { type: DataTypes.INTEGER, allowNull: false },
-  supplier_id: { type: DataTypes.INTEGER },
-  quantity: { type: DataTypes.INTEGER, allowNull: false },
-  type: { type: DataTypes.ENUM("IN", "OUT"), defaultValue: "IN" }, // IN (Purchase), OUT (Sale/Adjustment)
-  note: { type: DataTypes.STRING }
+  quantity_change: { type: DataTypes.INTEGER, allowNull: false },
+  type: { type: DataTypes.STRING, allowNull: false }, // Use STRING for simplicity with custom ENUMs
+  reference_type: { type: DataTypes.STRING },
+  reference_id: { type: DataTypes.INTEGER }
 }, {
-  tableName: "inventory_logs",
-  timestamps: true,
-  createdAt: "created_at",
-  updatedAt: "updated_at",
+  tableName: "inventory",
+  timestamps: false
 });
 
 export default Inventory;

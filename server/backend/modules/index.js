@@ -36,12 +36,12 @@ User.hasMany(PestDetection, { foreignKey: "user_id" });
 PestDetection.belongsTo(User, { foreignKey: "user_id" });
 
 // User & Notifications
-User.hasMany(Notification, { foreignKey: "user_id" });
-Notification.belongsTo(User, { foreignKey: "user_id" });
+// User.hasMany(Notification, { foreignKey: "user_id" });
+// Notification.belongsTo(User, { foreignKey: "user_id" });
 
 // Cart
-User.hasOne(Cart, { foreignKey: "user_id" });
-Cart.belongsTo(User, { foreignKey: "user_id" });
+Customer.hasOne(Cart, { foreignKey: "customer_id" });
+Cart.belongsTo(Customer, { foreignKey: "customer_id" });
 
 Cart.hasMany(CartItem, { foreignKey: "cart_id" });
 CartItem.belongsTo(Cart, { foreignKey: "cart_id" });
@@ -50,8 +50,11 @@ Product.hasMany(CartItem, { foreignKey: "product_id" });
 CartItem.belongsTo(Product, { foreignKey: "product_id" });
 
 // Orders
-User.hasMany(Order, { foreignKey: "user_id" });
-Order.belongsTo(User, { foreignKey: "user_id" });
+Customer.hasMany(Order, { foreignKey: "customer_id" });
+Order.belongsTo(Customer, { foreignKey: "customer_id" });
+
+User.hasMany(Order, { foreignKey: "created_by" });
+Order.belongsTo(User, { as: "creator", foreignKey: "created_by" });
 
 Order.hasMany(OrderItem, { foreignKey: "order_id" });
 OrderItem.belongsTo(Order, { foreignKey: "order_id" });
@@ -63,11 +66,11 @@ OrderItem.belongsTo(Product, { foreignKey: "product_id" });
 Order.hasMany(Payment, { foreignKey: "order_id" });
 Payment.belongsTo(Order, { foreignKey: "order_id" });
 
-User.hasMany(Payment, { foreignKey: "user_id" });
-Payment.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(Payment, { foreignKey: "created_by" });
+Payment.belongsTo(User, { as: "payer", foreignKey: "created_by" });
 
-User.hasMany(Ledger, { foreignKey: "user_id" });
-Ledger.belongsTo(User, { foreignKey: "user_id" });
+Customer.hasMany(Ledger, { foreignKey: "customer_id" });
+Ledger.belongsTo(Customer, { foreignKey: "customer_id" });
 
 User.hasMany(PriceAlert, { foreignKey: "user_id" });
 PriceAlert.belongsTo(User, { foreignKey: "user_id" });

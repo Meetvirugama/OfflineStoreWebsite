@@ -4,7 +4,7 @@ import { protect, restrictTo } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", productController.list); // Public view
+router.get("/", productController.list); // Authenticated users can see products
 router.get("/low-stock", protect, restrictTo("ADMIN"), productController.getLowStock);
 
 router.post("/", protect, restrictTo("ADMIN"), productController.create);
