@@ -11,7 +11,7 @@
 /* HERO SECTION */
 .hero {
   position: relative;
-  height: 680px;
+  height: 540px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -83,12 +83,12 @@
 
 .hero__title {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(48px, 6vw, 84px);
+  font-size: clamp(32px, 4vw, 56px);
   font-weight: 800;
   line-height: 1.1;
   color: #fff;
-  margin-bottom: 24px;
-  letter-spacing: -2.5px;
+  margin-bottom: 20px;
+  letter-spacing: -1.5px;
 }
 
 .hero__title--accent {
@@ -138,8 +138,8 @@
 
 .home-cat-card {
   background: #ffffff;
-  padding: 20px;
-  border-radius: 20px;
+  padding: 14px 18px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -169,14 +169,14 @@
 }
 
 .home-cat-card__icon {
-  width: 52px;
-  height: 52px;
-  background: var(--bg-main);
-  border-radius: var(--radius-md);
+  width: 36px;
+  height: 36px;
+  background: #f1f5f9;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
   transition: var(--transition);
 }
 
@@ -187,10 +187,10 @@
 }
 
 .home-cat-card__name {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .home-cat-card__arrow {
