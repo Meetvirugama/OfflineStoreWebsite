@@ -8,15 +8,15 @@ import "./modules/index.js";
 const startServer = async () => {
     try {
         console.log("📡 Connecting to Database...");
+        console.log(`🔗 URL: ${DATABASE_URL ? DATABASE_URL.substring(0, 15) + "..." : "MISSING"}`);
         await sequelize.authenticate();
-        console.log("✅ Database Connected.");
+        console.log("✅ Database Authenticated successfully.");
 
-        // In production, you might not want to sync automatically.
-        // But for this migration, it ensures the tables match the models.
-        if (process.env.NODE_ENV === "development") {
-            await sequelize.sync({ alter: true });
-            console.log("🔄 Database Synced (Alter Mode).");
-        }
+        // Synchronize models with the database
+        // In this modular migration, we need to ensure table names match our new models (singular vs plural)
+        console.log("🔄 Synchronizing models...");
+        await sequelize.sync({ alter: true });
+        console.log("✅ Database Synced successfully (Alter Mode).");
 
         const PORT = ENV.PORT || 5001;
         const HOST = '0.0.0.0'; // Explicitly bind for Render/Cloud compatibility
