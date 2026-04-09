@@ -89,9 +89,70 @@ export const getLiveMandiPrices = async (filters = {}) => {
 };
 
 /**
+ * Get Agri Intelligence Dashboard Stats from Live Data
+ */
+export const getAgriDashboardStats = async () => {
+    const API_KEY = ENV.DATA_GOV_KEY;
+    const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
+
+    if (!API_KEY) return null;
+
+    try {
+        const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, {
+            params: {
+                "api-key": API_KEY,
+                format: "json",
+                limit: 200, // Fetch enough for meaningful trends
+                sort: "arrival_date desc"
+            }
+        });
+
+        const records = response.data.records || [];
+        if (records.length === 0) return null;
+
+        // 1. Top Crops by Volume (Frequency in arrival records)
+        const cropCounts = {};
+        records.forEach(r => {
+            cropCounts[r.commodity] = (cropCounts[r.commodity] || 0) + 1;
+        });
+        const topCrops = Object.entries(cropCounts)
+            .map(([commodity, volume]) => ({ commodity, volume }))
+            .sort((a, b) => b.volume - a.volume)
+            .slice(0, 5);
+
+        // 2. Price Trends (Daily Average Modal Price)
+        const dailyPrices = {};
+        records.forEach(r => {
+            const date = new Date(r.arrival_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+            if (!dailyPrices[date]) dailyPrices[date] = { sum: 0, count: 0 };
+            dailyPrices[date].sum += parseFloat(r.modal_price) || 0;
+            dailyPrices[date].count += 1;
+        });
+        const trends = Object.entries(dailyPrices)
+            .map(([date, stats]) => ({ date, avg_price: Math.round(stats.sum / stats.count) }))
+            .sort((a,b) => new Date(a.date) - new Date(b.date))
+            .slice(-7);
+
+        // 3. Demand/Category Insights (Simplified mapping)
+        const demand = [
+            { category: "Grains", movement: records.filter(r => ["Wheat", "Paddy", "Bajra"].includes(r.commodity)).length },
+            { category: "Vegetables", movement: records.filter(r => ["Onion", "Tomato", "Potato"].includes(r.commodity)).length },
+            { category: "Oilseeds", movement: records.filter(r => ["Mustard", "Soyabean", "Groundnut"].includes(r.commodity)).length }
+        ].filter(d => d.movement > 0);
+
+        return { topCrops, trends, demand };
+    } catch (err) {
+        console.error("Agri Stats Error:", err.message);
+        return null;
+    }
+};
+
+/**
  * Search Mandis via Text
  */
 export const searchMandis = async (query) => {
+    if (!ENV.GOOGLE_PLACES_KEY) return [];
+    
     const url = `https://maps.googleapis.com/maps/api/place/textsearch/json`;
     const response = await axios.get(url, {
         params: {

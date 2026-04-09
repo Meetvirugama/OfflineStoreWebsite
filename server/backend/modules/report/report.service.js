@@ -4,6 +4,7 @@ import Order from "../order/order.model.js";
 import Product from "../product/product.model.js";
 import Customer from "../customer/customer.model.js";
 import Analytics from "../dashboard/dashboard.model.js";
+import { getAgriDashboardStats } from "../mandi/mandi.service.js";
 
 export const getDashboardStats = async () => {
     // 1. Summary KPIs
@@ -87,26 +88,8 @@ export const getDashboardStats = async () => {
         checkout: await Analytics.count({ where: { type: "VISIT", page: { [Op.iLike]: "%checkout%" } } })
     };
 
-    // 8. Agri-Insights (Mocking for now to match UI expectations)
-    const agriInsights = {
-        topCrops: [
-            { commodity: "Wheat", volume: 450 },
-            { commodity: "Rice", volume: 380 },
-            { commodity: "Tomato", volume: 290 },
-            { commodity: "Onion", volume: 210 }
-        ],
-        trends: [
-            { date: "01 Apr", avg_price: 2100 },
-            { date: "02 Apr", avg_price: 2150 },
-            { date: "03 Apr", avg_price: 2200 },
-            { date: "04 Apr", avg_price: 2180 }
-        ],
-        demand: [
-            { category: "Grains", movement: 60 },
-            { category: "Vegetables", movement: 30 },
-            { category: "Fruits", movement: 10 }
-        ]
-    };
+    // 8. Agri-Insights (Real dynamic data from Data.gov.in)
+    const agriInsights = await getAgriDashboardStats();
 
     return {
         dashboard: {
