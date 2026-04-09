@@ -8,8 +8,8 @@ const useNotificationStore = create((set, get) => ({
   fetchNotifications: async () => {
     set({ loading: true });
     try {
-      const data = await notificationService.fetchNotifications();
-      set({ notifications: data, loading: false });
+      const res = await notificationService.fetchNotifications();
+      set({ notifications: res.data || [], loading: false });
     } catch {
       set({ loading: false });
     }

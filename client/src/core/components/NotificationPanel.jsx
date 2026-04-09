@@ -16,7 +16,8 @@ export default function NotificationPanel() {
     fetchNotifications();
   }, []);
 
-  const unreadCount = notifications.filter(n => !n.is_opened).length;
+  const safeNotifications = Array.isArray(notifications) ? notifications : [];
+  const unreadCount = safeNotifications.filter(n => !n.is_opened).length;
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
@@ -40,7 +41,7 @@ export default function NotificationPanel() {
       </div>
 
       <div className="notif-list">
-        {notifications.length === 0 ? (
+        {safeNotifications.length === 0 ? (
           <div className="notif-empty">
             <div className="notif-empty-icon">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
@@ -49,7 +50,7 @@ export default function NotificationPanel() {
             <span>No new notifications</span>
           </div>
         ) : (
-          notifications.map((n) => (
+          safeNotifications.map((n) => (
             <div
               key={n.id}
               className={`notif-item ${n.is_opened ? "opened" : "unread"}`}

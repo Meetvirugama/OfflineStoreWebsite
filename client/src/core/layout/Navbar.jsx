@@ -73,7 +73,7 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const cartCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const cartCount = (Array.isArray(items) ? items : []).reduce((sum, i) => sum + i.quantity, 0);
   const unreadCount = (Array.isArray(notifications) ? notifications : []).filter(n => !n.is_read).length;
 
   useEffect(() => {

@@ -9,7 +9,8 @@ const useCartStore = create((set, get) => ({
   fetchCart: async () => {
     set({ loading: true });
     try {
-      const { cartId, items } = await checkoutService.fetchCart();
+      const res = await checkoutService.fetchCart();
+      const { cartId, items } = res.data || { cartId: null, items: [] };
       set({ cartId, items, loading: false });
     } catch {
       set({ loading: false });
