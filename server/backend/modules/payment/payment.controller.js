@@ -4,6 +4,12 @@ import { asyncHandler } from "../../utils/errorHandler.js";
 
 export const createOrder = asyncHandler(async (req, res) => {
     const { order_id, amount } = req.body;
+    
+    if (!process.env.RAZORPAY_KEY || !process.env.RAZORPAY_SECRET) {
+        console.error("FATAL ERROR: Razorpay keys missing in environment.");
+        return res.status(500).json({ success: false, message: "Payment gateway misconfigured. Check server environment." });
+    }
+
     const rzpOrder = await paymentService.createRazorpayOrder(order_id, amount);
     sendResponse(res, 201, "Razorpay order created", rzpOrder);
 });

@@ -3,8 +3,8 @@ import Payment from "./payment.model.js";
 import Order from "../order/order.model.js";
 
 const rzp = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_M1O7m7qOQ7o7q7', 
-    key_secret: process.env.RAZORPAY_KEY_SECRET || 'test_secret'
+    key_id: process.env.RAZORPAY_KEY, 
+    key_secret: process.env.RAZORPAY_SECRET
 });
 
 export const createRazorpayOrder = async (orderId, amount) => {
