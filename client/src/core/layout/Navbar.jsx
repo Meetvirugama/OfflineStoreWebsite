@@ -143,9 +143,9 @@ export default function Navbar() {
                 <Newspaper size={20} />
                 <span>News</span>
               </Link>
-              <Link to="/nearby-mandis" className={`nav-link ${isActive('/nearby-mandis') ? 'active' : ''}`}>
-                <MapPin size={20} />
-                <span>Mandi</span>
+              <Link to="/intelligence/mandi" className={`nav-link ${isActive('/intelligence/mandi') ? 'active' : ''}`}>
+                <Zap size={20} />
+                <span>Intelligence</span>
               </Link>
               <Link to="/pest-detection" className={`nav-link ${isActive('/pest-detection') ? 'active' : ''}`}>
                 <Skull size={20} />

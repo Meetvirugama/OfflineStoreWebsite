@@ -3,6 +3,7 @@ import MainLayout from "@core/layout/MainLayout";
 import AdminLayout from "@core/layout/AdminLayout";
 import RoleGuard from "@core/guards/RoleGuard";
 import LoadingBar from "@core/components/LoadingBar";
+import IntelligenceLayout from "@core/layout/IntelligenceLayout";
 
 // Features: Shop & Products
 import HomePage from "@features/shop/pages/HomePage";
@@ -58,7 +59,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
-          <Route path="/farming-news" element={<FarmingNewsPage />} />
           <Route path="/crop-advisory" element={<CropAdvisoryPage />} />
           <Route path="/pest-detection" element={<PestDetectionPage />} />
           <Route path="/nearby-mandis" element={<NearbyMandisPage />} />
@@ -80,6 +80,16 @@ function App() {
           <Route path="/profile" element={<RoleGuard allowedRoles={["CUSTOMER", "ADMIN"]}><ProfilePage /></RoleGuard>} />
         </Route>
 
+        {/* PUBLIC INTELLIGENCE HUB */}
+        <Route element={<IntelligenceLayout />}>
+          <Route path="/intelligence/mandi" element={<MandiDashboardPage />} />
+          <Route path="/intelligence/mandi/prices" element={<MandiPricesPage />} />
+          <Route path="/intelligence/agri/analytics" element={<AgriAnalyticsPage />} />
+          <Route path="/intelligence/weather" element={<WeatherDashboard />} />
+          <Route path="/intelligence/agri/crop/:name" element={<CropDetailsPage />} />
+          <Route path="/farming-news" element={<FarmingNewsPage />} />
+        </Route>
+
         {/* ADMIN */}
         <Route element={<RoleGuard allowedRoles={["ADMIN"]}><AdminLayout /></RoleGuard>}>
           <Route path="/admin" element={<AnalyticsPage />} />
@@ -91,12 +101,6 @@ function App() {
           <Route path="/admin/profile" element={<AdminProfilePage />} />
           <Route path="/admin/suppliers" element={<SuppliersListPage />} />
           <Route path="/admin/suppliers/:id" element={<SupplierDetailsPage />} />
-          <Route path="/admin/mandi" element={<MandiDashboardPage />} />
-          <Route path="/admin/mandi/prices" element={<MandiPricesPage />} />
-
-          <Route path="/admin/agri/analytics" element={<AgriAnalyticsPage />} />
-          <Route path="/admin/weather" element={<WeatherDashboard />} />
-          <Route path="/admin/agri/crop/:name" element={<CropDetailsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

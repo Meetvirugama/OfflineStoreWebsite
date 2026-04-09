@@ -4,13 +4,10 @@ import { protect } from "../../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.use(protect); // Secure crop data
-
-router.post("/save", cropController.addCrop);
-router.get("/my", cropController.getMyCrops);
-router.delete("/:id", cropController.deleteCrop);
-
-router.get("/pest-history", cropController.getPestHistory);
+router.post("/save", protect, cropController.addCrop);
+router.get("/my", protect, cropController.getMyCrops);
+router.delete("/:id", protect, cropController.deleteCrop);
+router.get("/pest-history", protect, cropController.getPestHistory);
 
 // Analytics
 router.get("/list", cropController.getCrops);
