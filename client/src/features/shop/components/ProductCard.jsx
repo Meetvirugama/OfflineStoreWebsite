@@ -14,7 +14,7 @@ function calcDiscount(mrp, selling) {
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
   const { customer, token } = useAuthStore();
-  const { addToCart } = useCartStore();
+  const { addItem } = useCartStore();
   const { addToast } = useToastStore();
   const [adding, setAdding] = useState(false);
 
@@ -28,16 +28,12 @@ export default function ProductCard({ product }) {
       navigate("/auth/login");
       return;
     }
-    if (!customer) {
-      addToast("Loading your profile...", "info");
-      return;
-    }
     setAdding(true);
     try {
-      await addToCart(customer.id, product.id, 1);
+      await addItem(product.id, 1);
       addToast(`${product.name} added to cart!`, "success");
     } catch (err) {
-      addToast(err.message, "error");
+      addToast(err.message || "Failed to add item", "error");
     } finally {
       setAdding(false);
     }

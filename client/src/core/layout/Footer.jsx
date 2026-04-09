@@ -57,6 +57,16 @@ export default function Footer() {
         </div>
 
         <div className="footer__col">
+          <h4 className="footer__col-title">Agri Intelligence</h4>
+          <ul className="footer__links">
+            <li><Link to="/farming-news">🌾 Farming News</Link></li>
+            <li><Link to="/nearby-mandis">📍 Nearby Mandis</Link></li>
+            <li><Link to="/pest-detection">🔬 Pest Detection</Link></li>
+            <li><Link to="/crop-advisory">📋 Crop Advisory</Link></li>
+          </ul>
+        </div>
+
+        <div className="footer__col">
           <h4 className="footer__col-title">Contact</h4>
           <ul className="footer__links footer__links--info">
             <li>📞 +91 6352860412</li>

@@ -22,7 +22,7 @@ export const getInventoryReport = async () => {
             p.category,
             p.stock,
             p.unit
-        FROM products p
+        FROM product p
         ORDER BY p.category, p.name
     `);
     

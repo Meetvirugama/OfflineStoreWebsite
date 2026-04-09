@@ -1,13 +1,33 @@
+import { Op } from "sequelize";
 import Product from "./product.model.js";
 import Inventory from "./inventory.model.js";
 import Supplier from "./supplier.model.js";
+
+export const getCategories = async () => {
+    return await Product.findAll({
+        attributes: [[sequelize.fn('DISTINCT', sequelize.col('category')), 'category']],
+        raw: true
+    }).then(res => res.map(r => r.category).filter(Boolean));
+};
 
 export const createProduct = async (data) => {
     return await Product.create(data);
 };
 
-export const listProducts = async () => {
-    return await Product.findAll();
+export const listProducts = async ({ search, category, limit } = {}) => {
+    const where = {};
+    if (search) {
+        where.name = { [Op.iLike]: `%${search}%` };
+    }
+    if (category) {
+        where.category = category;
+    }
+
+    return await Product.findAll({
+        where,
+        limit: limit ? Number(limit) : undefined,
+        order: [["id", "DESC"]]
+    });
 };
 
 export const getProductById = async (id) => {

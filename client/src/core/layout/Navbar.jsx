@@ -24,6 +24,7 @@ import {
 import useAuthStore from "@features/auth/store/auth.store";
 import useCartStore from "@features/checkout/store/cart.store";
 import useNotificationStore from "@features/notifications/store/notification.store";
+import api from "@core/api/client";
 import NotificationPanel from "@core/components/NotificationPanel";
 import "@/styles/Navbar.css";
 
@@ -35,10 +36,42 @@ export default function Navbar() {
   const { notifications, fetchNotifications } = useNotificationStore();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const notifRef = useRef(null);
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (searchQuery.trim().length < 2) {
+        setSuggestions([]);
+        return;
+      }
+      try {
+        const res = await api.get(`/products?search=${searchQuery}&limit=5`);
+        setSuggestions(res.data || []);
+        setShowSuggestions(true);
+      } catch (err) {
+        console.error("Search error:", err);
+      }
+    };
+
+    const timer = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const cartCount = items.reduce((sum, i) => sum + i.quantity, 0);
   const unreadCount = notifications.filter(n => !n.is_read).length;
@@ -69,18 +102,57 @@ export default function Navbar() {
             Agro<span className="logo-accent">Mart</span>
           </Link>
 
-          <form className="navbar-natural__search desktop-search">
-            <Search className="search-icon" size={20} />
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input-field"
-            />
-          </form>
+          <div className="navbar-natural__search-container" ref={searchRef}>
+            <form className="navbar-natural__search desktop-search" onSubmit={(e) => { e.preventDefault(); navigate(`/products?search=${searchQuery}`); setShowSuggestions(false); }}>
+              <Search className="search-icon" size={20} />
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
+                className="search-input-field"
+              />
+            </form>
+            
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="search-suggestions">
+                {suggestions.map((p) => (
+                  <div 
+                    key={p.id} 
+                    className="suggestion-item"
+                    onClick={() => {
+                      navigate(`/products/${p.id}`);
+                      setSearchQuery("");
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    <div className="suggestion-info">
+                      <p className="suggestion-name">{p.name}</p>
+                      <p className="suggestion-meta">{p.category} • ₹{p.selling_price}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <div className="navbar-natural__actions">
+            <nav className="navbar-natural__nav">
+              <Link to="/farming-news" className={`nav-link ${isActive('/farming-news') ? 'active' : ''}`}>
+                <Newspaper size={20} />
+                <span>News</span>
+              </Link>
+              <Link to="/nearby-mandis" className={`nav-link ${isActive('/nearby-mandis') ? 'active' : ''}`}>
+                <MapPin size={20} />
+                <span>Mandi</span>
+              </Link>
+              <Link to="/pest-detection" className={`nav-link ${isActive('/pest-detection') ? 'active' : ''}`}>
+                <Skull size={20} />
+                <span>Pests</span>
+              </Link>
+            </nav>
+
             <div className="action-btn cart-btn" onClick={() => setDrawerOpen && setDrawerOpen(true)}>
               <ShoppingBag size={24} />
               {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}

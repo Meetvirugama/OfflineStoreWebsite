@@ -12,4 +12,10 @@ router.delete("/:id", cropController.deleteCrop);
 
 router.get("/pest-history", cropController.getPestHistory);
 
+// Analytics
+router.get("/list", cropController.getCrops);
+router.get("/seasonal", cropController.getSeasonal);
+router.get("/:name/trends", cropController.getTrends);
+router.get("/:name/insights", cropController.getInsights);
+
 export default router;

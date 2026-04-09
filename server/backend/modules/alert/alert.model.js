@@ -9,7 +9,7 @@ const PriceAlert = sequelize.define("PriceAlert", {
   condition: { type: DataTypes.ENUM("ABOVE", "BELOW"), defaultValue: "ABOVE" },
   is_active: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, {
-  tableName: "price_alerts",
+  tableName: "price_alert",
   timestamps: true,
   createdAt: "created_at",
   updatedAt: "updated_at",

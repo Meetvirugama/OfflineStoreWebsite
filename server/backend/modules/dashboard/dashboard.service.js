@@ -18,8 +18,11 @@ export const getAdminStats = async () => {
 };
 
 export const getFarmerStats = async (userId) => {
-    const totalOrders = await Order.count({ where: { user_id: userId } });
-    const totalSpent = await Order.sum("total_amount", { where: { user_id: userId } }) || 0;
+    const customer = await Customer.findOne({ where: { user_id: userId } });
+    if (!customer) return { totalOrders: 0, totalSpent: 0 };
+
+    const totalOrders = await Order.count({ where: { customer_id: customer.id } });
+    const totalSpent = await Order.sum("total_amount", { where: { customer_id: customer.id } }) || 0;
     
     return {
         totalOrders,

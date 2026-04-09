@@ -132,9 +132,25 @@ export default function AdminProductsPage() {
                             <td><span style={{ background: '#f1f5f9', padding: '4px 8px', borderRadius: '4px', fontSize: '12px' }}>{p.category}</span></td>
                             <td>₹{p.selling_price}</td>
                             <td>
-                                <span style={{ fontWeight: 'bold', color: p.stock > 10 ? '#059669' : '#e11d48' }}>
-                                    {p.stock} Units
-                                </span>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                    <span style={{ fontWeight: 'bold', color: p.stock >= 10 ? '#059669' : '#e11d48' }}>
+                                        {p.stock} Units
+                                    </span>
+                                    {p.stock < 10 && (
+                                        <span style={{ 
+                                            fontSize: '10px', 
+                                            background: '#fee2e2', 
+                                            color: '#b91c1c', 
+                                            padding: '2px 6px', 
+                                            borderRadius: '99px',
+                                            fontWeight: '800',
+                                            textAlign: 'center',
+                                            width: 'fit-content'
+                                        }}>
+                                            LOW STOCK
+                                        </span>
+                                    )}
+                                </div>
                             </td>
                             <td>
                                 <div className="table-actions">

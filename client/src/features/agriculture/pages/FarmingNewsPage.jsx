@@ -243,22 +243,10 @@ const FarmingNewsPage = () => {
                             <TrendingUp className="agri-green" size={20} />
                             <h3 style={{ fontSize: '1rem', fontWeight: 800 }}>Mandi Pulse</h3>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {[
-                                { crop: 'Cotton', price: '7,250', trend: 'up' },
-                                { crop: 'Wheat', price: '2,240', trend: 'down' },
-                                { crop: 'Groundnut', price: '5,800', trend: 'up' }
-                            ].map(item => (
-                                <div key={item.crop} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{item.crop}</span>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <span style={{ fontSize: '0.85rem', fontWeight: 700 }}>₹{item.price}</span>
-                                        <div style={{ color: item.trend === 'up' ? '#10b981' : '#ef4444' }}>
-                                            {item.trend === 'up' ? '▲' : '▼'}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            <p style={{ opacity: 0.4, fontSize: '0.8rem', lineHeight: 1.5 }}>
+                                Live market price trends are indexed from certified Mandi arrivals. Visit the analytics deck for granular structural insight.
+                            </p>
                         </div>
                         <button 
                             onClick={() => window.location.href='/analytics'}

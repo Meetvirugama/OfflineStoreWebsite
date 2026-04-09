@@ -1,21 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import useCropStore from '@features/agriculture/crop/crop.store';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { TrendingUp, BarChart3, Filter } from 'lucide-react';
+import { TrendingUp, BarChart3, Filter, Calendar } from 'lucide-react';
 import '@/styles/agriIntelligence.css';
 
 const AgriAnalyticsPage = () => {
-    const { trends, fetchCropTrends, loading, error, aiAnalysis, seasonal, fetchAIInsights, fetchSeasonalSuggestions } = useCropStore();
-    const [selectedCrop, setSelectedCrop] = useState('Wheat');
+    const { 
+        crops, 
+        fetchCrops, 
+        trends, 
+        fetchCropTrends, 
+        loading, 
+        error, 
+        aiAnalysis, 
+        seasonal, 
+        fetchAIInsights, 
+        fetchSeasonalSuggestions 
+    } = useCropStore();
+    const [selectedCrop, setSelectedCrop] = useState('');
     const [days, setDays] = useState(30);
 
-    const crops = ['Wheat', 'Rice', 'Cotton', 'Tomato', 'Onion', 'Potato'];
+    useEffect(() => {
+        fetchCrops();
+        fetchSeasonalSuggestions();
+    }, [fetchCrops, fetchSeasonalSuggestions]);
 
     useEffect(() => {
-        fetchCropTrends(selectedCrop, days);
-        fetchAIInsights(selectedCrop);
-        fetchSeasonalSuggestions();
-    }, [selectedCrop, days, fetchCropTrends, fetchAIInsights, fetchSeasonalSuggestions]);
+        if (crops.length > 0 && !selectedCrop) {
+            setSelectedCrop(crops[0]);
+        }
+    }, [crops, selectedCrop]);
+
+    useEffect(() => {
+        if (selectedCrop) {
+            fetchCropTrends(selectedCrop, days);
+            fetchAIInsights(selectedCrop);
+        }
+    }, [selectedCrop, days, fetchCropTrends, fetchAIInsights]);
 
     return (
         <div className="agri-page">

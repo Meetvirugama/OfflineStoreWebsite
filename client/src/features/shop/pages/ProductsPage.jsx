@@ -11,45 +11,32 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("default");
 
-  const queryCategory = searchParams.get("category") || "All";
-  const querySearch = searchParams.get("q") || "";
+  const queryCategory = searchParams.get("category");
+  const querySearch = searchParams.get("search");
 
   useEffect(() => {
-    document.title = "All Products – AgroMart";
-    api.get("/products").then((res) => {
-      setProducts(res.data || []);
-      setLoading(false);
-    }).catch(() => setLoading(false));
-  }, []);
+    document.title = "Products – AgroMart";
+    setLoading(true);
+    
+    const params = new URLSearchParams();
+    if (queryCategory && queryCategory !== "All") params.append("category", queryCategory);
+    if (querySearch) params.append("search", querySearch);
+    
+    api.get(`/products?${params.toString()}`)
+      .then((res) => {
+        setProducts(res.data || []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [queryCategory, querySearch]);
 
-  const filtered = useMemo(() => {
+  const sortedProducts = useMemo(() => {
     let list = [...products];
-
-    // Filter by category
-    if (queryCategory !== "All") {
-      list = list.filter((p) =>
-        p.category?.toLowerCase().includes(queryCategory.toLowerCase()) ||
-        p.name?.toLowerCase().includes(queryCategory.toLowerCase())
-      );
-    }
-
-    // Filter by search
-    if (querySearch) {
-      const q = querySearch.toLowerCase();
-      list = list.filter((p) =>
-        p.name?.toLowerCase().includes(q) ||
-        p.brand?.toLowerCase().includes(q) ||
-        p.category?.toLowerCase().includes(q)
-      );
-    }
-
-    // Sort
     if (sort === "price-asc") list.sort((a, b) => (a.selling_price || 0) - (b.selling_price || 0));
     if (sort === "price-desc") list.sort((a, b) => (b.selling_price || 0) - (a.selling_price || 0));
     if (sort === "name") list.sort((a, b) => a.name?.localeCompare(b.name));
-
     return list;
-  }, [products, queryCategory, querySearch, sort]);
+  }, [products, sort]);
 
 
 
@@ -67,7 +54,7 @@ export default function ProductsPage() {
                 : "All Products"}
             </h1>
             <p className="products-page__count">
-              {loading ? "Discovering the best for you..." : `${filtered.length} products found`}
+              {loading ? "Discovering the best for you..." : `${sortedProducts.length} products found`}
             </p>
           </div>
           <div className="products-page__sort">
@@ -94,7 +81,7 @@ export default function ProductsPage() {
               <div style={{ display: 'flex', justifyContent: 'center', padding: '80px 0', width: '100%' }}>
                 <AgroLoader text="Fetching nature's best..." />
               </div>
-            ) : filtered.length === 0 ? (
+            ) : sortedProducts.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-state-icon">🔍</div>
                 <h3>No products found</h3>
@@ -102,7 +89,7 @@ export default function ProductsPage() {
               </div>
             ) : (
               <div className="grid-products">
-                {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
+                {sortedProducts.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}
           </div>

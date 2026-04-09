@@ -6,24 +6,38 @@ import { ENV } from "../../config/env.js";
  * Fetch nearby Mandis from Google Places
  */
 export const getNearbyMandis = async (lat, lon, radius = 50000) => {
-    const keyword = "mandi|APMC|agricultural market";
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
-    
-    const response = await axios.get(url, {
-        params: {
-            location: `${lat},${lon}`,
-            radius: radius,
-            keyword: keyword,
-            key: ENV.GOOGLE_PLACES_KEY
-        }
-    });
+    if (!ENV.GOOGLE_PLACES_KEY) {
+        console.warn("GOOGLE_PLACES_KEY missing. Returning precision fallback data.");
+        return [
+            { id: "mock-1", name: "Gondal APMC Mandi", address: "Gondal, Gujarat", location: { lat: 21.96, lng: 70.80 } },
+            { id: "mock-2", name: "Rajkot Marketing Yard", address: "Rajkot, Gujarat", location: { lat: 22.30, lng: 70.80 } },
+            { id: "mock-3", name: "Unjha Spice Mandi", address: "Unjha, North Gujarat", location: { lat: 23.81, lng: 72.39 } }
+        ];
+    }
 
-    return (response.data.results || []).map(place => ({
-        id: place.place_id,
-        name: place.name,
-        address: place.vicinity,
-        location: place.geometry.location
-    }));
+    try {
+        const keyword = "mandi|APMC|agricultural market";
+        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
+        
+        const response = await axios.get(url, {
+            params: {
+                location: `${lat},${lon}`,
+                radius: radius,
+                keyword: keyword,
+                key: ENV.GOOGLE_PLACES_KEY
+            }
+        });
+
+        return (response.data.results || []).map(place => ({
+            id: place.place_id,
+            name: place.name,
+            address: place.vicinity,
+            location: place.geometry.location
+        }));
+    } catch (err) {
+        console.error("Geocoding Error:", err);
+        return [];
+    }
 };
 
 /**

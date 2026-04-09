@@ -3,26 +3,58 @@ import apiClient from "@core/api/client";
 
 const useCropStore = create((set) => ({
     selectedCrop: null,
+    crops: [],
     trends: [],
-    recommendation: null,
+    aiAnalysis: null,
+    seasonal: null,
     loading: false,
     error: null,
 
-    fetchCropInfo: async (name) => {
+    fetchCrops: async () => {
         set({ loading: true, error: null });
         try {
-            const data = await apiClient.get(`/crops/${name}`);
-            set({ selectedCrop: data.crop, loading: false });
+            const res = await apiClient.get("/crops/list");
+            set({ crops: res.data || [], loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }
     },
 
-    fetchRecommendation: async (name) => {
-        set({ loading: true });
+    fetchCropInfo: async (name) => {
+        set({ loading: true, error: null });
         try {
-            const data = await apiClient.get(`/crops/${name}/recommendation`);
-            set({ recommendation: data, loading: false });
+            const res = await apiClient.get(`/crops/${name}`);
+            set({ selectedCrop: res.data, loading: false });
+        } catch (err) {
+            set({ error: err.message, loading: false });
+        }
+    },
+
+    fetchCropTrends: async (name, days = 30) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await apiClient.get(`/crops/${name}/trends?days=${days}`);
+            set({ trends: res.data, loading: false });
+        } catch (err) {
+            set({ error: err.message, loading: false });
+        }
+    },
+
+    fetchAIInsights: async (name) => {
+        set({ loading: true, error: null });
+        try {
+            const res = await apiClient.get(`/crops/${name}/insights`);
+            set({ aiAnalysis: res.data, loading: false });
+        } catch (err) {
+            set({ error: err.message, loading: false });
+        }
+    },
+
+    fetchSeasonalSuggestions: async () => {
+        set({ loading: true, error: null });
+        try {
+            const res = await apiClient.get(`/crops/seasonal`);
+            set({ seasonal: res.data, loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }

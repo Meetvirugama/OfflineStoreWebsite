@@ -5,31 +5,38 @@ import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
 import "@/styles/HomePage.css";
 
-const CATEGORIES = [
-  { name: "Fertilizers", icon: <Sprout size={32} />, color: "#059669", desc: "Boost crop yields" },
-  { name: "Pesticides", icon: <Skull size={32} />, color: "#ea580c", desc: "Protect your harvest" },
-  { name: "Medicines", icon: <Info size={32} />, color: "#0284c7", desc: "Ensure plant health" },
-  { name: "Seeds", icon: <Leaf size={32} />, color: "#854d0e", desc: "High quality seeds" },
-];
+const CATEGORY_MAP = {
+  "Fertilizers": { icon: <Sprout size={32} />, color: "#059669", desc: "Boost crop yields" },
+  "Pesticides": { icon: <Skull size={32} />, color: "#ea580c", desc: "Protect your harvest" },
+  "Medicines": { icon: <Info size={32} />, color: "#0284c7", desc: "Ensure plant health" },
+  "Seeds": { icon: <Leaf size={32} />, color: "#854d0e", desc: "High quality seeds" },
+  "default": { icon: <Leaf size={32} />, color: "#10b981", desc: "Organic agro supplies" }
+};
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     document.title = "AgroMart – India's Trusted Source";
 
-    api
-      .get("/products")
-      .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : [];
-        setProducts(data.slice(0, 8));
+    const fetchHomeData = async () => {
+      try {
+        const [prodRes, catRes] = await Promise.all([
+          api.get("/products?limit=8"),
+          api.get("/products/categories")
+        ]);
+        setProducts(prodRes.data || []);
+        setCategories(catRes.data || []);
+      } catch (err) {
+        console.error("Error fetching home data:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching products:", err);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchHomeData();
   }, []);
 
   return (
@@ -65,23 +72,26 @@ export default function HomePage() {
       {/* CATEGORY CARDS OVERLAPPING */}
       <section className="home-categories-row container">
         <div className="home-cats">
-          {CATEGORIES.map((cat) => (
-            <Link
-              key={cat.name}
-              to={`/products?category=${encodeURIComponent(cat.name)}`}
-              className="home-cat-card"
-            >
-              <div
-                className="home-cat-card__icon"
-                style={{ color: cat.color }}
+          {categories.map((name) => {
+            const config = CATEGORY_MAP[name] || CATEGORY_MAP.default;
+            return (
+              <Link
+                key={name}
+                to={`/products?category=${encodeURIComponent(name)}`}
+                className="home-cat-card"
               >
-                {cat.icon}
-              </div>
-              <h3 className="home-cat-card__name">{cat.name}</h3>
-              <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "12px" }}>{cat.desc}</p>
-              <span className="home-cat-card__arrow">Explore <ArrowRight size={14} /></span>
-            </Link>
-          ))}
+                <div
+                  className="home-cat-card__icon"
+                  style={{ color: config.color }}
+                >
+                  {config.icon}
+                </div>
+                <h3 className="home-cat-card__name">{name}</h3>
+                <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "12px" }}>{config.desc}</p>
+                <span className="home-cat-card__arrow">Explore <ArrowRight size={14} /></span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

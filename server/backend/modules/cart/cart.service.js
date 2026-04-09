@@ -1,22 +1,34 @@
 import Cart from "./cart.model.js";
 import CartItem from "./cart_item.model.js";
 import Product from "../product/product.model.js";
+import Customer from "../customer/customer.model.js";
+
+const getCustomer = async (userId) => {
+    let customer = await Customer.findOne({ where: { user_id: userId } });
+    if (!customer) {
+        // Fallback or auto-creation if missing (though should exist from registration)
+        customer = await Customer.create({ user_id: userId, name: "New Customer", mobile: Date.now().toString() });
+    }
+    return customer;
+};
 
 export const getCart = async (userId) => {
-    let cart = await Cart.findOne({ where: { user_id: userId } });
-    if (!cart) cart = await Cart.create({ user_id: userId });
+    const customer = await getCustomer(userId);
+    let cart = await Cart.findOne({ where: { customer_id: customer.id } });
+    if (!cart) cart = await Cart.create({ customer_id: customer.id });
 
     const items = await CartItem.findAll({
         where: { cart_id: cart.id },
-        include: [{ model: Product, attributes: ["name", "price"] }]
+        include: [{ model: Product, attributes: ["id", "name", "selling_price", "image"] }]
     });
 
     return { cartId: cart.id, items };
 };
 
 export const addItem = async (userId, productId, quantity) => {
-    let cart = await Cart.findOne({ where: { user_id: userId } });
-    if (!cart) cart = await Cart.create({ user_id: userId });
+    const customer = await getCustomer(userId);
+    let cart = await Cart.findOne({ where: { customer_id: customer.id } });
+    if (!cart) cart = await Cart.create({ customer_id: customer.id });
 
     let item = await CartItem.findOne({ where: { cart_id: cart.id, product_id: productId } });
     if (item) {
@@ -31,6 +43,8 @@ export const removeItem = async (cartItemId) => {
 };
 
 export const clearCart = async (userId) => {
-    const cart = await Cart.findOne({ where: { user_id: userId } });
+    const customer = await Customer.findOne({ where: { user_id: userId } });
+    if (!customer) return;
+    const cart = await Cart.findOne({ where: { customer_id: customer.id } });
     if (cart) await CartItem.destroy({ where: { cart_id: cart.id } });
 };

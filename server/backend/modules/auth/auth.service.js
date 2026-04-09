@@ -29,7 +29,11 @@ export const register = async (data) => {
 export const login = async (email, password) => {
     const user = await User.scope(null).findOne({ where: { email } });
     if (!user) throw new Error("User not found");
-    if (!user.is_verified) throw new Error("Please verify your email first");
+    
+    // Bypass verification in development/demo mode
+    if (ENV.NODE_ENV === "production" && !user.is_verified) {
+        throw new Error("Please verify your email first");
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid password");

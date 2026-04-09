@@ -8,7 +8,8 @@ export const create = asyncHandler(async (req, res) => {
 });
 
 export const list = asyncHandler(async (req, res) => {
-    const result = await productService.listProducts();
+    const { search, category, limit } = req.query;
+    const result = await productService.listProducts({ search, category, limit });
     sendResponse(res, 200, "Products fetched", result);
 });
 
@@ -21,4 +22,9 @@ export const updateStock = asyncHandler(async (req, res) => {
 export const getLowStock = asyncHandler(async (req, res) => {
     const result = await productService.getLowStock();
     sendResponse(res, 200, "Low stock items", result);
+});
+
+export const getCategories = asyncHandler(async (req, res) => {
+    const result = await productService.getCategories();
+    sendResponse(res, 200, "Categories fetched", result);
 });

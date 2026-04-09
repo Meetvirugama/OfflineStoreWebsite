@@ -1,11 +1,11 @@
 import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
-dotenv.config();
+import { ENV } from './env.js';
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = ENV.DATABASE_URL;
 
 if (!DATABASE_URL) {
     console.error("❌ DATABASE_URL missing. Database connection will fail.");
+    console.log("Current ENV:", JSON.stringify(ENV, null, 2));
 }
 
 const sequelize = new Sequelize(DATABASE_URL, {

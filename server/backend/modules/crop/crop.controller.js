@@ -27,3 +27,32 @@ export const getPestHistory = asyncHandler(async (req, res) => {
     const result = await cropService.getPestHistory(req.user.id);
     sendResponse(res, 200, "Your pest detection history", result);
 });
+
+/**
+ * CROP ANALYTICS
+ */
+export const getCrops = asyncHandler(async (req, res) => {
+    const result = await cropService.getAllCrops();
+    sendResponse(res, 200, "Crops list fetched", result);
+});
+
+/**
+ * CROP ANALYTICS
+ */
+export const getTrends = asyncHandler(async (req, res) => {
+    const { name } = req.params;
+    const { days } = req.query;
+    const result = await cropService.getCropTrends(name, parseInt(days) || 30);
+    sendResponse(res, 200, "Crop trends fetched", result);
+});
+
+export const getInsights = asyncHandler(async (req, res) => {
+    const { name } = req.params;
+    const result = await cropService.getAIInsights(name);
+    sendResponse(res, 200, "AI Insights fetched", result);
+});
+
+export const getSeasonal = asyncHandler(async (req, res) => {
+    const result = await cropService.getSeasonalSuggestions();
+    sendResponse(res, 200, "Seasonal suggestions fetched", result);
+});

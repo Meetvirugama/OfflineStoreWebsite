@@ -25,6 +25,7 @@ import profitRoutes from "./modules/profit/profit.routes.js";
 import alertRoutes from "./modules/alert/alert.routes.js";
 import priceRoutes from "./modules/price/price.routes.js";
 import supplierRoutes from "./modules/product/supplier.routes.js";
+import newsRoutes from "./modules/news/news.routes.js";
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use("/api/profit", profitRoutes);
 app.use("/api/alerts", alertRoutes);
 app.use("/api/price", priceRoutes);
 app.use("/api/suppliers", supplierRoutes);
+app.use("/api/news", newsRoutes);
 
 // Global Error Handler (Must be last)
 app.use(globalErrorHandler);
