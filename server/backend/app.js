@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Utils & Middleware
 import { globalErrorHandler } from "./middleware/error.middleware.js";
@@ -37,9 +39,6 @@ app.use(morgan("dev"));
 // Health Check
 app.get("/health", (req, res) => res.send("AgroMart ERP API is alive 🌾"));
 
-import path from "path";
-import { fileURLToPath } from "url";
-
 // Mount Module Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -63,7 +62,7 @@ app.use("/api/news", newsRoutes);
 
 // SERVE FRONTEND (Render Monorepo Support)
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const buildPath = path.join(__dirname, "../../../client/dist");
+const buildPath = path.join(__dirname, "../../client/dist");
 app.use(express.static(buildPath));
 
 // Catch-all route for SPA (React Router)
