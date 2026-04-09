@@ -151,7 +151,7 @@ export default function OrderDetailsPage() {
             </div>
 
             <div className="order-items-list" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-              {order.items?.map((item) => (
+              {(order.OrderItems || []).map((item) => (
                 <div key={item.id} style={{ display: "flex", gap: "16px", alignItems: "center", padding: "16px", background: "#f8fafc", borderRadius: "16px" }}>
                   <div style={{ width: "48px", height: "48px", background: "white", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--primary)" }}>
                     <Package size={24} />

@@ -91,7 +91,7 @@ export default function AdminOrderDetailsPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {order.items?.map((item, idx) => (
+                            {(order.OrderItems || []).map((item, idx) => (
                                 <tr key={idx}>
                                     <td style={{ fontWeight: 600 }}>{item.Product?.name || `Product ID: ${item.product_id}`}</td>
                                     <td>₹{Number(item.price).toFixed(2)}</td>

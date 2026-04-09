@@ -43,10 +43,14 @@ export const createFromCart = async (userId, incomingCustomerId) => {
             await product.decrement("stock", { by: item.quantity, transaction: t });
         }
 
+        const gstTotal = total * 0.18;
+        const finalAmount = total + gstTotal;
+
         const order = await Order.create({
             customer_id: customerId,
             total_amount: total,
-            final_amount: total, 
+            gst_total: gstTotal,
+            final_amount: finalAmount, 
             status: "PENDING",
             created_by: userId,
             order_date: new Date()
