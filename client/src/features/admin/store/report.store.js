@@ -5,16 +5,25 @@ const useReportStore = create((set) => ({
   dashboard: {},
   revenue: [],
   products: [],
+  payments: [],
+  visits: [],
+  funnel: {},
+  conversion: {},
   loading: false,
 
   fetchReports: async () => {
     set({ loading: true });
     try {
-      const data = await reportService.fetchAllReports();
+      const res = await reportService.fetchAllReports();
+      const data = res.data; // Response is { success, message, data: { ... } }
       set({
         dashboard: data.dashboard || {},
         revenue: data.revenue || [],
         products: data.products || [],
+        payments: data.payments || [],
+        visits: data.visits || [],
+        funnel: data.funnel || {},
+        conversion: data.conversion || {},
         loading: false,
       });
     } catch (err) {

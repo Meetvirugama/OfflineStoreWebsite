@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.use(protect, restrictTo("ADMIN")); // Secure reports to Admins only
 
+router.get("/", reportController.getDashboardStats);
 router.get("/sales", reportController.getSalesSummary);
 router.get("/inventory", reportController.getInventorySummary);
 
