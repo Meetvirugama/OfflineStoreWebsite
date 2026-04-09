@@ -197,7 +197,11 @@ export default function AnalyticsPage() {
           </PieChart>
         </Chart>
 
-        <Chart title="Sales Pipeline" subtitle="Customer drop-off analysis" isEmpty={safeFunnel.home === 0}>
+        <Chart 
+          title="Sales Pipeline" 
+          subtitle="Customer drop-off analysis" 
+          isEmpty={!Object.values(safeFunnel).some(v => v > 0)}
+        >
           <BarChart data={funnelData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
             <XAxis dataKey="name" axisLine={false} tickLine={false} />
