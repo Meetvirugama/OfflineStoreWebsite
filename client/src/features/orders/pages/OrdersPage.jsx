@@ -64,7 +64,7 @@ export default function OrdersPage() {
         amount: pendingAmount
       });
 
-      const rzpOrder = rzpRes.data?.data;
+      const rzpOrder = rzpRes.data;
 
       if (!rzpOrder?.id) {
         addToast("Failed to create payment order", "error");
