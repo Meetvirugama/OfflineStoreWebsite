@@ -87,6 +87,31 @@ const useCartStore = create((set, get) => ({
     }
   },
 
+  checkout: async (customerId) => {
+    set({ loading: true });
+    try {
+      const res = await checkoutService.placeOrder(customerId);
+      // Backend returns { success: true, message: '...', data: order }
+      const orderData = res.data; 
+      
+      // Clear local cart state only after successful order creation
+      set({ 
+        items: [], 
+        cartId: null, 
+        total: 0, 
+        discount: 0, 
+        final: 0, 
+        open: false,
+        loading: false 
+      });
+      
+      return orderData;
+    } catch (err) {
+      set({ loading: false });
+      throw err;
+    }
+  },
+
   clearCart: async () => {
     try {
       set({ loading: true });

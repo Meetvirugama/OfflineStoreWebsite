@@ -1,5 +1,27 @@
+import Razorpay from "razorpay";
 import Payment from "./payment.model.js";
 import Order from "../order/order.model.js";
+
+const rzp = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_M1O7m7qOQ7o7q7', 
+    key_secret: process.env.RAZORPAY_KEY_SECRET || 'test_secret'
+});
+
+export const createRazorpayOrder = async (orderId, amount) => {
+    const options = {
+        amount: Math.round(amount * 100), // Razorpay expects amount in paise
+        currency: "INR",
+        receipt: `receipt_order_${orderId}`,
+    };
+
+    try {
+        const rzpOrder = await rzp.orders.create(options);
+        return rzpOrder;
+    } catch (err) {
+        console.error("RAZORPAY ORDER ERROR:", err);
+        throw new Error("Failed to create Razorpay Order");
+    }
+};
 
 export const createPayment = async (orderId, userId, amount, referenceNo, mode = "RAZORPAY") => {
     const order = await Order.findByPk(orderId);
