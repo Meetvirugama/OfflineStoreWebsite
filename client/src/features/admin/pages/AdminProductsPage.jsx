@@ -177,6 +177,21 @@ export default function AdminProductsPage() {
                                         onClick={() => { setSelectedProduct(p); setAdjustForm({...adjustForm, type: 'OUT'}); setIsAdjustOpen(true); }}
                                         className="t-btn minus"
                                     >- DROP</button>
+                                    <button
+                                        onClick={async () => {
+                                            if (window.confirm(`Are you sure you want to delete ${p.name}? This will remove it from the active store node.`)) {
+                                                try {
+                                                    await api.delete(`/products/${p.id}`);
+                                                    addToast("Product deleted successfully", "success");
+                                                    fetchProducts();
+                                                } catch (err) {
+                                                    addToast("Failed to delete product", "error");
+                                                }
+                                            }
+                                        }}
+                                        className="t-btn delete"
+                                        style={{ background: '#fee2e2', color: '#b91c1c' }}
+                                    >DELETE</button>
                                 </div>
                             </td>
                         </tr>

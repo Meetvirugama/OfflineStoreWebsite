@@ -24,7 +24,15 @@ export const register = async (data) => {
         is_verified: false
     });
 
-    // Email logic would be called here or in a separate hook
+    // 3. Send Verification Email
+    try {
+        const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
+        const emailHtml = getOTPTemplate(otp, data.name || "Farmer");
+        await sendEmail(data.email, "Verify your AgroMart Account 🌾", `Your verification code is ${otp}`, emailHtml);
+    } catch (err) {
+        console.error("Delayed Registration Email Error:", err);
+    }
+
     return { name: data.name, email: data.email, otp }; 
 };
 
@@ -122,4 +130,41 @@ export const googleLogin = async (userData) => {
     );
 
     return { token, user: { id: user.id, name: user.name, role: user.role } };
+};
+
+export const forgotPassword = async (email) => {
+    const user = await User.findOne({ where: { email } });
+    if (!user) throw new Error("User not found");
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    // Send Recovery Email
+    try {
+        const { sendEmail, getRecoveryTemplate } = await import("../../utils/email.js");
+        const emailHtml = getRecoveryTemplate(otp, user.name || "Farmer");
+        await sendEmail(user.email, "Reset your AgroMart Password 🔐", `Your recovery code is ${otp}`, emailHtml);
+    } catch (err) {
+        console.error("Delayed Recovery Email Error:", err);
+    }
+
+    return { email, message: "Recovery OTP sent" };
+};
+
+export const resetPassword = async (email, otp, newPassword) => {
+    const user = await User.findOne({ where: { email } });
+    if (!user) throw new Error("User not found");
+    if (user.otp !== otp || new Date(user.otp_expiry) < new Date()) {
+        throw new Error("Invalid or expired recovery code");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.otp = null;
+    user.otp_expiry = null;
+    await user.save();
+
+    return { message: "Password updated successfully. You can now login." };
 };

@@ -24,3 +24,8 @@ export const getMyPayments = asyncHandler(async (req, res) => {
     const result = await paymentService.getHistory(req.user.id);
     sendResponse(res, 200, "Payment history fetched", result);
 });
+export const processManual = asyncHandler(async (req, res) => {
+    const { order_id, amount, payment_mode } = req.body;
+    const result = await paymentService.createPayment(order_id, req.user.id, amount, `CASH-SETTLE-${order_id}`, payment_mode || "CASH");
+    sendResponse(res, 201, "Order settled via Cash", result);
+});

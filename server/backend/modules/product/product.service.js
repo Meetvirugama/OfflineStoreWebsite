@@ -21,6 +21,12 @@ export const updateProduct = async (id, data) => {
     return await product.update(data);
 };
 
+export const deleteProduct = async (id) => {
+    const product = await Product.findByPk(id);
+    if (!product) throw new Error("Product not found");
+    return await product.destroy();
+};
+
 export const listProducts = async ({ search, category, limit } = {}) => {
     const where = {};
     if (search) {

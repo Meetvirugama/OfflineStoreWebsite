@@ -10,6 +10,7 @@ router.get("/low-stock", protect, restrictTo("ADMIN"), productController.getLowS
 
 router.post("/", protect, restrictTo("ADMIN"), productController.create);
 router.put("/:id", protect, restrictTo("ADMIN"), productController.update);
+router.delete("/:id", protect, restrictTo("ADMIN"), productController.remove);
 router.post("/stock", protect, restrictTo("ADMIN"), productController.updateStock);
 
 export default router;

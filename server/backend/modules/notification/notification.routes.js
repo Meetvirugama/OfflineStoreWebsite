@@ -8,5 +8,6 @@ router.use(protect);
 
 router.get("/", notificationController.getMy);
 router.put("/:id/read", notificationController.read);
+router.post("/remind/:orderId", notificationController.remind);
 
 export default router;

@@ -87,3 +87,14 @@ export const googleCallback = asyncHandler(async (req, res) => {
         return res.redirect(`${frontendUrl}/auth/login?error=auth_failed`);
     }
 });
+export const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    const result = await authService.forgotPassword(email);
+    sendResponse(res, 200, "Recovery OTP dispatched", result);
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+    const { email, otp, password } = req.body;
+    const result = await authService.resetPassword(email, otp, password);
+    sendResponse(res, 200, "Account restored successfully", result);
+});

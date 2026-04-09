@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.use(protect);
 
+router.post("/", paymentController.processManual);
 router.post("/create-order", paymentController.createOrder);
 router.post("/verify", paymentController.verify);
 router.get("/history", paymentController.getMyPayments);

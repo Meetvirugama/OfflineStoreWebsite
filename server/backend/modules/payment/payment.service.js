@@ -36,8 +36,31 @@ export const createPayment = async (orderId, userId, amount, referenceNo, mode =
         payment_date: new Date()
     });
 
-    await order.update({ status: "COMPLETED" });
+    await order.update({ 
+        status: "COMPLETED",
+        paid_amount: Number(order.paid_amount || 0) + Number(amount)
+    });
     
+    // 5. Send Professional Receipt Email
+    try {
+        const { getOrderById } = await import("../order/order.service.js");
+        const { User: UserModel } = await import("../user/user.model.js");
+        const { sendEmail, getOrderReceiptTemplate } = await import("../../utils/email.js");
+        const { notify } = await import("../notification/notification.service.js");
+
+        const fullOrder = await getOrderById(orderId);
+        const user = await UserModel.findByPk(userId);
+
+        if (user && user.email) {
+            const emailHtml = getOrderReceiptTemplate(fullOrder, user.name || "Farmer", amount, mode);
+            await sendEmail(user.email, `Payment Receipt: Order #${orderId} ✅`, `We have received your payment of ₹${amount}.`, emailHtml);
+        }
+
+        await notify(userId, "Payment Received! ✅", `Your payment of ₹${amount.toFixed(2)} was processed successfully. Status: COMPLETED`, "SUCCESS");
+    } catch (err) {
+        console.error("Delayed Receipt Email Error:", err);
+    }
+
     return payment;
 };
 

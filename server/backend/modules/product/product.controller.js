@@ -13,6 +13,12 @@ export const update = asyncHandler(async (req, res) => {
     sendResponse(res, 200, "Product updated", result);
 });
 
+export const remove = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    await productService.deleteProduct(id);
+    sendResponse(res, 200, "Product removed from node");
+});
+
 export const list = asyncHandler(async (req, res) => {
     const { search, category, limit } = req.query;
     const result = await productService.listProducts({ search, category, limit });

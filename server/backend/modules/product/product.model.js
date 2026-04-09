@@ -19,7 +19,8 @@ const Product = sequelize.define("Product", {
   created_by: { type: DataTypes.INTEGER }
 }, {
   tableName: "product",
-  timestamps: false // The schema doesn't show standard timestamps but we can add them if we want to follow sequelize pattern, but user's SQL only showed created_at as DEFAULT now() in some tables. Let's see.
+  timestamps: true,
+  paranoid: true
 });
 
 export default Product;
