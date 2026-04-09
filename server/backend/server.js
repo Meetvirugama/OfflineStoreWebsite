@@ -8,7 +8,7 @@ import "./modules/index.js";
 const startServer = async () => {
     try {
         console.log("📡 Connecting to Database...");
-        console.log(`🔗 URL: ${DATABASE_URL ? DATABASE_URL.substring(0, 15) + "..." : "MISSING"}`);
+        console.log(`🔗 URL: ${ENV.DATABASE_URL ? ENV.DATABASE_URL.substring(0, 15) + "..." : "MISSING"}`);
         await sequelize.authenticate();
         console.log("✅ Database Authenticated successfully.");
 
