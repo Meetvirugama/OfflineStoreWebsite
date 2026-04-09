@@ -1,7 +1,9 @@
+import { Op } from "sequelize";
 import sequelize from "../../config/db.js";
 import Order from "../order/order.model.js";
 import Product from "../product/product.model.js";
 import Customer from "../customer/customer.model.js";
+import Analytics from "../dashboard/dashboard.model.js";
 
 export const getDashboardStats = async () => {
     // 1. Summary KPIs
@@ -43,7 +45,41 @@ export const getDashboardStats = async () => {
         GROUP BY payment_mode
     `);
 
-    // 5. Agri-Insights (Mocking for now to match UI expectations)
+    // 5. Visits and Clicks (Real data)
+    const [visits] = await sequelize.query(`
+        SELECT 
+            TO_CHAR("created_at", 'DD Mon') as day,
+            COUNT(*) as visits
+        FROM analytics
+        WHERE type = 'VISIT' AND "created_at" >= NOW() - INTERVAL '30 days'
+        GROUP BY TO_CHAR("created_at", 'DD Mon'), DATE("created_at")
+        ORDER BY DATE("created_at") ASC
+    `);
+
+    const [clicks] = await sequelize.query(`
+        SELECT 
+            TO_CHAR("created_at", 'DD Mon') as day,
+            page,
+            COUNT(*) as clicks
+        FROM analytics
+        WHERE type = 'CLICK' AND "created_at" >= NOW() - INTERVAL '30 days'
+        GROUP BY TO_CHAR("created_at", 'DD Mon'), DATE("created_at"), page
+        ORDER BY DATE("created_at") ASC
+    `);
+
+    // 6. Conversion Rate (Total Orders / Unique Visitors Approximated)
+    const totalVisits = await Analytics.count({ where: { type: "VISIT" } });
+    const conversion_rate = totalVisits > 0 ? Math.round((total_orders / totalVisits) * 100) : 0;
+
+    // 7. Funnel Generation (Mapping to real paths)
+    const funnel = {
+        home: await Analytics.count({ where: { type: "VISIT", page: { [Op.iLike]: "%home%" } } }),
+        product: await Analytics.count({ where: { type: "VISIT", page: { [Op.iLike]: "%product%" } } }),
+        cart: await Analytics.count({ where: { type: "VISIT", page: { [Op.iLike]: "%cart%" } } }),
+        checkout: await Analytics.count({ where: { type: "VISIT", page: { [Op.iLike]: "%checkout%" } } })
+    };
+
+    // 8. Agri-Insights (Mocking for now to match UI expectations)
     const agriInsights = {
         topCrops: [
             { commodity: "Wheat", volume: 450 },
@@ -75,8 +111,10 @@ export const getDashboardStats = async () => {
         revenue,
         products,
         payments,
-        funnel: { home: 1200, product: 800, cart: 400, checkout: 200 }, // Mock funnel for now
-        conversion: { conversion_rate: 16 }
+        visits,
+        clicks,
+        funnel,
+        conversion: { conversion_rate }
     };
 };
 

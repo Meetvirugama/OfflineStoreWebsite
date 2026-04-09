@@ -54,19 +54,16 @@ export default function AnalyticsPage() {
     const result = {};
     const pagesSet = new Set();
 
-    safeClicks.forEach(({ day, page, clicks }) => {
+    safeClicks.forEach(({ day, page, clicks: clickCount }) => {
       if (!result[day]) result[day] = { day };
-      result[day][page] = clicks;
-      if (page) pagesSet.add(page);
+      // Normalize page names for legend
+      const pageLabel = page ? page.replace("/", "").toUpperCase() || "HOME" : "OTHER";
+      result[day][pageLabel] = (result[day][pageLabel] || 0) + parseInt(clickCount);
+      pagesSet.add(pageLabel);
     });
 
     return {
-      data: Object.values(result).map((row) => {
-        pagesSet.forEach((p) => {
-          if (!row[p]) row[p] = 0;
-        });
-        return row;
-      }),
+      data: Object.values(result).sort((a,b) => new Date(a.day) - new Date(b.day)),
       pages: [...pagesSet]
     };
   };
@@ -76,7 +73,7 @@ export default function AnalyticsPage() {
   // Custom executive theme colors (Green Sovereign)
   const themeColors = {
     darkGreen: "#064e3b",
-    lightGreen: "#059669",
+    lightGreen: "#10b981",
     blue: "#0369a1",
     lightBlue: "#0ea5e9",
     white: "#FFFFFF",
@@ -85,7 +82,7 @@ export default function AnalyticsPage() {
     grey: "#64748b"
   };
 
-  const chartColors = [themeColors.darkGreen, themeColors.blue, themeColors.lightGreen, themeColors.yellow, themeColors.orange];
+  const chartColors = [themeColors.blue, themeColors.lightGreen, themeColors.orange, themeColors.yellow, themeColors.grey];
 
   const funnelData = [
     { name: "Home", value: safeFunnel.home || 0 },
@@ -95,10 +92,12 @@ export default function AnalyticsPage() {
   ];
 
   // Derive extra data safely
-  const revenueComposedData = safeRevenue.map((item, index) => {
+  const revenueComposedData = safeRevenue.map((item) => {
      return {
         ...item,
-        orders: Math.floor((item.revenue || 0) / (safeDashboard.avg_order_value || 100)) + (index % 5)
+        // Use real orders if available, otherwise 0
+        orders: parseInt(item.orders) || 0,
+        revenue: parseFloat(item.revenue) || 0
      };
   });
 
@@ -122,16 +121,16 @@ export default function AnalyticsPage() {
       {/* GRID */}
       <div className="analytics-grid">
 
-        <Chart title="Revenue Performance" subtitle="Daily revenue and order volume trend" isEmpty={safeRevenue.length === 0}>
+        <Chart title="Revenue Performance" subtitle="Daily revenue (Line) and order volume (Bars)" isEmpty={safeRevenue.length === 0}>
           <ComposedChart data={revenueComposedData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
             <XAxis dataKey="day" axisLine={false} tickLine={false} />
             <YAxis yAxisId="left" axisLine={false} tickLine={false} />
-            <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} />
+            <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} domain={[0, 'auto']} />
             <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
             <Legend />
-            <Bar yAxisId="right" dataKey="orders" name="Orders" barSize={20} fill={themeColors.lightGreen} radius={[4, 4, 0, 0]} />
-            <Line yAxisId="left" type="monotone" dataKey="revenue" name="Revenue (₹)" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+            <Bar yAxisId="right" dataKey="orders" name="Orders" barSize={30} fill={themeColors.blue} radius={[4, 4, 0, 0]} opacity={0.8} />
+            <Line yAxisId="left" type="monotone" dataKey="revenue" name="Revenue (₹)" stroke={themeColors.lightGreen} strokeWidth={4} dot={{ r: 4, fill: themeColors.lightGreen }} activeDot={{ r: 6 }} />
           </ComposedChart>
         </Chart>
 
@@ -147,11 +146,11 @@ export default function AnalyticsPage() {
             <XAxis dataKey="day" axisLine={false} tickLine={false} />
             <YAxis axisLine={false} tickLine={false} />
             <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-            <Area type="monotone" dataKey="visits" stroke={themeColors.blue} strokeWidth={3} fillOpacity={1} fill="url(#colorVisits)" />
+            <Area type="monotone" dataKey="visits" name="Visits" stroke={themeColors.blue} strokeWidth={3} fillOpacity={1} fill="url(#colorVisits)" />
           </AreaChart>
         </Chart>
 
-        <Chart title="Engagement Metrics" subtitle="Engagement metrics across pages" isEmpty={clickData.length === 0}>
+        <Chart title="Engagement Metrics" subtitle="Daily click interactions across platform" isEmpty={clickData.length === 0}>
           <LineChart data={clickData}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
             <XAxis dataKey="day" axisLine={false} tickLine={false} />
@@ -159,7 +158,7 @@ export default function AnalyticsPage() {
             <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
             <Legend />
             {pages.map((p, i) => (
-              <Line key={i} type="monotone" dataKey={p} stroke={chartColors[i % chartColors.length]} strokeWidth={2} dot={false} activeDot={{ r: 6 }} />
+              <Line key={i} type="monotone" dataKey={p} stroke={chartColors[i % chartColors.length]} strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
             ))}
           </LineChart>
         </Chart>
