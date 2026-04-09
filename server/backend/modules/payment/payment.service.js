@@ -52,13 +52,36 @@ export const createPayment = async (orderId, userId, amount, referenceNo, mode =
         const user = await UserModel.findByPk(userId);
 
         if (user && user.email) {
-            const emailHtml = getOrderReceiptTemplate(fullOrder, user.name || "Farmer", amount, mode);
-            await sendEmail(user.email, `Payment Receipt: Order #${orderId} ✅`, `We have received your payment of ₹${amount}.`, emailHtml);
+            // 1. Send Basic Receipt for this payment
+            const { getOrderReceiptTemplate, getInvoiceSettledTemplate } = await import("../../utils/email.js");
+            const receiptHtml = getOrderReceiptTemplate(fullOrder, user.name || "Farmer", amount, mode);
+            await sendEmail(user.email, `Payment Receipt: Order #${orderId} ✅`, `Payment of ₹${amount} received.`, receiptHtml);
+
+            // 2. If fully paid, send Official Settled Invoice with PDF attachment
+            const updatedOrder = await getOrderById(orderId); // Fetch latest for balance check
+            const balance = Number(updatedOrder.final_amount) - Number(updatedOrder.paid_amount || 0);
+            
+            if (balance <= 0) {
+                const { generateInvoicePDF } = await import("../invoice/invoice.service.js");
+                const pdfBuffer = await generateInvoicePDF(updatedOrder);
+                const settledHtml = getInvoiceSettledTemplate(updatedOrder, user.name || "Farmer");
+                
+                await sendEmail(
+                    user.email, 
+                    `Official Invoice: Order #${orderId} Settled ✅`, 
+                    `Your order is fully paid. Download your invoice.`, 
+                    settledHtml,
+                    [{
+                        filename: `AgroMart_Invoice_${orderId}.pdf`,
+                        content: pdfBuffer
+                    }]
+                );
+            }
         }
 
-        await notify(userId, "Payment Received! ✅", `Your payment of ₹${amount.toFixed(2)} was processed successfully. Status: COMPLETED`, "SUCCESS");
+        await notify(userId, "Payment Received! ✅", `Your payment of ₹${amount.toFixed(2)} was processed successfully.`, "SUCCESS");
     } catch (err) {
-        console.error("Delayed Receipt Email Error:", err);
+        console.error("Post-Payment Workflow Error:", err);
     }
 
     return payment;

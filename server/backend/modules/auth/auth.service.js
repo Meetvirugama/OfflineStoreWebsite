@@ -81,6 +81,15 @@ export const verifyOtp = async (email, otp) => {
         });
     }
 
+    // 3. Welcome Email
+    try {
+        const { sendEmail, getWelcomeTemplate } = await import("../../utils/email.js");
+        const emailHtml = getWelcomeTemplate(user.name || "Farmer");
+        await sendEmail(user.email, "Welcome to the AgroMart Network! 🌾", `Your account is now active.`, emailHtml);
+    } catch (err) {
+        console.error("Delayed Welcome Email Error:", err);
+    }
+
     return { message: "Email verified successfully" };
 };
 

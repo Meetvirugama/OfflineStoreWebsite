@@ -40,3 +40,24 @@ export const getOrderDetails = asyncHandler(async (req, res) => {
 
     sendResponse(res, 200, "Order details fetched", order);
 });
+
+export const downloadInvoice = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const order = await orderService.getOrderById(id);
+    
+    if (!order) {
+        return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Security: Only Admin or the Order Owner can fetch invoice
+    if (req.user.role !== "ADMIN" && order.created_by !== req.user.id) {
+        return res.status(403).json({ success: false, message: "Access denied to this invoice" });
+    }
+
+    const { generateInvoicePDF } = await import("../invoice/invoice.service.js");
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=invoice-order-${id}.pdf`);
+    
+    await generateInvoicePDF(order, res);
+});

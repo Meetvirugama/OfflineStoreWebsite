@@ -12,6 +12,7 @@ router.get("/my", orderController.getMyOrders);
 // Admin Management
 router.get("/", restrictTo("ADMIN"), orderController.listAllOrders);
 router.put("/:id/status", restrictTo("ADMIN"), orderController.updateStatus);
+router.get("/:id/invoice", orderController.downloadInvoice);
 router.get("/:id", orderController.getOrderDetails);
 
 export default router;

@@ -2,15 +2,27 @@ import PDFDocument from "pdfkit";
 
 /**
  * PDF Generation Service for Digital Invoices
+ * Supports streaming to response or returning as a buffer
  */
-export const generateInvoicePDF = async (order, res) => {
-    const doc = new PDFDocument({ margin: 50 });
+export const generateInvoicePDF = async (order, streamOrRes) => {
+    return new Promise((resolve, reject) => {
+        const doc = new PDFDocument({ margin: 50 });
 
-    // Stream the PDF directly to the response
-    doc.pipe(res);
+        if (streamOrRes) {
+            doc.pipe(streamOrRes);
+        }
 
-    const balance = Number(order.final_amount) - Number(order.paid_amount || 0);
-    const isPaid = balance <= 0;
+        const buffers = [];
+        if (!streamOrRes) {
+            doc.on("data", buffers.push.bind(buffers));
+            doc.on("end", () => {
+                const pdfBuffer = Buffer.concat(buffers);
+                resolve(pdfBuffer);
+            });
+        }
+
+        const balance = Number(order.final_amount) - Number(order.paid_amount || 0);
+        const isPaid = balance <= 0;
 
     // --- Header ---
     doc
@@ -115,5 +127,11 @@ export const generateInvoicePDF = async (order, res) => {
         .text("This document is a computer-generated transaction record for the AgroMart Executive Sourcing Network.", 50, 750, { align: "center" })
         .text("Powered by AgroMart ERP Smart Ledger Technology.", 50, 765, { align: "center" });
 
-    doc.end();
+        doc.on("error", reject);
+        if (streamOrRes) {
+            doc.on("finish", resolve);
+        }
+
+        doc.end();
+    });
 };
