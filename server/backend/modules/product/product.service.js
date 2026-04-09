@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import sequelize from "../../config/db.js";
 import Product from "./product.model.js";
 import Inventory from "./inventory.model.js";
 import Supplier from "./supplier.model.js";

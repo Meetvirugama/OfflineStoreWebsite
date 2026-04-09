@@ -25,6 +25,7 @@ export const logPestDetection = async (userId, data) => {
 };
 
 import MandiPrice from "../mandi/mandi.model.js";
+import sequelize from "../../config/db.js";
 import { Op } from "sequelize";
 
 export const getPestHistory = async (userId) => {
