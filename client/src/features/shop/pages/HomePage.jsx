@@ -56,10 +56,10 @@ export default function HomePage() {
             </span>
             <h1 className="hero__title">
               Premium Agro Supplies<br />
-              <span className="hero__title--accent">Delivered to your Farm</span>
+              <span className="hero__title--accent">Direct to your Farm</span>
             </h1>
             <p className="hero__desc">
-              Get certified fertilizers, protective equipment, and organic seeds at unbeatable wholesale prices.
+              Source verified fertilizers, high-yield seeds, and professional protection equipment at institutional wholesale rates.
             </p>
             <div className="hero__trust-badges">
               <div className="trust-badge"><ShieldCheck size={18} /> <span>100% Certified</span></div>
