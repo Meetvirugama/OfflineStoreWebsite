@@ -48,19 +48,21 @@ export const getProductById = async (id) => {
 };
 
 export const updateStock = async (productId, quantity, type, note) => {
-    const product = await Product.findByPk(productId);
-    if (!product) throw new Error("Product not found");
+    return await sequelize.transaction(async (t) => {
+        const product = await Product.findByPk(productId, { transaction: t });
+        if (!product) throw new Error("Product not found");
 
-    await Inventory.create({
-        product_id: productId,
-        quantity,
-        type,
-        note
+        await Inventory.create({
+            product_id: productId,
+            quantity,
+            type,
+            note
+        }, { transaction: t });
+
+        // Update denormalized stock in product table
+        const adjustment = type === "IN" ? quantity : -quantity;
+        await product.increment("stock", { by: adjustment, transaction: t });
     });
-
-    // Update denormalized stock in product table
-    const adjustment = type === "IN" ? quantity : -quantity;
-    await product.increment("stock", { by: adjustment });
 };
 
 export const getLowStock = async (threshold = 10) => {

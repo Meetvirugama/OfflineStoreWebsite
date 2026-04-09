@@ -7,7 +7,8 @@ const Supplier = sequelize.define("Supplier", {
   mobile: { type: DataTypes.STRING }
 }, {
   tableName: "supplier",
-  timestamps: false
+  timestamps: true,
+  paranoid: true
 });
 
 export default Supplier;

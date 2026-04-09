@@ -132,6 +132,7 @@ export const getInventoryReport = async () => {
             p.stock,
             p.unit
         FROM product p
+        WHERE p."deletedAt" IS NULL
         ORDER BY p.category, p.name
     `);
     
