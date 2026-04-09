@@ -6,29 +6,34 @@ import { ENV } from "./config/env.js";
 import "./modules/index.js";
 
 const startServer = async () => {
+    const PORT = ENV.PORT || 5001;
+    const HOST = '0.0.0.0';
+
     try {
-        console.log("📡 Connecting to Database...");
-        console.log(`🔗 URL: ${ENV.DATABASE_URL ? ENV.DATABASE_URL.substring(0, 15) + "..." : "MISSING"}`);
-        await sequelize.authenticate();
-        console.log("✅ Database Authenticated successfully.");
-
-        // Synchronize models with the database
-        // In this modular migration, we need to ensure table names match our new models (singular vs plural)
-        console.log("🔄 Synchronizing models...");
-        await sequelize.sync({ alter: true });
-        console.log("✅ Database Synced successfully (Alter Mode).");
-
-        const PORT = ENV.PORT || 5001;
-        const HOST = '0.0.0.0'; // Explicitly bind for Render/Cloud compatibility
-
-        app.listen(PORT, HOST, () => {
-            console.log(`🚀 Modular Server running in ${ENV.NODE_ENV} mode`);
-            console.log(`📡 URL: http://${HOST}:${PORT}`);
+        console.log("📡 [DEPL] Attempting to bind port...");
+        const server = app.listen(PORT, HOST, () => {
+            console.log(`🚀 [DEPL] Server listening on http://${HOST}:${PORT}`);
+            console.log(`🌍 [DEPL] Environment: ${ENV.NODE_ENV}`);
         });
 
+        console.log("📡 [DB] Connecting to Database...");
+        console.log(`🔗 [DB] URL: ${ENV.DATABASE_URL ? ENV.DATABASE_URL.substring(0, 20) + "..." : "MISSING!"}`);
+        
+        await sequelize.authenticate();
+        console.log("✅ [DB] Database Authenticated successfully.");
+
+        console.log("🔄 [DB] Synchronizing models (Alter Mode)...");
+        await sequelize.sync({ alter: true });
+        console.log("✅ [DB] Database Synced successfully.");
+
     } catch (err) {
-        console.error("❌ Failed to start server:", err.message);
-        process.exit(1);
+        console.error("❌ [CRIT] Failed to start server components:");
+        console.error("Error Message:", err.message);
+        if (err.name === 'SequelizeConnectionError') {
+            console.error("👉 TIP: Check your DATABASE_URL and Render IP Allowlist.");
+        }
+        // We don't exit immediately so the process doesn't enter a crash-loop before Render can see the failure logs
+        setTimeout(() => process.exit(1), 5000);
     }
 };
 
