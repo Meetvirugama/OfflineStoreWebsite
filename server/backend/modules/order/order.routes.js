@@ -12,6 +12,6 @@ router.get("/my", orderController.getMyOrders);
 // Admin Management
 router.get("/", restrictTo("ADMIN"), orderController.listAllOrders);
 router.put("/:id/status", restrictTo("ADMIN"), orderController.updateStatus);
-router.get("/:id", restrictTo("ADMIN"), orderController.getOrderDetails);
+router.get("/:id", orderController.getOrderDetails);
 
 export default router;

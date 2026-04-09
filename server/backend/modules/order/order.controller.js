@@ -27,6 +27,16 @@ export const updateStatus = asyncHandler(async (req, res) => {
 
 export const getOrderDetails = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    // Logic for single order details
-    sendResponse(res, 200, "Order details logic to be expanded as needed");
+    const order = await orderService.getOrderById(id);
+    
+    if (!order) {
+        return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Security: Only Admin or the Order Owner can view details
+    if (req.user.role !== "ADMIN" && order.created_by !== req.user.id) {
+        return res.status(403).json({ success: false, message: "Access denied to this order" });
+    }
+
+    sendResponse(res, 200, "Order details fetched", order);
 });

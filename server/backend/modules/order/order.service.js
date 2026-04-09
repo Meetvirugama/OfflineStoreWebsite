@@ -59,21 +59,32 @@ export const createFromCart = async (userId, incomingCustomerId) => {
         await cartService.clearCart(userId, t);
         await t.commit();
         
-        // 4. Notifications (Post-Commit)
+        // 4. Notifications & Elite Email Confirmation
         try {
             const { notify } = await import("../notification/notification.service.js");
+            const { sendEmail, getOrderConfirmationTemplate } = await import("../../utils/email.js");
             const { User: UserModel } = await import("../user/user.model.js");
 
-            // User confirmation
+            // Fetch full order with items for email template
+            const fullOrder = await getOrderById(order.id);
+            const user = await UserModel.findByPk(userId);
+
+            // 1. Send Elite HTML Email
+            if (user && user.email) {
+                const emailHtml = getOrderConfirmationTemplate(fullOrder, user.name || "Farmer");
+                await sendEmail(user.email, `Order Confirmed! #${order.id} 🌾`, `Your order has been placed.`, emailHtml);
+            }
+
+            // 2. In-App Notification
             await notify(userId, "Order Confirmed! 🌾", `Your order #${order.id} for ₹${total.toFixed(2)} was placed successfully.`, "SUCCESS");
 
-            // Admin alert
+            // 3. Admin Alert
             const admins = await UserModel.findAll({ where: { role: "ADMIN" } });
             for (const admin of admins) {
                 await notify(admin.id, "New Order Received 📦", `Order #${order.id} has been placed by a customer.`, "INFO");
             }
         } catch (err) {
-            console.error("Delayed Notification Error:", err);
+            console.error("Post-Checkout Notification Error:", err);
         }
 
         return order;
@@ -87,6 +98,15 @@ export const getUserOrders = async (customerId) => {
     return await Order.findAll({
         where: { customer_id: customerId },
         include: [{ model: OrderItem, include: [Product] }]
+    });
+};
+
+export const getOrderById = async (id) => {
+    return await Order.findByPk(id, {
+        include: [
+            { model: Customer, include: [User] },
+            { model: OrderItem, include: [Product] }
+        ]
     });
 };
 
