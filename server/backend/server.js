@@ -26,6 +26,16 @@ const startServer = async () => {
         await sequelize.sync({ alter: true });
         console.log("✅ [DB] Database Synced successfully.");
 
+        // --- SMTP VERIFICATION ---
+        try {
+            const { verifySMTP } = await import("./utils/email.js");
+            await verifySMTP();
+            console.log("✅ [EMAIL] SMTP Link established successfully.");
+        } catch (err) {
+            console.warn("⚠️  [EMAIL] SMTP Verification failed. Email features may not work.");
+            console.warn("   Error:", err.message);
+        }
+
     } catch (err) {
         console.error("❌ [CRIT] Failed to start server components:");
         console.error("Error Message:", err.message);

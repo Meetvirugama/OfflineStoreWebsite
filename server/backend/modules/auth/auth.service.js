@@ -98,12 +98,15 @@ export const resendOtp = async (email) => {
     if (!user) throw new Error("User not found");
     if (user.is_verified) throw new Error("Email already verified");
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    user.otp = otp;
-    user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
-    await user.save();
+    // 3. Send Resend Email
+    try {
+        const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
+        const emailHtml = getOTPTemplate(otp, user.name || "Farmer");
+        await sendEmail(user.email, "Your new AgroMart Verification Code 🌾", `Your new code is ${otp}`, emailHtml);
+    } catch (err) {
+        console.error("Delayed Resend Email Error:", err);
+    }
 
-    // In a real app, send email here
     return { email, otp };
 };
 

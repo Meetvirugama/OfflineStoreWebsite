@@ -12,7 +12,10 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+export const verifySMTP = () => transporter.verify();
+
 export const sendEmail = async (to, subject, text, html, attachments = []) => {
+    console.log(`[EMAIL] Attempting to send transmission to ${to}...`);
     try {
         const info = await transporter.sendMail({
             from: `"AgroMart 🌾" <${process.env.EMAIL}>`,
