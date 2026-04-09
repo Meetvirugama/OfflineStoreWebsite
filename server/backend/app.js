@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 // Utils & Middleware
@@ -67,7 +68,13 @@ app.use(express.static(buildPath));
 
 // Catch-all route for SPA (React Router)
 app.get(/^\/(?!api).*/, (req, res) => {
-    res.sendFile(path.join(buildPath, "index.html"));
+    const indexPath = path.join(buildPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        console.error("❌ [DEPL] Frontend index.html not found at:", indexPath);
+        res.status(404).send("Frontend assets are missing. Please ensure 'npm run build' was executed successfully.");
+    }
 });
 
 // Global Error Handler (Must be last)
