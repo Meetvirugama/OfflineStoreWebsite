@@ -8,9 +8,9 @@ const getBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl) return envUrl;
   
-  // Auto-detect production protocol if on HTTPS but no URL provided
-  if (window.location.protocol === "https:" && !window.location.host.includes("localhost")) {
-    console.warn("⚠️ VITE_API_URL missing in production. Frontend might fail to connect to Backend.");
+  // For unified Render monorepo deployment, use relative paths in production
+  if (window.location.host && !window.location.host.includes("localhost")) {
+    return "/api";
   }
   
   return "http://localhost:5001/api";

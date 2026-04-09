@@ -37,6 +37,9 @@ app.use(morgan("dev"));
 // Health Check
 app.get("/health", (req, res) => res.send("AgroMart ERP API is alive 🌾"));
 
+import path from "path";
+import { fileURLToPath } from "url";
+
 // Mount Module Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -57,6 +60,18 @@ app.use("/api/alerts", alertRoutes);
 app.use("/api/price", priceRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/news", newsRoutes);
+
+// SERVE FRONTEND (Render Monorepo Support)
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const buildPath = path.join(__dirname, "../../../client/dist");
+app.use(express.static(buildPath));
+
+// Catch-all route for SPA (React Router)
+app.get("*", (req, res) => {
+    if (!req.url.startsWith("/api")) {
+        res.sendFile(path.join(buildPath, "index.html"));
+    }
+});
 
 // Global Error Handler (Must be last)
 app.use(globalErrorHandler);
