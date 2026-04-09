@@ -51,20 +51,33 @@ export const getProductById = async (id) => {
 };
 
 export const updateStock = async (productId, quantity, type, note) => {
+    const qty = Number(quantity);
+    if (isNaN(qty) || qty <= 0) throw new Error("Invalid quantity for stock adjustment");
+
     return await sequelize.transaction(async (t) => {
         const product = await Product.findByPk(productId, { transaction: t });
         if (!product) throw new Error("Product not found");
+        
+        // Ensure stock is at least 0 if it was somehow NULL
+        if (product.stock === null) {
+            await product.update({ stock: 0 }, { transaction: t });
+        }
 
         await Inventory.create({
             product_id: productId,
-            quantity,
-            type,
-            note
+            quantity: qty,
+            type: type.toUpperCase(),
+            note: note || "Manual Adjustment"
         }, { transaction: t });
 
-        // Update denormalized stock in product table
-        const adjustment = type === "IN" ? quantity : -quantity;
-        await product.increment("stock", { by: adjustment, transaction: t });
+        const adjustment = type.toUpperCase() === "IN" ? qty : -qty;
+        
+        // Use static increment for better transaction reliability
+        await Product.increment("stock", { 
+            by: adjustment, 
+            where: { id: productId }, 
+            transaction: t 
+        });
     });
 };
 
