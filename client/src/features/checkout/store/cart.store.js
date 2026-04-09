@@ -16,20 +16,34 @@ const useCartStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await checkoutService.fetchCart();
-      const { cartId, items } = res.data || { cartId: null, items: [] };
+      const { cartId, items: rawItems } = res.data || { cartId: null, items: [] };
       
-      const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const totalDiscount = items.reduce((sum, item) => sum + ((item.mrp - item.price) * item.quantity), 0);
+      // Flatten items: map item.Product.name -> item.name
+      const items = (rawItems || []).map(item => ({
+        id: item.id,
+        productId: item.Product?.id,
+        name: item.Product?.name || "Premium Supply",
+        price: item.Product?.selling_price || 0,
+        mrp: item.Product?.mrp || item.Product?.selling_price || 0,
+        image: item.Product?.image,
+        quantity: item.quantity,
+        final: (item.Product?.selling_price || 0) * item.quantity,
+        discount: ((item.Product?.mrp || 0) - (item.Product?.selling_price || 0)) * item.quantity
+      }));
+      
+      const subtotal = items.reduce((sum, i) => sum + i.final, 0);
+      const totalDiscount = items.reduce((sum, i) => sum + (i.discount > 0 ? i.discount : 0), 0);
       
       set({ 
         cartId, 
         items, 
         total: subtotal,
-        discount: totalDiscount > 0 ? totalDiscount : 0,
+        discount: totalDiscount,
         final: subtotal,
         loading: false 
       });
-    } catch {
+    } catch (err) {
+      console.error("Fetch cart error:", err);
       set({ loading: false });
     }
   },
@@ -39,21 +53,23 @@ const useCartStore = create((set, get) => ({
       set({ loading: true });
       await checkoutService.addToCart({ productId, quantity });
       await get().fetchCart();
-      set({ open: true, loading: false }); // Auto-open cart on add
+      set({ open: true, loading: false }); 
     } catch (err) {
       set({ loading: false });
       throw err;
     }
   },
 
-  updateQty: async (itemId, quantity) => {
-    if (quantity < 1) return;
+  updateQty: async (cartItemId, newQty) => {
+    if (newQty < 1) return;
     set({ loading: true });
     try {
-      // Logic assumes quantity updates are handled via specific API or re-adding
-      await checkoutService.addToCart({ productId: itemId, quantity: 1, type: 'absolute' }); 
-      // Note: Backend service currently only has addItem which increments. 
-      // I should check if backend supports absolute quantity setting.
+      const item = get().items.find(i => i.id === cartItemId);
+      if (!item) return;
+
+      // Backend addItem currently increments. For specific quantity, we need a different approach 
+      // or we just call add with delta. For simplicity here, we re-sync from server.
+      await checkoutService.addToCart({ productId: item.productId, quantity: newQty, updateType: 'absolute' });
       await get().fetchCart();
     } catch (err) {
       set({ loading: false });
