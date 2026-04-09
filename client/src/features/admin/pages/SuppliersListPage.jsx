@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "@core/api/client";
 import "@/styles/Admin.css";
 import useToastStore from "@core/hooks/useToast";
+import AgroLoader from "@core/components/AgroLoader";
 
 export default function SuppliersListPage() {
     const navigate = useNavigate();
@@ -16,7 +17,9 @@ export default function SuppliersListPage() {
         try {
             setLoading(true);
             const res = await api.get("/suppliers");
-            setSuppliers(res.data);
+            // Handle standardized { success, message, data } response
+            // res is already the body due to interceptor
+            setSuppliers(res.data || res || []);
         } catch (err) {
             addToast("Failed to fetch suppliers", "error");
         } finally {
@@ -41,12 +44,19 @@ export default function SuppliersListPage() {
         }
     };
 
-    if (loading) return <div>Loading suppliers...</div>;
+    if (loading) return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', width: '100%' }}>
+            <AgroLoader text="Tracing supplier network..." />
+        </div>
+    );
 
     return (
         <div className="admin-page">
             <div className="admin-actions-bar">
-                <h2>Suppliers Management</h2>
+                <div style={{ borderLeft: '4px solid var(--admin-amber)', paddingLeft: '15px' }}>
+                    <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Suppliers Management</h2>
+                    <p style={{ fontSize: '13px', color: '#64748b' }}>Coordinate and track secondary market supply partners.</p>
+                </div>
                 <button className="btn-elite primary" onClick={() => setIsCreateOpen(true)}>+ New Supplier</button>
             </div>
 
@@ -60,21 +70,25 @@ export default function SuppliersListPage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {suppliers.map(s => (
-                        <tr key={s.id}>
-                            <td style={{ fontWeight: 600, color: '#64748b' }}>#{s.id}</td>
-                            <td style={{ fontWeight: 600 }}>{s.name}</td>
-                            <td>{s.mobile}</td>
-                            <td>
-                                <div className="table-actions">
-                                    <button
-                                        onClick={() => navigate(`/admin/suppliers/${s.id}`)}
-                                        className="t-btn view"
-                                    >View Details & Products</button>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
+                    {suppliers.length === 0 ? (
+                        <tr><td colSpan="4" style={{ textAlign: 'center', padding: '30px' }}>No suppliers registered in the network.</td></tr>
+                    ) : (
+                        suppliers.map(s => (
+                            <tr key={s.id}>
+                                <td style={{ fontWeight: 600, color: '#64748b' }}>#{s.id}</td>
+                                <td style={{ fontWeight: 600 }}>{s.name}</td>
+                                <td>{s.mobile}</td>
+                                <td>
+                                    <div className="table-actions">
+                                        <button
+                                            onClick={() => navigate(`/admin/suppliers/${s.id}`)}
+                                            className="t-btn view"
+                                        >View Details & Products</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                 </tbody>
             </table>
 
