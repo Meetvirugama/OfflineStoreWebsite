@@ -18,8 +18,13 @@ const useMandiStore = create((set, get) => ({
     fetchPrices: async () => {
         set({ loading: true });
         try {
-            const data = await apiClient.get("/mandi/prices", { params: get().filters });
-            set({ prices: data.rows, loading: false });
+            const { state, district, commodity } = get().filters;
+            const res = await apiClient.get("/mandi/prices", { 
+                params: { state, district, crop: commodity } 
+            });
+            // Handle standardized { success, data } response
+            const priceData = res.data || res || [];
+            set({ prices: priceData, loading: false });
         } catch (err) {
             set({ loading: false });
         }

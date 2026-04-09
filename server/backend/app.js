@@ -66,7 +66,7 @@ const buildPath = path.join(__dirname, "../../client/dist");
 app.use(express.static(buildPath));
 
 // Catch-all route for SPA (React Router)
-app.get("(.*)", (req, res) => {
+app.get("/:path*", (req, res) => {
     if (!req.url.startsWith("/api")) {
         res.sendFile(path.join(buildPath, "index.html"));
     }

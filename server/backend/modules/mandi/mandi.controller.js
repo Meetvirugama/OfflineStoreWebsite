@@ -19,7 +19,7 @@ export const search = asyncHandler(async (req, res) => {
 });
 
 export const getPrices = asyncHandler(async (req, res) => {
-    const { crop } = req.params;
-    const prices = await mandiService.getPriceStats(crop);
-    sendResponse(res, 200, `Prices for ${crop}`, prices);
+    const { state, district, crop } = req.query;
+    const prices = await mandiService.getLiveMandiPrices({ state, district, crop });
+    sendResponse(res, 200, `Live prices fetched successfully`, prices);
 });

@@ -52,6 +52,50 @@ export const getPriceStats = async (commodity) => {
 };
 
 /**
+ * Fetch Live Mandi Prices from data.gov.in
+ */
+export const getLiveMandiPrices = async (filters = {}) => {
+    const { state, district, crop } = filters;
+    const API_KEY = ENV.DATA_GOV_KEY;
+    const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
+
+    if (!API_KEY) {
+        console.warn("DATA_GOV_API_KEY missing. Returning mock price data.");
+        return [
+            { state: "Gujarat", district: "Ahmedabad", market: "Ahmedabad", commodity: crop || "Wheat", min_price: "2200", max_price: "2500", modal_price: "2400", arrival_date: new Date().toISOString() },
+            { state: "Gujarat", district: "Gondal", market: "Gondal", commodity: crop || "Wheat", min_price: "2300", max_price: "2600", modal_price: "2450", arrival_date: new Date().toISOString() }
+        ];
+    }
+
+    try {
+        const params = {
+            "api-key": API_KEY,
+            format: "json",
+            limit: 10
+        };
+
+        if (state) params["filters[state]"] = state;
+        if (district) params["filters[district]"] = district;
+        if (crop) params["filters[commodity]"] = crop;
+
+        console.log("📡 Fetching from data.gov.in...");
+        const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, { params });
+
+        console.log("📥 API Response Keys:", Object.keys(response.data));
+        console.log("📥 API Records Length:", response.data.records?.length);
+        
+        if (response.data.records?.length === 0) {
+            console.log("⚠️ Full Response Payload:", JSON.stringify(response.data, null, 2));
+        }
+
+        return response.data.records || [];
+    } catch (err) {
+        console.error("Data.gov.in API Error:", err.message);
+        throw new Error("Failed to fetch live mandi prices");
+    }
+};
+
+/**
  * Search Mandis via Text
  */
 export const searchMandis = async (query) => {
