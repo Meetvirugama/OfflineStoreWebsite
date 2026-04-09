@@ -16,7 +16,8 @@ const useReportStore = create((set) => ({
     set({ loading: true });
     try {
       const res = await reportService.fetchAllReports();
-      const data = res.data; // Response is { success, message, data: { ... } }
+      // res.data is the Axios response body: { success, message, data }
+      const data = res.data.data; 
       set({
         dashboard: data.dashboard || {},
         revenue: data.revenue || [],
