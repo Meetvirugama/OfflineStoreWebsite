@@ -26,7 +26,7 @@ const apiClient = axios.create({
 // Request Interceptor (e.g., for Authorization)
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("agromart_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

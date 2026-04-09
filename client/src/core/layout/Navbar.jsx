@@ -74,7 +74,7 @@ export default function Navbar() {
   }, []);
 
   const cartCount = items.reduce((sum, i) => sum + i.quantity, 0);
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = (Array.isArray(notifications) ? notifications : []).filter(n => !n.is_read).length;
 
   useEffect(() => {
     if (token) {

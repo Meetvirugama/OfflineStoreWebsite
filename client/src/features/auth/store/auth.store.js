@@ -15,10 +15,14 @@ const useAuthStore = create((set, get) => ({
   login: async (email, password) => {
     set({ loading: true });
     try {
-      const { token } = await apiClient.post("/auth/login", { email, password });
+      const res = await apiClient.post("/auth/login", { email, password });
+      
+      // Unwrapping backend standard response { success, message, data: { token, user } }
+      const { token, user: userData } = res.data;
+      
       localStorage.setItem("agromart_token", token);
       const decoded = decodeToken(token);
-      set({ token, user: decoded, loading: false });
+      set({ token, user: decoded || userData, loading: false });
       if (decoded?.role) await get().fetchProfile();
       return { success: true };
     } catch (err) {
