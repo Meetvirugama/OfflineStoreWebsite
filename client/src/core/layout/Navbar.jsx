@@ -32,7 +32,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { token, user, logout } = useAuthStore();
-  const { setDrawerOpen, items } = useCartStore();
+  const { setDrawerOpen, items, fetchCart } = useCartStore();
   const { notifications, fetchNotifications } = useNotificationStore();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -79,8 +79,9 @@ export default function Navbar() {
   useEffect(() => {
     if (token) {
       fetchNotifications();
+      fetchCart();
     }
-  }, [token, fetchNotifications]);
+  }, [token, fetchNotifications, fetchCart]);
 
   const handleLogout = async () => {
     await logout();

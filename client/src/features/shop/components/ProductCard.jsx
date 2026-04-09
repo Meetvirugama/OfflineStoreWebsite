@@ -65,26 +65,27 @@ export default function ProductCard({ product }) {
         
         <h3 className="agri-card__name">{product.name}</h3>
 
-        {product.unit && (
-          <div className="agri-card__unit">Size/Weight: {product.unit}</div>
-        )}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          {product.unit && (
+            <div className="agri-card__unit" style={{ margin: 0, padding: '2px 8px', fontSize: '11px' }}>{product.unit}</div>
+          )}
+          <div className="agri-card__stock">
+            {product.stock > 0 ? (
+              <span className="stock-in" style={{ fontSize: '10px' }}>
+                In Stock
+              </span>
+            ) : (
+              <span className="stock-out" style={{ fontSize: '10px' }}>
+                Out
+              </span>
+            )}
+          </div>
+        </div>
 
         <div className="agri-card__price-row">
           <span className="price-current">₹{product.selling_price?.toFixed(2)}</span>
           {product.mrp && product.mrp > product.selling_price && (
             <span className="price-mrp">₹{product.mrp?.toFixed(2)}</span>
-          )}
-        </div>
-
-        <div className="agri-card__stock">
-          {product.stock > 0 ? (
-            <span className="stock-in">
-              <CheckCircle size={14} className="icon-gradient-emerald" style={{ marginRight: 4 }} /> In Stock
-            </span>
-          ) : (
-            <span className="stock-out">
-              <XCircle size={14} style={{ marginRight: 4 }} /> Out of Stock
-            </span>
           )}
         </div>
       </div>

@@ -6,8 +6,17 @@ import Customer from "../customer/customer.model.js";
 const getCustomer = async (userId) => {
     let customer = await Customer.findOne({ where: { user_id: userId } });
     if (!customer) {
-        // Fallback or auto-creation if missing (though should exist from registration)
-        customer = await Customer.create({ user_id: userId, name: "New Customer", mobile: Date.now().toString() });
+        // Find by ID directly as fallback if user_id mapping is stale
+        customer = await Customer.findByPk(userId);
+    }
+    
+    if (!customer) {
+        // Auto-provision customer record for authenticated users to ensure cart accessibility
+        customer = await Customer.create({ 
+            user_id: userId, 
+            name: "Verified User", 
+            mobile: `99${Math.floor(Math.random() * 90000000 + 10000000)}` // Virtual tokenized mobile
+        });
     }
     return customer;
 };
