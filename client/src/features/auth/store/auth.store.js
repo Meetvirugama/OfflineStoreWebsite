@@ -9,6 +9,7 @@ const useAuthStore = create((set, get) => ({
   token: localStorage.getItem("agromart_token") || null,
   user: decodeToken(localStorage.getItem("agromart_token")) || null,
   profile: null,
+  customer: null,
   loading: false,
   initialized: false,
 
@@ -55,11 +56,28 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
+  resendOtp: async (email) => {
+    set({ loading: true });
+    try {
+      await apiClient.post("/auth/resend-otp", { email });
+      set({ loading: false });
+      return { success: true };
+    } catch (err) {
+      set({ loading: false });
+      throw err;
+    }
+  },
+
   fetchProfile: async () => {
     try {
-      const data = await apiClient.get("/users/profile");
-      set({ profile: data, initialized: true });
-      return data;
+      const res = await apiClient.get("/users/profile");
+      const userData = res.data; // res is { success, message, data }
+      set({ 
+        profile: userData, 
+        customer: userData?.Customer || userData, // Fallback to user if no Customer linked
+        initialized: true 
+      });
+      return userData;
     } catch (err) {
       set({ initialized: true });
       return null;
@@ -81,7 +99,24 @@ const useAuthStore = create((set, get) => ({
 
   logout: async () => {
     localStorage.removeItem("agromart_token");
-    set({ token: null, user: null, profile: null });
+    set({ token: null, user: null, profile: null, customer: null });
+  },
+
+  updateProfile: async (formData) => {
+    set({ loading: true });
+    try {
+      const res = await apiClient.put("/users/profile", formData);
+      const userData = res.data;
+      set({ 
+        profile: userData, 
+        customer: userData?.Customer || userData,
+        loading: false 
+      });
+      return { success: true };
+    } catch (err) {
+      set({ loading: false });
+      throw err;
+    }
   }
 }));
 

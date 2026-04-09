@@ -10,7 +10,7 @@ const Customer = sequelize.define("Customer", {
   },
   name: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: true },
-  mobile: { type: DataTypes.STRING, unique: true, allowNull: false },
+  mobile: { type: DataTypes.STRING, unique: true, allowNull: true },
   village: DataTypes.STRING,
   gst: DataTypes.STRING,
   credit_limit: { type: DataTypes.FLOAT, defaultValue: 0 },

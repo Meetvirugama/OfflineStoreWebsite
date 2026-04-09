@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../user/user.model.js";
+import Customer from "../customer/customer.model.js";
 import { ENV } from "../../config/env.js";
 // Note: We will need a way to handle Customer creation from here. 
 // For now, I will keep the logic and fix dependencies in the final step.
@@ -16,6 +17,7 @@ export const register = async (data) => {
         id: existing?.id,
         name: data.name,
         email: data.email,
+        mobile: data.mobile,
         password: hashedPassword,
         otp,
         otp_expiry: new Date(Date.now() + 10 * 60 * 1000),
@@ -59,7 +61,33 @@ export const verifyOtp = async (email, otp) => {
     user.otp_expiry = null;
     await user.save();
 
+    // Link Customer record if role is CUSTOMER
+    if (user.role === "CUSTOMER") {
+        await Customer.findOrCreate({
+            where: { user_id: user.id },
+            defaults: {
+                name: user.name,
+                email: user.email,
+                mobile: user.mobile || ""
+            }
+        });
+    }
+
     return { message: "Email verified successfully" };
+};
+
+export const resendOtp = async (email) => {
+    const user = await User.findOne({ where: { email } });
+    if (!user) throw new Error("User not found");
+    if (user.is_verified) throw new Error("Email already verified");
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    // In a real app, send email here
+    return { email, otp };
 };
 
 export const googleLogin = async (userData) => {
@@ -70,7 +98,20 @@ export const googleLogin = async (userData) => {
             name: userData.name,
             email: userData.email,
             is_verified: true,
-            role: "CUSTOMER"
+            role: "CUSTOMER",
+            auth_provider: "GOOGLE"
+        });
+    }
+
+    // Link/Create Customer record
+    if (user.role === "CUSTOMER") {
+        await Customer.findOrCreate({
+            where: { user_id: user.id },
+            defaults: {
+                name: user.name,
+                email: user.email,
+                mobile: user.mobile || "" // Will be empty for Google users initially
+            }
         });
     }
 

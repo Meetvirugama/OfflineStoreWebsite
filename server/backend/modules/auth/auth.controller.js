@@ -21,6 +21,12 @@ export const verifyOtp = asyncHandler(async (req, res) => {
     sendResponse(res, 200, "Verification successful");
 });
 
+export const resendOtp = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    await authService.resendOtp(email);
+    sendResponse(res, 200, "OTP resent successfully");
+});
+
 export const getMe = asyncHandler(async (req, res) => {
     sendResponse(res, 200, "User profile fetched", req.user);
 });
@@ -47,7 +53,9 @@ export const googleInit = (req, res) => {
 
 export const googleCallback = asyncHandler(async (req, res) => {
     const code = req.query.code;
-    if (!code) return res.redirect(`${ENV.BASE_API_URL.split("/api")[0]}/auth/login?error=no_code`);
+    const frontendUrl = ENV.BASE_API_URL.split("/api")[0]; // Dynamically get frontend base from API URL
+
+    if (!code) return res.redirect(`${frontendUrl}/auth/login?error=no_code`);
 
     try {
         // Exchange code for tokens
@@ -72,10 +80,10 @@ export const googleCallback = asyncHandler(async (req, res) => {
         });
 
         // Redirect back to frontend with token
-        return res.redirect(`${ENV.BASE_API_URL.split("/api")[0]}/google-success?token=${token}`);
+        return res.redirect(`${frontendUrl}/google-success?token=${token}`);
 
     } catch (err) {
         console.error("Google Auth Error:", err.message);
-        return res.redirect(`${ENV.BASE_API_URL.split("/api")[0]}/auth/login?error=auth_failed`);
+        return res.redirect(`${frontendUrl}/auth/login?error=auth_failed`);
     }
 });
