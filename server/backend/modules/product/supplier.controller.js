@@ -12,6 +12,19 @@ export const list = asyncHandler(async (req, res) => {
     sendResponse(res, 200, "Suppliers fetched", suppliers);
 });
 
+export const getById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const supplier = await Supplier.findByPk(id);
+    if (!supplier) throw new Error("Supplier not found");
+    sendResponse(res, 200, "Supplier details fetched", supplier);
+});
+
+export const getSupplierProducts = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const products = await (await import("./product.service.js")).listProducts({ supplier_id: id });
+    sendResponse(res, 200, "Supplier products fetched", products);
+});
+
 export const update = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const supplier = await Supplier.findByPk(id);

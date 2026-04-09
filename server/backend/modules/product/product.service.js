@@ -27,13 +27,16 @@ export const deleteProduct = async (id) => {
     return await product.destroy();
 };
 
-export const listProducts = async ({ search, category, limit } = {}) => {
+export const listProducts = async ({ search, category, supplier_id, limit } = {}) => {
     const where = {};
     if (search) {
         where.name = { [Op.iLike]: `%${search}%` };
     }
     if (category) {
         where.category = category;
+    }
+    if (supplier_id) {
+        where.supplier_id = supplier_id;
     }
 
     return await Product.findAll({
