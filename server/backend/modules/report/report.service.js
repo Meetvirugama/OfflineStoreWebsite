@@ -36,14 +36,22 @@ export const getDashboardStats = async () => {
         LIMIT 5
     `);
 
-    // 4. Revenue by Payment Method
-    const [payments] = await sequelize.query(`
+    // 4. Revenue by Payment Method (Including Pending/Unpaid)
+    const [capturedPayments] = await sequelize.query(`
         SELECT 
             payment_mode,
             SUM(amount) as total_amount
         FROM payment
         GROUP BY payment_mode
     `);
+
+    const paidAmount = capturedPayments.reduce((sum, p) => sum + parseFloat(p.total_amount), 0);
+    const pendingAmount = Math.max(0, total_revenue - paidAmount);
+
+    const payments = [
+        ...capturedPayments,
+        { payment_mode: "PENDING / UNPAID", total_amount: pendingAmount }
+    ];
 
     // 5. Visits and Clicks (Real data)
     const [visits] = await sequelize.query(`
