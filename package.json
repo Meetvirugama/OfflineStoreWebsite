@@ -4,6 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install --prefix server",
+    "postinstall": "npm install --prefix server",
     "start": "node server/backend/server.js",
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\""
   },
