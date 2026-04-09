@@ -15,6 +15,12 @@ export const createProduct = async (data) => {
     return await Product.create(data);
 };
 
+export const updateProduct = async (id, data) => {
+    const product = await Product.findByPk(id);
+    if (!product) throw new Error("Product not found");
+    return await product.update(data);
+};
+
 export const listProducts = async ({ search, category, limit } = {}) => {
     const where = {};
     if (search) {

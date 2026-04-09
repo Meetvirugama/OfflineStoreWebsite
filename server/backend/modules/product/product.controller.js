@@ -7,6 +7,12 @@ export const create = asyncHandler(async (req, res) => {
     sendResponse(res, 201, "Product created", result);
 });
 
+export const update = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const result = await productService.updateProduct(id, req.body);
+    sendResponse(res, 200, "Product updated", result);
+});
+
 export const list = asyncHandler(async (req, res) => {
     const { search, category, limit } = req.query;
     const result = await productService.listProducts({ search, category, limit });

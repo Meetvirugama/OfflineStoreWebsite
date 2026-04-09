@@ -30,6 +30,7 @@ import priceRoutes from "./modules/price/price.routes.js";
 import supplierRoutes from "./modules/product/supplier.routes.js";
 import newsRoutes from "./modules/news/news.routes.js";
 import invoiceRoutes from "./modules/invoice/invoice.routes.js";
+import inventoryRoutes from "./modules/product/inventory.routes.js";
 
 const app = express();
 
@@ -62,6 +63,7 @@ app.use("/api/price", priceRoutes);
 app.use("/api/suppliers", supplierRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/invoice", invoiceRoutes);
+app.use("/api/inventory", inventoryRoutes);
 
 // SERVE FRONTEND (Render Monorepo Support)
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
