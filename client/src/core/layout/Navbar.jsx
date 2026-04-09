@@ -161,10 +161,25 @@ export default function Navbar() {
                     </div>
                     {menuOpen && (
                       <div className="profile-dropdown">
-                        <Link to="/profile" className="dropdown-item">Profile</Link>
-                        <Link to="/orders" className="dropdown-item">My Orders</Link>
-                        {user.role === "ADMIN" && <Link to="/admin" className="dropdown-item">Admin</Link>}
-                        <button onClick={handleLogout} className="dropdown-item text-danger">Logout</button>
+                        <div className="dropdown-header">
+                          <p className="dropdown-title">{user.name}</p>
+                          <p className="dropdown-subtitle">{user.email}</p>
+                        </div>
+                        <Link to="/profile" className="dropdown-item">
+                          <User size={18} /> <span>Profile</span>
+                        </Link>
+                        <Link to="/orders" className="dropdown-item">
+                          <Package size={18} /> <span>My Orders</span>
+                        </Link>
+                        {user.role === "ADMIN" && (
+                          <Link to="/admin" className="dropdown-item">
+                            <LayoutDashboard size={18} /> <span>Admin Panel</span>
+                          </Link>
+                        )}
+                        <div className="dropdown-divider"></div>
+                        <button onClick={handleLogout} className="dropdown-item text-danger">
+                          <LogOut size={18} /> <span>Sign Out</span>
+                        </button>
                       </div>
                     )}
                   </div>

@@ -16,6 +16,7 @@
   align-items: center;
   overflow: hidden;
   background: radial-gradient(circle at top left, #064e4b 0%, #022c22 100%);
+  padding-top: 132px; /* Dual-Bar Navbar Height */
 }
 
 .hero__bg {
