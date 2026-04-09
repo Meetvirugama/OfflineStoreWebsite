@@ -16,8 +16,17 @@ const useReportStore = create((set) => ({
     set({ loading: true });
     try {
       const res = await reportService.fetchAllReports();
-      // res.data is the Axios response body: { success, message, data }
-      const data = res.data.data; 
+      // apiClient response interceptor already returns response.data
+      // So 'res' is the JSON body: { success, message, data: { ...stats... } }
+      // We need the 'data' field which contains our metrics.
+      const data = res.data || res; // Fallback in case interceptor changes
+      
+      console.log("Analytics Data Received:", data);
+      
+      if (!data || typeof data !== 'object') {
+        throw new Error("Invalid analytics data received");
+      }
+
       set({
         dashboard: data.dashboard || {},
         revenue: data.revenue || [],
