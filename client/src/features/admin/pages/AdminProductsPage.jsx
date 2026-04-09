@@ -3,6 +3,7 @@ import api from "@core/api/client";
 import "@/styles/Admin.css"; // Basic minimal styles
 import useToastStore from "@core/hooks/useToast";
 import AgroLoader from "@core/components/AgroLoader";
+import Modal from "@core/components/Modal";
 
 export default function AdminProductsPage() {
     const [products, setProducts] = useState([]);
@@ -200,76 +201,109 @@ export default function AdminProductsPage() {
             </table>
 
             {/* Create Product Modal */}
-            {isCreateOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Create New Product</h3>
-                        <form onSubmit={handleCreate} className="modal-form">
-                            <input placeholder="Product Name" required value={createForm.name} onChange={e => setCreateForm({...createForm, name: e.target.value})} />
-                            <input placeholder="Category Group" required value={createForm.category} onChange={e => setCreateForm({...createForm, category: e.target.value})} />
-                            <input placeholder="Manufacturer / Brand" value={createForm.brand} onChange={e => setCreateForm({...createForm, brand: e.target.value})} />
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <input placeholder="MRP" type="number" required value={createForm.mrp} onChange={e => setCreateForm({...createForm, mrp: e.target.value})} style={{flex: 1}} />
-                                <input placeholder="Selling List Price" type="number" required value={createForm.selling_price} onChange={e => setCreateForm({...createForm, selling_price: e.target.value})} style={{flex: 1}} />
-                            </div>
-                            <input placeholder="Public Image URL" value={createForm.image} onChange={e => setCreateForm({...createForm, image: e.target.value})} />
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <input placeholder="Initial Stock" type="number" required value={createForm.stock} onChange={e => setCreateForm({...createForm, stock: e.target.value})} style={{flex: 1}} />
-                                <input placeholder="Supplier ID" type="number" required value={createForm.supplier_id} onChange={e => setCreateForm({...createForm, supplier_id: e.target.value})} style={{flex: 1}} />
-                            </div>
-                            <div className="modal-actions">
-                                <button type="button" onClick={() => setIsCreateOpen(false)}>Cancel Drop</button>
-                                <button type="submit" className="btn-elite primary">Save Product Node</button>
-                            </div>
-                        </form>
+            <Modal
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onConfirm={handleCreate}
+                title="Establish New Product Node"
+                confirmText="Save Node"
+            >
+                <div className="elite-form">
+                    <div className="elite-form-group">
+                        <label>Asset Identity</label>
+                        <input className="elite-input" placeholder="Product Name" required value={createForm.name} onChange={e => setCreateForm({...createForm, name: e.target.value})} />
+                    </div>
+                    <div className="elite-form-group">
+                        <label>Category Classification</label>
+                        <input className="elite-input" placeholder="e.g. Fertilizers" required value={createForm.category} onChange={e => setCreateForm({...createForm, category: e.target.value})} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <div className="elite-form-group" style={{ flex: 1 }}>
+                            <label>MRP (₹)</label>
+                            <input className="elite-input" type="number" required value={createForm.mrp} onChange={e => setCreateForm({...createForm, mrp: e.target.value})} />
+                        </div>
+                        <div className="elite-form-group" style={{ flex: 1 }}>
+                            <label>Selling Price (₹)</label>
+                            <input className="elite-input" type="number" required value={createForm.selling_price} onChange={e => setCreateForm({...createForm, selling_price: e.target.value})} />
+                        </div>
+                    </div>
+                    <div className="elite-form-group">
+                        <label>Image Asset URL</label>
+                        <input className="elite-input" placeholder="https://" value={createForm.image} onChange={e => setCreateForm({...createForm, image: e.target.value})} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <div className="elite-form-group" style={{ flex: 1 }}>
+                            <label>Initial Lifecycle Stock</label>
+                            <input className="elite-input" type="number" required value={createForm.stock} onChange={e => setCreateForm({...createForm, stock: e.target.value})} />
+                        </div>
+                        <div className="elite-form-group" style={{ flex: 1 }}>
+                            <label>Supplier ID</label>
+                            <input className="elite-input" type="number" required value={createForm.supplier_id} onChange={e => setCreateForm({...createForm, supplier_id: e.target.value})} />
+                        </div>
                     </div>
                 </div>
-            )}
+            </Modal>
 
             {/* Adjust Stock Modal */}
-            {isAdjustOpen && selectedProduct && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Adjust Stock: {selectedProduct.name}</h3>
-                        <p style={{ margin: '0 0 15px', color: '#64748b' }}>Current Count: <strong style={{ color: '#0f172a' }}>{selectedProduct.stock} Units</strong></p>
-                        <form onSubmit={handleAdjust} className="modal-form">
-                            <select value={adjustForm.type} onChange={e => setAdjustForm({...adjustForm, type: e.target.value})}>
-                                <option value="IN">ADD (INCOMING STOCK)</option>
-                                <option value="OUT">REMOVE (OUTGOING SCRAP/SALES)</option>
-                            </select>
-                            <input placeholder="Modifier Quantity" type="number" min="1" required value={adjustForm.quantity} onChange={e => setAdjustForm({...adjustForm, quantity: e.target.value})} />
-                            <input placeholder="Justification Log (e.g. MANUAL, RETURN)" required value={adjustForm.reference_type} onChange={e => setAdjustForm({...adjustForm, reference_type: e.target.value})} />
-                            <div className="modal-actions">
-                                <button type="button" onClick={() => setIsAdjustOpen(false)}>Abort Change</button>
-                                <button type="submit" className="btn-elite primary">Confirm Injection</button>
-                            </div>
-                        </form>
+            <Modal
+                isOpen={isAdjustOpen && !!selectedProduct}
+                onClose={() => setIsAdjustOpen(false)}
+                onConfirm={handleAdjust}
+                title={`Modifying Inventory: ${selectedProduct?.name}`}
+                confirmText="Inject Changes"
+            >
+                <div className="elite-form">
+                    <div className="elite-form-group">
+                        <label>Adjustment Vector</label>
+                        <select className="elite-input elite-select" value={adjustForm.type} onChange={e => setAdjustForm({...adjustForm, type: e.target.value})}>
+                            <option value="IN">ADD (INCOMING STOCK)</option>
+                            <option value="OUT">REMOVE (OUTGOING SCRAP/SALES)</option>
+                        </select>
+                    </div>
+                    <div className="elite-form-group">
+                        <label>Quantity Delta</label>
+                        <input className="elite-input" placeholder="Units" type="number" min="1" required value={adjustForm.quantity} onChange={e => setAdjustForm({...adjustForm, quantity: e.target.value})} />
+                    </div>
+                    <div className="elite-form-group">
+                        <label>Justification Log</label>
+                        <input className="elite-input" placeholder="e.g. MANUAL, RETURN" required value={adjustForm.reference_type} onChange={e => setAdjustForm({...adjustForm, reference_type: e.target.value})} />
                     </div>
                 </div>
-            )}
+            </Modal>
 
             {/* Edit Product Modal */}
-            {isEditOpen && selectedProduct && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Update Product: {selectedProduct.name}</h3>
-                        <form onSubmit={handleUpdate} className="modal-form">
-                            <input placeholder="Product Name" required value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} />
-                            <input placeholder="Category Group" required value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})} />
-                            <input placeholder="Manufacturer / Brand" value={editForm.brand} onChange={e => setEditForm({...editForm, brand: e.target.value})} />
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <input placeholder="MRP" type="number" required value={editForm.mrp} onChange={e => setEditForm({...editForm, mrp: e.target.value})} style={{flex: 1}} />
-                                <input placeholder="Selling List Price" type="number" required value={editForm.selling_price} onChange={e => setEditForm({...editForm, selling_price: e.target.value})} style={{flex: 1}} />
-                            </div>
-                            <input placeholder="Public Image URL" value={editForm.image} onChange={e => setEditForm({...editForm, image: e.target.value})} />
-                            <div className="modal-actions">
-                                <button type="button" onClick={() => setIsEditOpen(false)}>Discard</button>
-                                <button type="submit" className="btn-elite primary">Save Changes</button>
-                            </div>
-                        </form>
+            <Modal
+                isOpen={isEditOpen && !!selectedProduct}
+                onClose={() => setIsEditOpen(false)}
+                onConfirm={handleUpdate}
+                title="Synchronize Product Specifications"
+                confirmText="Push Updates"
+            >
+                <div className="elite-form">
+                    <div className="elite-form-group">
+                        <label>Asset Identity</label>
+                        <input className="elite-input" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} />
+                    </div>
+                    <div className="elite-form-group">
+                        <label>Category Group</label>
+                        <input className="elite-input" value={editForm.category} onChange={e => setEditForm({...editForm, category: e.target.value})} />
+                    </div>
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <div className="elite-form-group" style={{ flex: 1 }}>
+                            <label>MRP (₹)</label>
+                            <input className="elite-input" type="number" value={editForm.mrp} onChange={e => setEditForm({...editForm, mrp: e.target.value})} />
+                        </div>
+                        <div className="elite-form-group" style={{ flex: 1 }}>
+                            <label>List Price (₹)</label>
+                            <input className="elite-input" type="number" value={editForm.selling_price} onChange={e => setEditForm({...editForm, selling_price: e.target.value})} />
+                        </div>
+                    </div>
+                    <div className="elite-form-group">
+                        <label>Asset URL</label>
+                        <input className="elite-input" value={editForm.image} onChange={e => setEditForm({...editForm, image: e.target.value})} />
                     </div>
                 </div>
-            )}
+            </Modal>
 
         </div>
     );

@@ -4,6 +4,7 @@ import api from "@core/api/client";
 import "@/styles/Admin.css";
 import useToastStore from "@core/hooks/useToast";
 import AgroLoader from "@core/components/AgroLoader";
+import Modal from "@core/components/Modal";
 
 export default function SuppliersListPage() {
     const navigate = useNavigate();
@@ -93,22 +94,24 @@ export default function SuppliersListPage() {
             </table>
 
             {/* Create Supplier Modal */}
-            {isCreateOpen && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <h3>Add New Supplier</h3>
-                        <form onSubmit={handleCreate} className="modal-form">
-                            <input placeholder="Name" required value={createForm.name} onChange={e => setCreateForm({...createForm, name: e.target.value})} />
-                            <input placeholder="Mobile Number" required value={createForm.mobile} onChange={e => setCreateForm({...createForm, mobile: e.target.value})} />
-                            
-                            <div className="modal-actions">
-                                <button type="button" onClick={() => setIsCreateOpen(false)}>Cancel</button>
-                                <button type="submit" className="btn-elite primary">Create</button>
-                            </div>
-                        </form>
+            <Modal
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                onConfirm={handleCreate}
+                title="Register New Strategic Partner"
+                confirmText="Create Connection"
+            >
+                <div className="elite-form">
+                    <div className="elite-form-group">
+                        <label>Partner Identity / Name</label>
+                        <input className="elite-input" placeholder="Supplier Name" required value={createForm.name} onChange={e => setCreateForm({...createForm, name: e.target.value})} />
+                    </div>
+                    <div className="elite-form-group">
+                        <label>Secure Mobile Contact</label>
+                        <input className="elite-input" placeholder="+91 XXXX XXXX" required value={createForm.mobile} onChange={e => setCreateForm({...createForm, mobile: e.target.value})} />
                     </div>
                 </div>
-            )}
+            </Modal>
         </div>
     );
 }
