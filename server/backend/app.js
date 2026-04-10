@@ -34,8 +34,33 @@ import inventoryRoutes from "./modules/product/inventory.routes.js";
 
 const app = express();
 
-// Global Middleware
-app.use(cors());
+// ─── CORS ──────────────────────────────────────────────────────────────────
+// Explicit list of allowed origins (add any new domains here)
+const ALLOWED_ORIGINS = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://offlinestorewebsite.onrender.com",
+  "https://agroplatform.app",
+  "https://www.agroplatform.app",
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+};
+
+// Handle preflight OPTIONS requests before all routes
+app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
+
+// ─── STANDARD MIDDLEWARE ────────────────────────────────────────────────────
 app.use(express.json());
 app.use(morgan("dev"));
 

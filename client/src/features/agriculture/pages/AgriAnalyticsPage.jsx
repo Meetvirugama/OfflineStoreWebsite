@@ -127,7 +127,7 @@ const AgriAnalyticsPage = () => {
                     
                     <div style={{height: '350px', marginTop: '1rem'}}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={trends}>
+                            <AreaChart data={trends || []}>
                                 <defs>
                                     <linearGradient id="velocityGlow" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#10b981" stopOpacity={0.25}/>
@@ -180,7 +180,7 @@ const AgriAnalyticsPage = () => {
                             <p style={{fontSize: '0.75rem', opacity: 0.4, margin: '2px 0 0', letterSpacing: '0.5px', fontWeight: 700}}>MARKET EQUILIBRIUM</p>
                         </div>
                     </div>
-                    {trends.length > 0 ? (
+                    {(trends || []).length > 0 ? (
                         <div style={{display: 'flex', flexDirection: 'column', gap: '3rem', flex: 1}}>
                             <div style={{background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.04)'}}>
                                 <h4 style={{opacity: 0.4, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem', fontWeight: 800}}>Live Trading Price</h4>
@@ -189,7 +189,7 @@ const AgriAnalyticsPage = () => {
                                     <span style={{fontSize: '1.2rem', opacity: 0.3, fontWeight: 700}}>INR/Q</span>
                                 </div>
                             </div>
-                            {trends.length > 1 && (
+                            {(trends || []).length > 1 && (
                                 <div style={{padding: '1rem 0'}}>
                                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                         <div>
@@ -197,21 +197,21 @@ const AgriAnalyticsPage = () => {
                                             <div style={{
                                                 fontSize: '2.4rem', 
                                                 fontWeight: 900, 
-                                                color: trends[trends.length - 1].price >= trends[0].price ? '#10b981' : '#ef4444',
+                                                color: (trends[trends.length - 1]?.price ?? 0) >= (trends[0]?.price ?? 0) ? '#10b981' : '#ef4444',
                                                 letterSpacing: '-1px'
                                             }}>
-                                                {trends[trends.length - 1].price >= trends[0].price ? '+' : ''}
-                                                {((trends[trends.length-1].price - trends[0].price) / trends[0].price * 100).toFixed(1)}%
+                                                {(trends[trends.length - 1]?.price ?? 0) >= (trends[0]?.price ?? 0) ? '+' : ''}
+                                                {((((trends[trends.length-1]?.price ?? 0) - (trends[0]?.price ?? 0)) / (trends[0]?.price || 1)) * 100).toFixed(1)}%
                                             </div>
                                         </div>
                                         <div style={{
                                             width: '64px', height: '64px', borderRadius: '20px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            background: trends[trends.length - 1].price >= trends[0].price ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                            color: trends[trends.length - 1].price >= trends[0].price ? '#10b981' : '#ef4444',
+                                            background: (trends[trends.length - 1]?.price ?? 0) >= (trends[0]?.price ?? 0) ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                            color: (trends[trends.length - 1]?.price ?? 0) >= (trends[0]?.price ?? 0) ? '#10b981' : '#ef4444',
                                             border: '1px solid currentColor'
                                         }}>
-                                            <TrendingUp size={32} style={{transform: trends[trends.length - 1].price >= trends[0].price ? 'none' : 'rotate(180deg)'}} />
+                                            <TrendingUp size={32} style={{transform: (trends[trends.length - 1]?.price ?? 0) >= (trends[0]?.price ?? 0) ? 'none' : 'rotate(180deg)'}} />
                                         </div>
                                     </div>
                                 </div>
@@ -247,7 +247,7 @@ const AgriAnalyticsPage = () => {
                             <Calendar className="agri-accent" size={24} /> Seasonal Pivot Strategy
                         </h4>
                         <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.8rem'}}>
-                            {seasonal.crops.map(crop => (
+                            {(seasonal?.crops || []).map(crop => (
                                 <div key={crop} style={{
                                     background: 'rgba(245, 158, 11, 0.1)', 
                                     border: '1px solid rgba(245, 158, 11, 0.3)',
