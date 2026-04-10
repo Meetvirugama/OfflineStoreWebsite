@@ -5,17 +5,28 @@ import nodemailer from "nodemailer";
  * Uses SMTP (Gmail App Password) for digital communication
  */
 const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // Use SSL/TLS
     auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASS,
     },
 });
 
-export const verifySMTP = () => transporter.verify();
+export const verifySMTP = async () => {
+    try {
+        await transporter.verify();
+        console.log("✅ [EMAIL] SMTP Link established successfully.");
+        return true;
+    } catch (error) {
+        console.error("❌ [EMAIL ERROR] SMTP Verification Failed:", error.message);
+        throw error;
+    }
+};
 
 export const sendEmail = async (to, subject, text, html, attachments = []) => {
-    console.log(`[EMAIL] Attempting to send transmission to ${to}...`);
+    console.log(`[EMAIL] 🚀 Sending transmission to ${to}...`);
     try {
         const info = await transporter.sendMail({
             from: `"AgroMart 🌾" <${process.env.EMAIL}>`,
@@ -25,10 +36,13 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
             html,
             attachments
         });
-        console.log(`[EMAIL] Message sent: %s`, info.messageId);
+        console.log(`[EMAIL] ✅ Message sent successfully: %s`, info.messageId);
         return info;
     } catch (error) {
-        console.error(`[EMAIL ERROR] Failed to send email to ${to}:`, error);
+        console.error(`[EMAIL ERROR] ❌ Failed to send email to ${to}:`, error.message);
+        if (error.code === 'EAUTH') {
+            console.error("👉 TIP: Check if your Gmail App Password is correct and EMAIL matches.");
+        }
         throw error;
     }
 };

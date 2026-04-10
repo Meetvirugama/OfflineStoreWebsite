@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import apiClient from "../../../core/api/client.js";
+import * as authService from "../api/auth.service.js";
 
 const decodeToken = (t) => {
   try { return JSON.parse(atob(t.split('.')[1])); } catch { return null; }
@@ -16,9 +16,8 @@ const useAuthStore = create((set, get) => ({
   login: async (email, password) => {
     set({ loading: true });
     try {
-      const res = await apiClient.post("/auth/login", { email, password });
+      const res = await authService.login({ email, password });
       
-      // Unwrapping backend standard response { success, message, data: { token, user } }
       const { token, user: userData } = res.data;
       
       localStorage.setItem("agromart_token", token);
@@ -35,7 +34,7 @@ const useAuthStore = create((set, get) => ({
   register: async (data) => {
     set({ loading: true });
     try {
-      await apiClient.post("/auth/register", data);
+      await authService.register(data);
       set({ loading: false });
       return { success: true };
     } catch (err) {
@@ -47,7 +46,7 @@ const useAuthStore = create((set, get) => ({
   verifyOtp: async (email, otp) => {
     set({ loading: true });
     try {
-      await apiClient.post("/auth/verify-otp", { email, otp });
+      await authService.verifyOtp({ email, otp });
       set({ loading: false });
       return { success: true };
     } catch (err) {
@@ -59,7 +58,7 @@ const useAuthStore = create((set, get) => ({
   resendOtp: async (email) => {
     set({ loading: true });
     try {
-      await apiClient.post("/auth/resend-otp", { email });
+      await authService.resendOtp({ email });
       set({ loading: false });
       return { success: true };
     } catch (err) {

@@ -98,7 +98,12 @@ export const resendOtp = async (email) => {
     if (!user) throw new Error("User not found");
     if (user.is_verified) throw new Error("Email already verified");
 
-    // 3. Send Resend Email
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    // Send Resend Email
     try {
         const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
         const emailHtml = getOTPTemplate(otp, user.name || "Farmer");

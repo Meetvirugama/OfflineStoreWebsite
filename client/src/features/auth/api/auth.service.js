@@ -6,6 +6,7 @@ import apiClient from "../../../core/api/client.js";
 export const login = (data) => apiClient.post("/auth/login", data);
 export const register = (data) => apiClient.post("/auth/register", data);
 export const verifyOtp = (data) => apiClient.post("/auth/verify-otp", data);
+export const resendOtp = (data) => apiClient.post("/auth/resend-otp", data);
 export const forgotPassword = (data) => apiClient.post("/auth/forgot-password", data);
 export const resetPassword = (data) => apiClient.post("/auth/reset-password", data);
 
