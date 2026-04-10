@@ -14,7 +14,8 @@ const useCropStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const res = await apiClient.get("/crops/list");
-            set({ crops: res.data || [], loading: false });
+            // apiClient interceptor returns response.data directly
+            set({ crops: (res?.data ?? res) || [], loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }
@@ -24,7 +25,7 @@ const useCropStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const res = await apiClient.get(`/crops/${name}`);
-            set({ selectedCrop: res.data, loading: false });
+            set({ selectedCrop: res?.data ?? res, loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }
@@ -34,7 +35,7 @@ const useCropStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const res = await apiClient.get(`/crops/${name}/trends?days=${days}`);
-            set({ trends: res.data, loading: false });
+            set({ trends: (res?.data ?? res) || [], loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }
@@ -44,7 +45,7 @@ const useCropStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const res = await apiClient.get(`/crops/${name}/insights`);
-            set({ aiAnalysis: res.data, loading: false });
+            set({ aiAnalysis: res?.data ?? res, loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }
@@ -54,7 +55,7 @@ const useCropStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const res = await apiClient.get(`/crops/seasonal`);
-            set({ seasonal: res.data, loading: false });
+            set({ seasonal: res?.data ?? res, loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }
