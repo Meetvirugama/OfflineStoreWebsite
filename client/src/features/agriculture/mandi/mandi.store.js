@@ -30,8 +30,7 @@ const useMandiStore = create((set, get) => ({
             const res = await apiClient.get("/mandi/prices", { 
                 params: { state, district, crop: commodity } 
             });
-            const priceData = res.data?.data || res.data || [];
-            set({ prices: priceData, loading: false });
+            set({ prices: Array.isArray(res) ? res : [], loading: false });
         } catch (err) {
             set({ loading: false });
         }
@@ -40,7 +39,7 @@ const useMandiStore = create((set, get) => ({
     fetchSummary: async () => {
         try {
             const res = await apiClient.get("/mandi/summary");
-            set({ summary: res.data?.data || res.data });
+            set({ summary: res || null });
         } catch (err) {
             console.error("Fetch summary error:", err);
         }
@@ -52,7 +51,7 @@ const useMandiStore = create((set, get) => ({
             const res = await apiClient.get("/mandi/trends", { 
                 params: { crop, district: "all", days, state } 
             });
-            set({ cropTrends: res.data?.data || res.data || [] });
+            set({ cropTrends: Array.isArray(res) ? res : [] });
         } catch (err) {
             console.error("Fetch crop trends error:", err);
         }
@@ -61,7 +60,7 @@ const useMandiStore = create((set, get) => ({
     fetchBestMandi: async (crop) => {
         try {
             const res = await apiClient.get("/mandi/best-mandi", { params: { crop } });
-            set({ bestMandi: res.data?.data || res.data });
+            set({ bestMandi: res || null });
         } catch (err) {
             console.error("Fetch best mandi error:", err);
         }
@@ -71,7 +70,7 @@ const useMandiStore = create((set, get) => ({
         try {
             const state = get().filters.state;
             const res = await apiClient.get("/mandi/trends/multi", { params: { crops, days, state } });
-            return res.data?.data || res.data || [];
+            return Array.isArray(res) ? res : [];
         } catch (err) {
             console.error("Fetch multi trends error:", err);
             return [];
@@ -83,7 +82,7 @@ const useMandiStore = create((set, get) => ({
             const state = get().filters.state;
             // Reusing prices logic to get current district comparisons
             const res = await apiClient.get("/mandi/prices", { params: { crop, state } });
-            const data = res.data?.data || res.data || [];
+            const data = Array.isArray(res) ? res : [];
             
             // Group by district
             const districtMap = {};
@@ -111,7 +110,7 @@ const useMandiStore = create((set, get) => ({
             const res = await apiClient.get("/mandi/trends", { 
                 params: { crop, district, days, state } 
             });
-            const trendData = res.data?.data || res.data || [];
+            const trendData = Array.isArray(res) ? res : [];
             set({ trends: trendData, trendsLoading: false });
         } catch (err) {
             set({ trendsLoading: false, trends: [] });

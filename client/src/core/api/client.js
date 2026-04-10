@@ -39,9 +39,19 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor (e.g., for error handling)
+// Response Interceptor — auto-flatten the backend envelope
+// Backend always sends: { success: bool, message: string, data: <payload> }
+// Returning response.data.data gives stores the payload directly.
+// Falls back to response.data for endpoints that don't follow the envelope pattern.
 apiClient.interceptors.response.use(
-  (response) => response.data,
+  (response) => {
+    const body = response.data;
+    // If the response has our standard envelope shape, unwrap it
+    if (body && typeof body === "object" && "data" in body) {
+      return body.data;
+    }
+    return body;
+  },
   (error) => {
     const message = error.response?.data?.message || "Something went wrong";
     return Promise.reject(new Error(message));

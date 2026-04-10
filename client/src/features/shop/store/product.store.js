@@ -8,8 +8,9 @@ const useProductStore = create((set) => ({
   fetchProducts: async () => {
     set({ loading: true });
     try {
-      const data = await productService.fetchAll();
-      set({ products: data, loading: false });
+      const res = await productService.fetchAll();
+      // interceptor auto-flattens: res is the products array directly
+      set({ products: Array.isArray(res) ? res : [], loading: false });
     } catch (err) {
       set({ loading: false });
     }

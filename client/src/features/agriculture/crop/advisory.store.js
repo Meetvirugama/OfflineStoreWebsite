@@ -10,11 +10,11 @@ const useAdvisoryStore = create((set, get) => ({
     generateAdvisory: async (formData) => {
         set({ loading: true, error: null });
         try {
-            const data = await apiClient.post("/crops/advisory", formData);
-            set({ curAdvisory: data, loading: false });
-            // Refresh history after new generation
+            const res = await apiClient.post("/crops/advisory", formData);
+            // interceptor auto-flattens: res is the advisory object directly
+            set({ curAdvisory: res || null, loading: false });
             await get().fetchHistory();
-            return data;
+            return res;
         } catch (err) {
             set({ error: err.message, loading: false });
             throw err;
@@ -24,8 +24,9 @@ const useAdvisoryStore = create((set, get) => ({
     fetchHistory: async () => {
         set({ loading: true });
         try {
-            const data = await apiClient.get("/crops/advisory/history");
-            set({ history: data, loading: false });
+            const res = await apiClient.get("/crops/advisory/history");
+            // interceptor auto-flattens: res is the array directly
+            set({ history: Array.isArray(res) ? res : [], loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }

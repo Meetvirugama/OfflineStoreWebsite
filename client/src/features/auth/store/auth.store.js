@@ -17,10 +17,8 @@ const useAuthStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await authService.login({ email, password });
-      
-      // apiClient interceptor returns response.data directly, so res IS the payload
-      const payload = res?.data ?? res;
-      const { token, user: userData } = payload;
+      // interceptor auto-flattens: res is now { token, user } directly
+      const { token, user: userData } = res;
       
       localStorage.setItem("agromart_token", token);
       const decoded = decodeToken(token);
@@ -72,14 +70,13 @@ const useAuthStore = create((set, get) => ({
   fetchProfile: async () => {
     try {
       const res = await authService.getProfile();
-      // apiClient interceptor returns response.data directly, so res IS the payload
-      const userData = res?.data || res;
+      // interceptor auto-flattens: res is the profile object directly
       set({ 
-        profile: userData, 
-        customer: userData?.Customer || userData,
+        profile: res, 
+        customer: res?.Customer || null,
         initialized: true 
       });
-      return userData;
+      return res;
     } catch (err) {
       set({ initialized: true });
       return null;
@@ -108,10 +105,9 @@ const useAuthStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await authService.updateProfile(formData);
-      const userData = res?.data || res;
       set({ 
-        profile: userData, 
-        customer: userData?.Customer || userData,
+        profile: res, 
+        customer: res?.Customer || null,
         loading: false 
       });
       return { success: true };

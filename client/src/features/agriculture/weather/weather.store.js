@@ -29,11 +29,11 @@ const useWeatherStore = create((set, get) => ({
         try {
             const params = lat && lon ? { lat, lon } : {};
             const res = await apiClient.get("/weather/details", { params });
-            // apiClient interceptor returns response.data directly
-            const data = (res?.data ?? res) || {};
+            // interceptor auto-flattens: res is the data object directly
+            const data = res || {};
             
             set({ 
-                currentWeather: data.current,
+                currentWeather: data.current || null,
                 todayTimeline: data.todayTimeline || [],
                 extendedForecast: data.extendedForecast || [],
                 alerts: data.alerts || [],
@@ -50,9 +50,8 @@ const useWeatherStore = create((set, get) => ({
     searchLocations: async (query) => {
         try {
             const res = await apiClient.get("/weather/search", { params: { q: query } });
-            // apiClient interceptor returns response.data directly
-            const payload = res?.data ?? res;
-            return payload?.locations || [];
+            // interceptor auto-flattens: res is { locations: [...] } directly
+            return (res?.locations) || [];
         } catch (err) {
             console.error("Search error:", err);
             return [];

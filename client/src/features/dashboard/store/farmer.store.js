@@ -15,8 +15,8 @@ const useFarmerStore = create((set, get) => ({
             ]);
             
             set({
-                savedCrops: cropsRes.data || [],
-                profitStats: profitRes.data || null,
+                savedCrops: Array.isArray(cropsRes) ? cropsRes : (cropsRes?.savedCrops || []),
+                profitStats: profitRes || null,
                 loading: false
             });
         } catch {

@@ -16,7 +16,8 @@ const useCartStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await checkoutService.fetchCart();
-      const { cartId, items: rawItems } = res.data || { cartId: null, items: [] };
+      // interceptor auto-flattens: res is { cartId, items } directly
+      const { cartId, items: rawItems } = res || { cartId: null, items: [] };
       
       // Flatten items: map item.Product.name -> item.name
       const items = (rawItems || []).map(item => ({

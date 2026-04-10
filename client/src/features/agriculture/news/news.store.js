@@ -10,9 +10,8 @@ const useNewsStore = create((set) => ({
     set({ loading: true, error: null });
     try {
       const res = await apiClient.get("/news", { params });
-      // apiClient interceptor returns response.data = { success, message, data: [...] }
-      const articles = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
-      set({ news: articles, loading: false });
+      // interceptor auto-flattens: res is the articles array directly
+      set({ news: Array.isArray(res) ? res : [], loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
     }
@@ -23,8 +22,7 @@ const useNewsStore = create((set) => ({
     try {
       await apiClient.post("/news/sync");
       const res = await apiClient.get("/news");
-      const articles = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
-      set({ news: articles, loading: false });
+      set({ news: Array.isArray(res) ? res : [], loading: false });
     } catch (err) {
       set({ loading: false, error: err.message });
     }

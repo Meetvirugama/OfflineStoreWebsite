@@ -9,7 +9,8 @@ const useNotificationStore = create((set, get) => ({
     set({ loading: true });
     try {
       const res = await notificationService.fetchNotifications();
-      set({ notifications: res.data || [], loading: false });
+      // interceptor auto-flattens: res is the array directly
+      set({ notifications: Array.isArray(res) ? res : [], loading: false });
     } catch {
       set({ loading: false });
     }
