@@ -16,7 +16,7 @@ export default function MandiDashboardPage() {
         summary, fetchSummary, cropTrends, fetchCropTrends, 
         districtTrends, fetchDistrictTrends,
         bestMandi, fetchBestMandi,
-        fetchMultiCropTrends, triggerMockSync
+        fetchMultiCropTrends
     } = useMandiStore();
 
     const [selectedCrop, setSelectedCrop] = useState("Wheat");
@@ -164,16 +164,13 @@ export default function MandiDashboardPage() {
                 </div>
             </div>
 
-            {/* Admin Utility */}
+            {/* Refresh utility */}
             <div style={{ marginTop: '40px', textAlign: 'center', opacity: 0.5 }}>
                 <button 
-                    onClick={async () => {
-                        await triggerMockSync();
-                        window.location.reload();
-                    }}
+                    onClick={() => window.location.reload()}
                     style={{ background: 'none', border: '1px dashed #cbd5e1', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '12px' }}
                 >
-                    DEBUG: Inject Mock Harvest Data
+                    Refresh Market Data
                 </button>
             </div>
         </div>

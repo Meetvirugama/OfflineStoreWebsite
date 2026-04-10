@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, 
-    ResponsiveContainer, Area as AreaPlot
+    ResponsiveContainer
 } from 'recharts';
 import '@/styles/agriIntelligence.css';
 
@@ -250,7 +250,7 @@ const WeatherDashboard = () => {
                         <div style={{padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 800, border: '1px solid rgba(255,255,255,0.08)'}}>TEMPERATURE PULSE</div>
                     </div>
                     <div style={{flex: 1, minHeight: '200px'}}>
-                        <ResponsiveContainer>
+                        <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={sprayTimeline}>
                                 <defs>
                                     <linearGradient id="serenityGlow" x1="0" y1="0" x2="0" y2="1">

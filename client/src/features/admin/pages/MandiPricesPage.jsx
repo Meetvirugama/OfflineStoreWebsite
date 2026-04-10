@@ -230,9 +230,6 @@ export default function MandiPricesPage() {
                         {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
                     </select>
                 </div>
-                <div style={{ flex: 1, minWidth: '180px' }}>
-                    <input type="date" name="date" value={filters.date} onChange={handleFilterChange} className="modal-form-input" style={{ width: '100%', padding: '8px', borderRadius: '10px' }} />
-                </div>
                 <button className="btn-elite primary" onClick={fetchPrices}>Refresh</button>
             </div>
 
