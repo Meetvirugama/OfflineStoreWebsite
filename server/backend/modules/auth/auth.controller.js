@@ -53,7 +53,7 @@ export const googleInit = (req, res) => {
 
 export const googleCallback = asyncHandler(async (req, res) => {
     const code = req.query.code;
-    const frontendUrl = ENV.BASE_API_URL.split("/api")[0]; // Dynamically get frontend base from API URL
+    const frontendUrl = ENV.FRONTEND_URL || ENV.BASE_API_URL.split("/api")[0]; // Use Vercel frontend URL if deployed
 
     if (!code) return res.redirect(`${frontendUrl}/auth/login?error=no_code`);
 

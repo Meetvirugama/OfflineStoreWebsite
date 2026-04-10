@@ -16,8 +16,8 @@ const getBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl) return envUrl;
   
-  // 3. Fallback for Render sub-pathing
-  return "/api";
+  // 3. Fallback for Render/Vercel production
+  return "https://offlinestorewebsite.onrender.com/api";
 };
 
 const apiClient = axios.create({

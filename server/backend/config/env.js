@@ -25,7 +25,8 @@ export const ENV = {
     TOMORROW_KEY: process.env.TOMORROW_API_KEY,
     
     // Internal Service URLs
-    BASE_API_URL: process.env.VITE_API_URL || 'http://localhost:5001/api'
+    BASE_API_URL: process.env.VITE_API_URL || 'http://localhost:5001/api',
+    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173'
 };
 
 export default ENV;
