@@ -41,3 +41,16 @@ export const markAsRead = async (notificationId) => {
     const notification = await Notification.findByPk(notificationId);
     if (notification) await notification.update({ is_read: true });
 };
+
+export const markAllRead = async (userId) => {
+    return await Notification.update(
+        { is_read: true },
+        { where: { user_id: userId, is_read: false } }
+    );
+};
+
+export const deleteNotification = async (notificationId, userId) => {
+    return await Notification.destroy({
+        where: { id: notificationId, user_id: userId }
+    });
+};

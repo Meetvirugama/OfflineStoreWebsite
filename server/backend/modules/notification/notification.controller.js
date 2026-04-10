@@ -12,6 +12,16 @@ export const read = asyncHandler(async (req, res) => {
     sendResponse(res, 200, "Notification marked as read");
 });
 
+export const markAllRead = asyncHandler(async (req, res) => {
+    await notificationService.markAllRead(req.user.id);
+    sendResponse(res, 200, "All notifications marked as read");
+});
+
+export const remove = asyncHandler(async (req, res) => {
+    await notificationService.deleteNotification(req.params.id, req.user.id);
+    sendResponse(res, 200, "Notification removed");
+});
+
 export const remind = asyncHandler(async (req, res) => {
     const { orderId } = req.params;
     const { orderServ, userServ, notifyServ, emailServ } = {

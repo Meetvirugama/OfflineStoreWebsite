@@ -19,9 +19,19 @@ export const downloadInvoice = asyncHandler(async (req, res) => {
         return res.status(403).json({ success: false, message: "Access denied to this invoice" });
     }
 
-    // Set headers for PDF download
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename=invoice-${orderId}.pdf`);
+    try {
+        // Generate PDF as buffer first
+        const pdfBuffer = await invoiceService.generateInvoicePDF(order);
 
-    await invoiceService.generateInvoicePDF(order, res);
+        // Set headers for PDF download
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Length", pdfBuffer.length);
+        res.setHeader("Content-Disposition", `attachment; filename=invoice-${orderId}.pdf`);
+
+        // Send binary data
+        res.end(pdfBuffer);
+    } catch (err) {
+        console.error("Invoice Download Failed:", err);
+        res.status(500).json({ success: false, message: "Critical failure generating invoice document" });
+    }
 });

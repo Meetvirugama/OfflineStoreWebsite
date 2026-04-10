@@ -26,6 +26,37 @@ const useNotificationStore = create((set, get) => ({
     } catch (err) {
       console.error(err);
     }
+  },
+
+  clickNotification: (id) => {
+    // This is for UI tracking, can be used to set active notif
+    set({
+      notifications: get().notifications.map(n =>
+        n.id === id ? { ...n, is_opened: true } : n
+      )
+    });
+  },
+
+  markAllAsRead: async () => {
+    try {
+      await notificationService.markAllRead();
+      set({
+        notifications: get().notifications.map(n => ({ ...n, is_read: true, is_opened: true }))
+      });
+    } catch (err) {
+      console.error("Failed to mark all as read:", err);
+    }
+  },
+
+  deleteNotification: async (id) => {
+    try {
+      await notificationService.removeNotification(id);
+      set({
+        notifications: get().notifications.filter(n => n.id !== id)
+      });
+    } catch (err) {
+      console.error("Failed to delete notification:", err);
+    }
   }
 }));
 
