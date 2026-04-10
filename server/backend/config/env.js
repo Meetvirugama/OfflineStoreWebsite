@@ -25,8 +25,8 @@ export const ENV = {
     TOMORROW_KEY: process.env.TOMORROW_API_KEY,
     
     // Internal Service URLs
-    BASE_API_URL: process.env.VITE_API_URL || 'http://localhost:5001/api',
-    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173'
+    BASE_API_URL: process.env.BASE_API_URL || 'https://offlinestorewebsite.onrender.com/api',
+    FRONTEND_URL: process.env.FRONTEND_URL || 'https://www.agroplatform.app'
 };
 
 export default ENV;

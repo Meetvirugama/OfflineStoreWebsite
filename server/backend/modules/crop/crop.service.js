@@ -2,7 +2,6 @@ import Advisory from "./advisory.model.js";
 import SavedCrop from "./saved_crop.model.js";
 import PestDetection from "./pest_detection.model.js";
 import * as weatherService from "../weather/weather.service.js";
-import { asyncHandler } from "../../utils/errorHandler.js";
 
 /**
  * SAVED CROPS

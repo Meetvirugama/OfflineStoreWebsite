@@ -13,7 +13,8 @@ import {
     AlertTriangle,
     Info,
     ChevronRight,
-    MapPin
+    MapPin,
+    Calendar
 } from 'lucide-react';
 import '@/styles/agriIntelligence.css';
 
@@ -282,10 +283,12 @@ const animations = `
 .pulse { animation: pulse 2s ease-in-out infinite; }
 `;
 
-export default () => (
+const FarmingNewsPageWrapper = () => (
     <>
         <style>{animations}</style>
         <FarmingNewsPage />
     </>
 );
+
+export default FarmingNewsPageWrapper;
 
