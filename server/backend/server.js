@@ -13,9 +13,27 @@ const startServer = async () => {
         console.log("📡 [DB] Connecting to Database...");
         console.log(`🔗 [DB] URL: ${ENV.DATABASE_URL ? ENV.DATABASE_URL.substring(0, 20) + "..." : "MISSING!"}`);
         
-        // --- 1. DB AUTHENTICATION ---
-        await sequelize.authenticate();
-        console.log("✅ [DB] Database Authenticated successfully.");
+        // --- 1. DB AUTHENTICATION (With Aggressive Manual Retries) ---
+        let authenticated = false;
+        let attempts = 0;
+        const maxAttempts = 5;
+
+        while (!authenticated && attempts < maxAttempts) {
+            try {
+                attempts++;
+                await sequelize.authenticate();
+                authenticated = true;
+                console.log("✅ [DB] Database Authenticated successfully.");
+            } catch (authErr) {
+                console.error(`⚠️  [DB] Connection attempt ${attempts}/${maxAttempts} failed:`, authErr.message);
+                if (attempts < maxAttempts) {
+                    console.log("🔄 [DB] Retrying in 5 seconds...");
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+                } else {
+                    throw authErr; // Re-throw after last attempt
+                }
+            }
+        }
 
         // --- 2. DB SYNCHRONIZATION ---
         console.log("🔄 [DB] Synchronizing models (Alter Mode)...");
