@@ -16,10 +16,13 @@ const useReportStore = create((set) => ({
     set({ loading: true });
     try {
       const res = await reportService.fetchAllReports();
-      // interceptor auto-flattens: res is the analytics object directly
+      // interceptor auto-flattens: res is the result object directly
       const data = res || {};
       
+      console.log("📊 [STATS] Analytics Payload:", data);
+      
       if (!data || typeof data !== "object") {
+        console.warn("⚠️ [STATS] Backend returned non-object response:", res);
         set({ loading: false });
         return;
       }

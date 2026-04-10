@@ -91,28 +91,7 @@ app.use("/api/news", newsRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/inventory", inventoryRoutes);
 
-// SERVE FRONTEND (Render Monorepo Support)
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const buildPath = path.join(__dirname, "../../client/dist");
-
-// Explicitly serve sitemap to bypass React Catch-All and ensure proper XML formatting
-app.get("/sitemap.xml", (req, res) => {
-    res.type("application/xml");
-    res.sendFile(path.join(__dirname, "../../client/public/sitemap.xml"));
-});
-
-app.use(express.static(buildPath));
-
-// Catch-all route for SPA (React Router)
-app.get(/^\/(?!api).*/, (req, res) => {
-    const indexPath = path.join(buildPath, "index.html");
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        console.error("❌ [DEPL] Frontend index.html not found at:", indexPath);
-        res.status(404).send("Frontend assets are missing. Please ensure 'npm run build' was executed successfully.");
-    }
-});
+// --- END OF ROUTES ---
 
 // Global Error Handler (Must be last)
 app.use(globalErrorHandler);

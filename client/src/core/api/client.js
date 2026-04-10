@@ -46,13 +46,22 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => {
     const body = response.data;
-    // If the response has our standard envelope shape, unwrap it
-    if (body && typeof body === "object" && "data" in body) {
+    // Standard envelope: { success: true, message: "...", data: result }
+    if (body && typeof body === "object" && body.success === true && "data" in body) {
       return body.data;
+    }
+    // If not standard, but success is true, return the whole body as a fallback
+    if (body && typeof body === "object" && body.success === true) {
+      return body;
     }
     return body;
   },
   (error) => {
+    console.error("─── [API ERROR] ───");
+    console.error("Path:", error.config?.url);
+    console.error("Status:", error.response?.status);
+    console.error("Error:", error.response?.data?.message || error.message);
+    
     const message = error.response?.data?.message || "Something went wrong";
     return Promise.reject(new Error(message));
   }

@@ -10,23 +10,19 @@ const startServer = async () => {
     const HOST = '0.0.0.0';
 
     try {
-        console.log("📡 [DEPL] Attempting to bind port...");
-        const server = app.listen(PORT, HOST, () => {
-            console.log(`🚀 [DEPL] Server listening on http://${HOST}:${PORT}`);
-            console.log(`🌍 [DEPL] Environment: ${ENV.NODE_ENV}`);
-        });
-
         console.log("📡 [DB] Connecting to Database...");
         console.log(`🔗 [DB] URL: ${ENV.DATABASE_URL ? ENV.DATABASE_URL.substring(0, 20) + "..." : "MISSING!"}`);
         
+        // --- 1. DB AUTHENTICATION ---
         await sequelize.authenticate();
         console.log("✅ [DB] Database Authenticated successfully.");
 
+        // --- 2. DB SYNCHRONIZATION ---
         console.log("🔄 [DB] Synchronizing models (Alter Mode)...");
-        await sequelize.sync({ alter: true });
+        await sequelize.sync({ alter: ENV.NODE_ENV !== "production" }); // Only alter in dev, safe in prod
         console.log("✅ [DB] Database Synced successfully.");
 
-        // --- SMTP VERIFICATION ---
+        // --- 3. SMTP VERIFICATION (Non-blocking) ---
         try {
             const { verifySMTP } = await import("./utils/email.js");
             await verifySMTP();
@@ -35,6 +31,14 @@ const startServer = async () => {
             console.warn("⚠️  [EMAIL] SMTP Verification failed. Email features may not work.");
             console.warn("   Error:", err.message);
         }
+
+        // --- 4. START LISTENING ---
+        console.log("📡 [DEPL] Attempting to bind port...");
+        app.listen(PORT, HOST, () => {
+            console.log(`🚀 [DEPL] Server listening on http://${HOST}:${PORT}`);
+            console.log(`🌍 [DEPL] Environment: ${ENV.NODE_ENV}`);
+            console.log("✅ [READY] AgroMart ERP API is fully operational 🌾");
+        });
 
     } catch (err) {
         console.error("❌ [CRIT] Failed to start server components:");
