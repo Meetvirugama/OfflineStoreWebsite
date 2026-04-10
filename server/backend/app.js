@@ -57,7 +57,8 @@ const corsOptions = {
 };
 
 // Handle preflight OPTIONS requests before all routes
-app.options("/*", cors(corsOptions));
+// Use regex to bypass path-to-regexp v8 which rejects string wildcards
+app.options(/.*/, cors(corsOptions));
 app.use(cors(corsOptions));
 
 // ─── STANDARD MIDDLEWARE ────────────────────────────────────────────────────
