@@ -31,6 +31,7 @@ import supplierRoutes from "./modules/product/supplier.routes.js";
 import newsRoutes from "./modules/news/news.routes.js";
 import invoiceRoutes from "./modules/invoice/invoice.routes.js";
 import inventoryRoutes from "./modules/product/inventory.routes.js";
+import healthRoutes from "./modules/health/health.routes.js";
 
 const app = express();
 
@@ -90,6 +91,7 @@ app.use("/api/suppliers", supplierRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/invoice", invoiceRoutes);
 app.use("/api/inventory", inventoryRoutes);
+app.use("/api/health", healthRoutes);
 
 // --- END OF ROUTES ---
 

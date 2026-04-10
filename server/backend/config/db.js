@@ -6,6 +6,13 @@ const DATABASE_URL = ENV.DATABASE_URL;
 if (!DATABASE_URL) {
     console.error("❌ DATABASE_URL missing. Database connection will fail.");
     console.log("Current ENV:", JSON.stringify(ENV, null, 2));
+} else {
+    try {
+        const dbHost = DATABASE_URL.split('@')[1].split(':')[0];
+        console.log(`📡 [DB] Targeted Host: ${dbHost}`);
+    } catch {
+        console.warn("⚠️ [DB] Could not parse hostname from DATABASE_URL");
+    }
 }
 
 const sequelize = new Sequelize(DATABASE_URL, {

@@ -14,10 +14,13 @@ const getBaseUrl = () => {
 
   // 2. Fallback to env URL (for production or custom staging)
   const envUrl = import.meta.env.VITE_API_URL;
-  if (envUrl) return envUrl;
+  const baseUrl = envUrl || "https://offlinestorewebsite.onrender.com/api";
   
-  // 3. Fallback for Render/Vercel production
-  return "https://offlinestorewebsite.onrender.com/api";
+  if (typeof window !== "undefined") {
+    console.log("🌾 [AgroMart] API Base URL:", baseUrl);
+  }
+  
+  return baseUrl;
 };
 
 const apiClient = axios.create({
