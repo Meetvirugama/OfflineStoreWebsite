@@ -12,6 +12,7 @@ import Ledger from "./ledger/ledger.model.js";
 import Notification from "./notification/notification.model.js";
 import SavedCrop from "./crop/saved_crop.model.js";
 import PestDetection from "./crop/pest_detection.model.js";
+import Advisory from "./crop/advisory.model.js";
 import WeatherCache from "./weather/weather.model.js";
 import FarmerProfit from "./profit/profit.model.js";
 import MandiPrice from "./mandi/mandi.model.js";
@@ -35,6 +36,9 @@ FarmerProfit.belongsTo(User, { foreignKey: "user_id" });
 
 User.hasMany(PestDetection, { foreignKey: "user_id" });
 PestDetection.belongsTo(User, { foreignKey: "user_id" });
+
+User.hasMany(Advisory, { foreignKey: "user_id" });
+Advisory.belongsTo(User, { foreignKey: "user_id" });
 
 // User & Notifications
 // User.hasMany(Notification, { foreignKey: "user_id" });
@@ -87,5 +91,5 @@ export {
     User, Customer, Product, Inventory, Supplier,
     Cart, CartItem, Order, OrderItem, Payment, Ledger,
     Notification, SavedCrop, PestDetection, WeatherCache,
-    FarmerProfit, MandiPrice, PriceAlert, News
+    FarmerProfit, MandiPrice, PriceAlert, News, Advisory
 };

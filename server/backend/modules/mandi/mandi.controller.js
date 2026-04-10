@@ -25,9 +25,31 @@ export const getPrices = asyncHandler(async (req, res) => {
 });
 
 export const getTrends = asyncHandler(async (req, res) => {
-    const { crop, district, days } = req.query;
+    const { crop, district, days, state } = req.query;
     if (!crop || !district) return sendResponse(res, 400, "Crop and District are required");
     
-    const trends = await mandiService.getHistoricalMandiTrends(crop, district, parseInt(days) || 30);
+    // Using the refined multi-crop logic but for single crop
+    const trends = await mandiService.getMultiCropComparison([crop], parseInt(days) || 30, district, state);
     sendResponse(res, 200, "Historical trends fetched successfully", trends);
+});
+
+export const getSummary = asyncHandler(async (req, res) => {
+    const { state } = req.query;
+    const summary = await mandiService.getAgriDashboardStats(state || "Gujarat");
+    sendResponse(res, 200, "Market summary fetched successfully", summary);
+});
+
+export const getBestMandi = asyncHandler(async (req, res) => {
+    const { crop } = req.query;
+    if (!crop) return sendResponse(res, 400, "Crop is required");
+    const best = await mandiService.getBestMandiPrice(crop);
+    sendResponse(res, 200, "Best mandi fetched successfully", best);
+});
+
+export const getMultiTrends = asyncHandler(async (req, res) => {
+    const { crops, days, district, state } = req.query;
+    if (!crops) return sendResponse(res, 400, "Crops comma-separated string required");
+    const cropList = crops.split(",");
+    const data = await mandiService.getMultiCropComparison(cropList, parseInt(days) || 30, district, state);
+    sendResponse(res, 200, "Multi-crop trends fetched successfully", data);
 });

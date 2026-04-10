@@ -52,7 +52,7 @@ export default function MandiDashboardPage() {
                         className="modal-form-input"
                         style={{ padding: '8px 16px', borderRadius: '50px' }}
                     >
-                        {COMMON_CROPS.map(c => <option key={c} value={c}>{c}</option>)}
+                        {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}>{c}</option>)}
                     </select>
                 </div>
             </div>
@@ -84,19 +84,27 @@ export default function MandiDashboardPage() {
                 <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                         <h4 style={{ margin: 0 }}>Price Trend: {selectedCrop}</h4>
-                        <div style={{ display: 'flex', gap: '5px' }}>
-                            {[7, 30].map(d => (
-                                <button 
-                                    key={d}
-                                    onClick={() => setDays(d)}
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: '#f8fafc', padding: '6px 10px', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
+                            <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Timeline:</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <input 
+                                    type="number" 
+                                    value={days} 
+                                    onChange={(e) => setDays(Math.max(1, parseInt(e.target.value) || 0))}
                                     style={{ 
-                                        padding: '4px 10px', fontSize: '11px', borderRadius: '4px', border: '1px solid #e2e8f0',
-                                        background: days === d ? '#0f172a' : '#fff',
-                                        color: days === d ? '#fff' : '#0f172a',
-                                        cursor: 'pointer'
+                                        width: '45px', 
+                                        border: '1px solid #e2e8f0', 
+                                        borderRadius: '4px', 
+                                        padding: '2px 4px', 
+                                        fontSize: '12px', 
+                                        fontWeight: '800',
+                                        textAlign: 'center',
+                                        outline: 'none',
+                                        color: '#0f172a'
                                     }}
-                                >{d}D</button>
-                            ))}
+                                />
+                                <span style={{ fontSize: '10px', fontWeight: '700', color: '#94a3b8' }}>D</span>
+                            </div>
                         </div>
                     </div>
                     <div style={{ height: '300px' }}>
@@ -112,7 +120,7 @@ export default function MandiDashboardPage() {
                                 <XAxis dataKey="date" tick={{fontSize: 10}} tickFormatter={(v) => v.split('-').slice(1).join('/')} />
                                 <YAxis tick={{fontSize: 10}} domain={['auto', 'auto']} />
                                 <Tooltip />
-                                <Area type="monotone" dataKey="avg_price" stroke="#10b981" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={2} />
+                                <Area type="monotone" dataKey="modal" stroke="#10b981" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={2} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>

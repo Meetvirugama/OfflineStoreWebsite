@@ -15,4 +15,8 @@ router.get("/seasonal", cropController.getSeasonal);
 router.get("/:name/trends", cropController.getTrends);
 router.get("/:name/insights", cropController.getInsights);
 
+// Advisory
+router.post("/advisory", cropController.generateAdvisory);
+router.get("/advisory/history", cropController.getAdvisoryHistory);
+
 export default router;

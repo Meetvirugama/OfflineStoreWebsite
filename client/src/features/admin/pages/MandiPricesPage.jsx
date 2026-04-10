@@ -1,14 +1,17 @@
+import { useState, useEffect } from "react";
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend 
 } from "recharts";
+import useMandiStore from "@features/agriculture/mandi/mandi.store";
+import useWeatherStore from "@features/agriculture/weather/weather.store";
 import "@/styles/Admin.css";
 
 const DISTRICTS = [
-    "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskantha", "Bharuch", "Bhavnagar", 
-    "Botad", "Chhota Udepur", "Dahod", "Dang", "Devbhumi Dwarka", "Gandhinagar", 
-    "Gir Somnath", "Jamnagar", "Junagadh", "Kheda", "Kutch", "Mahisagar", "Mehsana", 
-    "Morbi", "Narmada", "Navsari", "Panchmahal", "Patan", "Porbandar", "Rajkot", 
-    "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara", "Valsad"
+    "Ahmedabad", "Amreli", "Anand", "Aravalli", "Banaskanth", "Bharuch", "Bhavnagar", 
+    "Botad", "Chhota Udaipur", "Dahod", "Dang", "Devbhumi Dwarka", "Gandhinagar", 
+    "Gir Somnath", "Jamnagar", "Junagarh", "Kachchh", "Kheda", "Mahisagar", "Mehsana", 
+    "Morbi", "Narmada", "Navsari", "Panchmahals", "Patan", "Porbandar", "Rajkot", 
+    "Sabarkantha", "Surat", "Surendranagar", "Tapi", "Vadodara(Baroda)", "Valsad"
 ];
 
 const COMMON_CROPS = [
@@ -21,10 +24,35 @@ export default function MandiPricesPage() {
         prices, loading, filters, setFilters, fetchPrices, 
         totalCount, page, setPage, trends, trendsLoading, fetchTrends 
     } = useMandiStore();
+    const { selectedLocation, initialize } = useWeatherStore();
 
     const [days, setDays] = useState(15);
     const [selectedCrop, setSelectedCrop] = useState("Cotton");
     const [selectedDistrict, setSelectedDistrict] = useState("Rajkot");
+
+    // Unified District Sync
+    useEffect(() => {
+        initialize?.();
+    }, [initialize]);
+
+    useEffect(() => {
+        if (selectedLocation) {
+            const cityName = selectedLocation.name;
+            const stateName = selectedLocation.state || "";
+            
+            // Try to find a match in the DISTRICTS list
+            const match = DISTRICTS.find(d => 
+                cityName.toLowerCase().includes(d.toLowerCase()) || 
+                d.toLowerCase().includes(cityName.toLowerCase()) ||
+                stateName.toLowerCase().includes(d.toLowerCase())
+            );
+
+            if (match) {
+                setSelectedDistrict(match);
+                setFilters({ district: match });
+            }
+        }
+    }, [selectedLocation]);
 
     useEffect(() => {
         fetchPrices();
@@ -67,26 +95,27 @@ export default function MandiPricesPage() {
                         <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>Analyze price volatility for specific crop/district combinations.</p>
                     </div>
                     
-                    <div style={{ display: 'flex', gap: '12px', background: '#f1f5f9', padding: '4px', borderRadius: '12px' }}>
-                        {[7, 15, 30].map(d => (
-                            <button 
-                                key={d}
-                                onClick={() => setDays(d)}
-                                style={{
-                                    border: 'none',
-                                    padding: '6px 14px',
-                                    borderRadius: '8px',
-                                    fontSize: '12px',
-                                    fontWeight: '700',
-                                    cursor: 'pointer',
-                                    background: days === d ? '#064e4b' : 'transparent',
-                                    color: days === d ? '#fff' : '#64748b',
-                                    transition: 'all 0.2s'
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: '#f8fafc', padding: '6px 14px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                        <label style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Radar Window:</label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <input 
+                                type="number" 
+                                value={days} 
+                                onChange={(e) => setDays(Math.max(1, parseInt(e.target.value) || 0))}
+                                style={{ 
+                                    width: '52px', 
+                                    border: '1px solid #cbd5e1', 
+                                    borderRadius: '6px', 
+                                    padding: '4px 6px', 
+                                    fontSize: '13px', 
+                                    fontWeight: '800',
+                                    textAlign: 'center',
+                                    color: '#0f172a',
+                                    outline: 'none'
                                 }}
-                            >
-                                {d} Days
-                            </button>
-                        ))}
+                            />
+                            <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8' }}>Days</span>
+                        </div>
                     </div>
                 </div>
 
@@ -100,7 +129,7 @@ export default function MandiPricesPage() {
                                 className="modal-form-input" 
                                 style={{ width: '100%', borderRadius: '12px', border: '1.5px solid #e2e8f0' }}
                             >
-                                {COMMON_CROPS.map(c => <option key={c} value={c}>{c}</option>)}
+                                {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}>{c}</option>)}
                             </select>
                         </div>
                         <div className="control-field">
@@ -111,14 +140,14 @@ export default function MandiPricesPage() {
                                 className="modal-form-input" 
                                 style={{ width: '100%', borderRadius: '12px', border: '1.5px solid #e2e8f0' }}
                             >
-                                {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
+                                {DISTRICTS.map((d, idx) => <option key={`${d}-${idx}`} value={d}>{d}</option>)}
                             </select>
                         </div>
                         
                         {trends.length > 0 && (
                             <div style={{ marginTop: '20px', padding: '16px', background: '#f0fdf4', borderRadius: '16px', border: '1px solid #dcfce7' }}>
                                 <p style={{ fontSize: '11px', fontWeight: '700', color: '#166534', textTransform: 'uppercase' }}>Current Insights</p>
-                                <p style={{ fontSize: '20px', fontWeight: '900', color: '#064e4b', marginTop: '4px' }}>₹{trends[trends.length-1].modal}</p>
+                                <p style={{ fontSize: '20px', fontWeight: '900', color: '#064e4b', marginTop: '4px' }}>₹{trends[trends.length-1]?.modal || trends[trends.length-1]?.[selectedCrop] || "N/A"}</p>
                                 <p style={{ fontSize: '12px', color: '#10b981', fontWeight: '600', marginTop: '2px' }}>Latest Modal Price</p>
                             </div>
                         )}

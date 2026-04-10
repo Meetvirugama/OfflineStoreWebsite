@@ -1,39 +1,73 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import useWeatherStore from '@features/agriculture/weather/weather.store';
 import { 
     Cloud, Sun, CloudRain, Wind, Droplets, Thermometer, 
     Navigation, MapPin, Calendar, Clock, AlertTriangle, 
-    ChevronRight, Search, Zap
+    ChevronRight, Search, Zap, ShieldCheck, SunMedium,
+    CloudSun, CloudLightning, Snowflake, Waves, Info,
+    MoveRight, RefreshCw, Eye, Wind as WindIcon, Gauge,
+    Sprout, Activity, Wind as GustIcon, ShieldAlert,
+    ExternalLink, Map as MapIcon, Grid, Bell, User, 
+    Moon, Sun as SunIcon, BarChart3, Radio, Layers,
+    Compass, Timer
 } from 'lucide-react';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, 
-    ResponsiveContainer, BarChart, Bar 
+    ResponsiveContainer, Area as AreaPlot
 } from 'recharts';
 import '@/styles/agriIntelligence.css';
 
 const WeatherDashboard = () => {
     const { 
-        currentWeather, forecast, insights, loading, error,
-        fetchCurrentWeather, fetchSavedLocations, savedLocations,
-        selectedLocation, setSelectedLocation, searchLocations
+        currentWeather, todayTimeline, extendedForecast, 
+        alerts, indices, loading, initialize, 
+        searchLocations, setSelectedLocation,
+        selectedLocation
     } = useWeatherStore();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
 
+    // Removed aggressive DOM overrides that were hiding the sidebar layout
     useEffect(() => {
-        fetchSavedLocations();
-        // Initial fetch based on IP/GPS
-        if (!selectedLocation) {
-            fetchCurrentWeather();
+        // Clean up any remaining overrides from previous iterations
+        const adminMain = document.querySelector('.admin-main');
+        const adminContent = document.querySelector('.admin-content');
+        
+        if (adminMain) {
+            adminMain.style.overflow = '';
+            adminMain.style.height = '';
         }
+        if (adminContent) {
+            adminContent.style.padding = '';
+            adminContent.style.overflow = '';
+            adminContent.style.height = '';
+            adminContent.style.background = '#020617'; // Set background just for content area
+        }
+
+        return () => {
+             if (adminContent) adminContent.style.background = '';
+        };
     }, []);
 
+    useEffect(() => {
+        initialize?.();
+    }, [initialize]);
+
     const handleSearch = async (e) => {
-        setSearchQuery(e.target.value);
-        if (e.target.value.length > 2) {
-            const results = await searchLocations(e.target.value);
-            setSearchResults(results);
+        const val = e.target.value;
+        setSearchQuery(val);
+        if (val.length > 2) {
+            setIsSearching(true);
+            try {
+                const results = await searchLocations(val);
+                setSearchResults(results || []);
+            } catch (err) {
+                setSearchResults([]);
+            } finally {
+                setIsSearching(false);
+            }
         } else {
             setSearchResults([]);
         }
@@ -45,188 +79,195 @@ const WeatherDashboard = () => {
         setSearchResults([]);
     };
 
-    // Prepare chart data
-    const hourlyData = forecast?.hourly?.slice(0, 24).map(h => ({
-        time: new Date(h.dt * 1000).getHours() + ":00",
-        temp: Math.round(h.temp),
-        rain: Math.round((h.pop || 0) * 100)
-    })) || [];
+    const sprayTimeline = useMemo(() => {
+        return (todayTimeline || []).map(t => ({
+            ...t,
+            time: new Date(t.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            displayTemp: Math.round(t.temp)
+        }));
+    }, [todayTimeline]);
+
+    const getWeatherIcon = (condition, size = 32) => {
+        const c = condition?.toLowerCase() || "";
+        if (c.includes("rain")) return <CloudRain size={size} color="#3b82f6" />;
+        if (c.includes("cloud")) return <Cloud size={size} color="#94a3b8" />;
+        if (c.includes("clear")) return <Sun size={size} color="#fbbf24" style={{filter: 'drop-shadow(0 0 15px rgba(251, 191, 36, 0.4))'}} />;
+        return <SunMedium size={size} color="#fcd34d" />;
+    };
+
+    if (loading && !currentWeather) {
+        return (
+            <div style={{minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                <RefreshCw size={50} className="agri-green spin" />
+                <p style={{marginTop: '2rem', color: '#fff', opacity: 0.3, letterSpacing: '0.4em', fontSize: '0.7rem', fontWeight: 900}}>CRAFTING SERENITY HUB</p>
+            </div>
+        );
+    }
 
     return (
-        <div className="agri-page">
-            {/* AMBIENT BACKGROUND ELEMENTS */}
-            <div style={{
-                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
-                pointerEvents: 'none', zIndex: 0, opacity: 0.3,
-                background: 'radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%)'
-            }} />
-
-            {/* HEADER & SEARCH */}
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', position: 'relative', zIndex: 1}}>
+        <div className="serenity-hub" style={{maxWidth: '1200px', margin: '0 auto', color: '#fff', paddingBottom: '3rem'}}>
+            
+            {/* 1. ELITE HEADER */}
+            <header style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem'}}>
                 <div>
-                    <h1 className="agri-title">Weather Intelligence</h1>
-                    <p style={{opacity: 0.5, fontSize: '0.95rem'}}>Atmosphere telemetry & precision indicators.</p>
+                    <h1 style={{fontSize: '2.5rem', fontWeight: 900, margin: 0, letterSpacing: '-1.5px', color: '#fff'}}>Meteorological Command Center</h1>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem'}}>
+                        <div style={{width: '8px', height: '8px', borderRadius: '50%', background: 'var(--agri-green)', boxShadow: '0 0 10px var(--agri-green)'}}></div>
+                        <span style={{color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.5px'}}>
+                            Active Sector: <span style={{color: '#fff'}}>{selectedLocation?.name || 'Gajanvav'}</span>, {selectedLocation?.country || 'India'}
+                        </span>
+                    </div>
                 </div>
 
-                <div style={{position: 'relative', width: '320px'}}>
-                    <div className="agri-card" style={{padding: '0.6rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', background: 'rgba(255,255,255,0.02)'}}>
-                        <Search size={18} className="agri-green" style={{opacity: 0.7}} />
+                <div style={{position: 'relative', width: '300px'}}>
+                    <div style={{background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', padding: '0.8rem 1.2rem', display: 'flex', alignItems: 'center', gap: '1rem'}}>
+                        <Search size={18} color="#475569" />
                         <input 
                             type="text" 
-                            placeholder="Search Village / City..." 
+                            placeholder="Find Village..." 
                             value={searchQuery}
                             onChange={handleSearch}
-                            style={{background: 'transparent', border: 'none', color: '#fff', width: '100%', outline: 'none', fontSize: '0.95rem'}}
+                            style={{background: 'transparent', border: 'none', color: '#fff', width: '100%', outline: 'none', fontSize: '1rem'}}
                         />
+                    </div>
+                    {searchResults.length > 0 && (
+                        <div className="search-results-container" style={{background: '#0f172a', top: '120%', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden', zIndex: 100}}>
+                            {searchResults.map((res, i) => (
+                                <div key={i} onClick={() => selectResult(res)} className="search-result-item" style={{padding: '1rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)'}}>
+                                    <span style={{color: '#fff', fontWeight: 700}}>{res.name}</span>
+                                    <span style={{color: '#64748b', fontSize: '0.8rem'}}>{res.state}</span>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </header>
+
+            {/* 2. PRIMARY IMPACT (HERO) */}
+            <div style={{background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%)', borderRadius: '32px', padding: '3.5rem', border: '1px solid rgba(255,255,255,0.06)', marginBottom: '2rem', position: 'relative', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.5)'}}>
+                <div style={{position: 'absolute', top: '-10%', right: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)', filter: 'blur(50px)'}}></div>
+                
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 1}}>
+                    <div>
+                        <div style={{display: 'flex', alignItems: 'baseline', gap: '1.5rem'}}>
+                            <span style={{fontSize: '9rem', fontWeight: 900, letterSpacing: '-5px', color: '#fff', lineHeight: 1}}>{Math.round(currentWeather?.main?.temp || 0)}°</span>
+                            <div>
+                                <h2 style={{fontSize: '2.2rem', fontWeight: 900, margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em'}}>{currentWeather?.weather?.[0]?.main}</h2>
+                                <p style={{fontSize: '0.9rem', color: '#94a3b8', margin: '0.5rem 0 0', fontWeight: 600}}>Clear skies with optimal humidity levels for harvest.</p>
+                            </div>
+                        </div>
+                        <div style={{display: 'flex', gap: '4rem', marginTop: '3rem'}}>
+                            <div><p style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>HUMIDITY</p><p style={{fontSize: '1.8rem', fontWeight: 900, margin: 0}}>{currentWeather?.main?.humidity}%</p></div>
+                            <div><p style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>FEELS LIKE</p><p style={{fontSize: '1.8rem', fontWeight: 900, margin: 0}}>{Math.round(currentWeather?.main?.feels_like || 0)}°</p></div>
+                            <div><p style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>PRECIPITATION</p><p style={{fontSize: '1.8rem', fontWeight: 900, margin: 0}}>0%</p></div>
+                        </div>
+                    </div>
+                    <div style={{width: '240px', height: '240px', background: 'rgba(255,255,255,0.02)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.2)'}}>
+                        {getWeatherIcon(currentWeather?.weather?.[0]?.main, 140)}
                     </div>
                 </div>
             </div>
 
-            {loading && !currentWeather ? (
-                <div style={{textAlign: 'center', padding: '8rem 0'}}>
-                    <div className="spinner" style={{width: '40px', height: '40px', margin: '0 auto 2rem', borderWidth: '3px'}}></div>
-                    <p style={{opacity: 0.5}}>Synchronizing Climate Data...</p>
-                </div>
-            ) : (
-                <div style={{position: 'relative', zIndex: 1}}>
-                {/* HERO SECTION */}
-                <div className="stats-grid" style={{gridTemplateColumns: 'repeat(3, 1fr)'}}>
-                    <div className="agri-card" style={{
-                        gridColumn: 'span 2', 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center',
-                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 78, 59, 0.2))',
-                        padding: '2rem'
-                    }}>
-                        <div style={{display: 'flex', gap: '2.5rem', alignItems: 'center'}}>
-                            <div style={{
-                                width: '100px', height: '100px', borderRadius: '50%', 
-                                background: 'rgba(255,255,255,0.03)', display: 'flex', 
-                                alignItems: 'center', justifyContent: 'center',
-                                border: '1px solid rgba(255,255,255,0.1)'
-                            }}>
-                                {currentWeather?.weather[0]?.main === 'Rain' ? <CloudRain size={50} className="icon-gradient-sky" /> : <Sun size={50} style={{color: '#fbbf24'}} />}
-                            </div>
-                            <div>
-                                <div style={{display: 'flex', alignItems: 'baseline', gap: '0.8rem'}}>
-                                    <span style={{fontSize: '4.5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.03em'}}>
-                                        {Math.round(currentWeather?.main?.temp || 0)}°
-                                    </span>
-                                    <div style={{opacity: 0.6, fontSize: '1.1rem', fontWeight: 600}}>
-                                        <div style={{color: '#f87171'}}>↑ {Math.round(currentWeather?.main?.temp_max || 0)}°</div>
-                                        <div style={{color: '#60a5fa'}}>↓ {Math.round(currentWeather?.main?.temp_min || 0)}°</div>
-                                    </div>
-                                </div>
-                                <p style={{fontSize: '1.2rem', opacity: 0.8, fontWeight: 700, textTransform: 'capitalize'}}>
-                                    {currentWeather?.weather[0]?.description}
-                                </p>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '1rem'}}>
-                                    <MapPin size={14} className="agri-green" /> 
-                                    <span style={{fontSize: '0.9rem', opacity: 0.7}}>{currentWeather?.name || 'Local Station'}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style={{display: 'flex', gap: '2rem'}}>
-                            <div style={{textAlign: 'center'}}>
-                                <Droplets size={22} className="agri-green" style={{marginBottom: '0.5rem'}} />
-                                <p style={{fontSize: '1.4rem', fontWeight: 700}}>{currentWeather?.main?.humidity}%</p>
-                                <p style={{fontSize: '0.75rem', opacity: 0.4, textTransform: 'uppercase'}}>Humidity</p>
-                            </div>
-                            <div style={{textAlign: 'center'}}>
-                                <Wind size={22} className="agri-green" style={{marginBottom: '0.5rem'}} />
-                                <p style={{fontSize: '1.4rem', fontWeight: 700}}>{currentWeather?.wind?.speed}</p>
-                                <p style={{fontSize: '0.75rem', opacity: 0.4, textTransform: 'uppercase'}}>Wind km/h</p>
-                            </div>
-                        </div>
+            {/* 3. THE HORIZON (WEEKLY STRIP) */}
+            <div style={{display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1.2rem', marginBottom: '2.5rem'}}>
+                {(extendedForecast || []).slice(0, 7).map((day, i) => (
+                    <div key={i} style={{background: 'rgba(15, 23, 42, 0.4)', borderRadius: '24px', padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid rgba(255,255,255,0.06)', transition: 'transform 0.3s ease'}}>
+                        <span style={{color: '#64748b', fontWeight: 800, fontSize: '0.8rem', marginBottom: '1rem'}}>
+                            {i === 0 ? 'TODAY' : new Date(day.dt * 1000).toLocaleDateString('en-US', {weekday: 'short'}).toUpperCase()}
+                        </span>
+                        {getWeatherIcon(day.weather?.main, 32)}
+                        <span style={{fontSize: '1.6rem', fontWeight: 900, marginTop: '1.2rem'}}>{Math.round(day.temp_max)}°</span>
                     </div>
+                ))}
+            </div>
 
-                    <div className="agri-card">
-                        <h3 style={{marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.1rem'}}>
-                            <Zap size={18} style={{color: 'var(--agri-accent)'}} /> Insights
-                        </h3>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem'}}>
-                            {insights.slice(0, 2).map((insight, i) => (
-                                <div key={i} style={{
-                                    padding: '1rem', 
-                                    background: 'rgba(255,255,255,0.02)', 
-                                    borderRadius: '0.8rem', 
-                                    borderLeft: `3px solid ${insight.type === 'WARNING' ? '#f87171' : '#10b981'}`
-                                }}>
-                                    <h4 style={{fontSize: '0.85rem', marginBottom: '0.2rem', color: insight.type === 'WARNING' ? '#f87171' : '#34d399'}}>{insight.title}</h4>
-                                    <p style={{fontSize: '0.8rem', opacity: 0.6, lineHeight: 1.4}}>{insight.message}</p>
-                                </div>
-                            ))}
-                        </div>
+            {/* 4. CLINICAL SATELLITE AREA */}
+            <div style={{marginBottom: '2.5rem'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem'}}>
+                    <h3 style={{fontSize: '1.4rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '1rem', color: '#fff', letterSpacing: '-0.5px'}}>
+                        <Compass className="agri-green" size={24} /> Precision Field Topology
+                    </h3>
+                    <div style={{display: 'flex', gap: '0.8rem'}}>
+                        <div style={{padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 800, border: '1px solid rgba(255,255,255,0.08)'}}>SATELLITE TELEMETRY</div>
+                        <div style={{padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 800, opacity: 0.5}}>INFRARED</div>
                     </div>
                 </div>
+                <div style={{height: '500px', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', position: 'relative'}}>
+                    <iframe
+                        width="100%"
+                        height="100%"
+                        style={{border: 0, filter: 'grayscale(0.7) contrast(1.1) brightness(0.8)'}}
+                        src={`https://www.google.com/maps/embed/v1/view?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&center=${selectedLocation?.lat || 22.3039},${selectedLocation?.lon || 70.8022}&zoom=14&maptype=satellite`}
+                    ></iframe>
+                    <div style={{position: 'absolute', bottom: '2rem', right: '2rem', background: '#fff', color: '#000', padding: '1.5rem', borderRadius: '24px', width: '250px', boxShadow: '0 25px 50px rgba(0,0,0,0.5)'}}>
+                        <p style={{fontSize: '0.65rem', fontWeight: 900, opacity: 0.5, margin: '0 0 0.4rem'}}>FIELD CONNECTED</p>
+                        <h4 style={{fontSize: '1.1rem', fontWeight: 900, margin: '0 0 0.8rem'}}>8 Active Nodes</h4>
+                        <div style={{display: 'flex', gap: '0.5rem', marginBottom: '1.2rem'}}>
+                            {[1,2,3,4,5].map(i => <div key={i} style={{width: '6px', height: '6px', borderRadius: '50%', background: 'var(--agri-green)'}}></div>)}
+                        </div>
+                        <button style={{width: '100%', background: '#020617', color: '#fff', border: 'none', padding: '1rem', borderRadius: '14px', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer'}}>SCAN SECTOR</button>
+                    </div>
+                </div>
+            </div>
 
-                {/* VISUALS SECTION */}
-                <div className="stats-grid" style={{marginTop: '2rem', gridTemplateColumns: '1.8fr 1.2fr'}}>
-                    {/* HOURLY CHART */}
-                    <div className="agri-card">
+            {/* 5. ENVIRONMENTAL DIAGNOSTICS */}
+            <div style={{display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem'}}>
+                <div style={{display: 'flex', flexDirection: 'column', gap: '1.2rem'}}>
+                    <div style={{background: 'rgba(15, 23, 42, 0.4)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 20px 40px rgba(0,0,0,0.3)'}}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
-                            <h3 style={{fontSize: '1.1rem'}}>24-Hour Forecast</h3>
-                            <div style={{display: 'flex', gap: '1rem', fontSize: '0.7rem', opacity: 0.6}}>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}><div style={{width: '8px', height: '8px', background: '#fbbf24', borderRadius: '2px'}}></div> TEMP</div>
-                                <div style={{display: 'flex', alignItems: 'center', gap: '0.3rem'}}><div style={{width: '8px', height: '8px', background: '#60a5fa', borderRadius: '2px'}}></div> RAIN</div>
-                            </div>
+                            <p style={{fontSize: '0.75rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.15em', margin: 0}}>ENVIRONMENTAL METRICS</p>
+                            <Radio size={14} className="agri-green" />
                         </div>
-                        <div style={{height: '220px', width: '100%'}}>
-                            <ResponsiveContainer>
-                                <AreaChart data={hourlyData}>
-                                    <defs>
-                                        <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#fbbf24" stopOpacity={0.2}/>
-                                            <stop offset="95%" stopColor="#fbbf24" stopOpacity={0}/>
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
-                                    <XAxis dataKey="time" axisLine={false} tickLine={false} stroke="rgba(255,255,255,0.2)" tick={{fontSize: 10}} />
-                                    <YAxis axisLine={false} tickLine={false} stroke="rgba(255,255,255,0.2)" tick={{fontSize: 10}} />
-                                    <Tooltip 
-                                        contentStyle={{background: 'rgba(15, 23, 42, 0.98)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0.8rem', fontSize: '0.8rem'}}
-                                    />
-                                    <Area type="monotone" dataKey="temp" stroke="#fbbf24" fillOpacity={1} fill="url(#colorTemp)" strokeWidth={2} />
-                                    <Area type="monotone" dataKey="rain" stroke="#60a5fa" fill="transparent" strokeWidth={1.5} strokeDasharray="4 4" />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-
-                    {/* 7-DAY FORECAST */}
-                    <div className="agri-card">
-                        <h3 style={{marginBottom: '1.5rem', fontSize: '1.1rem'}}>8-Day Outlook</h3>
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
-                            {forecast?.daily?.map((day, i) => (
-                                <div key={i} style={{
-                                    display: 'flex', 
-                                    justifyContent: 'space-between', 
-                                    alignItems: 'center',
-                                    padding: '0.5rem 0.8rem',
-                                    borderRadius: '0.6rem',
-                                }} className="hover-bg">
-                                    <span style={{width: '60px', fontSize: '0.85rem', opacity: 0.6}}>{i === 0 ? 'Today' : new Date(day.dt * 1000).toLocaleDateString('en-US', {weekday: 'short'})}</span>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
+                            {[
+                                { lab: 'SOIL MOISTURE', val: `${Math.round((indices?.soilMoisture || 0.22) * 100)}%`, icon: <Sprout size={20} color="var(--agri-green)" /> },
+                                { lab: 'SOIL TEMP', val: `${Math.round(indices?.soilTemp || 0)}°C`, icon: <Thermometer size={20} color="#60a5fa" /> },
+                                { lab: 'AIR QUALITY', val: indices?.airQuality || 'HEALTHY', icon: <Activity size={20} color="#fbbf24" /> }
+                            ].map((item, i) => (
+                                <div key={i} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                     <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
-                                        <div style={{width: '24px', display: 'flex', justifyContent: 'center'}}>
-                                            {day.weather[0].main === 'Rain' ? <CloudRain size={16} color="#60a5fa" /> : <Sun size={16} color="#fbbf24" />}
-                                        </div>
-                                        <div style={{display: 'flex', gap: '0.6rem', width: '70px', fontSize: '0.9rem'}}>
-                                            <span style={{fontWeight: 700}}>{Math.round(day.temp.max)}°</span>
-                                            <span style={{opacity: 0.3}}>{Math.round(day.temp.min)}°</span>
-                                        </div>
+                                        {item.icon}
+                                        <span style={{fontSize: '0.9rem', fontWeight: 700}}>{item.lab}</span>
                                     </div>
-                                    <div style={{background: 'rgba(255,255,255,0.03)', height: '4px', width: '50px', borderRadius: '4px', overflow: 'hidden'}}>
-                                        <div style={{background: '#60a5fa', height: '100%', width: `${Math.round((day.pop || 0) * 100)}%`}}></div>
-                                    </div>
+                                    <span style={{fontSize: '1.2rem', fontWeight: 900}}>{item.val}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
+                    <div style={{background: 'rgba(16, 185, 129, 0.05)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(16, 185, 129, 0.2)', position: 'relative', overflow: 'hidden'}}>
+                        <div style={{position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--agri-green)'}}></div>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
+                            <span style={{fontSize: '0.8rem', fontWeight: 800, color: 'var(--agri-green-light)', letterSpacing: '0.1em'}}>APPLICATION WINDOW</span>
+                            <ShieldCheck size={20} className="agri-green" />
+                        </div>
+                        <p style={{fontSize: '1.6rem', fontWeight: 900, margin: 0, color: '#fff'}}>OPTIMAL CONDITIONS</p>
+                    </div>
                 </div>
+
+                <div style={{background: 'rgba(15, 23, 42, 0.4)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', boxShadow: '0 20px 40px rgba(0,0,0,0.3)'}}>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
+                        <h3 style={{fontSize: '1.2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px'}}>24-Hour Atmospheric Trend</h3>
+                        <div style={{padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 800, border: '1px solid rgba(255,255,255,0.08)'}}>TEMPERATURE PULSE</div>
+                    </div>
+                    <div style={{flex: 1, minHeight: '200px'}}>
+                        <ResponsiveContainer>
+                            <AreaChart data={sprayTimeline}>
+                                <defs>
+                                    <linearGradient id="serenityGlow" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fill: '#475569', fontSize: 12}} />
+                                <YAxis hide />
+                                <Tooltip contentStyle={{background: '#0f172a', border: '1px solid var(--agri-green)', borderRadius: '12px'}} />
+                                <Area type="monotone" dataKey="displayTemp" stroke="var(--agri-green)" fill="url(#serenityGlow)" strokeWidth={3} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
-            )}
+            </div>
+
         </div>
     );
 };

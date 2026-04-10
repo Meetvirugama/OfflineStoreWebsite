@@ -1,18 +1,27 @@
 import axios from "axios";
+import { Op } from "sequelize";
 import MandiPrice from "./mandi.model.js";
 import { ENV } from "../../config/env.js";
+
+/**
+ * Robust date parser for Agmarknet (DD/MM/YYYY)
+ */
+const parseDataGovDate = (dateStr) => {
+    if (!dateStr) return new Date();
+    const parts = dateStr.split("/");
+    if (parts.length === 3) {
+        // DD/MM/YYYY
+        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+    }
+    return new Date(dateStr);
+};
 
 /**
  * Fetch nearby Mandis from Google Places
  */
 export const getNearbyMandis = async (lat, lon, radius = 50000) => {
     if (!ENV.GOOGLE_PLACES_KEY) {
-        console.warn("GOOGLE_PLACES_KEY missing. Returning precision fallback data.");
-        return [
-            { id: "mock-1", name: "Gondal APMC Mandi", address: "Gondal, Gujarat", location: { lat: 21.96, lng: 70.80 } },
-            { id: "mock-2", name: "Rajkot Marketing Yard", address: "Rajkot, Gujarat", location: { lat: 22.30, lng: 70.80 } },
-            { id: "mock-3", name: "Unjha Spice Mandi", address: "Unjha, North Gujarat", location: { lat: 23.81, lng: 72.39 } }
-        ];
+        throw new Error("GOOGLE_PLACES_KEY missing. Cannot fetch live mandi locations.");
     }
 
     try {
@@ -32,27 +41,19 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
             id: place.place_id,
             name: place.name,
             address: place.vicinity,
-            location: place.geometry.location
+            location: place.geometry.location,
+            rating: place.rating,
+            user_ratings_total: place.user_ratings_total,
+            isOpen: place.opening_hours?.open_now ?? null
         }));
     } catch (err) {
         console.error("Geocoding Error:", err);
-        return [];
+        throw new Error("Failed to fetch nearby mandis from API");
     }
 };
 
 /**
- * Get internal price analysis from DB
- */
-export const getPriceStats = async (commodity) => {
-    return await MandiPrice.findAll({
-        where: { commodity },
-        order: [["arrival_date", "DESC"]],
-        limit: 10
-    });
-};
-
-/**
- * Fetch Live Mandi Prices from data.gov.in
+ * Fetch Live Mandi Prices from data.gov.in and sync to DB
  */
 export const getLiveMandiPrices = async (filters = {}) => {
     const { state, district, crop } = filters;
@@ -60,143 +61,196 @@ export const getLiveMandiPrices = async (filters = {}) => {
     const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
 
     if (!API_KEY) {
-        console.warn("DATA_GOV_API_KEY missing. Returning mock price data.");
-        return [
-            { state: "Gujarat", district: "Ahmedabad", market: "Ahmedabad", commodity: crop || "Wheat", min_price: "2200", max_price: "2500", modal_price: "2400", arrival_date: new Date().toISOString() },
-            { state: "Gujarat", district: "Gondal", market: "Gondal", commodity: crop || "Wheat", min_price: "2300", max_price: "2600", modal_price: "2450", arrival_date: new Date().toISOString() }
-        ];
+        throw new Error("DATA_GOV_API_KEY missing. Cannot fetch live prices.");
     }
 
     try {
         const params = {
             "api-key": API_KEY,
             format: "json",
-            limit: 100
+            limit: 200
         };
 
         if (state) params["filters[state]"] = state;
         if (district) params["filters[district]"] = district;
         if (crop) params["filters[commodity]"] = crop;
 
-        console.log("📡 Fetching Live Mandi Prices from data.gov.in...");
         const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, { params });
+        const records = response.data.records || [];
 
-        return response.data.records || [];
+        // ASYNC SHADOW SYNC: Don't await this to keep the response fast
+        if (records.length > 0) {
+            syncPricesToDb(records).catch(err => console.error("Sync Error:", err));
+        }
+
+        return records;
     } catch (err) {
         console.error("Data.gov.in API Error:", err.message);
-        throw new Error("Failed to fetch live mandi prices");
+        throw new Error("Failed to fetch live mandi prices from API");
     }
 };
 
 /**
- * Get Agri Intelligence Dashboard Stats from Live Data
+ * Utility to sync API records to local database
  */
-export const getAgriDashboardStats = async () => {
-    const API_KEY = ENV.DATA_GOV_KEY;
-    const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
+const syncPricesToDb = async (records) => {
+    const formatted = records.map(r => ({
+        state: r.state,
+        district: r.district,
+        market: r.market,
+        commodity: r.commodity,
+        min_price: parseFloat(r.min_price) || 0,
+        max_price: parseFloat(r.max_price) || 0,
+        modal_price: parseFloat(r.modal_price) || 0,
+        arrival_date: parseDataGovDate(r.arrival_date).toISOString().split('T')[0]
+    }));
 
-    if (!API_KEY) return null;
+    // Bulk create with ignore duplicates
+    await MandiPrice.bulkCreate(formatted, { ignoreDuplicates: true });
+};
 
+/**
+ * Get Agri Intelligence Dashboard Stats from Mixed Sources (Live + DB)
+ */
+export const getAgriDashboardStats = async (state = "Gujarat") => {
     try {
-        const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, {
-            params: {
-                "api-key": API_KEY,
-                format: "json",
-                limit: 200, // Fetch enough for meaningful trends
-                sort: "arrival_date desc"
-            }
+        // 1. Fetch latest prices from API to ensure we are up to date
+        const liveRecords = await getLiveMandiPrices({ state });
+        
+        // 2. Fetch history from DB for trends
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const historicalRecords = await MandiPrice.findAll({
+            where: {
+                state,
+                arrival_date: { [Op.gte]: thirtyDaysAgo.toISOString().split('T')[0] }
+            },
+            order: [['arrival_date', 'ASC']]
         });
 
-        const records = response.data.records || [];
-        if (records.length === 0) return null;
+        // Use live records for current summary if available, otherwise fallback to historical
+        const recordsToSummarize = liveRecords.length > 0 ? liveRecords : historicalRecords;
+        if (recordsToSummarize.length === 0) return null;
 
-        // 1. Top Crops by Volume (Frequency in arrival records)
+        // Core Summary (from latest data)
+        const totalMandis = new Set(recordsToSummarize.map(r => r.market || r.market)).size;
+        const highestPrice = Math.max(...recordsToSummarize.map(r => parseFloat(r.max_price) || 0));
+
+        // Top Crops (from latest data)
         const cropCounts = {};
-        records.forEach(r => {
-            cropCounts[r.commodity] = (cropCounts[r.commodity] || 0) + 1;
+        recordsToSummarize.forEach(r => {
+            const cropName = r.commodity;
+            cropCounts[cropName] = (cropCounts[cropName] || 0) + 1;
         });
         const topCrops = Object.entries(cropCounts)
             .map(([commodity, volume]) => ({ commodity, volume }))
             .sort((a, b) => b.volume - a.volume)
             .slice(0, 5);
 
-        // 2. Price Trends (Daily Average Modal Price)
+        // Trends (from Database)
         const dailyPrices = {};
-        records.forEach(r => {
-            const date = new Date(r.arrival_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+        historicalRecords.forEach(r => {
+            const date = r.arrival_date;
             if (!dailyPrices[date]) dailyPrices[date] = { sum: 0, count: 0 };
             dailyPrices[date].sum += parseFloat(r.modal_price) || 0;
             dailyPrices[date].count += 1;
         });
+
         const trends = Object.entries(dailyPrices)
             .map(([date, stats]) => ({ date, avg_price: Math.round(stats.sum / stats.count) }))
-            .sort((a,b) => new Date(a.date) - new Date(b.date))
-            .slice(-7);
+            .sort((a,b) => new Date(a.date) - new Date(b.date));
 
-        // 3. Demand/Category Insights (Simplified mapping)
-        const demand = [
-            { category: "Grains", movement: records.filter(r => ["Wheat", "Paddy", "Bajra"].includes(r.commodity)).length },
-            { category: "Vegetables", movement: records.filter(r => ["Onion", "Tomato", "Potato"].includes(r.commodity)).length },
-            { category: "Oilseeds", movement: records.filter(r => ["Mustard", "Soyabean", "Groundnut"].includes(r.commodity)).length }
-        ].filter(d => d.movement > 0);
-
-        return { topCrops, trends, demand };
+        return { totalMandis, highestPrice, topCrops, trends };
     } catch (err) {
         console.error("Agri Stats Error:", err.message);
+        throw new Error("Failed to generate live analytics");
+    }
+};
+
+/**
+ * Find the best mandi for a specific crop
+ */
+export const getBestMandiPrice = async (commodity) => {
+    const API_KEY = ENV.DATA_GOV_KEY;
+    const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
+
+    try {
+        const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, {
+            params: {
+                "api-key": API_KEY,
+                format: "json",
+                limit: 50,
+                "filters[commodity]": commodity,
+                sort: "modal_price desc"
+            }
+        });
+        return response.data.records?.[0] || null;
+    } catch (err) {
         return null;
     }
 };
 
 /**
- * Get Historical Price Trends for a specific Crop & District
+ * Compare trends across multiple crops using Database history
  */
-export const getHistoricalMandiTrends = async (commodity, district, days = 30) => {
-    const API_KEY = ENV.DATA_GOV_KEY;
-    const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
-
-    if (!API_KEY) return [];
-
+export const getMultiCropComparison = async (crops = [], days = 30, district = null, state = "Gujarat") => {
     try {
-        console.log(`📡 Fetching Historical Trends for ${commodity} in ${district} (${days} days)...`);
-        
-        const params = {
-            "api-key": API_KEY,
-            format: "json",
-            limit: 500, // Large enough sample size
-            sort: "arrival_date desc",
-            "filters[commodity]": commodity,
-            "filters[district]": district
-        };
-
-        const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, { params });
-        const records = response.data.records || [];
-
-        // Process and group by date (in case of multiple markets in same district)
-        const dateMap = {};
-        records.forEach(r => {
-            const dateStr = new Date(r.arrival_date).toISOString().split('T')[0];
-            if (!dateMap[dateStr]) {
-                dateMap[dateStr] = { date: dateStr, modal: 0, count: 0, min: 999999, max: 0 };
-            }
-            dateMap[dateStr].modal += parseFloat(r.modal_price) || 0;
-            dateMap[dateStr].count += 1;
-            dateMap[dateStr].min = Math.min(dateMap[dateStr].min, parseFloat(r.min_price) || 999999);
-            dateMap[dateStr].max = Math.max(dateMap[dateStr].max, parseFloat(r.max_price) || 0);
+        // 1. Trigger a background sync for each crop to keep data fresh
+        crops.forEach(crop => {
+            getLiveMandiPrices({ state, district, crop }).catch(() => {});
         });
 
-        const trends = Object.values(dateMap)
-            .map(d => ({
-                date: new Date(d.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
-                modal: Math.round(d.modal / d.count),
-                min: d.min === 999999 ? 0 : d.min,
-                max: d.max
-            }))
-            .sort((a, b) => new Date(a.date) - new Date(b.date))
-            .slice(-days); // Limit to requested days count
+        // 2. Query Database for historical records
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        
+        const whereClause = {
+            commodity: { [Op.in]: crops },
+            arrival_date: { [Op.gte]: startDate.toISOString().split('T')[0] }
+        };
+        if (state) whereClause.state = state;
+        if (district && district !== "all") whereClause.district = district;
 
-        return trends;
+        const records = await MandiPrice.findAll({
+            where: whereClause,
+            order: [['arrival_date', 'ASC']]
+        });
+
+        const dateMap = {};
+        records.forEach(r => {
+            const date = r.arrival_date;
+            const crop = r.commodity;
+            if (!dateMap[date]) dateMap[date] = { date };
+            if (!dateMap[date][crop]) dateMap[date][crop] = { sum: 0, count: 0 };
+            dateMap[date][crop].sum += r.modal_price;
+            dateMap[date][crop].count += 1;
+        });
+
+        return Object.values(dateMap)
+            .map(d => {
+                const entry = { date: d.date };
+                let totalSum = 0;
+                let totalCount = 0;
+
+                crops.forEach(c => {
+                    if (d[c]) {
+                        const avg = Math.round(d[c].sum / d[c].count);
+                        entry[c] = avg;
+                        totalSum += avg;
+                        totalCount++;
+                    }
+                });
+
+                const finalAvg = totalCount > 0 ? Math.round(totalSum / totalCount) : 0;
+                entry.modal = finalAvg;
+                entry.avg_price = finalAvg;
+                
+                return entry;
+            })
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
     } catch (err) {
-        console.error("Historical Trends Error:", err.message);
+        console.error("MultiCrop Error:", err.message);
         return [];
     }
 };
@@ -205,7 +259,7 @@ export const getHistoricalMandiTrends = async (commodity, district, days = 30) =
  * Search Mandis via Text
  */
 export const searchMandis = async (query) => {
-    if (!ENV.GOOGLE_PLACES_KEY) return [];
+    if (!ENV.GOOGLE_PLACES_KEY) throw new Error("API Key Missing");
     
     const url = `https://maps.googleapis.com/maps/api/place/textsearch/json`;
     const response = await axios.get(url, {

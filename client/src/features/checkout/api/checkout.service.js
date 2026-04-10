@@ -5,6 +5,7 @@ import apiClient from "../../../core/api/client.js";
  */
 export const fetchCart = () => apiClient.get("/cart");
 export const addToCart = (data) => apiClient.post("/cart/add", data);
+export const updateCartItemQty = (id, quantity) => apiClient.patch(`/cart/${id}`, { quantity });
 export const removeCartItem = (id) => apiClient.delete(`/cart/${id}`);
 export const clearCart = () => apiClient.delete("/cart");
 

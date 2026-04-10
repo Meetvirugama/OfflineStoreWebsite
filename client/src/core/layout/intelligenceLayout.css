@@ -1,43 +1,112 @@
+@import "./adminLayout.css";
+
 /* Intelligence Hub - Specialized Premium Layout */
 
 :root {
-  --admin-bg: #f9fbfa;
-  --admin-sidebar: #06402b; /* Deep Elite Forest */
-  --admin-sidebar-hover: rgba(217, 179, 86, 0.12);
-  --admin-sidebar-active: rgba(217, 179, 86, 0.2);
-  --admin-primary: #059669; /* Rich Emerald */
-  --admin-accent: #d9b356; /* Victory Gold */
-  --admin-text-light: #f8fafc;
-  --admin-text-dark: #0f172a;
-  --admin-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-  --admin-shadow-sidebar: 8px 0 35px rgba(0,0,0,0.2);
-  --admin-glass: rgba(255, 255, 255, 0.85);
+  --admin-bg: #020617;
+  --admin-sidebar: rgba(15, 23, 42, 0.7);
+  --serenity-card: rgba(15, 23, 42, 0.4);
+  --serenity-border: rgba(255, 255, 255, 0.06);
+  --agri-green: #10b981;
+  --agri-accent: #f59e0b;
+}
+
+.intelligence-theme {
+  background-color: #020617 !important;
 }
 
 .intelligence-theme .admin-sidebar {
-    background: linear-gradient(180deg, #053322 0%, #032116 100%);
-}
-
-.intelligence-theme .admin-sidebar__logo {
-    filter: drop-shadow(0 4px 10px rgba(217, 179, 86, 0.4));
-}
-
-.intelligence-theme .admin-sidebar__role {
-    background: linear-gradient(90deg, #60a5fa, #3b82f6); /* Intelligence uses Blue badge */
-    color: white;
+  background: var(--admin-sidebar) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  border-right: 1px solid var(--serenity-border) !important;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3) !important;
 }
 
 .intelligence-theme .admin-sidebar__brand {
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--serenity-border) !important;
+  padding: 2rem 1.5rem !important;
+}
+
+.intelligence-theme .admin-nav__item {
+  border-radius: 16px !important;
+  margin: 0.4rem 1rem !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: 1px solid transparent !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.intelligence-theme .admin-nav__item:hover {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border: 1px solid rgba(16, 185, 129, 0.2) !important;
+  color: #fff !important;
+  transform: translateX(4px) !important;
 }
 
 .intelligence-theme .admin-nav__item.active {
-    border-color: rgba(96, 165, 250, 0.3);
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2) !important;
+  border: none !important;
+  color: #fff !important;
+  transform: scale(1.02) !important;
 }
 
-.intelligence-theme .admin-nav__item.active .admin-nav__icon {
-    color: #60a5fa;
+.intelligence-theme .admin-nav__text {
+  font-weight: 700 !important;
+  letter-spacing: -0.2px !important;
 }
 
-/* Share Admin styles since class names are the same */
-@import "./adminLayout.css";
+.intelligence-theme .admin-main {
+  background: #020617 !important;
+  scroll-behavior: smooth;
+}
+
+.intelligence-theme .admin-header {
+  background: rgba(2, 6, 23, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid var(--serenity-border) !important;
+}
+
+/* Global Agri Card Tokens for Intelligence Hook */
+.agri-card {
+  background: var(--serenity-card);
+  backdrop-filter: blur(16px);
+  border-radius: 32px;
+  border: 1px solid var(--serenity-border);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.agri-card:hover {
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Scroll Utilities (Subtle cues, no locking) */
+.agri-page {
+  padding: 2.5rem 2.5rem 5rem !important; /* Increased padding bottom for natural flow */
+}
+
+/* Premium Scrollbar Styling for scrollable containers if used */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.4) !important;
+}
+
+

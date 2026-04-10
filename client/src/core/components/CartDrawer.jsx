@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ShoppingBag, X, Plus, Minus, ArrowRight, Package, Sprout, Leaf, Skull, Info } from "lucide-react";
+import { ShoppingBag, X, Plus, Minus, ArrowRight, Package, Sprout, Leaf, Skull, Info, Trash2 } from "lucide-react";
 import useCartStore from "@features/checkout/store/cart.store";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
@@ -7,7 +7,7 @@ import "@/styles/CartDrawer.css";
 
 export default function CartDrawer() {
   const navigate = useNavigate();
-  const { open, setDrawerOpen, items, total, discount, final, updateQty, loading } = useCartStore();
+  const { open, setDrawerOpen, items, total, discount, final, updateQty, removeItem, loading } = useCartStore();
   const { customer, token } = useAuthStore();
   const { addToast } = useToastStore();
 
@@ -82,17 +82,27 @@ export default function CartDrawer() {
                 <div className="cart-item__qty">
                   <button
                     className="cart-item__qty-btn"
-                    onClick={() => customer && updateQty(item.id, item.quantity - 1, customer.id)}
+                    onClick={() => updateQty(item.id, item.quantity - 1)}
                     disabled={loading || item.quantity <= 1}
                   ><Minus size={14} strokeWidth={3} /></button>
                   <span>{item.quantity}</span>
                   <button
                     className="cart-item__qty-btn"
-                    onClick={() => customer && updateQty(item.id, item.quantity + 1, customer.id)}
+                    onClick={() => updateQty(item.id, item.quantity + 1)}
                     disabled={loading}
                   ><Plus size={14} strokeWidth={3} /></button>
                 </div>
-                <div className="cart-item__total">₹{item.final?.toLocaleString("en-IN")}</div>
+                <div className="cart-item__total">
+                  <p>₹{item.final?.toLocaleString("en-IN")}</p>
+                  <button 
+                    className="cart-item__remove-btn"
+                    onClick={() => removeItem(item.id)}
+                    disabled={loading}
+                    title="Remove item"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
             ))
           )}

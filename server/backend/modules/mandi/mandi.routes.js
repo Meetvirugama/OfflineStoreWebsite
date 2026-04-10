@@ -7,5 +7,8 @@ router.get("/nearby", mandiController.getNearby);
 router.get("/search", mandiController.search);
 router.get("/prices", mandiController.getPrices);
 router.get("/trends", mandiController.getTrends);
+router.get("/summary", mandiController.getSummary);
+router.get("/best-mandi", mandiController.getBestMandi);
+router.get("/trends/multi", mandiController.getMultiTrends);
 
 export default router;

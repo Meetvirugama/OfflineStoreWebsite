@@ -63,7 +63,7 @@ const NearbyMandisPage = () => {
     // 2. Fetch Mandis from Backend
     const fetchNearbyMandis = async (lat, lng) => {
         try {
-            const { data } = await apiClient.get(`/mandis/nearby?lat=${lat}&lng=${lng}&radius=30000`);
+            const { data } = await apiClient.get(`/mandi/nearby?lat=${lat}&lng=${lng}&radius=30000`);
             setMandis(data);
             setLoading(false);
         } catch (err) {
@@ -78,86 +78,110 @@ const NearbyMandisPage = () => {
 
     return (
         <div className="agri-page">
-            <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '2rem' }}>
                 <div>
-                    <h1 className="agri-title" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                        <MapPin className="agri-green" size={32} /> Nearby APMC Mandis
+                    <h1 className="agri-title" style={{ display: 'flex', alignItems: 'center', gap: '1.2rem', fontSize: '2.8rem', fontWeight: 900, letterSpacing: '-1px' }}>
+                        <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
+                            <MapPin className="agri-green" size={32} />
+                        </div>
+                        APMC Discovery Hub
                     </h1>
-                    <p style={{ opacity: 0.6 }}>Dynamically discover active agricultural markets in your region.</p>
+                    <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500 }}>Spatial indexing of certified agricultural marketplaces and real-time trade hubs.</p>
                 </div>
                 <button 
                     onClick={locateUser} 
-                    className="agri-card"
+                    className="agri-card hover-bg"
                     style={{ 
                         background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', 
                         color: '#fff', 
-                        padding: '0.8rem 1.5rem', 
+                        padding: '1.2rem 2.5rem', 
                         border: 'none', 
                         display: 'flex', 
                         alignItems: 'center', 
-                        gap: '0.5rem',
+                        gap: '0.8rem',
                         cursor: 'pointer',
-                        fontWeight: 'bold'
+                        fontWeight: 800,
+                        borderRadius: '20px',
+                        boxShadow: '0 10px 25px rgba(16, 185, 129, 0.3)',
+                        fontSize: '1rem',
+                        letterSpacing: '0.5px'
                     }}
                 >
-                    {loading ? <Loader2 className="spin" size={18} /> : <Navigation size={18} />} 
-                    Find Near Me
+                    {loading ? <Loader2 className="spin" size={20} /> : <Navigation size={20} />} 
+                    RE-INDEX ADJACENT MARKETS
                 </button>
             </div>
 
             {error && (
-                <div className="agri-card" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '1rem', display: 'flex', gap: '0.8rem', alignItems: 'center', marginBottom: '2rem' }}>
-                    <AlertCircle size={20} />
-                    <span style={{ fontSize: '0.9rem' }}>{error}</span>
+                <div className="agri-card" style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '3rem', borderRadius: '24px' }}>
+                    <AlertCircle size={24} />
+                    <span style={{ fontSize: '1rem', fontWeight: 600 }}>{error}</span>
                 </div>
             )}
 
-            <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(300px, 350px) 1fr', gap: '2rem', alignItems: 'start' }}>
+            <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(350px, 400px) 1fr', gap: '2.5rem', alignItems: 'start' }}>
                 
                 {/* LIST VIEW */}
-                <div className="agri-card" style={{ padding: '1.5rem', maxHeight: '500px', overflowY: 'auto' }}>
-                    <h3 style={{ marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
-                        Local Markets ({mandis.length})
-                    </h3>
+                <div className="agri-card" style={{ padding: '2.5rem', maxHeight: '700px', overflowY: 'auto', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1.5rem'}}>
+                        <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Active Terminals</h3>
+                        <span style={{background: 'rgba(255,255,255,0.05)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900, color: 'var(--agri-green)'}}>{mandis.length} DETECTED</span>
+                    </div>
                     
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '3rem', opacity: 0.5 }}>
-                            <Loader2 className="spin" size={32} style={{ margin: '0 auto 1rem' }} />
-                            <p>Scanning Region...</p>
+                        <div style={{ textAlign: 'center', padding: '6rem 0', opacity: 0.3 }}>
+                            <Loader2 className="spin" size={48} style={{ margin: '0 auto 1.5rem', color: 'var(--agri-green)' }} />
+                            <p style={{fontWeight: 700, letterSpacing: '2px', fontSize: '0.8rem'}}>SCANNING TELEMETRY...</p>
                         </div>
                     ) : mandis.length > 0 ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                             {mandis.map((mandi) => (
                                 <div 
                                     key={mandi.id} 
                                     onClick={() => {
                                         setActiveMarker(mandi);
                                         map.panTo(mandi.location);
-                                        map.setZoom(14);
+                                        map.setZoom(15);
                                     }}
                                     style={{ 
-                                        padding: '1rem', 
-                                        borderRadius: '0.8rem', 
-                                        background: activeMarker?.id === mandi.id ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.03)',
-                                        border: activeMarker?.id === mandi.id ? '1px solid #10b981' : '1px solid transparent',
+                                        padding: '1.8rem', 
+                                        borderRadius: '24px', 
+                                        background: activeMarker?.id === mandi.id ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.02)',
+                                        border: activeMarker?.id === mandi.id ? '1px solid var(--agri-green)' : '1px solid rgba(255,255,255,0.06)',
                                         cursor: 'pointer',
-                                        transition: 'all 0.2s ease'
+                                        transition: 'all 0.3s ease',
+                                        position: 'relative',
+                                        overflow: 'hidden'
                                     }}
                                 >
-                                    <h4 style={{ margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <Store size={16} className="agri-green" /> {mandi.name}
+                                    {activeMarker?.id === mandi.id && (
+                                        <div style={{position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'var(--agri-green)'}}></div>
+                                    )}
+                                    <h4 style={{ margin: '0 0 0.8rem 0', fontSize: '1.2rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                        <Store size={20} className="agri-green" /> {mandi.name}
                                     </h4>
-                                    <p style={{ fontSize: '0.8rem', opacity: 0.6, marginBottom: '0.5rem' }}>{mandi.address}</p>
+                                    <p style={{ fontSize: '0.9rem', opacity: 0.5, marginBottom: '1.5rem', lineHeight: 1.5, fontWeight: 500 }}>{mandi.address}</p>
                                     
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem' }}>
-                                        {mandi.rating && (
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', color: '#f59e0b' }}>
-                                                <Star size={12} fill="currentColor" /> {mandi.rating} ({mandi.user_ratings_total})
-                                            </span>
-                                        )}
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        {mandi.rating ? (
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(245, 158, 11, 0.05)', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid rgba(245, 158, 11, 0.1)' }}>
+                                                <Star size={14} fill="#f59e0b" color="#f59e0b" /> 
+                                                <span style={{fontWeight: 900, color: '#f59e0b', fontSize: '0.85rem'}}>{mandi.rating}</span>
+                                                <span style={{opacity: 0.3, fontSize: '0.8rem'}}>({mandi.user_ratings_total})</span>
+                                            </div>
+                                        ) : <div></div>}
                                         {mandi.isOpen !== null && (
-                                            <span style={{ color: mandi.isOpen ? '#10b981' : '#ef4444', fontWeight: 'bold' }}>
-                                                {mandi.isOpen ? "🟢 OPEN NOW" : "🔴 CLOSED"}
+                                            <span style={{ 
+                                                fontSize: '0.75rem', 
+                                                fontWeight: 900, 
+                                                padding: '0.4rem 1rem', 
+                                                borderRadius: '8px', 
+                                                background: mandi.isOpen ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                                color: mandi.isOpen ? '#10b981' : '#f87171',
+                                                border: `1px solid ${mandi.isOpen ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
+                                                letterSpacing: '1px'
+                                            }}>
+                                                {mandi.isOpen ? "OPEN ACCESS" : "CLOSED"}
                                             </span>
                                         )}
                                     </div>
@@ -165,25 +189,34 @@ const NearbyMandisPage = () => {
                             ))}
                         </div>
                     ) : (
-                        <p style={{ opacity: 0.5, textAlign: 'center', padding: '2rem 0' }}>No agriculture markets found in a 30km radius.</p>
+                        <div style={{ textAlign: 'center', padding: '4rem 0', opacity: 0.4 }}>
+                            <p style={{fontSize: '1rem', fontWeight: 600}}>No adjacent marketplaces found.</p>
+                        </div>
                     )}
                 </div>
 
                 {/* MAP VIEW */}
-                <div style={{ position: 'relative', borderRadius: '1rem', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ position: 'relative', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px rgba(0,0,0,0.4)', background: '#0f172a' }}>
                     {isLoaded ? (
                         <GoogleMap
-                            mapContainerStyle={containerStyle}
+                            mapContainerStyle={{ width: '100%', height: '700px' }}
                             center={userLocation || fallbackCenter}
-                            zoom={10}
+                            zoom={11}
                             onLoad={onLoad}
                             onUnmount={onUnmount}
                             options={{
                                 styles: [
-                                    { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-                                    { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-                                    { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] }
-                                ]
+                                    { elementType: "geometry", stylers: [{ color: "#0f172a" }] },
+                                    { elementType: "labels.text.stroke", stylers: [{ color: "#0f172a" }] },
+                                    { elementType: "labels.text.fill", stylers: [{ color: "#64748b" }] },
+                                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#1e293b" }] },
+                                    { featureType: "road", elementType: "geometry", stylers: [{ color: "#1e293b" }] },
+                                    { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#475569" }] },
+                                    { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#475569" }] },
+                                    { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#020617" }] }
+                                ],
+                                disableDefaultUI: false,
+                                zoomControl: true,
                             }}
                         >
                             {/* USER MARKER */}
@@ -191,7 +224,12 @@ const NearbyMandisPage = () => {
                                 <Marker 
                                     position={userLocation} 
                                     icon={{
-                                        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                                        path: window.google.maps.SymbolPath.CIRCLE,
+                                        scale: 10,
+                                        fillColor: "#3b82f6",
+                                        fillOpacity: 1,
+                                        strokeWeight: 4,
+                                        strokeColor: "white",
                                     }}
                                 />
                             )}
@@ -201,7 +239,14 @@ const NearbyMandisPage = () => {
                                 <Marker
                                     key={mandi.id}
                                     position={mandi.location}
-                                    icon={{ url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' }}
+                                    icon={{
+                                        path: window.google.maps.SymbolPath.CIRCLE,
+                                        scale: 8,
+                                        fillColor: "#10b981",
+                                        fillOpacity: 1,
+                                        strokeWeight: 2,
+                                        strokeColor: "white",
+                                    }}
                                     onClick={() => setActiveMarker(mandi)}
                                 />
                             ))}
@@ -212,22 +257,23 @@ const NearbyMandisPage = () => {
                                     position={activeMarker.location}
                                     onCloseClick={() => setActiveMarker(null)}
                                 >
-                                    <div style={{ color: '#000', padding: '0.5rem', maxWidth: '200px' }}>
-                                        <h4 style={{ margin: '0 0 0.5rem 0', borderBottom: '1px solid #eee', paddingBottom: '0.2rem' }}>{activeMarker.name}</h4>
-                                        <p style={{ fontSize: '0.8rem', margin: '0' }}>{activeMarker.address}</p>
+                                    <div style={{ color: '#0f172a', padding: '1rem', minWidth: '220px' }}>
+                                        <h4 style={{ margin: '0 0 0.8rem 0', borderBottom: '2px solid #10b981', paddingBottom: '0.4rem', fontWeight: 900, fontSize: '1.1rem' }}>{activeMarker.name}</h4>
+                                        <p style={{ fontSize: '0.9rem', margin: '0', fontWeight: 600, opacity: 0.8 }}>{activeMarker.address}</p>
                                     </div>
                                 </InfoWindow>
                             )}
                         </GoogleMap>
                     ) : (
-                        <div style={{ height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)' }}>
-                            <Loader2 className="spin" size={32} color="#10b981" />
+                        <div style={{ height: '700px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                            <Loader2 className="spin" size={48} color="#10b981" />
                         </div>
                     )}
                 </div>
 
             </div>
         </div>
+
     );
 };
 

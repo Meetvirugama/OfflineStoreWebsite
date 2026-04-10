@@ -68,6 +68,13 @@ app.use("/api/inventory", inventoryRoutes);
 // SERVE FRONTEND (Render Monorepo Support)
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const buildPath = path.join(__dirname, "../../client/dist");
+
+// Explicitly serve sitemap to bypass React Catch-All and ensure proper XML formatting
+app.get("/sitemap.xml", (req, res) => {
+    res.type("application/xml");
+    res.sendFile(path.join(__dirname, "../../client/public/sitemap.xml"));
+});
+
 app.use(express.static(buildPath));
 
 // Catch-all route for SPA (React Router)

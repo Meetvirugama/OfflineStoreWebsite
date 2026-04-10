@@ -56,3 +56,19 @@ export const getSeasonal = asyncHandler(async (req, res) => {
     const result = await cropService.getSeasonalSuggestions();
     sendResponse(res, 200, "Seasonal suggestions fetched", result);
 });
+
+/**
+ * CROP ADVISORY
+ */
+export const generateAdvisory = asyncHandler(async (req, res) => {
+    const result = await cropService.generateAdvisory(req.user?.id, req.body);
+    sendResponse(res, 201, "Precision advisory generated", result);
+});
+
+export const getAdvisoryHistory = asyncHandler(async (req, res) => {
+    if (!req.user) {
+        return sendResponse(res, 200, "No history for guests", []);
+    }
+    const result = await cropService.getAdvisoryHistory(req.user.id);
+    sendResponse(res, 200, "Advisory history fetched", result);
+});

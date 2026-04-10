@@ -59,7 +59,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
-          <Route path="/crop-advisory" element={<CropAdvisoryPage />} />
           <Route path="/pest-detection" element={<PestDetectionPage />} />
           <Route path="/nearby-mandis" element={<NearbyMandisPage />} />
           <Route path="/farmer-dashboard" element={<FarmerDashboardPage />} />
@@ -86,6 +85,7 @@ function App() {
           <Route path="/intelligence/mandi/prices" element={<MandiPricesPage />} />
           <Route path="/intelligence/agri/analytics" element={<AgriAnalyticsPage />} />
           <Route path="/intelligence/weather" element={<WeatherDashboard />} />
+          <Route path="/intelligence/advisory" element={<CropAdvisoryPage />} />
           <Route path="/intelligence/agri/crop/:name" element={<CropDetailsPage />} />
           <Route path="/farming-news" element={<FarmingNewsPage />} />
         </Route>

@@ -42,6 +42,16 @@ const NAV_ITEMS = [
     ) 
   },
   { 
+    to: "/intelligence/advisory", 
+    label: "Smart Advisory", 
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m2 4 3 12h14l3-12zm6 16a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm11 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"></path>
+        <path d="M11 10h2l3 7h-8z"></path>
+      </svg>
+    ) 
+  },
+  { 
     to: "/farming-news", 
     label: "Agri News & Alerts", 
     icon: (

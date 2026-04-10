@@ -21,6 +21,8 @@ export const ENV = {
     PLANTNET_KEY: process.env.PLANTNET_API_KEY,
     NEWS_KEY: process.env.NEWS_API_KEY,
     DATA_GOV_KEY: process.env.DATA_GOV_API_KEY,
+    WEATHER_KEY: process.env.WEATHER_API_KEY,
+    TOMORROW_KEY: process.env.TOMORROW_API_KEY,
     
     // Internal Service URLs
     BASE_API_URL: process.env.VITE_API_URL || 'http://localhost:5001/api'

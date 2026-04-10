@@ -64,15 +64,11 @@ const useCartStore = create((set, get) => ({
     if (newQty < 1) return;
     set({ loading: true });
     try {
-      const item = get().items.find(i => i.id === cartItemId);
-      if (!item) return;
-
-      // Backend addItem currently increments. For specific quantity, we need a different approach 
-      // or we just call add with delta. For simplicity here, we re-sync from server.
-      await checkoutService.addToCart({ productId: item.productId, quantity: newQty, updateType: 'absolute' });
+      await checkoutService.updateCartItemQty(cartItemId, newQty);
       await get().fetchCart();
     } catch (err) {
       set({ loading: false });
+      console.error("Update quantity error:", err);
     }
   },
 

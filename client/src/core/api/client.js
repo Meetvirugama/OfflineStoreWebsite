@@ -5,15 +5,19 @@ import axios from "axios";
  * Centralizes endpoint configuration and base request logic.
  */
 const getBaseUrl = () => {
+  // 1. If we are on localhost, ALWAYS try local backend first unless explicitly forced otherwise
+  const isLocalhost = window.location.host.includes("localhost") || window.location.host.includes("127.0.0.1");
+  
+  if (isLocalhost) {
+    return "http://localhost:5001/api";
+  }
+
+  // 2. Fallback to env URL (for production or custom staging)
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl) return envUrl;
   
-  // For unified Render monorepo deployment, use relative paths in production
-  if (window.location.host && !window.location.host.includes("localhost")) {
-    return "/api";
-  }
-  
-  return "http://localhost:5001/api";
+  // 3. Fallback for Render sub-pathing
+  return "/api";
 };
 
 const apiClient = axios.create({

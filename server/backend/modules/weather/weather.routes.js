@@ -3,7 +3,7 @@ import * as weatherController from "./weather.controller.js";
 
 const router = express.Router();
 
-router.get("/current", weatherController.getCurrent);
-router.get("/forecast", weatherController.getForecast);
+router.get("/details", weatherController.getAtmosphericDetails);
+router.get("/search", weatherController.searchLocations);
 
 export default router;
