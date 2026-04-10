@@ -14,7 +14,7 @@ export const ENV = {
     
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    REDIRECT_URI: process.env.REDIRECT_URI || 'http://localhost:5001/api/auth/google/callback',
+    REDIRECT_URI: process.env.REDIRECT_URI || 'https://offlinestorewebsite.onrender.com/api/auth/google/callback',
 
     GOOGLE_PLACES_KEY: process.env.GOOGLE_PLACES_API_KEY,
     GOOGLE_GEO_KEY: process.env.GOOGLE_GEOCODING_API_KEY,
