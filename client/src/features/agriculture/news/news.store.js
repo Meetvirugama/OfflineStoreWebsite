@@ -4,14 +4,17 @@ import apiClient from "@core/api/client";
 const useNewsStore = create((set) => ({
   news: [],
   loading: false,
+  error: null,
 
   fetchNews: async (params = {}) => {
-    set({ loading: true });
+    set({ loading: true, error: null });
     try {
-      const data = await apiClient.get("/news", { params });
-      set({ news: data, loading: false });
-    } catch {
-      set({ loading: false });
+      const res = await apiClient.get("/news", { params });
+      // apiClient interceptor returns response.data = { success, message, data: [...] }
+      const articles = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+      set({ news: articles, loading: false });
+    } catch (err) {
+      set({ loading: false, error: err.message });
     }
   },
 
@@ -19,10 +22,11 @@ const useNewsStore = create((set) => ({
     set({ loading: true });
     try {
       await apiClient.post("/news/sync");
-      const data = await apiClient.get("/news");
-      set({ news: data, loading: false });
-    } catch {
-      set({ loading: false });
+      const res = await apiClient.get("/news");
+      const articles = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+      set({ news: articles, loading: false });
+    } catch (err) {
+      set({ loading: false, error: err.message });
     }
   }
 }));

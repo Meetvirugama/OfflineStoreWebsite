@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { 
   Package, 
   ArrowLeft, 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
   Download, 
   CreditCard,
   Building,
   MapPin,
-  Calendar
+  Calendar,
+  Printer,
+  CheckCircle2,
+  X
 } from "lucide-react";
 import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
@@ -28,6 +28,126 @@ const loadRazorpaySDK = () =>
     document.body.appendChild(script);
   });
 
+// ─── CLIENT-SIDE INVOICE PRINTER ──────────────────────────────────────────
+function printInvoice(order, customer) {
+  const balance = Number(order.final_amount) - Number(order.paid_amount || 0);
+  const isPaid = balance <= 0;
+  const date = order.order_date ? new Date(order.order_date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : "N/A";
+  const items = (order.OrderItems || []).map(item => `
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9">${item.Product?.name || "Product"}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;text-align:right">₹${Number(item.price).toFixed(2)}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;text-align:center">${item.quantity}</td>
+      <td style="padding:10px 0;border-bottom:1px solid #f1f5f9;text-align:right;font-weight:700">₹${(Number(item.price) * Number(item.quantity)).toFixed(2)}</td>
+    </tr>
+  `).join("");
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>Invoice — ${order.invoice_number || `ORD-${order.id}`}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #0f172a; background: #fff; padding: 40px; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
+    .brand { font-size: 32px; font-weight: 900; color: #059669; letter-spacing: -1px; }
+    .brand-sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .invoice-meta { text-align: right; }
+    .invoice-title { font-size: 22px; font-weight: 900; color: #0f172a; }
+    .invoice-ref { font-size: 12px; color: #64748b; margin-top: 6px; }
+    .badge { display: inline-block; padding: 4px 14px; border-radius: 100px; font-size: 11px; font-weight: 800; margin-top: 8px; background: ${isPaid ? "#d1fae5" : "#fee2e2"}; color: ${isPaid ? "#065f46" : "#991b1b"}; }
+    .divider { border: none; border-top: 2px solid #f1f5f9; margin: 24px 0; }
+    .bill-section { display: flex; justify-content: space-between; margin-bottom: 32px; }
+    .bill-box h4 { font-size: 11px; font-weight: 800; color: #94a3b8; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+    .bill-box p { font-size: 14px; line-height: 1.8; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { background: #f8fafc; padding: 12px 0; font-size: 11px; font-weight: 800; color: #64748b; letter-spacing: 1px; text-transform: uppercase; text-align: left; }
+    thead th:not(:first-child) { text-align: right; }
+    thead th:nth-child(3) { text-align: center; }
+    .summary { margin-top: 32px; margin-left: auto; width: 320px; }
+    .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px solid #f1f5f9; }
+    .summary-row.grand { font-size: 18px; font-weight: 900; border-bottom: none; padding-top: 16px; color: #059669; }
+    .summary-row.balance { font-weight: 800; color: ${isPaid ? "#059669" : "#b91c1c"}; }
+    .stamp { text-align: center; margin: 40px 0; }
+    .stamp-text { font-size: 48px; font-weight: 900; color: #059669; opacity: 0.08; letter-spacing: 8px; }
+    .footer { margin-top: 48px; border-top: 1px solid #f1f5f9; padding-top: 16px; text-align: center; font-size: 11px; color: #94a3b8; }
+    @media print {
+      body { padding: 20px; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="margin-bottom:20px;text-align:right">
+    <button onclick="window.print()" style="background:#059669;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer">🖨️ Print / Save as PDF</button>
+    <button onclick="window.close()" style="background:#f1f5f9;color:#0f172a;border:none;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer;margin-left:8px">✕ Close</button>
+  </div>
+  
+  <div class="header">
+    <div>
+      <div class="brand">🌾 AgroMart</div>
+      <div class="brand-sub">Executive Sourcing Network · GSTIN: 24AAACA0000A1Z5</div>
+    </div>
+    <div class="invoice-meta">
+      <div class="invoice-title">TAX INVOICE</div>
+      <div class="invoice-ref">Ref: ${order.invoice_number || `ORD-${order.id}`}</div>
+      <div class="invoice-ref">Date: ${date}</div>
+      <div class="badge">${isPaid ? "✓ FULLY PAID" : "⚠ PAYMENT PENDING"}</div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <div class="bill-section">
+    <div class="bill-box">
+      <h4>Bill To</h4>
+      <p><strong>${customer?.name || "Verified Customer"}</strong></p>
+      <p>${customer?.mobile || ""}</p>
+      <p>${customer?.village || "India"}</p>
+      ${customer?.gst ? `<p>GSTIN: ${customer.gst}</p>` : ""}
+    </div>
+    <div class="bill-box" style="text-align:right">
+      <h4>Payment Status</h4>
+      <p>Total Paid: <strong style="color:#059669">₹${Number(order.paid_amount || 0).toFixed(2)}</strong></p>
+      <p>Balance: <strong style="color:${isPaid ? "#059669" : "#b91c1c"}">₹${balance.toFixed(2)}</strong></p>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align:left">Product / Service</th>
+        <th style="text-align:right">Unit Price</th>
+        <th style="text-align:center">Qty</th>
+        <th style="text-align:right">Total</th>
+      </tr>
+    </thead>
+    <tbody>${items || '<tr><td colspan="4" style="padding:20px 0;color:#94a3b8">No items</td></tr>'}</tbody>
+  </table>
+
+  <div class="summary">
+    <div class="summary-row"><span>Subtotal</span><span>₹${Number(order.total_amount || 0).toFixed(2)}</span></div>
+    ${Number(order.discount || 0) > 0 ? `<div class="summary-row" style="color:#e11d48"><span>Discount</span><span>-₹${Number(order.discount).toFixed(2)}</span></div>` : ""}
+    <div class="summary-row"><span>GST (18%)</span><span>₹${Number(order.gst_total || 0).toFixed(2)}</span></div>
+    <div class="summary-row grand"><span>Grand Total</span><span>₹${Number(order.final_amount || 0).toFixed(2)}</span></div>
+    <div class="summary-row balance"><span>Balance Due</span><span>₹${balance.toFixed(2)}</span></div>
+  </div>
+
+  ${isPaid ? '<div class="stamp"><div class="stamp-text">PAID IN FULL</div></div>' : ""}
+
+  <div class="footer">
+    This is a computer-generated invoice. No signature required. · Powered by AgroMart ERP Smart Ledger Technology.
+  </div>
+</body>
+</html>`;
+
+  const win = window.open("", "_blank", "width=900,height=700");
+  win.document.write(html);
+  win.document.close();
+}
+// ──────────────────────────────────────────────────────────────────────────
+
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -42,7 +162,8 @@ export default function OrderDetailsPage() {
       try {
         setLoading(true);
         const res = await api.get(`/orders/${id}`);
-        setOrder(res.data);
+        // apiClient interceptor returns response.data = { success, message, data: {...} }
+        setOrder(res?.data ?? res);
       } catch (err) {
         addToast("Failed to fetch order details", "error");
         navigate("/orders");
@@ -56,7 +177,7 @@ export default function OrderDetailsPage() {
   const handlePayNow = async () => {
     try {
       if (!import.meta.env.VITE_RAZORPAY_KEY) {
-        addToast("Razorpay Key is not configured in client/.env", "error");
+        addToast("Razorpay Key is not configured", "error");
         return;
       }
       setPaying(true);
@@ -67,7 +188,7 @@ export default function OrderDetailsPage() {
         amount: pendingAmount
       });
 
-      const rzpOrder = rzpRes.data?.data;
+      const rzpOrder = rzpRes?.data?.data ?? rzpRes?.data;
       const sdkLoaded = await loadRazorpaySDK();
 
       if (!sdkLoaded || !window.Razorpay) {
@@ -99,7 +220,7 @@ export default function OrderDetailsPage() {
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', function (response){
+      rzp.on("payment.failed", (response) => {
         addToast(response.error.description, "error");
       });
       rzp.open();
@@ -107,20 +228,6 @@ export default function OrderDetailsPage() {
       addToast(err.message || "Payment failed", "error");
     } finally {
       setPaying(false);
-    }
-  };
-
-  const downloadInvoice = async () => {
-    try {
-      const response = await api.get(`/invoice/${id}`, { responseType: "blob" });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `invoice-${order.invoice_number || id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-    } catch (err) {
-      addToast("Invoice not available yet", "info");
     }
   };
 
@@ -158,10 +265,10 @@ export default function OrderDetailsPage() {
                   </div>
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: 700, margin: 0 }}>{item.Product?.name}</p>
-                    <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: "4px 0 0" }}>Qty: {item.quantity} × ₹{item.price?.toFixed(2)}</p>
+                    <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: "4px 0 0" }}>Qty: {item.quantity} × ₹{Number(item.price).toFixed(2)}</p>
                   </div>
                   <div style={{ fontWeight: 800 }}>
-                    ₹{(item.price * item.quantity).toFixed(2)}
+                    ₹{(Number(item.price) * Number(item.quantity)).toFixed(2)}
                   </div>
                 </div>
               ))}
@@ -173,20 +280,25 @@ export default function OrderDetailsPage() {
                   <span style={{ color: "var(--text-muted)" }}>Subtotal</span>
                   <span style={{ fontWeight: 600 }}>₹{Number(order.total_amount).toFixed(2)}</span>
                 </div>
-                {order.discount > 0 && (
+                {Number(order.discount || 0) > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", color: "#e11d48" }}>
                     <span>Discount</span>
                     <span style={{ fontWeight: 600 }}>-₹{Number(order.discount).toFixed(2)}</span>
                   </div>
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                  <span style={{ color: "var(--text-muted)" }}>Tax (GST)</span>
-                  <span style={{ fontWeight: 600 }}>₹{Number(order.gst_total).toFixed(2)}</span>
+                  <span style={{ color: "var(--text-muted)" }}>Tax (GST 18%)</span>
+                  <span style={{ fontWeight: 600 }}>₹{Number(order.gst_total || 0).toFixed(2)}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "18px", fontWeight: 800, marginTop: "8px", borderTop: "1px solid #f1f5f9", paddingTop: "12px" }}>
                   <span>Grand Total</span>
                   <span style={{ color: "var(--primary)" }}>₹{Number(order.final_amount).toFixed(2)}</span>
                 </div>
+                {balance <= 0 && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#059669", fontWeight: 700, fontSize: "14px" }}>
+                    <CheckCircle2 size={18} /> Fully Paid
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -202,8 +314,13 @@ export default function OrderDetailsPage() {
                   <CreditCard size={18} /> {paying ? "Processing..." : `Pay Balance (₹${balance.toFixed(2)})`}
                 </button>
               )}
-              <button className="btn btn-ghost btn-full" onClick={downloadInvoice}>
-                <Download size={18} /> Download Invoice
+              {/* CLIENT-SIDE INVOICE — no backend PDF needed */}
+              <button
+                className="btn btn-ghost btn-full"
+                onClick={() => printInvoice(order, customer)}
+                style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}
+              >
+                <Printer size={18} /> View & Print Invoice
               </button>
             </div>
           </div>
@@ -213,23 +330,23 @@ export default function OrderDetailsPage() {
             <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "20px", color: "#34d399" }}>Delivery Details</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "flex", gap: "12px" }}>
-                <MapPin size={18} style={{ color: "#34d399", shrink: 0 }} />
+                <MapPin size={18} style={{ color: "#34d399", flexShrink: 0 }} />
                 <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}>{customer?.village || "Verified Farm Node"}</p>
               </div>
               <div style={{ display: "flex", gap: "12px" }}>
-                <Calendar size={18} style={{ color: "#34d399", shrink: 0 }} />
-                <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}>Expected within 2-5 days</p>
+                <Calendar size={18} style={{ color: "#34d399", flexShrink: 0 }} />
+                <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}>Expected within 2–5 business days</p>
               </div>
               {customer?.gst && (
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <Building size={18} style={{ color: "#34d399", shrink: 0 }} />
+                  <Building size={18} style={{ color: "#34d399", flexShrink: 0 }} />
                   <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}>GST: {customer.gst}</p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* STATUS TIMELINE */}
+          {/* PAYMENT STATUS */}
           <div className="card" style={{ padding: "24px", borderRadius: "24px", background: "white", border: "1px solid #f1f5f9" }}>
             <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "20px" }}>Payment Status</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
