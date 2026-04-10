@@ -63,9 +63,18 @@ apiClient.interceptors.response.use(
     console.error("─── [API ERROR] ───");
     console.error("Path:", error.config?.url);
     console.error("Status:", error.response?.status);
-    console.error("Error:", error.response?.data?.message || error.message);
     
-    const message = error.response?.data?.message || "Something went wrong";
+    let message = "Something went wrong";
+    
+    if (error.code === "ERR_NETWORK") {
+      message = "🌐 Backend is starting up or unreachable. Please refresh in 30 seconds.";
+      console.warn("TIP: Check if Render 'DATABASE_URL' is set and 'Save' was clicked.");
+    } else if (error.response?.data?.message) {
+      message = error.response.data.message;
+    } else if (error.message) {
+      message = error.message;
+    }
+    
     return Promise.reject(new Error(message));
   }
 );
