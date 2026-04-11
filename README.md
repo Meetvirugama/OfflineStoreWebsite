@@ -5,9 +5,14 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-> **Developed by Meet Virugama | DA-IICT (B.Tech Project)**
-> 
-> *An independent-instance Enterprise Resource Planning (ERP) platform customized for offline agricultural retail stores.*
+> *An independent-instance Enterprise Resource Planning (ERP) platform customized for offline agricultural retail stores heavily leveraging React and Domain-Driven Backend Architectures.*
+
+### 👤 Architect & Contact Information
+- **Lead Developer:** Meet Virugama
+- **Institution:** DA-IICT (Dhirubhai Ambani Institute of Information and Communication Technology)
+- **Degree Program:** B.Tech (ICT) Enterprise Engineering
+- **Production Portal:** [agroplatform.app](https://agroplatform.app)
+- **Inquiry & Support:** +91 98765 00000
 
 ---
 
