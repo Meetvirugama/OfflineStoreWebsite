@@ -1,35 +1,32 @@
-/* =========================
-   PAGE ROOT
-========================= */
+/* ═══════════════════════════════════
+   PRODUCTS PAGE — Mobile-first
+   ═══════════════════════════════════ */
+
 .products-page {
   width: 100%;
   min-height: calc(100vh - 140px);
-  padding: 30px 0 60px 0;
+  padding: 20px 16px 40px;
 }
 
-/* =========================
-   HEADER (TITLE + SORT)
-========================= */
 .products-page__header {
   width: 100%;
-  margin-bottom: 24px;
-
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .products-page__title {
   font-family: var(--font-heading);
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--text);
 }
 
 .products-page__count {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-muted);
   margin-top: 4px;
 }
@@ -40,42 +37,29 @@
   gap: 8px;
 }
 
-/* =========================
-   MAIN LAYOUT
-========================= */
-.products-page__layout {
-  width: 100%;
-}
+.products-page__layout { width: 100%; }
+.products-page__main { width: 100%; }
 
-/* =========================
-   PRODUCTS AREA (RIGHT)
-========================= */
-.products-page__main {
-  width: 100%;
-}
-
-/* =========================
-   GRID
-========================= */
+/* ═══════ GRID ═══════ */
 .grid-products {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 
-/* =========================
-   STATES
-========================= */
+/* ═══════ STATES ═══════ */
 .loading-center {
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 60px 0;
 }
 
 .empty-state {
   text-align: center;
-  margin-top: 80px;
+  margin-top: 60px;
+  padding: 0 20px;
 }
 
 .empty-state-icon {
@@ -83,10 +67,10 @@
   margin-bottom: 10px;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* ═══════ DESKTOP ═══════ */
 @media (min-width: 769px) {
+  .products-page { padding: 30px 0 60px; }
+  .products-page__title { font-size: 26px; }
   .grid-products {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 24px;

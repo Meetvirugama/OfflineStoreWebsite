@@ -27,21 +27,21 @@
 
 /* AUTH CARD (Form Side) */
 .auth-card {
-  width: 520px;
+  width: 100%;
   flex-shrink: 0;
   background: var(--auth-bg);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 40px 80px;
-  border-right: 1px solid var(--auth-border);
+  align-items: center;
+  padding: 24px 16px;
+  min-height: 100dvh;
   z-index: 10;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   animation: fadeIn 0.8s ease-out;
 }
 
 .auth-card--wide {
-  width: 680px;
+  width: 100%;
 }
 
 /* LOGO & HEADER */
@@ -81,7 +81,9 @@
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+  width: 100%;
+  max-width: 450px;
 }
 
 .auth-form__row {
@@ -315,30 +317,32 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* RESPONSIVE */
+/* DESKTOP */
+@media (min-width: 993px) {
+  .auth-card {
+    width: 520px;
+    padding: 40px 80px;
+    border-right: 1px solid var(--auth-border);
+  }
+  .auth-card--wide { width: 680px; }
+}
+
+@media (min-width: 1201px) {
+  .auth-side__content h2 { font-size: 64px; }
+}
+
 @media (max-width: 1200px) {
-  .auth-card { width: 460px; padding: 40px 50px; }
-  .auth-card--wide { width: 580px; }
   .auth-side__content h2 { font-size: 48px; }
 }
 
 @media (max-width: 992px) {
   .auth-side { display: none; }
-  .auth-card, .auth-card--wide { 
-    width: 100%; 
-    height: auto;
-    min-height: 100dvh;
-    border: none;
-    padding: 32px 20px;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  .auth-form { width: 100%; max-width: 450px; }
 }
 
 @media (max-width: 576px) {
   .auth-form__row { grid-template-columns: 1fr; gap: 0; }
-  .auth-card__title { font-size: 28px; }
+  .auth-card__title { font-size: 26px; }
+  .auth-card__subtitle { font-size: 14px; }
 }
 
 /* OTP SPECIFIC STYLES */

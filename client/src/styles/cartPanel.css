@@ -198,5 +198,6 @@
 
 @media (max-width: 600px) {
   .cart-panel { width: 100vw; right: -100vw; }
-  .cart-header, .cart-items, .cart-footer { padding: 24px; }
+  .cart-header, .cart-items, .cart-footer { padding: 16px; }
+  .cart-footer { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
 }

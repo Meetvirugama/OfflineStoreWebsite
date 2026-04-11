@@ -1,15 +1,6 @@
-@import "./adminLayout.css";
+@import "../../styles/adminLayout.css";
 
 /* Intelligence Hub - Specialized Premium Layout */
-
-:root {
-  --admin-bg: #f8fafc;
-  --admin-sidebar: #ffffff;
-  --serenity-card: #ffffff;
-  --serenity-border: rgba(0, 0, 0, 0.06);
-  --agri-green: #059669;
-  --agri-accent: #d97706;
-}
 
 .intelligence-theme {
   background-color: #f8fafc !important;
@@ -17,9 +8,9 @@
 }
 
 .intelligence-theme .admin-sidebar {
-  background: var(--admin-sidebar) !important;
+  background: #ffffff !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
-  border-right: 1px solid var(--serenity-border) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.03) !important;
 }
 
@@ -28,13 +19,13 @@
 }
 
 .intelligence-theme .admin-sidebar__brand {
-  border-bottom: 1px solid var(--serenity-border) !important;
-  padding: 2rem 1.5rem !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  padding: 1.5rem !important;
 }
 
 .intelligence-theme .admin-nav__item {
   border-radius: 12px !important;
-  margin: 0.4rem 1rem !important;
+  margin: 0.3rem 0.8rem !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   border: 1px solid transparent !important;
   color: #64748b !important;
@@ -43,7 +34,7 @@
 .intelligence-theme .admin-nav__item:hover {
   background: rgba(5, 150, 105, 0.05) !important;
   border: 1px solid rgba(5, 150, 105, 0.1) !important;
-  color: var(--agri-green) !important;
+  color: #059669 !important;
   transform: translateX(4px) !important;
 }
 
@@ -72,52 +63,12 @@
 .intelligence-theme .admin-header {
   background: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(12px) !important;
-  border-bottom: 1px solid var(--serenity-border) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
 }
 
-/* Global Agri Card Tokens for Intelligence Hook */
-.agri-card {
-  background: var(--serenity-card);
-  backdrop-filter: blur(16px);
-  border-radius: 32px;
-  border: 1px solid var(--serenity-border);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.agri-card:hover {
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  transform: translateY(-2px);
-}
-
-/* Scroll Utilities */
-.agri-page {
-  padding: clamp(16px, 3vw, 2.5rem) clamp(16px, 3vw, 2.5rem) 5rem !important;
+/* Agri page padding — scoped to intelligence layout */
+.intelligence-theme .agri-page {
+  padding: clamp(12px, 3vw, 2rem) clamp(12px, 3vw, 2rem) 3rem !important;
   overflow-x: hidden;
   max-width: 100%;
 }
-
-/* Premium Scrollbar Styling for scrollable containers if used */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  transition: all 0.3s;
-}
-
-:hover::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.2);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.4) !important;
-}
-
-

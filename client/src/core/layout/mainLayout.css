@@ -8,8 +8,7 @@
 /* ROOT */
 .main-layout {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
   font-family: system-ui, sans-serif;
 }
 

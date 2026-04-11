@@ -1,3 +1,7 @@
+/* ═══════════════════════════════════
+   AGRI INTELLIGENCE — Mobile-first
+   ═══════════════════════════════════ */
+
 :root {
   --agri-green: #059669;
   --agri-green-light: #10b981;
@@ -9,44 +13,51 @@
 }
 
 .agri-page {
-  padding: 1.5rem 2rem;
+  padding: 1rem;
+  padding-bottom: 3rem;
   min-height: 100vh;
   background: #f8fafc;
   color: #1e293b;
   font-family: 'Outfit', 'Inter', sans-serif;
+  overflow-x: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.agri-card {
+/* Intelligence-page agri-card (NOT product card) */
+.agri-page .agri-card,
+.intelligence-theme .agri-card {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: 1.5rem;
-  padding: 1.5rem;
+  padding: 1.25rem;
   box-shadow: var(--glass-glow);
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   overflow: hidden;
 }
 
-.agri-card:hover {
+.agri-page .agri-card:hover,
+.intelligence-theme .agri-card:hover {
   border-color: rgba(5, 150, 105, 0.2);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 .trend-container {
-  height: 450px;
-  margin-top: 2rem;
+  height: 260px;
+  margin-top: 1.5rem;
 }
 
 .agri-title {
-  font-size: 2.2rem;
+  font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
@@ -59,9 +70,9 @@
 .weather-badge {
   background: rgba(5, 150, 105, 0.05);
   border: 1px solid rgba(5, 150, 105, 0.1);
-  padding: 0.6rem 1.2rem;
+  padding: 0.5rem 1rem;
   border-radius: 2rem;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -70,16 +81,6 @@
   align-items: center;
   gap: 0.5rem;
 }
-
-/* CUSTOM SCROLLBAR FOR AGRI REGIONS */
-.agri-page::-webkit-scrollbar { width: 8px; }
-.agri-page::-webkit-scrollbar-track { background: #f8fafc; }
-.agri-page::-webkit-scrollbar-thumb { 
-  background: rgba(0, 0, 0, 0.1); 
-  border-radius: 10px;
-  border: 2px solid #f8fafc;
-}
-.agri-page::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
 
 .hover-bg:hover {
   background: rgba(5, 150, 105, 0.05) !important;
@@ -97,14 +98,14 @@
   border: 1px solid var(--glass-border);
   border-radius: 1rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  max-height: 320px;
+  max-height: 280px;
   overflow-y: auto;
   padding: 0.5rem;
   animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .search-result-item {
-  padding: 0.8rem 1.2rem;
+  padding: 0.7rem 1rem;
   border-radius: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -119,35 +120,25 @@
   transform: translateX(4px);
 }
 
-.result-name {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #1e293b;
-}
-
-.result-meta {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  color: #64748b;
-}
+.result-name { font-weight: 700; font-size: 0.9rem; color: #1e293b; }
+.result-meta { font-size: 0.7rem; opacity: 0.6; color: #64748b; }
 
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* WEATHER HUB SPECIALS */
+/* WEATHER HUB */
 .weather-hub-bg {
-  background: radial-gradient(circle at 0% 0%, rgba(5, 150, 105, 0.03) 0%, transparent 50%),
-              #f8fafc;
+  background: radial-gradient(circle at 0% 0%, rgba(5, 150, 105, 0.03) 0%, transparent 50%), #f8fafc;
   position: relative;
 }
 
 .weather-header-card {
   background: #ffffff;
   border: 1px solid var(--glass-border);
-  border-radius: 2rem;
-  padding: 3rem;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
   overflow: hidden;
   position: relative;
   box-shadow: var(--glass-glow);
@@ -155,33 +146,35 @@
 
 .timeline-container {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   overflow-x: auto;
-  padding: 1rem 0.5rem;
+  padding: 0.5rem 0;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .timeline-card {
-  min-width: 100px;
+  min-width: 90px;
   background: #ffffff;
   border: 1px solid var(--glass-border);
-  border-radius: 1.2rem;
-  padding: 1.2rem;
+  border-radius: 1rem;
+  padding: 1rem;
   text-align: center;
   transition: all 0.3s ease;
   color: #1e293b;
+  flex-shrink: 0;
 }
 
 .timeline-card:hover {
   background: #f8fafc;
   border-color: var(--agri-green);
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
 .index-badge {
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 2rem;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -195,192 +188,146 @@
   background: #fee2e2;
   border: 1px solid rgba(220, 38, 38, 0.1);
   color: #991b1b;
-  padding: 1rem 2rem;
+  padding: 0.8rem 1rem;
   border-radius: 1rem;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
 }
 
 .spin { animation: rotate 2s linear infinite; }
 @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* ===== WEATHER DASHBOARD RESPONSIVE ===== */
+/* WEATHER RESPONSIVE */
 .weather-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
 }
 
 .weather-search-bar {
   display: flex;
-  gap: 12px;
-  width: 380px;
+  gap: 8px;
+  width: 100%;
   max-width: 100%;
   flex-shrink: 0;
 }
 
 .weather-hero-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
 }
 
 .weather-diagnostics-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 2rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
-/* ===== INTELLIGENCE PAGES — Global overflow fix ===== */
+/* Overflow fix for intelligence pages */
 .serenity-hub,
-.agri-page,
 .mandi-page {
   overflow-x: hidden;
   max-width: 100%;
   box-sizing: border-box;
 }
 
-/* Stats grid — avoid fixed minWidth overflow */
-.stats-grid {
-  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-}
-
-/* ===== MOBILE RESPONSIVE ( ≤ 768px ) ===== */
-@media (max-width: 768px) {
-  /* Weather header fully stacks */
-  .weather-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .weather-search-bar {
-    width: 100%;
-  }
-
-  /* Hero: temperature stacks above the icon */
-  .weather-hero-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .weather-hero-content > div:last-child {
-    display: none; /* hide the decorative circle on mobile */
-  }
-
-  /* Diagnostics: single column stack */
-  .weather-diagnostics-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* Agri stats grid: single column */
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .stats-grid[style*="minmax(300px"] {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Reduce massive chart heights on mobile */
-  .trend-container {
-    height: 280px;
-  }
-
-  /* agri-page: reduce excessive padding */
-  .agri-page {
-    padding: 1rem 1rem 5rem !important;
-  }
-
-  /* Farmer dashboard: stack left/right columns */
-  .farmer-two-col {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Mandi radar: stack controls and chart */
-  .mandi-radar-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* Desktop: farmer two-col layout */
+/* LAYOUT GRIDS — all mobile-first single column */
 .farmer-two-col {
   display: grid;
-  grid-template-columns: minmax(min(300px, 100%), 1fr) 2fr;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
-/* Desktop: agri analytics 2:1 layout */
 .agri-two-col {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
-/* Mandi radar chart grid */
 .mandi-radar-grid {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
   align-items: start;
 }
 
-@media (max-width: 900px) {
-  .farmer-two-col {
-    grid-template-columns: 1fr;
-  }
-  .agri-two-col {
-    grid-template-columns: 1fr;
-  }
-  .mandi-radar-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  /* Robust stacking for 2:1 and 1:3 layouts */
-  .agri-grid-2-1, .agri-grid-1-3, .summary-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
-  }
+.agri-grid-2-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
-/* Scrollable Table Container for Mandi Intelligence */
+.agri-grid-1-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* Scrollable Table Container */
 .mandi-table-container {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   background: #fff;
-  border-radius: 20px;
+  border-radius: 16px;
   border: 1px solid #f1f5f9;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 }
 
-/* Custom Scrollbar for the table container */
-.mandi-table-container::-webkit-scrollbar {
-  height: 6px;
-}
-.mandi-table-container::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-.mandi-table-container::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+.mandi-table-container::-webkit-scrollbar { height: 6px; }
+.mandi-table-container::-webkit-scrollbar-track { background: #f1f5f9; }
+.mandi-table-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+/* Custom scrollbar scoped */
+.agri-page::-webkit-scrollbar { width: 6px; }
+.agri-page::-webkit-scrollbar-track { background: #f8fafc; }
+.agri-page::-webkit-scrollbar-thumb { 
+  background: rgba(0, 0, 0, 0.1); 
   border-radius: 10px;
 }
+.agri-page::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
 
-.agri-grid-2-1 {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
+/* ═══════ TABLET (≥ 640px) ═══════ */
+@media (min-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .agri-page { padding: 1.25rem 1.5rem 3rem; }
+  .weather-header-card { padding: 2rem; }
 }
 
-.agri-grid-1-3 {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  gap: 2rem;
+/* ═══════ DESKTOP (≥ 769px) ═══════ */
+@media (min-width: 769px) {
+  .agri-page { padding: 1.5rem 2rem 3rem; }
+  .agri-title { font-size: 2.2rem; }
+  .trend-container { height: 400px; }
+  .stats-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  
+  .weather-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .weather-search-bar { width: 380px; }
+  .weather-hero-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .weather-diagnostics-grid { grid-template-columns: 1fr 2fr; }
+  .weather-header-card { padding: 3rem; border-radius: 2rem; }
 }
 
-
-
+/* ═══════ LARGE DESKTOP (≥ 900px) ═══════ */
+@media (min-width: 900px) {
+  .farmer-two-col { grid-template-columns: minmax(min(280px, 100%), 1fr) 2fr; }
+  .agri-two-col { grid-template-columns: 2fr 1fr; }
+  .mandi-radar-grid { grid-template-columns: 280px 1fr; }
+  .agri-grid-2-1 { grid-template-columns: 2fr 1fr; }
+  .agri-grid-1-3 { grid-template-columns: 1fr 3fr; }
+  .trend-container { height: 450px; }
+}

@@ -1,5 +1,5 @@
 .orders-page {
-  padding: 40px 20px 80px;
+  padding: 20px 16px 40px;
   max-width: 800px;
 }
 
@@ -148,10 +148,16 @@
   transform: translateX(-3px);
 }
 
-/* RESPONSIVE */
+/* DESKTOP */
+@media (min-width: 769px) {
+  .orders-page { padding: 40px 20px 80px; }
+  .orders-page__title { font-size: 26px; }
+}
+
+/* MOBILE */
 @media (max-width: 768px) {
   .orders-page {
-    padding: 24px 16px 100px;
+    padding-bottom: calc(var(--mobile-nav-h) + 30px);
   }
   .orders-page__title {
     font-size: 22px;
