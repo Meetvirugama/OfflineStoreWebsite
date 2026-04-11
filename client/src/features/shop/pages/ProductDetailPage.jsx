@@ -17,6 +17,7 @@ import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useCartStore from "@features/checkout/store/cart.store";
 import useToastStore from "@core/hooks/useToast";
+import DynText from '@core/i18n/DynText';
 import "@/styles/ProductDetailPage.css";
 
 const CATEGORY_IMAGES = {
@@ -129,10 +130,10 @@ export default function ProductDetailPage() {
       <div className="empty-state-icon">
         <XCircle size={80} strokeWidth={1} style={{ opacity: 0.2 }} />
       </div>
-      <h3>Product not found</h3>
-      <p>This product might have been removed or doesn't exist.</p>
+      <h3><DynText text="Product not found" /></h3>
+      <p><DynText text="This product might have been removed or doesn't exist." /></p>
       <button className="btn btn-primary" onClick={() => navigate("/products")}>
-        Back to Products
+        <DynText text="Back to Products" />
       </button>
     </div>
   );
@@ -141,11 +142,11 @@ export default function ProductDetailPage() {
     <div className="product-detail container fade-in">
       {/* BREADCRUMB */}
       <nav className="product-detail__breadcrumb">
-        <span onClick={() => navigate("/")} className="product-detail__bc-link">Home</span>
+        <span onClick={() => navigate("/")} className="product-detail__bc-link"><DynText text="Home" /></span>
         <ChevronRight size={14} className="product-detail__bc-sep" />
-        <span onClick={() => navigate("/products")} className="product-detail__bc-link">Products</span>
+        <span onClick={() => navigate("/products")} className="product-detail__bc-link"><DynText text="Products" /></span>
         <ChevronRight size={14} className="product-detail__bc-sep" />
-        <span>{product.name}</span>
+        <span><DynText text={product.name} /></span>
       </nav>
 
       <div className="product-detail__grid">
@@ -153,7 +154,7 @@ export default function ProductDetailPage() {
         <div className="product-detail__img-side">
           <div className="product-detail__img-wrap">
             {discount > 0 && (
-              <div className="product-detail__discount-badge">Save {discount}%</div>
+              <div className="product-detail__discount-badge"><DynText text="Save" /> {discount}%</div>
             )}
             <img
               src={getProductImage(product)}
@@ -179,7 +180,7 @@ export default function ProductDetailPage() {
             {product.mrp > product.selling_price && (
               <>
                 <span className="product-detail__mrp">MRP ₹{product.mrp?.toFixed(2)}</span>
-                <span className="price-discount">{discount}% off</span>
+                <span className="price-discount">{discount}% <DynText text="off" /></span>
               </>
             )}
           </div>
@@ -188,18 +189,18 @@ export default function ProductDetailPage() {
           <div className={`product-detail__stock ${product.stock > 0 ? "product-detail__stock--in" : "product-detail__stock--out"}`}>
             {product.stock > 0 ? (
               <>
-                <CheckCircle size={18} /> <span>In Stock – {product.stock} units available</span>
+                <CheckCircle size={18} /> <span><DynText text="In Stock" /> – {product.stock} <DynText text="units available" /></span>
               </>
             ) : (
               <>
-                <XCircle size={18} /> <span>Out of Stock</span>
+                <XCircle size={18} /> <span><DynText text="Out of Stock" /></span>
               </>
             )}
           </div>
 
           {/* PRODUCT DETAILS */}
           <div className="product-detail__details">
-            <h3>Product Specifications</h3>
+            <h3><DynText text="Product Specifications" /></h3>
             <table className="product-detail__table">
               <tbody>
                 {product.batch_number && (
@@ -219,7 +220,7 @@ export default function ProductDetailPage() {
           {/* QTY + ADD TO CART */}
           <div className="product-detail__actions">
             <div className="product-detail__qty">
-              <label className="form-label">Quantity</label>
+              <label className="form-label"><DynText text="Quantity" /></label>
               <div className="product-detail__qty-ctrl">
                 <button
                   className="product-detail__qty-btn"
@@ -243,9 +244,9 @@ export default function ProductDetailPage() {
                 disabled={adding || product.stock <= 0}
                 style={{ gap: '10px' }}
               >
-                {adding ? "Adding..." : (
+                {adding ? <DynText text="Adding" /> : (
                   <>
-                    <ShoppingCart size={20} /> Add to Cart
+                    <ShoppingCart size={20} /> <DynText text="Add to Cart" />
                   </>
                 )}
               </button>
@@ -258,11 +259,11 @@ export default function ProductDetailPage() {
               >
                 {buying ? (
                   <>
-                    <span className="spinner" style={{ width: 18, height: 18, borderTopColor: 'white' }} /> Processing...
+                    <span className="spinner" style={{ width: 18, height: 18, borderTopColor: 'white' }} /> <DynText text="Processing" />
                   </>
                 ) : (
                   <>
-                    <Zap size={20} /> Buy Now
+                    <Zap size={20} /> <DynText text="Buy Now" />
                   </>
                 )}
               </button>
@@ -271,10 +272,10 @@ export default function ProductDetailPage() {
 
           {/* TRUST BADGES */}
           <div className="product-detail__trust">
-            <div className="product-detail__trust-item"><Truck size={16} /> <span>Farm Delivery</span></div>
-            <div className="product-detail__trust-item"><Award size={16} /> <span>Certified Organic</span></div>
-            <div className="product-detail__trust-item"><ShieldCheck size={16} /> <span>Secure Payment</span></div>
-            <div className="product-detail__trust-item"><RotateCcw size={16} /> <span>Easy Return</span></div>
+            <div className="product-detail__trust-item"><Truck size={16} /> <span><DynText text="Farm Delivery" /></span></div>
+            <div className="product-detail__trust-item"><Award size={16} /> <span><DynText text="Certified Organic" /></span></div>
+            <div className="product-detail__trust-item"><ShieldCheck size={16} /> <span><DynText text="Secure Payment" /></span></div>
+            <div className="product-detail__trust-item"><RotateCcw size={16} /> <span><DynText text="Easy Return" /></span></div>
           </div>
         </div>
       </div>

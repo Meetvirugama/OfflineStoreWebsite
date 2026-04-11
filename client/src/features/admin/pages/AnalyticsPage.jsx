@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useReportStore from "@features/admin/store/report.store";
 import AgroLoader from "@core/components/AgroLoader";
 import { getNotificationAnalytics } from "@features/notifications/api/notification.service";
+import DynText from '@core/i18n/DynText';
 import "@/styles/analyticspage.css";
 
 import {
@@ -105,8 +106,8 @@ export default function AnalyticsPage() {
     <div className="analytics">
 
         <div style={{ borderLeft: '4px solid var(--admin-accent)', paddingLeft: '20px' }}>
-          <h1 className="analytics-title" style={{ fontSize: '32px', fontWeight: '900', color: '#0f172a' }}>Executive Council Dashboard</h1>
-          <p className="analytics-subtitle" style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>Comprehensive performance oversight and structural engagement metrics for AgroPlatform.</p>
+          <h1 className="analytics-title" style={{ fontSize: '32px', fontWeight: '900', color: '#0f172a' }}><DynText text="Executive Council Dashboard" /></h1>
+          <p className="analytics-subtitle" style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}><DynText text="Comprehensive performance oversight and structural engagement metrics for AgroPlatform." /></p>
         </div>
 
       {/* KPI */}
@@ -223,8 +224,8 @@ export default function AnalyticsPage() {
       </div>
 
       <div style={{ marginTop: '5rem', borderLeft: '5px solid #10b981', paddingLeft: '24px', marginBottom: '2rem' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#064e3b', letterSpacing: '-0.5px' }}>🌿 Agriculture Intelligence Node</h2>
-          <p style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}>Live market price trends and structural commodity demand insights.</p>
+          <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#064e3b', letterSpacing: '-0.5px' }}>🌿 <DynText text="Agriculture Intelligence Node" /></h2>
+          <p style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}><DynText text="Live market price trends and structural commodity demand insights." /></p>
       </div>
 
       <div className="analytics-grid">
@@ -280,7 +281,7 @@ export default function AnalyticsPage() {
 
 const Card = ({ title, value, type }) => (
   <div className={`analytics-card analytics-${type}`}>
-    <h3>{title}</h3>
+    <h3><DynText text={title} /></h3>
     <p>{value}</p>
   </div>
 );
@@ -289,8 +290,8 @@ const Chart = ({ title, subtitle, children, isEmpty }) => (
   <div className="analytics-chart">
     <div className="analytics-chart-header">
       <div>
-        <h2>{title}</h2>
-        {subtitle && <p style={{fontSize: '12px', color: '#64748b', marginTop: '4px'}}>{subtitle}</p>}
+        <h2><DynText text={title} /></h2>
+        {subtitle && <p style={{fontSize: '12px', color: '#64748b', marginTop: '4px'}}><DynText text={subtitle} /></p>}
       </div>
     </div>
     <div style={{ position: 'relative', width: '100%', height: '300px' }}>
@@ -304,7 +305,7 @@ const Chart = ({ title, subtitle, children, isEmpty }) => (
           zIndex: 10,
           borderRadius: '12px'
         }}>
-          <p style={{ color: '#64748b', fontWeight: '600' }}>Waiting for fresh analytics data...</p>
+          <p style={{ color: '#64748b', fontWeight: '600' }}><DynText text="Waiting for fresh analytics data" />...</p>
         </div>
       )}
       <ResponsiveContainer width="100%" height="100%">

@@ -27,6 +27,7 @@ import {
     AreaChart,
     Area
 } from 'recharts';
+import DynText from '@core/i18n/DynText';
 import '@/styles/agriIntelligence.css';
 
 const CROPS = ["Wheat", "Rice", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Maize"];
@@ -126,16 +127,16 @@ const CropAdvisoryPage = () => {
                         <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
                             <Target className="agri-green" size={32} />
                         </div>
-                        Smart Advisory Terminal
+                        <DynText text="Smart Advisory Terminal" />
                     </h1>
                     <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                         <ShieldCheck size={18} className="agri-green" />
-                        Rule-based AI indexing for precision spatial agriculture.
+                        <DynText text="Rule-based AI indexing for precision spatial agriculture" />.
                     </p>
                 </div>
                 <div className="weather-badge" style={{ padding: '0.8rem 1.5rem', borderRadius: '14px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', fontWeight: 800, letterSpacing: '1px', fontSize: '0.75rem' }}>
                     {syncStatus === 'SYNCED' ? <ShieldCheck size={16} /> : <RefreshCw size={16} className={syncStatus === 'DETECTING' ? 'spin' : ''} />}
-                    {syncStatus === 'SYNCED' ? 'SYSTEM SYNCED' : syncStatus.toUpperCase()}
+                    <DynText text={syncStatus === 'SYNCED' ? 'SYSTEM SYNCED' : syncStatus.toUpperCase()} />
                 </div>
             </header>
 
@@ -146,34 +147,34 @@ const CropAdvisoryPage = () => {
                     <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                         <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
                             <div style={{width: '6px', height: '24px', background: 'var(--agri-green)', borderRadius: '4px'}}></div>
-                            Telemetry Parameters
+                            <DynText text="Telemetry Parameters" />
                         </h3>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
                             <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}>IDENTIFIED CROP</label>
+                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}><DynText text="IDENTIFIED CROP" /></label>
                                 <select 
                                     value={formData.crop}
                                     onChange={(e) => setFormData({...formData, crop: e.target.value})}
                                     style={{ width: '100%', padding: '1.2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
                                 >
-                                    {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}>{c.toUpperCase()}</option>)}
+                                    {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}><DynText text={c.toUpperCase()} /></option>)}
                                 </select>
                             </div>
 
                             <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}>GROWTH VELOCITY</label>
+                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}><DynText text="GROWTH VELOCITY" /></label>
                                 <select 
                                     value={formData.stage}
                                     onChange={(e) => setFormData({...formData, stage: e.target.value})}
                                     style={{ width: '100%', padding: '1.2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
                                 >
-                                    {STAGES.map(s => <option key={s} value={s} style={{ background: '#ffffff', color: '#1e293b' }}>{s.toUpperCase()}</option>)}
+                                    {STAGES.map(s => <option key={s} value={s} style={{ background: '#ffffff', color: '#1e293b' }}><DynText text={s.toUpperCase()} /></option>)}
                                 </select>
                             </div>
 
                             <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}>SPATIAL CONTEXT</label>
+                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}><DynText text="SPATIAL CONTEXT" /></label>
                                 <div style={{ display: 'flex', gap: '1rem' }}>
                                     <div style={{ position: 'relative', flex: 1 }}>
                                         <MapPin size={18} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
@@ -222,7 +223,7 @@ const CropAdvisoryPage = () => {
                                 }}
                             >
                                 {loading ? <Loader2 className="spin" size={24} /> : <ShieldCheck size={24} />}
-                                {loading ? 'SYNCHRONIZING...' : 'INITIALIZE ADVISORY'}
+                                <DynText text={loading ? 'SYNCHRONIZING' : 'INITIALIZE ADVISORY'} />
                             </button>
                         </div>
                     </div>
@@ -230,7 +231,7 @@ const CropAdvisoryPage = () => {
                     {/* HISTORY TREND */}
                     <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                         <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '1.1rem', fontWeight: 800 }}>
-                            <TrendingUp className="agri-green" size={22} /> Risk Density Matrix
+                            <TrendingUp className="agri-green" size={22} /> <DynText text="Risk Density Matrix" />
                         </h3>
                         <div style={{ width: '100%', height: '240px' }}>
                             {chartData.length > 0 ? (
@@ -254,7 +255,7 @@ const CropAdvisoryPage = () => {
                                 </ResponsiveContainer>
                             ) : (
                                 <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3, border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
-                                    <p style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '0.8rem', color: '#64748b' }}>WAITING FOR TELEMETRY...</p>
+                                    <p style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '0.8rem', color: '#64748b' }}><DynText text="WAITING FOR TELEMETRY" /></p>
                                 </div>
                             )}
                         </div>
@@ -268,8 +269,8 @@ const CropAdvisoryPage = () => {
                         <div className="agri-card" style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '2rem', display: 'flex', gap: '1.2rem', alignItems: 'center', borderRadius: '24px' }}>
                             <AlertTriangle size={32} />
                             <div>
-                                <strong style={{ display: 'block', fontSize: '1.1rem', marginBottom: '0.4rem', fontWeight: 900 }}>SYSTEM MALFUNCTION</strong>
-                                <span style={{ opacity: 0.8, fontWeight: 500 }}>{error}</span>
+                                <strong style={{ display: 'block', fontSize: '1.1rem', marginBottom: '0.4rem', fontWeight: 900 }}><DynText text="SYSTEM MALFUNCTION" /></strong>
+                                <span style={{ opacity: 0.8, fontWeight: 500 }}><DynText text={error} /></span>
                             </div>
                         </div>
                     )}
@@ -279,8 +280,8 @@ const CropAdvisoryPage = () => {
                             <div style={{ width: '100px', height: '100px', borderRadius: '30px', background: 'rgba(5, 150, 105, 0.05)', border: '1px solid rgba(5, 150, 105, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2.5rem', boxShadow: '0 10px 20px rgba(0,0,0,0.03)' }}>
                                 <Sprout size={48} className="agri-green" />
                             </div>
-                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-0.5px', color: '#1e293b' }}>Terminal Standby</h3>
-                            <p style={{ opacity: 0.5, maxWidth: '450px', margin: '0 auto', fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500, color: '#64748b' }}>Synchronize your regional telemetry to generate precision-grade agricultural benchmarks and risk assessments.</p>
+                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-0.5px', color: '#1e293b' }}><DynText text="Terminal Standby" /></h3>
+                            <p style={{ opacity: 0.5, maxWidth: '450px', margin: '0 auto', fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500, color: '#64748b' }}><DynText text="Synchronize your regional telemetry to generate precision-grade agricultural benchmarks and risk assessments." /></p>
                         </div>
                     )}
 
@@ -297,7 +298,7 @@ const CropAdvisoryPage = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.8rem', letterSpacing: '2px', fontWeight: 900 }}>RELATIVE HUMIDITY</p>
+                                        <p style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.8rem', letterSpacing: '2px', fontWeight: 900 }}><DynText text="RELATIVE HUMIDITY" /></p>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '2.4rem', fontWeight: '900', letterSpacing: '-1px' }}>
                                             <Droplets size={32} className="agri-green" />
                                             {loading ? '---' : curAdvisory?.weather_data?.main?.humidity}%
@@ -331,7 +332,7 @@ const CropAdvisoryPage = () => {
                                         border: `1px solid ${getRiskColor(curAdvisory?.risk_level)}40`,
                                         letterSpacing: '1px'
                                     }}>
-                                        {loading ? 'CALCULATING...' : `RISK INDEX: ${curAdvisory?.risk_level}`}
+                                        <DynText text={loading ? 'CALCULATING...' : `RISK INDEX: ${curAdvisory?.risk_level}`} />
                                     </div>
                                 </div>
                             </div>
@@ -360,10 +361,10 @@ const CropAdvisoryPage = () => {
                                             </div>
                                             <div style={{ flex: 1 }}>
                                                 <h4 style={{ color: '#1e293b', fontSize: '1.3rem', marginBottom: '0.6rem', fontWeight: '800', letterSpacing: '-0.3px' }}>
-                                                    {item.title.toUpperCase()}
+                                                    <DynText text={item.title.toUpperCase()} />
                                                 </h4>
                                                 <p style={{ fontSize: '1.05rem', color: '#64748b', opacity: 0.8, lineHeight: 1.7, fontWeight: 500 }}>
-                                                    {item.message}
+                                                    <DynText text={item.message} />
                                                 </p>
                                             </div>
                                             <ChevronRight size={24} style={{ opacity: 0.2 }} />
@@ -377,7 +378,7 @@ const CropAdvisoryPage = () => {
                     {/* HISTORY LIST */}
                     <div className="agri-card" style={{ padding: '3rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                         <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
-                            <History size={24} className="agri-green" /> Smart Activity Pulse
+                            <History size={24} className="agri-green" /> <DynText text="Smart Activity Pulse" />
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                             {history.length > 0 ? history.map((h) => (
@@ -401,10 +402,10 @@ const CropAdvisoryPage = () => {
                                             boxShadow: `0 0 15px ${getRiskColor(h.risk_level)}30`
                                         }}></div>
                                         <div>
-                                            <p style={{ fontWeight: '900', fontSize: '1.1rem', color: '#1e293b', letterSpacing: '-0.2px' }}>{h.crop} <span style={{ opacity: 0.2, fontWeight: '400', margin: '0 0.8rem' }}>/</span> <span style={{ opacity: 0.5 }}>{h.stage.toUpperCase()}</span></p>
+                                            <p style={{ fontWeight: '900', fontSize: '1.1rem', color: '#1e293b', letterSpacing: '-0.2px' }}><DynText text={h.crop} /> <span style={{ opacity: 0.2, fontWeight: '400', margin: '0 0.8rem' }}>/</span> <span style={{ opacity: 0.5 }}><DynText text={h.stage.toUpperCase()} /></span></p>
                                             <p style={{ fontSize: '0.85rem', color: '#64748b', opacity: 0.7, display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', fontWeight: 600 }}>
                                                 <Calendar size={14} /> {new Date(h.created_at).toLocaleDateString()}
-                                                <MapPin size={14} /> {h.location}
+                                                <MapPin size={14} /> <DynText text={h.location} />
                                             </p>
                                         </div>
                                     </div>
@@ -413,7 +414,7 @@ const CropAdvisoryPage = () => {
                                             {Math.round(h.weather_data?.main?.temp || h.weather_data?.temp || 0)}°C
                                         </div>
                                         <div style={{ fontSize: '0.75rem', color: getRiskColor(h.risk_level), fontWeight: '900', letterSpacing: '1px', marginTop: '4px' }}>
-                                            {h.risk_level} RISK
+                                            <DynText text={h.risk_level} /> <DynText text="RISK" />
                                         </div>
                                     </div>
                                 </div>

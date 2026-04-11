@@ -4,6 +4,7 @@ import { Package, CreditCard, FileText, CheckCircle, Clock, AlertCircle, Downloa
 import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
+import DynText from '@core/i18n/DynText';
 import "@/styles/OrdersPage.css";
 
 // ✅ Dynamically load Razorpay SDK if not already present
@@ -171,8 +172,8 @@ export default function OrdersPage() {
   return (
     <div className="orders-page container fade-in">
       <header className="orders-page__header">
-        <h1 className="orders-page__title">My Orders</h1>
-        <p className="orders-page__subtitle">Track and manage your recent purchases</p>
+        <h1 className="orders-page__title"><DynText text="My Orders" /></h1>
+        <p className="orders-page__subtitle"><DynText text="Track and manage your recent purchases" /></p>
       </header>
 
       {loading ? (
@@ -195,10 +196,10 @@ export default function OrdersPage() {
               </defs>
             </svg>
           </div>
-          <h3>Your order book is clear</h3>
-          <p>Ready to start your first sourcing journey?</p>
+          <h3><DynText text="Your order book is clear" /></h3>
+          <p><DynText text="Ready to start your first sourcing journey?" /></p>
           <Link to="/products" className="btn btn-primary">
-            Browse Products
+            <DynText text="Browse Products" />
           </Link>
         </div>
       ) : (
@@ -225,13 +226,13 @@ export default function OrdersPage() {
 
                 <span className={`badge ${statusColor(order.status)}`} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   {getStatusIcon(order.status)}
-                  {order.status || "PENDING"}
+                  <DynText text={order.status || "PENDING"} />
                 </span>
               </div>
 
               <div className="order-card__body">
                 <div className="order-card__row">
-                  <span>Subtotal</span>
+                  <span><DynText text="Subtotal" /></span>
                   <span>
                     ₹{Number(order.total_amount || 0).toFixed(2)}
                   </span>
@@ -239,7 +240,7 @@ export default function OrdersPage() {
 
                 {order.discount > 0 && (
                   <div className="order-card__row order-card__row--discount">
-                    <span>Discount applied</span>
+                    <span><DynText text="Discount applied" /></span>
                     <span>
                       −₹{Number(order.discount).toFixed(2)}
                     </span>
@@ -248,7 +249,7 @@ export default function OrdersPage() {
 
                 {order.gst_total > 0 && (
                   <div className="order-card__row">
-                    <span>Tax (GST)</span>
+                    <span><DynText text="Tax (GST)" /></span>
                     <span>
                       ₹{Number(order.gst_total).toFixed(2)}
                     </span>
@@ -258,7 +259,7 @@ export default function OrdersPage() {
                 <hr className="divider" />
 
                 <div className="order-card__row order-card__row--total">
-                  <span>Grand Total</span>
+                  <span><DynText text="Grand Total" /></span>
                   <span>
                     ₹{Number(order.final_amount || 0).toFixed(2)}
                   </span>
@@ -275,9 +276,9 @@ export default function OrdersPage() {
                     disabled={payingOrderId === order.id}
                     style={{ gap: '8px' }}
                   >
-                    {payingOrderId === order.id ? "Processing..." : (
+                    {payingOrderId === order.id ? <DynText text="Processing" /> : (
                       <>
-                        <CreditCard size={16} /> Pay Now
+                        <CreditCard size={16} /> <DynText text="Pay Now" />
                       </>
                     )}
                   </button>
@@ -289,11 +290,11 @@ export default function OrdersPage() {
                   onClick={() => downloadInvoice(order.id)}
                   style={{ gap: '8px' }}
                 >
-                  <Download size={16} /> Invoice
+                  <Download size={16} /> <DynText text="Invoice" />
                 </button>
                 
                 <Link to={`/orders/${order.id}`} className="btn btn-ghost btn-sm" style={{ gap: '8px' }}>
-                  <FileText size={16} /> Details
+                  <FileText size={16} /> <DynText text="Details" />
                 </Link>
               </div>
             </div>

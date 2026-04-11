@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "@core/api/client";
 import useToastStore from "@core/hooks/useToast";
 import AgroLoader from "@core/components/AgroLoader";
+import DynText from '@core/i18n/DynText';
 import "@/styles/Admin.css";
 
 export default function AdminOrdersPage() {
@@ -82,8 +83,8 @@ export default function AdminOrdersPage() {
         <div className="admin-page">
             <div className="admin-actions-bar">
                 <div style={{ borderLeft: '4px solid var(--admin-amber)', paddingLeft: '15px' }}>
-                    <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Customer Transactions</h2>
-                    <p style={{ fontSize: '13px', color: '#64748b' }}>Full oversight of all AgroMart sales and payment health.</p>
+                    <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', margin: 0 }}><DynText text="Customer Transactions" /></h2>
+                    <p style={{ fontSize: '13px', color: '#64748b' }}><DynText text="Full oversight of all AgroMart sales and payment health." /></p>
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <button className="btn-elite secondary" onClick={fetchAllOrders}>🔄 Refresh Data</button>
@@ -93,18 +94,18 @@ export default function AdminOrdersPage() {
             <table className="admin-table">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
-                        <th>Order Date</th>
-                        <th>Customer Name</th>
-                        <th>Total Amount</th>
-                        <th>Workflow Status</th>
-                        <th>Payment Status</th>
-                        <th>Actions</th>
+                        <th><DynText text="Order ID" /></th>
+                        <th><DynText text="Order Date" /></th>
+                        <th><DynText text="Customer Name" /></th>
+                        <th><DynText text="Total Amount" /></th>
+                        <th><DynText text="Workflow Status" /></th>
+                        <th><DynText text="Payment Status" /></th>
+                        <th><DynText text="Actions" /></th>
                     </tr>
                 </thead>
                 <tbody>
                     {orders.length === 0 ? (
-                        <tr><td colSpan="7" style={{ textAlign: 'center', padding: '30px' }}>No orders found in the system.</td></tr>
+                        <tr><td colSpan="7" style={{ textAlign: 'center', padding: '30px' }}><DynText text="No orders found in the system." /></td></tr>
                     ) : (
                         orders.map(order => (
                             <tr key={order.id}>
@@ -123,9 +124,9 @@ export default function AdminOrdersPage() {
                                 <td>{getPaymentBadge(order)}</td>
                                 <td>
                                     <div className="table-actions">
-                                        <button className="t-btn view" onClick={() => navigate(`/admin/orders/${order.id}`)}>View Ledger</button>
+                                        <button className="t-btn view" onClick={() => navigate(`/admin/orders/${order.id}`)}><DynText text="View Ledger" /></button>
                                         {Number(order.paid_amount || 0) < Number(order.final_amount || 0) && (
-                                            <button className="t-btn add" onClick={() => handleSendReminder(order.id)} title="Send Payment Email">📧 Remind</button>
+                                            <button className="t-btn add" onClick={() => handleSendReminder(order.id)} title="Send Payment Email">📧 <DynText text="Remind" /></button>
                                         )}
                                     </div>
                                 </td>

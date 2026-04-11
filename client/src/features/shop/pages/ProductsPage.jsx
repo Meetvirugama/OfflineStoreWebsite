@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
 import AgroLoader from "@core/components/AgroLoader";
+import DynText from '@core/i18n/DynText';
 import "@/styles/ProductsPage.css";
 
 export default function ProductsPage() {
@@ -48,17 +49,17 @@ export default function ProductsPage() {
           <div>
             <h1 className="products-page__title">
               {querySearch
-                ? `Results for "${querySearch}"`
+                ? <><DynText text="Results for" /> "{querySearch}"</>
                 : queryCategory !== "All"
-                ? queryCategory
-                : "All Products"}
+                ? <DynText text={queryCategory} />
+                : <DynText text="All Products" />}
             </h1>
             <p className="products-page__count">
-              {loading ? "Discovering the best for you..." : `${sortedProducts.length} products found`}
+              {loading ? <DynText text="Discovering the best for you..." /> : <>{sortedProducts.length} <DynText text="products found" /></>}
             </p>
           </div>
           <div className="products-page__sort">
-            <label htmlFor="sort-select" className="form-label">Sort by:</label>
+            <label htmlFor="sort-select" className="form-label"><DynText text="Sort by" />:</label>
             <select
               id="sort-select"
               className="form-input"
@@ -84,8 +85,8 @@ export default function ProductsPage() {
             ) : sortedProducts.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-state-icon">🔍</div>
-                <h3>No products found</h3>
-                <p>Try a different category or search term.</p>
+                <h3><DynText text="No products found" /></h3>
+                <p><DynText text="Try a different category or search term." /></p>
               </div>
             ) : (
               <div className="grid-products">

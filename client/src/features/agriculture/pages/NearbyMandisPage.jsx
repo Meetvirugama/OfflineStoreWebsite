@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
 import { MapPin, Navigation, Store, Star, Loader2, AlertCircle } from 'lucide-react';
 import apiClient from '@core/api/client';
+import DynText from '@core/i18n/DynText';
 import '@/styles/agriIntelligence.css';
 
 const containerStyle = {
@@ -83,9 +84,9 @@ const NearbyMandisPage = () => {
                         <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
                             <MapPin className="agri-green" size={32} />
                         </div>
-                        Mandi NearBy Hub
+                        <DynText text="Mandi NearBy Hub" />
                     </h1>
-                    <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500 }}>Spatial indexing of certified agricultural marketplaces and real-time trade hubs.</p>
+                    <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500 }}><DynText text="Spatial indexing of certified agricultural marketplaces and real-time trade hubs." /></p>
                 </div>
                 <button 
                     onClick={locateUser} 
@@ -107,14 +108,14 @@ const NearbyMandisPage = () => {
                     }}
                 >
                     {loading ? <Loader2 className="spin" size={20} /> : <Navigation size={20} />} 
-                    RE-INDEX ADJACENT MARKETS
+                    <DynText text="RE-INDEX ADJACENT MARKETS" />
                 </button>
             </div>
 
             {error && (
                 <div className="agri-card" style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '3rem', borderRadius: '24px' }}>
                     <AlertCircle size={24} />
-                    <span style={{ fontSize: '1rem', fontWeight: 600 }}>{error}</span>
+                    <span style={{ fontSize: '1rem', fontWeight: 600 }}><DynText text={error} /></span>
                 </div>
             )}
 
@@ -123,14 +124,14 @@ const NearbyMandisPage = () => {
                 {/* LIST VIEW */}
                 <div className="agri-card" style={{ padding: '2.5rem', maxHeight: '700px', overflowY: 'auto', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '1.5rem'}}>
-                        <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, color: '#1e293b' }}>Active Terminals</h3>
-                        <span style={{background: 'rgba(16, 185, 129, 0.05)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900, color: 'var(--agri-green)'}}>{mandis.length} DETECTED</span>
+                        <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, color: '#1e293b' }}><DynText text="Active Terminals" /></h3>
+                        <span style={{background: 'rgba(16, 185, 129, 0.05)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900, color: 'var(--agri-green)'}}>{mandis.length} <DynText text="DETECTED" /></span>
                     </div>
                     
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '6rem 0', opacity: 0.3 }}>
                             <Loader2 className="spin" size={48} style={{ margin: '0 auto 1.5rem', color: 'var(--agri-green)' }} />
-                            <p style={{fontWeight: 700, letterSpacing: '2px', fontSize: '0.8rem'}}>SCANNING TELEMETRY...</p>
+                            <p style={{fontWeight: 700, letterSpacing: '2px', fontSize: '0.8rem'}}><DynText text="SCANNING TELEMETRY" />...</p>
                         </div>
                     ) : mandis.length > 0 ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -159,9 +160,9 @@ const NearbyMandisPage = () => {
                                         <div style={{position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'var(--agri-green)'}}></div>
                                     )}
                                     <h4 style={{ margin: '0 0 0.8rem 0', fontSize: '1.2rem', fontWeight: 800, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                                        <Store size={20} className="agri-green" /> {mandi.name}
+                                        <Store size={20} className="agri-green" /> <DynText text={mandi.name} />
                                     </h4>
-                                    <p style={{ fontSize: '0.9rem', color: '#64748b', opacity: 0.8, marginBottom: '1.5rem', lineHeight: 1.5, fontWeight: 500 }}>{mandi.address}</p>
+                                    <p style={{ fontSize: '0.9rem', color: '#64748b', opacity: 0.8, marginBottom: '1.5rem', lineHeight: 1.5, fontWeight: 500 }}><DynText text={mandi.address} /></p>
                                     
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         {mandi.rating ? (
@@ -182,7 +183,7 @@ const NearbyMandisPage = () => {
                                                 border: `1px solid ${mandi.isOpen ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
                                                 letterSpacing: '1px'
                                             }}>
-                                                {mandi.isOpen ? "OPEN ACCESS" : "CLOSED"}
+                                                <DynText text={mandi.isOpen ? "OPEN ACCESS" : "CLOSED"} />
                                             </span>
                                         )}
                                     </div>
@@ -191,7 +192,7 @@ const NearbyMandisPage = () => {
                         </div>
                     ) : (
                         <div style={{ textAlign: 'center', padding: '4rem 0', opacity: 0.4 }}>
-                            <p style={{fontSize: '1rem', fontWeight: 600}}>No adjacent marketplaces found.</p>
+                            <p style={{fontSize: '1rem', fontWeight: 600}}><DynText text="No adjacent marketplaces found." /></p>
                         </div>
                     )}
                 </div>

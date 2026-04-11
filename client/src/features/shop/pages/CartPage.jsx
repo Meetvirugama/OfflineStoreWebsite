@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "@features/checkout/store/cart.store";
 import useAuthStore from "@features/auth/store/auth.store";
+import DynText from '@core/i18n/DynText';
 import "@/styles/cartPage.css";
 
 export default function CartPage() {
@@ -49,14 +50,14 @@ export default function CartPage() {
 
   return (
     <div className="cart-page">
-      <h2 className="cart-title">🛒 Your Cart</h2>
+      <h2 className="cart-title">🛒 <DynText text="Your Cart" /></h2>
 
       <div className="cart-container">
         {/* LEFT */}
         <div className="cart-left">
           {items.length === 0 && (
             <div className="empty-cart">
-              <h3>No items in cart 🚜</h3>
+              <h3><DynText text="No items in cart" /> 🚜</h3>
             </div>
           )}
 
@@ -84,22 +85,22 @@ export default function CartPage() {
 
         {/* RIGHT */}
         <div className="cart-right">
-          <h3>Price Details</h3>
+          <h3><DynText text="Price Details" /></h3>
 
           <div className="summary-row">
-            <span>Total</span>
+            <span><DynText text="Total" /></span>
             <span>₹{total}</span>
           </div>
 
           <div className="summary-row discount">
-            <span>Discount</span>
+            <span><DynText text="Discount" /></span>
             <span>-₹{discount}</span>
           </div>
 
           <hr />
 
           <div className="summary-row final">
-            <span>Final Amount</span>
+            <span><DynText text="Final Amount" /></span>
             <span>₹{finalAmount}</span>
           </div>
 
@@ -108,7 +109,7 @@ export default function CartPage() {
             onClick={handleCheckout}
             disabled={loading}
           >
-            {loading ? "Processing..." : "Proceed to Checkout"}
+            {loading ? <DynText text="Processing" /> : <DynText text="Proceed to Checkout" />}
           </button>
         </div>
       </div>

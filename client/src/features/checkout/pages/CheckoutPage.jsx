@@ -18,6 +18,7 @@ import useCartStore from "@features/checkout/store/cart.store";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
 import api from "@core/api/client";
+import DynText from '@core/i18n/DynText';
 import "@/styles/CheckoutPage.css";
 
 // ✅ Dynamically load Razorpay SDK if not already loaded
@@ -160,13 +161,13 @@ export default function CheckoutPage() {
           <div className="empty-state-icon">
             <ShoppingBag size={80} strokeWidth={1} style={{ opacity: 0.2 }} />
           </div>
-          <h3>Your cart is empty</h3>
-          <p>Add products before checking out</p>
+          <h3><DynText text="Your cart is empty" /></h3>
+          <p><DynText text="Add products before checking out" /></p>
           <button
             className="btn btn-primary"
             onClick={() => navigate("/products")}
           >
-            Browse Products
+            <DynText text="Browse Products" />
           </button>
         </div>
       </div>
@@ -175,12 +176,12 @@ export default function CheckoutPage() {
 
   return (
     <div className="checkout-page container fade-in">
-      <h1 className="checkout-page__title">Review & Place Order</h1>
+      <h1 className="checkout-page__title"><DynText text="Review & Place Order" /></h1>
 
       <div className="checkout-page__layout">
         {/* ORDER ITEMS */}
         <div className="checkout-items">
-          <h2 className="checkout-items__title">Order Summary</h2>
+          <h2 className="checkout-items__title"><DynText text="Order Summary" /></h2>
 
           {items.map((item) => (
             <div key={item.id} className="checkout-item">
@@ -207,42 +208,42 @@ export default function CheckoutPage() {
               <Truck size={24} />
             </div>
             <div>
-              <p className="checkout-delivery__title">Farm Delivery</p>
+              <p className="checkout-delivery__title"><DynText text="Farm Delivery" /></p>
               <p className="checkout-delivery__desc">
-                Estimated 2–5 days · Delivering to{" "}
+                <DynText text="Estimated 2–5 days · Delivering to" />{" "}
                 {customer?.village || "your location"}
               </p>
             </div>
-            <span className="checkout-delivery__free">FREE</span>
+            <span className="checkout-delivery__free"><DynText text="FREE" /></span>
           </div>
         </div>
 
         {/* SUMMARY */}
         <div className="checkout-summary">
-          <h2 className="checkout-summary__title">Price Details</h2>
+          <h2 className="checkout-summary__title"><DynText text="Price Details" /></h2>
 
           <div className="checkout-summary__rows">
             <div className="checkout-summary__row">
-              <span>Price ({items.length} items)</span>
+              <span><DynText text="Price" /> ({items.length} <DynText text="items" />)</span>
               <span>₹{total?.toFixed(2)}</span>
             </div>
 
             {discount > 0 && (
               <div className="checkout-summary__row checkout-summary__row--discount">
-                <span>Discount</span>
+                <span><DynText text="Discount" /></span>
                 <span>−₹{discount?.toFixed(2)}</span>
               </div>
             )}
 
             <div className="checkout-summary__row">
-              <span>Delivery Charges</span>
-              <span className="checkout-summary__free">FREE</span>
+              <span><DynText text="Delivery Charges" /></span>
+              <span className="checkout-summary__free"><DynText text="FREE" /></span>
             </div>
 
             <hr className="divider" />
 
             <div className="checkout-summary__row checkout-summary__row--total">
-              <span>Total Amount</span>
+              <span><DynText text="Total Amount" /></span>
               <span>₹{finalAmount?.toFixed(2)}</span>
             </div>
 
@@ -273,16 +274,16 @@ export default function CheckoutPage() {
             disabled={loading}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
           >
-            {loading ? "Processing..." : (
+            {loading ? <DynText text="Processing" /> : (
               <>
-                Place Order & Pay <CreditCard size={20} />
+                <DynText text="Place Order & Pay" /> <CreditCard size={20} />
               </>
             )}
           </button>
 
           <div className="checkout-trust">
-            <div className="trust-item"><ShieldCheck size={16} /> <span>Secure Payment</span></div>
-            <div className="trust-item"><CheckCircle size={16} /> <span>Verified Products</span></div>
+            <div className="trust-item"><ShieldCheck size={16} /> <span><DynText text="Secure Payment" /></span></div>
+            <div className="trust-item"><CheckCircle size={16} /> <span><DynText text="Verified Products" /></span></div>
           </div>
         </div>
       </div>

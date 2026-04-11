@@ -11,10 +11,8 @@ import {
     Moon, Sun as SunIcon, BarChart3, Radio, Layers,
     Compass, Timer
 } from 'lucide-react';
-import { 
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, 
-    ResponsiveContainer
 } from 'recharts';
+import DynText from '@core/i18n/DynText';
 import '@/styles/agriIntelligence.css';
 
 const WeatherDashboard = () => {
@@ -99,7 +97,7 @@ const WeatherDashboard = () => {
         return (
             <div style={{minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                 <RefreshCw size={50} className="agri-green spin" />
-                <p style={{marginTop: '2rem', color: 'var(--agri-green)', opacity: 0.5, letterSpacing: '0.4em', fontSize: '0.7rem', fontWeight: 900}}>CRAFTING SERENITY HUB</p>
+                <p style={{marginTop: '2rem', color: 'var(--agri-green)', opacity: 0.5, letterSpacing: '0.4em', fontSize: '0.7rem', fontWeight: 900}}><DynText text="CRAFTING SERENITY HUB" /></p>
             </div>
         );
     }
@@ -110,11 +108,11 @@ const WeatherDashboard = () => {
             {/* 1. ELITE HEADER */}
             <header className="weather-header" style={{marginBottom: '2rem'}}>
                 <div>
-                    <h1 style={{fontSize: 'clamp(1.4rem, 5vw, 2.5rem)', fontWeight: 900, margin: 0, letterSpacing: '-1.5px', color: 'inherit'}}>Meteorological Command Center</h1>
+                    <h1 style={{fontSize: 'clamp(1.4rem, 5vw, 2.5rem)', fontWeight: 900, margin: 0, letterSpacing: '-1.5px', color: 'inherit'}}><DynText text="Meteorological Command Center" /></h1>
                     <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem'}}>
                         <div style={{width: '8px', height: '8px', borderRadius: '50%', background: 'var(--agri-green)', boxShadow: '0 0 10px var(--agri-green)'}}></div>
                         <span style={{color: '#64748b', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.5px'}}>
-                            Active Sector: <span style={{color: 'inherit'}}>{selectedLocation?.name || 'Gajanvav'}</span>, {selectedLocation?.country || 'India'}
+                            <DynText text="Active Sector" />: <span style={{color: 'inherit'}}><DynText text={selectedLocation?.name || 'Gajanvav'} /></span>, <DynText text={selectedLocation?.country || 'India'} />
                         </span>
                     </div>
                 </div>
@@ -196,15 +194,15 @@ const WeatherDashboard = () => {
                         <div style={{display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap'}}>
                             <span style={{fontSize: 'clamp(4rem, 12vw, 9rem)', fontWeight: 900, letterSpacing: '-3px', color: 'inherit', lineHeight: 1}}>{Math.round(currentWeather?.main?.temp || 0)}°</span>
                             <div style={{flex: 1, minWidth: '120px'}}>
-                                <h2 style={{fontSize: 'clamp(1.2rem, 4vw, 2.2rem)', fontWeight: 900, margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--agri-green)'}}>{currentWeather?.weather?.[0]?.main}</h2>
-                                <p style={{fontSize: 'clamp(0.75rem, 2vw, 0.9rem)', color: '#64748b', margin: '0.5rem 0 0', fontWeight: 600}}>Clear skies with optimal humidity levels for harvest.</p>
+                                <h2 style={{fontSize: 'clamp(1.2rem, 4vw, 2.2rem)', fontWeight: 900, margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--agri-green)'}}><DynText text={currentWeather?.weather?.[0]?.main} /></h2>
+                                <p style={{fontSize: 'clamp(0.75rem, 2vw, 0.9rem)', color: '#64748b', margin: '0.5rem 0 0', fontWeight: 600}}><DynText text="Clear skies with optimal humidity levels for harvest." /></p>
                             </div>
                         </div>
                         {/* Stats Row */}
                         <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.8rem, 3vw, 4rem)', marginTop: '1rem', color: 'inherit'}}>
-                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>HUMIDITY</p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>{currentWeather?.main?.humidity}%</p></div>
-                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>FEELS LIKE</p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>{Math.round(currentWeather?.main?.feels_like || 0)}°</p></div>
-                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>PRECIPITATION</p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>0%</p></div>
+                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}><DynText text="HUMIDITY" /></p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>{currentWeather?.main?.humidity}%</p></div>
+                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}><DynText text="FEELS LIKE" /></p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>{Math.round(currentWeather?.main?.feels_like || 0)}°</p></div>
+                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}><DynText text="PRECIPITATION" /></p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>0%</p></div>
                         </div>
                     </div>
                     <div style={{width: 'clamp(100px, 25vw, 240px)', height: 'clamp(100px, 25vw, 240px)', background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 20px rgba(0,0,0,0.02)', margin: '1.5rem auto 0'}}>
@@ -219,7 +217,7 @@ const WeatherDashboard = () => {
                 {(extendedForecast || []).slice(0, 7).map((day, i) => (
                     <div key={i} style={{background: '#ffffff', borderRadius: '20px', padding: 'clamp(0.8rem, 2vw, 1.5rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid rgba(0,0,0,0.06)', transition: 'transform 0.3s ease', boxShadow: '0 4px 12px rgba(0,0,0,0.02)', flex: '0 0 auto', minWidth: '72px'}}>
                         <span style={{color: '#64748b', fontWeight: 800, fontSize: '0.7rem', marginBottom: '0.6rem'}}>
-                            {i === 0 ? 'TODAY' : new Date(day.dt * 1000).toLocaleDateString('en-US', {weekday: 'short'}).toUpperCase()}
+                            <DynText text={i === 0 ? 'TODAY' : new Date(day.dt * 1000).toLocaleDateString('en-US', {weekday: 'short'}).toUpperCase()} />
                         </span>
                         {getWeatherIcon(day.weather?.main, 24)}
                         <span style={{fontSize: '1.3rem', fontWeight: 900, marginTop: '0.8rem', color: 'inherit'}}>{Math.round(day.temp_max)}°</span>
@@ -232,11 +230,11 @@ const WeatherDashboard = () => {
             <div style={{marginBottom: '2rem'}}>
                 <div style={{display: 'flex', flexDirection: 'column', gap: '0.8rem', marginBottom: '1rem'}}>
                     <h3 style={{fontSize: 'clamp(1rem, 3vw, 1.4rem)', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'inherit', letterSpacing: '-0.5px'}}>
-                        <Compass className="agri-green" size={20} /> Precision Field Topology
+                        <Compass className="agri-green" size={20} /> <DynText text="Precision Field Topology" />
                     </h3>
                     <div style={{display: 'flex', gap: '0.5rem', flexWrap: 'wrap'}}>
-                        <div style={{padding: '0.3rem 0.8rem', background: '#ffffff', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, border: '1px solid rgba(0,0,0,0.08)', color: '#64748b'}}>SATELLITE</div>
-                        <div style={{padding: '0.3rem 0.8rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, opacity: 0.5, color: '#64748b'}}>INFRARED</div>
+                        <div style={{padding: '0.3rem 0.8rem', background: '#ffffff', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, border: '1px solid rgba(0,0,0,0.08)', color: '#64748b'}}><DynText text="SATELLITE" /></div>
+                        <div style={{padding: '0.3rem 0.8rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, opacity: 0.5, color: '#64748b'}}><DynText text="INFRARED" /></div>
                     </div>
                 </div>
                 <div style={{height: 'clamp(250px, 50vw, 500px)', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.06)', position: 'relative'}}>
@@ -247,12 +245,12 @@ const WeatherDashboard = () => {
                         src={`https://www.google.com/maps/embed/v1/view?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&center=${selectedLocation?.lat || 22.3039},${selectedLocation?.lon || 70.8022}&zoom=14&maptype=satellite`}
                     ></iframe>
                     <div style={{position: 'absolute', bottom: '1rem', right: '1rem', left: '1rem', background: '#fff', color: '#000', padding: 'clamp(0.8rem, 2vw, 1.5rem)', borderRadius: '16px', boxShadow: '0 15px 30px rgba(0,0,0,0.3)', maxWidth: '250px'}}>
-                        <p style={{fontSize: '0.6rem', fontWeight: 900, opacity: 0.5, margin: '0 0 0.3rem'}}>FIELD CONNECTED</p>
-                        <h4 style={{fontSize: '0.95rem', fontWeight: 900, margin: '0 0 0.5rem'}}>8 Active Nodes</h4>
+                        <p style={{fontSize: '0.6rem', fontWeight: 900, opacity: 0.5, margin: '0 0 0.3rem'}}><DynText text="FIELD CONNECTED" /></p>
+                        <h4 style={{fontSize: '0.95rem', fontWeight: 900, margin: '0 0 0.5rem'}}><DynText text="8 Active Nodes" /></h4>
                         <div style={{display: 'flex', gap: '0.4rem', marginBottom: '0.8rem'}}>
                             {[1,2,3,4,5].map(i => <div key={i} style={{width: '5px', height: '5px', borderRadius: '50%', background: 'var(--agri-green)'}}></div>)}
                         </div>
-                        <button style={{width: '100%', background: '#020617', color: '#fff', border: 'none', padding: '0.7rem', borderRadius: '10px', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer'}}>SCAN SECTOR</button>
+                        <button style={{width: '100%', background: '#020617', color: '#fff', border: 'none', padding: '0.7rem', borderRadius: '10px', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer'}}><DynText text="SCAN SECTOR" /></button>
                     </div>
                 </div>
             </div>
@@ -262,7 +260,7 @@ const WeatherDashboard = () => {
                 {/* Environmental Metrics */}
                 <div style={{background: '#ffffff', padding: 'clamp(1.2rem, 3vw, 2.5rem)', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 16px rgba(0,0,0,0.03)'}}>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem'}}>
-                        <p style={{fontSize: '0.7rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.15em', margin: 0}}>ENVIRONMENTAL METRICS</p>
+                        <p style={{fontSize: '0.7rem', fontWeight: 800, color: '#64748b', letterSpacing: '0.15em', margin: 0}}><DynText text="ENVIRONMENTAL METRICS" /></p>
                         <Radio size={14} className="agri-green" />
                     </div>
                     <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))', gap: '1rem'}}>
@@ -274,9 +272,9 @@ const WeatherDashboard = () => {
                             <div key={i} style={{background: '#f8fafc', padding: '1rem', borderRadius: '14px', border: '1px solid rgba(0,0,0,0.04)'}}>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem'}}>
                                     {item.icon}
-                                    <span style={{fontSize: '0.7rem', fontWeight: 700, color: '#64748b', letterSpacing: '0.05em'}}>{item.lab}</span>
+                                    <span style={{fontSize: '0.7rem', fontWeight: 700, color: '#64748b', letterSpacing: '0.05em'}}><DynText text={item.lab} /></span>
                                 </div>
-                                <span style={{fontSize: 'clamp(1rem, 3vw, 1.3rem)', fontWeight: 900, color: '#1e293b'}}>{item.val}</span>
+                                <span style={{fontSize: 'clamp(1rem, 3vw, 1.3rem)', fontWeight: 900, color: '#1e293b'}}><DynText text={item.val} /></span>
                             </div>
                         ))}
                     </div>
@@ -286,17 +284,17 @@ const WeatherDashboard = () => {
                 <div style={{background: 'rgba(16, 185, 129, 0.05)', padding: 'clamp(1rem, 3vw, 2rem)', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.2)', position: 'relative', overflow: 'hidden'}}>
                     <div style={{position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--agri-green)'}}></div>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem'}}>
-                        <span style={{fontSize: '0.75rem', fontWeight: 800, color: '#059669', letterSpacing: '0.1em'}}>APPLICATION WINDOW</span>
+                        <span style={{fontSize: '0.75rem', fontWeight: 800, color: '#059669', letterSpacing: '0.1em'}}><DynText text="APPLICATION WINDOW" /></span>
                         <ShieldCheck size={18} className="agri-green" />
                     </div>
-                    <p style={{fontSize: 'clamp(1.1rem, 3vw, 1.6rem)', fontWeight: 900, margin: 0, color: '#065f46'}}>OPTIMAL CONDITIONS</p>
+                    <p style={{fontSize: 'clamp(1.1rem, 3vw, 1.6rem)', fontWeight: 900, margin: 0, color: '#065f46'}}><DynText text="OPTIMAL CONDITIONS" /></p>
                 </div>
 
                 {/* 24-Hour Atmospheric Trend */}
                 <div style={{background: '#ffffff', padding: 'clamp(1.2rem, 3vw, 2.5rem)', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 16px rgba(0,0,0,0.03)'}}>
                     <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem'}}>
-                        <h3 style={{fontSize: 'clamp(0.95rem, 3vw, 1.2rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px', color: '#1e293b'}}>24-Hour Atmospheric Trend</h3>
-                        <div style={{padding: '0.3rem 0.8rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, border: '1px solid rgba(16, 185, 129, 0.1)', color: '#059669', alignSelf: 'flex-start'}}>TEMPERATURE PULSE</div>
+                        <h3 style={{fontSize: 'clamp(0.95rem, 3vw, 1.2rem)', fontWeight: 800, margin: 0, letterSpacing: '-0.5px', color: '#1e293b'}}><DynText text="24-Hour Atmospheric Trend" /></h3>
+                        <div style={{padding: '0.3rem 0.8rem', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, border: '1px solid rgba(16, 185, 129, 0.1)', color: '#059669', alignSelf: 'flex-start'}}><DynText text="TEMPERATURE PULSE" /></div>
                     </div>
                     <div style={{height: 'clamp(180px, 30vw, 300px)'}}>
                         <ResponsiveContainer width="100%" height="100%">
