@@ -86,3 +86,12 @@ export const translateText = async (text, targetLang, sourceLang = "en", persist
         return text;
     }
 };
+
+// Exported utility to clear the in-memory cache when Admin edits a string manually
+export const clearCacheKeys = (originalText) => {
+    if (!originalText) return;
+    const guCacheKey = `${originalText}_gu`;
+    if (ephemeralCache.has(guCacheKey)) {
+        ephemeralCache.delete(guCacheKey);
+    }
+};

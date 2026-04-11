@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import useNewsStore from '@features/agriculture/news/news.store';
 import useWeatherStore from '@features/agriculture/weather/weather.store';
 import useTranslation from '@core/i18n/useTranslation';
-import useDynamicTranslation from '@core/i18n/useDynamicTranslation';
+import { useDynamicTranslation } from '@core/i18n/useDynamicTranslation';
+import DynText from '@core/i18n/DynText';
 import { 
     Newspaper, 
     Megaphone, 
@@ -19,11 +20,6 @@ import {
     Calendar
 } from 'lucide-react';
 import '@/styles/agriIntelligence.css';
-
-const DynText = ({ text, persistent = false }) => {
-    const translated = useDynamicTranslation(text, persistent);
-    return translated || text;
-};
 
 const FarmingNewsPage = () => {
     const { t, lang } = useTranslation();
