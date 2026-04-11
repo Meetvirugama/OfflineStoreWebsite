@@ -2,6 +2,7 @@ import axios from "axios";
 import { Op } from "sequelize";
 import { ENV } from "../../config/env.js";
 import WeatherCache from "./weather.model.js";
+import * as aiService from "../ai/ai.service.js";
 
 const TOMORROW_BASE = "https://api.tomorrow.io/v4/weather/forecast";
 const GOOGLE_GEO_URL = "https://maps.googleapis.com/maps/api/geocode/json";
@@ -97,10 +98,14 @@ export const getAtmosphericDetails = async (lat, lon) => {
     // 4. Agri-Precision Indices (Thinking Level Upgrade)
     const agriData = getAgriInsights(currentEntry, todayTimeline);
 
+    // 5. Strategic AI Outlook (NEW)
+    const strategic_outlook = await aiService.generateWeatherOutlook(extendedForecast);
+
     const result = {
         current,
         todayTimeline,
         extendedForecast,
+        strategic_outlook,
         alerts: agriData.alerts,
         indices: {
             ...agriData.indices,
@@ -144,6 +149,30 @@ export const searchLocations = async (query) => {
             full_label: item.formatted_address
         };
     });
+};
+
+/**
+ * REVERSE GEOCODING (Coordinates to Location)
+ */
+export const reverseGeocode = async (lat, lon) => {
+    const res = await axios.get(GOOGLE_GEO_URL, {
+        params: { latlng: `${lat},${lon}`, key: ENV.GOOGLE_GEO_KEY }
+    });
+
+    if (res.data.status !== "OK" || res.data.results.length === 0) return null;
+
+    const item = res.data.results[0];
+    const stateComp = item.address_components.find(c => c.types.includes("administrative_area_level_1"));
+    const countryComp = item.address_components.find(c => c.types.includes("country"));
+
+    return {
+        name: item.address_components[0].long_name,
+        state: stateComp ? stateComp.long_name : "",
+        country: countryComp ? countryComp.long_name : "",
+        lat: parseFloat(lat),
+        lon: parseFloat(lon),
+        full_label: item.formatted_address
+    };
 };
 
 /**

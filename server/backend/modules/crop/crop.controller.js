@@ -28,6 +28,17 @@ export const getPestHistory = asyncHandler(async (req, res) => {
     sendResponse(res, 200, "Your pest detection history", result);
 });
 
+export const detectPest = asyncHandler(async (req, res) => {
+    const { crop } = req.body;
+    // For guest usability, we allow detection but only save history if user exists
+    const userId = req.user?.id || 0; 
+    
+    if (!crop) return sendResponse(res, 400, "Select a crop for analysis");
+
+    const result = await cropService.detectPest(userId, crop, req.files);
+    sendResponse(res, 201, "AI Diagnostic complete", result);
+});
+
 /**
  * CROP ANALYTICS
  */

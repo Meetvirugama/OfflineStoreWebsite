@@ -21,7 +21,31 @@ const useWeatherStore = create((set, get) => ({
 
     initialize: async () => {
         const saved = get().selectedLocation;
-        await get().fetchAtmosphericDetails(saved?.lat, saved?.lon);
+        if (saved) {
+            await get().fetchAtmosphericDetails(saved.lat, saved.lon);
+        } else {
+            // Attempt Auto-Location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const location = await get().reverseGeocode(latitude, longitude);
+                        if (location) {
+                            get().setSelectedLocation(location);
+                        } else {
+                            // Fallback if geocoding fails
+                            await get().fetchAtmosphericDetails(); 
+                        }
+                    },
+                    async (error) => {
+                        console.error("Geolocation denied or failed:", error);
+                        await get().fetchAtmosphericDetails(); // Fallback to Surat
+                    }
+                );
+            } else {
+                await get().fetchAtmosphericDetails();
+            }
+        }
     },
 
     fetchAtmosphericDetails: async (lat, lon) => {
@@ -29,7 +53,6 @@ const useWeatherStore = create((set, get) => ({
         try {
             const params = lat && lon ? { lat, lon } : {};
             const res = await apiClient.get("/weather/details", { params });
-            // interceptor auto-flattens: res is the data object directly
             const data = res || {};
             
             set({ 
@@ -47,10 +70,19 @@ const useWeatherStore = create((set, get) => ({
         }
     },
 
+    reverseGeocode: async (lat, lon) => {
+        try {
+            const res = await apiClient.get("/weather/reverse", { params: { lat, lon } });
+            return res?.location || null;
+        } catch (err) {
+            console.error("Reverse geocoding error:", err);
+            return null;
+        }
+    },
+
     searchLocations: async (query) => {
         try {
             const res = await apiClient.get("/weather/search", { params: { q: query } });
-            // interceptor auto-flattens: res is { locations: [...] } directly
             return (res?.locations) || [];
         } catch (err) {
             console.error("Search error:", err);

@@ -201,13 +201,9 @@ export default function Navbar() {
               <Newspaper size={18} />
               <span>Market</span>
             </Link>
-            <Link to="/intelligence/mandi" className={`ribbon-link ${isActive('/intelligence/mandi') ? 'active' : ''}`}>
-              <Zap size={18} />
-              <span>Intelligence Hub</span>
-            </Link>
             <Link to="/nearby-mandis" className={`ribbon-link ${isActive('/nearby-mandis') ? 'active' : ''}`}>
               <MapPin size={18} />
-              <span>Mandi Prices</span>
+              <span>Mandi NearBy</span>
             </Link>
             <Link to="/pest-detection" className={`ribbon-link ${isActive('/pest-detection') ? 'active' : ''}`}>
               <Skull size={18} />

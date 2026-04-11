@@ -119,8 +119,18 @@ const WeatherDashboard = () => {
                     </div>
                 </div>
 
-                <div style={{position: 'relative', width: '300px'}}>
-                    <div style={{background: '#ffffff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '14px', padding: '0.8rem 1.2rem', display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 4px 10px rgba(0,0,0,0.03)'}}>
+                <div style={{position: 'relative', width: '380px', display: 'flex', gap: '12px'}}>
+                    <div style={{ 
+                        flex: 1,
+                        background: '#ffffff', 
+                        border: '1px solid rgba(0,0,0,0.08)', 
+                        borderRadius: '14px', 
+                        padding: '0.8rem 1.2rem', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '1rem', 
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.03)'
+                    }}>
                         <Search size={18} color="#475569" />
                         <input 
                             type="text" 
@@ -130,8 +140,41 @@ const WeatherDashboard = () => {
                             style={{background: 'transparent', border: 'none', color: 'inherit', width: '100%', outline: 'none', fontSize: '1rem'}}
                         />
                     </div>
+                    
+                    <button 
+                        onClick={() => {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(
+                                    async (pos) => {
+                                        const { latitude, longitude } = pos.coords;
+                                        const useWeatherStore = (await import('@features/agriculture/weather/weather.store')).default;
+                                        const store = useWeatherStore.getState();
+                                        const loc = await store.reverseGeocode(latitude, longitude);
+                                        if (loc) store.setSelectedLocation(loc);
+                                    }
+                                );
+                            }
+                        }}
+                        title="Detect My Location"
+                        style={{
+                            background: '#ffffff',
+                            border: '1px solid rgba(0,0,0,0.08)',
+                            borderRadius: '14px',
+                            width: '48px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            color: 'var(--agri-green)',
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.03)',
+                            transition: 'all 0.2s ease'
+                        }}
+                    >
+                        <MapPin size={20} />
+                    </button>
+
                     {searchResults.length > 0 && (
-                        <div className="search-results-container" style={{background: '#ffffff', top: '120%', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100, boxShadow: '0 10px 30px rgba(0,0,0,0.1)'}}>
+                        <div className="search-results-container" style={{background: '#ffffff', top: '120%', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100, boxShadow: '0 10px 30px rgba(0,0,0,0.1)', position: 'absolute', width: '320px'}}>
                             {searchResults.map((res, i) => (
                                 <div key={i} onClick={() => selectResult(res)} className="search-result-item" style={{padding: '1rem 1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)', cursor: 'pointer'}}>
                                     <span style={{color: 'inherit', fontWeight: 700}}>{res.name}</span>

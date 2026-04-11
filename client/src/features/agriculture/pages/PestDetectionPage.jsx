@@ -158,19 +158,29 @@ const PestDetectionPage = () => {
                                 width: '100%', 
                                 padding: '1rem', 
                                 marginTop: '1.5rem',
-                                background: previewUrl ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' : 'rgba(255,255,255,0.05)', 
+                                background: loading ? 'rgba(16, 185, 129, 0.5)' : (previewUrl ? 'linear-gradient(135deg, #059669 0%, #10b981 100%)' : 'rgba(255,255,255,0.05)'), 
                                 color: '#fff',
-                                fontWeight: '600',
-                                cursor: previewUrl ? 'pointer' : 'not-allowed',
+                                fontWeight: '900',
+                                cursor: (previewUrl && !loading) ? 'pointer' : 'not-allowed',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 gap: '0.8rem',
-                                border: 'none'
+                                border: 'none',
+                                letterSpacing: '1px'
                             }}
                         >
-                            {loading ? <Loader2 className="spin" size={20} /> : <FlaskConical size={20} />}
-                            Identify Disease
+                            {loading ? (
+                                <>
+                                    <Loader2 className="spin" size={20} />
+                                    ANALYZING FIELD DATA...
+                                </>
+                            ) : (
+                                <>
+                                    <FlaskConical size={20} />
+                                    IDENTIFY DISEASE
+                                </>
+                            )}
                         </button>
                     </div>
 

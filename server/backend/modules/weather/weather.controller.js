@@ -17,3 +17,11 @@ export const searchLocations = asyncHandler(async (req, res) => {
     const locations = await weatherService.searchLocations(q);
     sendResponse(res, 200, "Locations found", { locations });
 });
+
+export const reverseGeocode = asyncHandler(async (req, res) => {
+    const { lat, lon } = req.query;
+    if (!lat || !lon) return sendResponse(res, 400, "Latitude and Longitude are required");
+
+    const location = await weatherService.reverseGeocode(lat, lon);
+    sendResponse(res, 200, "Location geocoded", { location });
+});

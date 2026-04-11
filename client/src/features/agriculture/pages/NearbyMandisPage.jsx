@@ -60,11 +60,10 @@ const NearbyMandisPage = () => {
         }
     };
 
-    // 2. Fetch Mandis from Backend
     const fetchNearbyMandis = async (lat, lng) => {
         try {
-            const { data } = await apiClient.get(`/mandi/nearby?lat=${lat}&lng=${lng}&radius=30000`);
-            setMandis(data);
+            const res = await apiClient.get(`/mandi/nearby?lat=${lat}&lng=${lng}&radius=30000`);
+            setMandis(Array.isArray(res) ? res : []);
             setLoading(false);
         } catch (err) {
             setError("Failed to fetch nearby mandis.");
@@ -84,7 +83,7 @@ const NearbyMandisPage = () => {
                         <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
                             <MapPin className="agri-green" size={32} />
                         </div>
-                        APMC Discovery Hub
+                        Mandi NearBy Hub
                     </h1>
                     <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500 }}>Spatial indexing of certified agricultural marketplaces and real-time trade hubs.</p>
                 </div>
@@ -140,8 +139,10 @@ const NearbyMandisPage = () => {
                                     key={mandi.id} 
                                     onClick={() => {
                                         setActiveMarker(mandi);
-                                        map.panTo(mandi.location);
-                                        map.setZoom(15);
+                                        if (window.google && map) {
+                                            map.panTo(mandi.location);
+                                            map.setZoom(15);
+                                        }
                                     }}
                                     style={{ 
                                         padding: '1.8rem', 
@@ -211,7 +212,7 @@ const NearbyMandisPage = () => {
                             }}
                         >
                             {/* USER MARKER */}
-                            {userLocation && (
+                            {userLocation && window.google && (
                                 <Marker 
                                     position={userLocation} 
                                     icon={{
@@ -230,14 +231,14 @@ const NearbyMandisPage = () => {
                                 <Marker
                                     key={mandi.id}
                                     position={mandi.location}
-                                    icon={{
+                                    icon={window.google ? {
                                         path: window.google.maps.SymbolPath.CIRCLE,
                                         scale: 8,
                                         fillColor: "#10b981",
                                         fillOpacity: 1,
                                         strokeWeight: 2,
                                         strokeColor: "white",
-                                    }}
+                                    } : undefined}
                                     onClick={() => setActiveMarker(mandi)}
                                 />
                             ))}

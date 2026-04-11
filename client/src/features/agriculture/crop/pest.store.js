@@ -6,7 +6,7 @@ const usePestStore = create((set, get) => ({
     loading: false,
     currentDetection: null,
 
-    detect: async (formData) => {
+    detectPest: async (formData) => {
         set({ loading: true });
         try {
             const res = await apiClient.post("/crops/detect-pest", formData, {
