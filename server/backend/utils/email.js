@@ -10,7 +10,15 @@ let transporter = null;
 
 // Force IPv4 DNS lookup — Render's infrastructure blocks outbound IPv6
 const dnsLookupIPv4 = (hostname, options, callback) => {
-    dns.lookup(hostname, { ...options, family: 4 }, callback);
+    console.log(`[EMAIL-DNS] 🔍 Resolving ${hostname} (IPv4 preferred)...`);
+    dns.lookup(hostname, { ...options, family: 4 }, (err, address, family) => {
+        if (err) {
+            console.error(`[EMAIL-DNS-ERROR] ❌ Failed to resolve ${hostname}:`, err.message);
+        } else {
+            console.log(`[EMAIL-DNS-SUCCESS] ✅ Resolved ${hostname} to ${address}`);
+        }
+        callback(err, address, family);
+    });
 };
 
 const getTransporter = () => {
@@ -21,6 +29,7 @@ const getTransporter = () => {
         return null;
     }
 
+    console.log("[EMAIL] 🛠  Initializing SMTP Transporter...");
     transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 587,
@@ -33,16 +42,18 @@ const getTransporter = () => {
             rejectUnauthorized: true,
             minVersion: 'TLSv1.2'
         },
-        dnsTimeout: 10000,
-        connectionTimeout: 15000,
-        greetingTimeout: 15000,
-        socketTimeout: 20000,
+        // Increased timeouts to handle cloud environment latency (Render)
+        dnsTimeout: 15000,           // 15 seconds
+        connectionTimeout: 30000,    // 30 seconds
+        greetingTimeout: 30000,      // 30 seconds
+        socketTimeout: 30000,        // 30 seconds
         // Custom IPv4-only DNS resolver — prevents IPv6 ENETUNREACH on Render
         lookup: dnsLookupIPv4,
     });
 
     return transporter;
 };
+
 
 
 export const verifySMTP = async () => {
