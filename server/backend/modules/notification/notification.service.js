@@ -1,6 +1,6 @@
 import Notification from "./notification.model.js";
 import User from "../user/user.model.js";
-import { sendEmail } from "../../utils/email.js";
+import { sendEmail, getNotificationTemplate } from "../../utils/email.js";
 
 export const notify = async (userId, title, message, type = "INFO") => {
     const notification = await Notification.create({
@@ -14,14 +14,8 @@ export const notify = async (userId, title, message, type = "INFO") => {
     try {
         const user = await User.findByPk(userId);
         if (user && user.email) {
-            await sendEmail(user.email, title, message, `
-                <div style="font-family: sans-serif; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-                    <h2 style="color: #059669;">${title}</h2>
-                    <p>${message}</p>
-                    <hr />
-                    <p style="font-size: 11px; color: #999;">AgroMart ERP - Smart Agriculture Network</p>
-                </div>
-            `);
+            const emailHtml = getNotificationTemplate(title, message);
+            await sendEmail(user.email, title, message, emailHtml);
         }
     } catch (err) {
         console.error("Delayed Email Notification Error:", err);
