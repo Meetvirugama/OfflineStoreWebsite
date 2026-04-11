@@ -1,10 +1,17 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
 
 /**
  * Global Email Utility for AgroPlatform ERP
  * Uses SMTP (Gmail App Password) for digital communication
+ * Uses forced IPv4 DNS resolution to fix ENETUNREACH on Render (IPv6 not supported)
  */
 let transporter = null;
+
+// Force IPv4 DNS lookup — Render's infrastructure blocks outbound IPv6
+const dnsLookupIPv4 = (hostname, options, callback) => {
+    dns.lookup(hostname, { ...options, family: 4 }, callback);
+};
 
 const getTransporter = () => {
     if (transporter) return transporter;
@@ -26,14 +33,17 @@ const getTransporter = () => {
             rejectUnauthorized: true,
             minVersion: 'TLSv1.2'
         },
-        family: 4, // Force IPv4 to avoid ENETUNREACH with IPv6
-        connectionTimeout: 10000, // 10 seconds
-        greetingTimeout: 10000,
-        socketTimeout: 15000
+        dnsTimeout: 10000,
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 20000,
+        // Custom IPv4-only DNS resolver — prevents IPv6 ENETUNREACH on Render
+        lookup: dnsLookupIPv4,
     });
 
     return transporter;
 };
+
 
 export const verifySMTP = async () => {
     const transport = getTransporter();
