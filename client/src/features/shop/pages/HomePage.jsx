@@ -3,20 +3,22 @@ import { Link } from "react-router-dom";
 import { Sprout, Skull, Info, Leaf, ArrowRight, Star, Award, ShieldCheck } from "lucide-react";
 import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
+import useTranslation from "@core/i18n/useTranslation";
 import "@/styles/HomePage.css";
-
-const CATEGORY_MAP = {
-  "Fertilizers": { icon: <Sprout size={32} />, color: "#059669", desc: "Boost crop yields" },
-  "Pesticides": { icon: <Skull size={32} />, color: "#ea580c", desc: "Protect your harvest" },
-  "Medicines": { icon: <Info size={32} />, color: "#0284c7", desc: "Ensure plant health" },
-  "Seeds": { icon: <Leaf size={32} />, color: "#854d0e", desc: "High quality seeds" },
-  "default": { icon: <Leaf size={32} />, color: "#10b981", desc: "Organic agro supplies" }
-};
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
+
+  const CATEGORY_MAP = {
+    "Fertilizers": { icon: <Sprout size={32} />, color: "#059669", desc: t('home.boostCropYields') },
+    "Pesticides": { icon: <Skull size={32} />, color: "#ea580c", desc: t('home.protectHarvest') },
+    "Medicines": { icon: <Info size={32} />, color: "#0284c7", desc: t('home.ensurePlantHealth') },
+    "Seeds": { icon: <Leaf size={32} />, color: "#854d0e", desc: t('home.highQualitySeeds') },
+    "default": { icon: <Leaf size={32} />, color: "#10b981", desc: t('home.organicAgroSupplies') }
+  };
 
   useEffect(() => {
     document.title = "AgroPlatform – India's Trusted Source";
@@ -52,18 +54,18 @@ export default function HomePage() {
         <div className="hero__content container">
           <div className="hero__text">
             <span className="hero__kicker">
-              <Award size={16} /> Trusted by 50,000+ Farmers
+              <Award size={16} /> {t('home.trustedBy')}
             </span>
             <h1 className="hero__title">
-              Premium Agro Supplies<br />
-              <span className="hero__title--accent">Direct to your Farm</span>
+              {t('home.heroTitle1')}<br />
+              <span className="hero__title--accent">{t('home.heroTitle2')}</span>
             </h1>
             <p className="hero__desc">
-              Source verified fertilizers, high-yield seeds, and professional protection equipment at institutional wholesale rates.
+              {t('home.heroDesc')}
             </p>
             <div className="hero__trust-badges">
-              <div className="trust-badge"><ShieldCheck size={18} /> <span>100% Certified</span></div>
-              <div className="trust-badge"><Star size={18} /> <span>Premium Quality</span></div>
+              <div className="trust-badge"><ShieldCheck size={18} /> <span>{t('home.certified')}</span></div>
+              <div className="trust-badge"><Star size={18} /> <span>{t('home.premiumQuality')}</span></div>
             </div>
           </div>
         </div>
@@ -88,7 +90,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="home-cat-card__name">{name}</h3>
                 <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "12px" }}>{config.desc}</p>
-                <span className="home-cat-card__arrow">Explore <ArrowRight size={14} /></span>
+                <span className="home-cat-card__arrow">{t('home.explore')} <ArrowRight size={14} /></span>
               </Link>
             );
           })}
@@ -99,16 +101,16 @@ export default function HomePage() {
       <section className="home-featured">
         <div className="container">
           <div className="home-featured__header">
-            <h2>Recommended for You</h2>
+            <h2>{t('home.recommendedForYou')}</h2>
           </div>
 
           {loading ? (
             <div className="loading" style={{ padding: "40px", textAlign: "center" }}>
               <div className="spinner" style={{ margin: '0 auto' }}></div>
-              <p style={{ marginTop: '16px', color: 'var(--text-muted)' }}>Loading supplies...</p>
+              <p style={{ marginTop: '16px', color: 'var(--text-muted)' }}>{t('home.loadingSupplies')}</p>
             </div>
           ) : products.length === 0 ? (
-            <div className="empty" style={{ padding: "40px", textAlign: "center" }}>No products available at the moment.</div>
+            <div className="empty" style={{ padding: "40px", textAlign: "center" }}>{t('home.noProducts')}</div>
           ) : (
             <div className="home-featured-grid">
               {products.map((p) => (

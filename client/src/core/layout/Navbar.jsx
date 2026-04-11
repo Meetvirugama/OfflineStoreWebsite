@@ -18,7 +18,8 @@ import {
   X,
   Newspaper,
   Zap,
-  MapPin
+  MapPin,
+  Globe
 } from "lucide-react";
 
 import useAuthStore from "@features/auth/store/auth.store";
@@ -26,6 +27,7 @@ import useCartStore from "@features/checkout/store/cart.store";
 import useNotificationStore from "@features/notifications/store/notification.store";
 import api from "@core/api/client";
 import NotificationPanel from "@core/components/NotificationPanel";
+import useTranslation from "@core/i18n/useTranslation";
 import "@/styles/Navbar.css";
 
 export default function Navbar() {
@@ -34,6 +36,7 @@ export default function Navbar() {
   const { token, user, logout } = useAuthStore();
   const { setDrawerOpen, items, fetchCart } = useCartStore();
   const { notifications, fetchNotifications } = useNotificationStore();
+  const { t, lang, toggle } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -108,7 +111,7 @@ export default function Navbar() {
               <Search className="search-icon" size={20} />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder={t('nav.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
@@ -140,6 +143,17 @@ export default function Navbar() {
 
           <div className="navbar-natural__actions">
             <div className="action-pills-group">
+              {/* Language Toggle */}
+              <button
+                className="lang-toggle-btn"
+                onClick={toggle}
+                title={t('lang.switchLang')}
+                aria-label={t('lang.switchLang')}
+              >
+                <Globe size={16} className="lang-toggle-icon" />
+                <span className="lang-toggle-label">{lang === 'en' ? 'EN' : 'ગુ'}</span>
+              </button>
+
               <div className="action-btn cart-btn" onClick={() => setDrawerOpen && setDrawerOpen(true)}>
                 <ShoppingBag size={22} />
                 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
@@ -167,26 +181,26 @@ export default function Navbar() {
                           <p className="dropdown-subtitle">{user.email}</p>
                         </div>
                         <Link to="/profile" className="dropdown-item">
-                          <User size={18} /> <span>Profile</span>
+                          <User size={18} /> <span>{t('nav.profile')}</span>
                         </Link>
                         <Link to="/orders" className="dropdown-item">
-                          <Package size={18} /> <span>My Orders</span>
+                          <Package size={18} /> <span>{t('nav.myOrders')}</span>
                         </Link>
                         {user.role === "ADMIN" && (
                           <Link to="/admin" className="dropdown-item">
-                            <LayoutDashboard size={18} /> <span>Admin Panel</span>
+                            <LayoutDashboard size={18} /> <span>{t('nav.adminPanel')}</span>
                           </Link>
                         )}
                         <div className="dropdown-divider"></div>
                         <button onClick={handleLogout} className="dropdown-item text-danger">
-                          <LogOut size={18} /> <span>Sign Out</span>
+                          <LogOut size={18} /> <span>{t('nav.signOut')}</span>
                         </button>
                       </div>
                     )}
                   </div>
                 </>
               ) : (
-                <Link to="/auth/login" className="profile-auth-btn">Sign In</Link>
+                <Link to="/auth/login" className="profile-auth-btn">{t('nav.signIn')}</Link>
               )}
             </div>
           </div>
@@ -204,15 +218,15 @@ export default function Navbar() {
           <nav className="ribbon-nav">
             <Link to="/intelligence/mandi" className={`ribbon-link ${isActive('/intelligence/mandi') ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
               <Newspaper size={18} />
-              <span>Market</span>
+              <span>{t('nav.market')}</span>
             </Link>
             <Link to="/nearby-mandis" className={`ribbon-link ${isActive('/nearby-mandis') ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
               <MapPin size={18} />
-              <span>Mandi NearBy</span>
+              <span>{t('nav.mandiNearby')}</span>
             </Link>
             <Link to="/pest-detection" className={`ribbon-link ${isActive('/pest-detection') ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
               <Skull size={18} />
-              <span>Pest Alerts</span>
+              <span>{t('nav.pestAlerts')}</span>
             </Link>
           </nav>
         </div>

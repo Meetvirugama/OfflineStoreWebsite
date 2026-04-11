@@ -3,6 +3,7 @@ import { ShoppingBag, X, Plus, Minus, ArrowRight, Package, Sprout, Leaf, Skull, 
 import useCartStore from "@features/checkout/store/cart.store";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
+import useTranslation from "@core/i18n/useTranslation";
 import "@/styles/CartDrawer.css";
 
 export default function CartDrawer() {
@@ -10,10 +11,11 @@ export default function CartDrawer() {
   const { open, setDrawerOpen, items, total, discount, final, updateQty, removeItem, loading } = useCartStore();
   const { customer, token } = useAuthStore();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
 
   const handleCheckout = () => {
     if (!token) {
-      addToast("Please login to checkout", "info");
+      addToast(t('auth.pleaseLogin'), "info");
       navigate("/auth/login");
       setDrawerOpen(false);
       return;
@@ -32,14 +34,14 @@ export default function CartDrawer() {
         <div className="cart-drawer__header">
           <h2 className="cart-drawer__title">
             <ShoppingBag size={24} className="icon-gradient-emerald" style={{ marginRight: 10 }} />
-            <span style={{ color: '#fff' }}>My Cart</span>
+            <span style={{ color: '#fff' }}>{t('cart.myCart')}</span>
             {items.length > 0 && (
-              <span className="cart-drawer__count">{items.length} items</span>
+              <span className="cart-drawer__count">{items.length} {t('cart.items')}</span>
             )}
           </h2>
           <button
             onClick={() => setDrawerOpen(false)}
-            aria-label="Close cart"
+            aria-label={t('common.close')}
             className="cart-drawer__close-btn"
           >
             <X size={20} strokeWidth={3} />
@@ -55,13 +57,13 @@ export default function CartDrawer() {
                   <ShoppingBag size={80} strokeWidth={1.5} className="icon-gradient-emerald" />
                 </div>
               </div>
-              <h3>Your harvest is empty</h3>
-              <p>Ready to pick the best agro supplies?</p>
+              <h3>{t('cart.emptyTitle')}</h3>
+              <p>{t('cart.emptyDesc')}</p>
               <button
                 className="btn btn-primary"
                 onClick={() => { setDrawerOpen(false); navigate("/products"); }}
               >
-                Start Sourcing Now
+                {t('cart.startSourcing')}
               </button>
             </div>
           ) : (
@@ -98,7 +100,7 @@ export default function CartDrawer() {
                     className="cart-item__remove-btn"
                     onClick={() => removeItem(item.id)}
                     disabled={loading}
-                    title="Remove item"
+                    title={t('cart.removeItem')}
                   >
                     <Trash2 size={16} />
                   </button>
@@ -113,17 +115,17 @@ export default function CartDrawer() {
           <div className="cart-drawer__footer">
             <div className="cart-drawer__summary">
               <div className="cart-drawer__summary-row">
-                <span>Subtotal</span>
+                <span>{t('cart.subtotal')}</span>
                 <span>₹{total?.toLocaleString("en-IN")}</span>
               </div>
               {discount > 0 && (
                 <div className="cart-drawer__summary-row cart-drawer__summary-row--discount">
-                  <span>Harvest Savings</span>
+                  <span>{t('cart.harvestSavings')}</span>
                   <span>−₹{discount?.toLocaleString("en-IN")}</span>
                 </div>
               )}
               <div className="cart-drawer__summary-row cart-drawer__summary-total">
-                <span>Total Amount</span>
+                <span>{t('cart.totalAmount')}</span>
                 <span>₹{final?.toLocaleString("en-IN")}</span>
               </div>
             </div>
@@ -134,9 +136,9 @@ export default function CartDrawer() {
               disabled={loading}
               style={{ gap: '12px' }}
             >
-              {loading ? "Securing Transaction..." : (
+              {loading ? t('cart.securingTransaction') : (
                 <>
-                  Secure Checkout <ArrowRight size={20} strokeWidth={2.5} />
+                  {t('cart.secureCheckout')} <ArrowRight size={20} strokeWidth={2.5} />
                 </>
               )}
             </button>
@@ -145,7 +147,7 @@ export default function CartDrawer() {
               onClick={() => { setDrawerOpen(false); navigate("/products"); }}
               style={{ marginTop: '12px', border: 'none' }}
             >
-              Add More Items
+              {t('cart.addMoreItems')}
             </button>
           </div>
         )}

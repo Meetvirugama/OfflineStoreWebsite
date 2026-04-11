@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import useTranslation from "@core/i18n/useTranslation";
 import "@/styles/Footer.css";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="footer">
       <div className="footer__main container">
@@ -10,8 +13,7 @@ export default function Footer() {
             <span>🌿</span> AgroPlatform
           </Link>
           <p className="footer__tagline">
-            India's trusted marketplace for quality fertilizers, crop medicines,
-            and agricultural inputs — directly to your farm.
+            {t('footer.tagline')}
           </p>
           <div className="footer__social">
             <a href="https://www.linkedin.com/in/meet-patel-76a107320/" className="footer__social-link social--linkedin" target="_blank" rel="noreferrer" aria-label="LinkedIn">
@@ -36,38 +38,38 @@ export default function Footer() {
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title">Quick Links</h4>
+          <h4 className="footer__col-title">{t('footer.quickLinks')}</h4>
           <ul className="footer__links">
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/products">All Products</Link></li>
-            <li><Link to="/products?category=Fertilizers">Fertilizers</Link></li>
-            <li><Link to="/products?category=Pesticides">Pesticides</Link></li>
-            <li><Link to="/products?category=Medicines">Crop Medicines</Link></li>
+            <li><Link to="/">{t('footer.home')}</Link></li>
+            <li><Link to="/products">{t('footer.allProducts')}</Link></li>
+            <li><Link to="/products?category=Fertilizers">{t('footer.fertilizers')}</Link></li>
+            <li><Link to="/products?category=Pesticides">{t('footer.pesticides')}</Link></li>
+            <li><Link to="/products?category=Medicines">{t('footer.cropMedicines')}</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title">My Account</h4>
+          <h4 className="footer__col-title">{t('footer.myAccount')}</h4>
           <ul className="footer__links">
-            <li><Link to="/auth/login">Login</Link></li>
-            <li><Link to="/auth/register">Register</Link></li>
-            <li><Link to="/profile">My Profile</Link></li>
-            <li><Link to="/orders">My Orders</Link></li>
+            <li><Link to="/auth/login">{t('footer.login')}</Link></li>
+            <li><Link to="/auth/register">{t('footer.register')}</Link></li>
+            <li><Link to="/profile">{t('footer.myProfile')}</Link></li>
+            <li><Link to="/orders">{t('footer.myOrders')}</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title">Agri Intelligence</h4>
+          <h4 className="footer__col-title">{t('footer.agriIntelligence')}</h4>
           <ul className="footer__links">
-            <li><Link to="/farming-news">🌾 Farming News</Link></li>
-            <li><Link to="/nearby-mandis">📍 Nearby Mandis</Link></li>
-            <li><Link to="/pest-detection">🔬 Pest Detection</Link></li>
-            <li><Link to="/crop-advisory">📋 Crop Advisory</Link></li>
+            <li><Link to="/farming-news">{t('footer.farmingNews')}</Link></li>
+            <li><Link to="/nearby-mandis">{t('footer.nearbyMandis')}</Link></li>
+            <li><Link to="/pest-detection">{t('footer.pestDetection')}</Link></li>
+            <li><Link to="/crop-advisory">{t('footer.cropAdvisory')}</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title">Contact</h4>
+          <h4 className="footer__col-title">{t('footer.contact')}</h4>
           <ul className="footer__links footer__links--info">
             <li>📞 +91 6352860412</li>
             <li>📧 support@agroplatform.app</li>
@@ -79,11 +81,11 @@ export default function Footer() {
 
       <div className="footer__bottom">
         <div className="container footer__bottom-inner">
-          <p>© 2025 AgroPlatform. All rights reserved. | Made with 🌿 for Indian farmers</p>
+          <p>{t('footer.copyright')}</p>
           <div className="footer__badges">
-            <span className="footer__badge">✅ Certified Products</span>
-            <span className="footer__badge">🚜 Farm Delivery</span>
-            <span className="footer__badge">🔒 Secure Payments</span>
+            <span className="footer__badge">{t('footer.certifiedProducts')}</span>
+            <span className="footer__badge">{t('footer.farmDelivery')}</span>
+            <span className="footer__badge">{t('footer.securePayments')}</span>
           </div>
         </div>
       </div>

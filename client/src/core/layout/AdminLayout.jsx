@@ -1,63 +1,66 @@
 import { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import useAuthStore from "@features/auth/store/auth.store";
+import useTranslation from "@core/i18n/useTranslation";
+import { Globe } from "lucide-react";
 import "./adminLayout.css";
-
-const NAV_ITEMS = [
-  { 
-    to: "/admin", 
-    label: "Admin Dashboard", 
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7"></rect>
-        <rect x="14" y="3" width="7" height="7"></rect>
-        <rect x="14" y="14" width="7" height="7"></rect>
-        <rect x="3" y="14" width="7" height="7"></rect>
-      </svg>
-    ), 
-    exact: true 
-  },
-  { 
-    to: "/admin/products", 
-    label: "Products & Inventory", 
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-        <line x1="12" y1="22.08" x2="12" y2="12"></line>
-      </svg>
-    ),
-    exact: true
-  },
-  { 
-    to: "/admin/orders", 
-    label: "Customer Orders", 
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-        <line x1="8" y1="21" x2="16" y2="21"></line>
-        <line x1="12" y1="17" x2="12" y2="21"></line>
-      </svg>
-    ) 
-  },
-  { 
-    to: "/admin/suppliers", 
-    label: "Suppliers Network", 
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-        <circle cx="9" cy="7" r="4"></circle>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-      </svg>
-    ) 
-  },
-];
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const { t, lang, toggle } = useTranslation();
+
+  const NAV_ITEMS = [
+    { 
+      to: "/admin", 
+      label: t('admin.adminDashboard'), 
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      ), 
+      exact: true 
+    },
+    { 
+      to: "/admin/products", 
+      label: t('admin.productsInventory'), 
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      ),
+      exact: true
+    },
+    { 
+      to: "/admin/orders", 
+      label: t('admin.customerOrders'), 
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      ) 
+    },
+    { 
+      to: "/admin/suppliers", 
+      label: t('admin.suppliersNetwork'), 
+      icon: (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      ) 
+    },
+  ];
 
   return (
     <div className="admin-layout">
@@ -70,7 +73,7 @@ export default function AdminLayout() {
           <span className="admin-sidebar__logo">🌿</span>
           <div>
             <p className="admin-sidebar__name">AgroPlatform</p>
-            <p className="admin-sidebar__role">Administrator</p>
+            <p className="admin-sidebar__role">{t('admin.administrator')}</p>
           </div>
         </div>
 
@@ -97,7 +100,7 @@ export default function AdminLayout() {
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
-            <span>Exit to Store</span>
+            <span>{t('admin.exitToStore')}</span>
           </button>
         </div>
       </aside>
@@ -116,6 +119,17 @@ export default function AdminLayout() {
           </button>
           
           <div className="admin-topbar__right">
+            {/* Language Toggle */}
+            <button
+              className="lang-toggle-btn"
+              onClick={toggle}
+              title={t('lang.switchLang')}
+              aria-label={t('lang.switchLang')}
+            >
+              <Globe size={16} className="lang-toggle-icon" />
+              <span className="lang-toggle-label">{lang === 'en' ? 'EN' : 'ગુ'}</span>
+            </button>
+
             <button 
               className="executive-action-btn" 
               onClick={() => navigate("/")}
@@ -125,7 +139,7 @@ export default function AdminLayout() {
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
               </svg>
-              <span>Back to Store</span>
+              <span>{t('admin.backToStore')}</span>
             </button>
 
             <div 

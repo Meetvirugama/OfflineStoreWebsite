@@ -11,16 +11,12 @@
 
 ---
 
-## 👨‍💻 Project Identity & Academic Context
-- **Developer**: Meetvirugama
-- **Institution**: **DA-IICT** (Dhirubhai Ambani Institute of Information and Communication Technology)
-- **Course**: B.Tech (ICT) Project
-- **Domain**: Enterprise Resource Planning (ERP), Cloud Infrastructure, Offline-to-Digital Business Transformation.
+## 👨‍💻 Developer & Origin
+- **Developer**: **Meet Virugama**
+- **Institution**: **DA-IICT** (Dhirubhai Ambani Institute of Information and Communication Technology, Gandhinagar)
+- **Domain**: Enterprise Resource Planning (ERP), Cloud Infrastructure, Offline-to-Digital Business Transformation
 
 ---
-
-## 🎨 Aesthetic & Design Language
-The platform utilizes a **"Living Digital Forest"** and **"Sun-Drenched Forest"** gradient identity, featuring the elegant **Comfortaa** font. It emphasizes modern UI/UX with CSS-driven micro-animations (e.g., leaf sprout effects) and a centralized notification strategy, completely replacing standard browser popups with beautiful, custom-branded UI components.
 
 ## 🖼️ Visual Gallery
 
@@ -29,10 +25,6 @@ A high-performance product browsing grid crafted for an organic, smooth shopping
 | Home Page | Products Grid |
 | :--- | :--- |
 | ![Home Page](docs/screenshots/home.png) | ![Products Page](docs/screenshots/products.png) |
-
-### 🛒 Real-Time Cart & Checkout
-An interactive side-drawer cart calculating tiered volume discounts and dynamic intrastate GST in real-time.
-![Cart Drawer](docs/screenshots/cart.png)
 
 ### 🔐 Secure Multi-Role Portal
 State-of-the-art gateway providing robust Google OAuth 2.0 integration alongside secure 6-digit OTP fallbacks.
@@ -48,109 +40,100 @@ A powerful administrative dashboard displaying financial analytics, inventory he
 
 ---
 
-## 🚀 Enterprise Features & Technical Specifications
+## ✨ Features & Intelligence Modules
 
-### 💎 Financial & Checkout Engine
-- **Atomic SQL Transactions**: Ensures database integrity using Sequelize operations—all inventory deductions and ledger adjustments succeed or fail simultaneously.
-- **Smart Taxation**: Automatic calculation of **18% GST** (split into 9% CGST and 9% SGST).
-- **Automated Tiered Discounts**: Volume-based discounts automatically trigger based on cart subtotal (e.g., >₹2k: 5%, >₹5k: 10%, >₹10k: 15%).
-- **Unlimited Customer Procurement**: Credit limit restrictions have been completely eliminated to support high-volume, unrestricted bulk orders.
-- **Payment Gateway**: Integrated with **Razorpay SDK** for secure, checksum-verified digital transactions.
+AgroPlatform was built with massive functionality tailored to the agricultural landscape, pushing the boundaries of typical E-Commerce applications:
 
-### 📦 Inventory & Operations
-- **Dual-Entry Supply Chain Ledger**: Stock movements are accurately tracked via `IN`/`OUT` actions with exact references to purchases and sales.
-- **Low-Stock Sentinel**: Automated health monitoring flags inventory dipping below a **20-unit threshold** within the admin interface.
-- **PDF Invoicing**: Server-side generation of professional PDF invoices securely archived in `server/storage/invoices/`.
+### 🛍️ Storefront & e-Commerce Engine
+- **Dynamic Cart Systems**: Multi-tiered discounts matching actual wholesaler purchasing logic (e.g., automatically scales discounts past 10,000₹).
+- **GST Taxation Pipeline**: Live calculation of 18% Interstate GST seamlessly integrated into the buyer's checkout cart drawer.
+- **Secure Transaction Gateway**: Full Razorplay integration backed by strict Server-Side Order Checksum validations.
+- **Full Authentication suite**: Google OAuth2 + Native 6-Digit Email OTP Fallbacks. Stateful security leveraging JWT standards.
 
-### 📊 Data Intelligence & Dashboard
-- **Revenue Analytics**: Real-time aggregation of sales metrics and business growth visualization via **Recharts**.
-- **Customer Lifetime Value (CLV)**: Dynamic ranking models tracking cumulative spends to categorize top-tier retail partners.
-- **Custom Dashboard UI**: Advanced layout and design consistency, seamlessly integrating custom modals and toasts.
+### 🧠 Agri-Intelligence Hub
+- **Live Mandi (Market) Prices Radar**: Syncs district-level crop prices from `data.gov.in` (Agmarknet) mapping real-time supply and demand variations natively for farmers.
+- **Dynamic News Aggregator**: Constantly fetches live agricultural and government briefing streams from `newsdata.io`.
+- **Neuro-Analytics Pesticide Scanner**: Allows image uploads to query deep learning APIs to identify and map crop diseases and instantly recommend pesticides stocked within the store's inventory.
+- **Climate Telemetry Module**: Hyper-local weather forecasting relying upon the OpenWeather OneCall API triggering high-intelligence warnings (E.g. Heat stress, excessive rain pausing).
+- **Internationalization (i18n)**: Fully autonomous Gujarati (ગુજરાતી) capability. Utilizing a self-hosted custom LibreTranslate caching layer to autonomously translate external Dynamic data while keeping the database free from structural bloat.
 
-### 📩 Communications & Security
-- **Automated Email Lifecycles**: Comprehensive transactional communications powered by **Nodemailer** (Welcome emails, Order Confirmations, active Payment Reminders, and Invoice Deliveries).
-- **Authentication**: Stateless Role-Based Access Control (RBAC) via **JWT**, augmented with **Google OAuth 2.0** verification and OTP systems.
-
-### 🌱 Smart Agriculture Intelligence (Agri-Intel)
-- **Predictive Asset Velocity**: Real-time market telemetry tracking daily modal prices and volatility indices for over 12+ major crop categories.
-- **Neuro-Analytics Outlook**: AI-powered "Bullish/Bearish" market indicators with automated confidence scoring for crop assets.
-- **Adaptive Crop Profiles**: High-fidelity botanical data hub with floating magazine layouts, providing spacing geometries, photoperiod requirements, and harvesting windows.
-- **JSONB Caching Engine**: High-performance local caching of external API telemetry (GrowStuff, Agmarknet) to minimize latency and external dependency costs.
-- **Farming News & Announcements**: A specialized intelligence hub featuring automated NewsAPI integration with strict recursive filtering for 100% farming-related content.
-- **Govt Scheme Sentinel**: Automatic identification and high-priority highlighting of government policies, subsidies, and "Yojanas" to keep farmers informed of critical state support.
-- **Voice-Enabled Accessibility**: Native Web Speech API integration for text-to-speech news reading, optimized for field accessibility.
-
-
-### 🌦️ Weather Command Center
-- **Synoptic Telemetry**: Integration with **OpenWeather OneCall 3.0** for real-time temperature, 48-hour predictive trends, and 8-day outlooks.
-- **Triple-Mode Geolocation**: Precision tracking via high-resolution GPS, intelligent IP-fallback, and village-level manual search.
-- **Growth Indicators**: Specialized farming intelligence triggering alerts for Heat Stress, Irrigation pausing (Rain detection), and Pest Risk (High Humidity).
-- **Interactive Visuals**: Glassmorphism dashboard with glass-glow effects and dynamic Recharts-powered climate telemetry.
+### 📊 Enterprise Administrator Dashboard
+- **Financial Projections**: Integrated Recharts graphs comparing daily Ledger PnL, Inventory movements, and Supplier fulfillment rates.
+- **Notification Grid**: Email triggering mechanisms for low-stock warnings natively integrated with Nodemailer.
+- **Supplier & Product DB**: Unrestricted management capabilities representing a complete end-to-end PIM (Product Information Management) schema.
 
 ---
 
-## 📂 System Architecture
+## 📂 File Architecture
+
+The repository revolves around a full strict Monorepo design, dividing frontend experiences from the internal API layers:
 
 ```text
 .
-├── client/                 # Frontend Environment (React 19 + Vite + Zustand)
+├── client/                     # Frontend Environment (React 19 + Vite + Zustand)
 │   ├── src/
-│   │   ├── components/     # Reusable UI, Modals, custom notification Toasts
-│   │   ├── store/          # Zustand Global State (Auth, Cart, Async Flow)
-│   │   └── styles/         # CSS & Living Forest Themes
-├── server/                 # Backend Environment (Node.js + Express)
-│   ├── src/
-│   │   ├── controllers/    # API Request Management & Validations
-│   │   ├── services/       # Core Business Logic (Transactions, Mailers)
-│   │   ├── models/         # Relational Postgres Schemas (Sequelize)
-│   │   └── middlewares/    # Security, Validations & RBAC pipelines
-├── database/               # SQL Schemas, Configuration files, Seeders
-├── docs/                   # Visual Gallery Assets & Artifacts
-└── infrastructure/         # Deployment templates (Isolated Instances)
+│   │   ├── components/         # Reusable Custom Modal & Toast components
+│   │   ├── core/               # Routing mappings, translations Engine (i18n)
+│   │   ├── features/           # Module specific logic (Agriculture, Stores, Checkout)
+│   │   └── styles/             # 'Living Forest' aesthetic CSS tokens & animations
+├── server/                     # Backend Environment (Node.js + Express)
+│   ├── backend/
+│   │   ├── config/             # DB & Environment variables loaders
+│   │   ├── middleware/         # Security, Rate Limiting & Auth JWT extraction pipelines
+│   │   └── modules/            # Domain-driven architecture (News, Models, Carts, Ledgers)
+├── database/                   # Raw SQL configurations and static data
+└── docs/                       # Screenshots and Architectural Artifacts (E.g., API.md)
 ```
 
 ---
 
-## 🏁 Deployment & Configuration
+## 🔌 Core APIs & Routing (Documentation)
 
-Designed for scalability, this ERP employs isolated infrastructure deployment. Every new physical store receives its own dedicated, private clone of this environment.
+The Node backend executes using an Express App following highly decoupled Domain-Driven conventions. This allows for deep scalability over time.
+
+For a comprehensive layout of all API endpoints and Request/Response standards, see the dedicated documentation block:
+👉 **[API Visualization Guide & Payloads](./docs/API.md)**
+
+---
+
+## 🏁 Deployment Strategies (Independent Instance Design)
+
+This ERP operates explicitly out of independent deployments. That means for every new store utilizing this ERP software, a fresh deployment across their own isolated domains will spin up keeping Data extremely private.
 
 ### 1. Requirements
-- **Node.js**: v18+
-- **PostgreSQL**: v14+
-- **Google Cloud Console**: Active Client ID & Secret for OAuth.
-- **Razorpay**: Production/Test API credentials.
+- Node.js (v18+)
+- PostgreSQL Server Instance (Local or Supabase)
 
-### 2. Environment Variables (`server/.env`)
+### 2. Required Core `.env` Layout (server/backend)
 ```env
-# Database Configuration (Cloud Supabase)
-DATABASE_URL=your_supabase_connection_string
-
-# Security & Sessions
-JWT_SECRET=your_jwt_signing_key
-GOOGLE_CLIENT_ID=your_oauth_client_id
-GOOGLE_CLIENT_SECRET=your_oauth_client_secret
-
-# Third-Party Integrations
-RAZORPAY_KEY=your_rzp_key
-RAZORPAY_SECRET=your_rzp_secret
-EMAIL=store_instance@gmail.com
-EMAIL_PASS=your_app_password
-
-# Deployment (Vercel Integration)
-FRONTEND_URL=https://your-project.vercel.app
-VITE_API_URL=https://your-api-server.com/api
+DATABASE_URL=postgres://...
+JWT_SECRET=super_secret_signing_key_here
+FRONTEND_URL=http://localhost:5173
+EMAIL=your-store-support@gmail.com
+EMAIL_PASS=smtp_app_password
+RAZORPAY_KEY=rzp_key_id
+RAZORPAY_SECRET=rzp_secret_id
+NEWS_KEY=newsdata_io_api_token
+AGMARKNET_API_KEY=data_gov_in_api_token
 ```
 
-### 3. Execution
-```bash
-# 1. Install workspace dependencies
-npm install
+### 3. Startup Procedures
+With your database configured, the ORM Sequelize automates database synchronization schemas immediately upon the server connection starting sequence.
 
-# 2. Launch Client & Server concurrently
+**Execute Frontend:**
+```bash
+cd client
+npm install
+npm run dev
+```
+
+**Execute Backend:**
+```bash
+cd server
+npm install
 npm run dev
 ```
 
 ---
 
-*Engineered with precision for performance, aesthetics, and robust scale. Developed by **Meetvirugama** at **DA-IICT**, Gandhinagar.*
+*Architected & Maintained by **Meet Virugama** for academic and enterprise expansion workflows.*

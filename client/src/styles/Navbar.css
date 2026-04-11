@@ -394,6 +394,55 @@
 /* Hide old nav-link system */
 .nav-link, .navbar-natural__nav { display: none; }
 
+/* ═══════ LANGUAGE TOGGLE ═══════ */
+.lang-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(16, 185, 129, 0.25);
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  color: #064e3b;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  font-family: 'Inter', 'Noto Sans Gujarati', system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(6, 78, 59, 0.06);
+}
+
+.lang-toggle-btn:hover {
+  background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(6, 78, 59, 0.25);
+}
+
+.lang-toggle-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.lang-toggle-icon {
+  opacity: 0.8;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.lang-toggle-btn:hover .lang-toggle-icon {
+  transform: rotate(20deg);
+  opacity: 1;
+}
+
+.lang-toggle-label {
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
 /* ═══════ MOBILE HAMBURGER ═══════ */
 .mobile-menu-btn {
   display: none;

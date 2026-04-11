@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
 import GoogleLoginButton from "@features/auth/components/GoogleLoginButton";
+import useTranslation from "@core/i18n/useTranslation";
 import "@/styles/AuthPage.css";
 
 export default function LoginPage() {
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const location = useLocation();
   const { login, loading } = useAuthStore();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
   const [form, setForm] = useState({ email: "", password: "" });
 
   const from = location.state?.from?.pathname || "/";
@@ -36,7 +38,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await login(form.email, form.password);
-      addToast("Welcome back! 🌿", "success");
+      addToast(t('auth.welcomeBackToast'), "success");
       navigate(from, { replace: true });
     } catch (err) {
       addToast(err.message, "error");
@@ -48,18 +50,18 @@ export default function LoginPage() {
       <div className="auth-card animate-pop">
         <div className="auth-card__header">
           <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
-          <h1 className="auth-card__title">Welcome Back</h1>
-          <p className="auth-card__subtitle">Login to your farmer account</p>
+          <h1 className="auth-card__title">{t('auth.welcomeBack')}</h1>
+          <p className="auth-card__subtitle">{t('auth.loginToAccount')}</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit} id="login-form">
           <div className="form-group">
-            <label className="form-label">Email Address</label>
+            <label className="form-label">{t('auth.emailAddress')}</label>
             <input
               id="login-email"
               type="email"
               className="form-input"
-              placeholder="you@example.com"
+              placeholder={t('auth.emailPlaceholder')}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -68,12 +70,12 @@ export default function LoginPage() {
           </div>
 
           <div className="form-group" style={{ marginBottom: '10px' }}>
-            <label className="form-label">Password</label>
+            <label className="form-label">{t('auth.password')}</label>
             <input
               id="login-password"
               type="password"
               className="form-input"
-              placeholder="Enter your password"
+              placeholder={t('auth.passwordPlaceholder')}
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
@@ -81,7 +83,7 @@ export default function LoginPage() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
-            <Link to="/auth/forgot-password" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: 600 }}>Forgot Password?</Link>
+            <Link to="/auth/forgot-password" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: 600 }}>{t('auth.forgotPassword')}</Link>
           </div>
 
           <button
@@ -90,21 +92,21 @@ export default function LoginPage() {
             className="btn btn-primary btn-full btn-lg"
             disabled={loading}
           >
-            {loading ? <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> : "Login →"}
+            {loading ? <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> : t('auth.loginBtn')}
           </button>
         </form>
 
         <div className="auth-divider">
-          <span>OR</span>
+          <span>{t('auth.or')}</span>
         </div>
 
         <GoogleLoginButton />
 
         <div className="auth-card__footer">
           <p className="auth-footer-text">
-            New to AgroPlatform?{" "}
+            {t('auth.newToAgroPlatform')}{" "}
             <Link to="/auth/register" className="auth-link" id="go-register-link">
-              Create Account
+              {t('auth.createAccount')}
             </Link>
           </p>
         </div>
@@ -112,19 +114,19 @@ export default function LoginPage() {
 
       <div className="auth-side">
         <div className="auth-side__content">
-          <h2>Industrial Supply Gateway</h2>
+          <h2>{t('auth.industrialGateway')}</h2>
           <div className="auth-side__points">
             <div className="auth-side__point">
               <span className="auth-side__icon">⚙️</span>
-              <span>Direct Sourcing Infrastructure</span>
+              <span>{t('auth.directSourcing')}</span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">📦</span>
-              <span>Real-Time Inventory Control</span>
+              <span>{t('auth.realtimeInventory')}</span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">🚛</span>
-              <span>QA-Verified Logistics</span>
+              <span>{t('auth.qaLogistics')}</span>
             </div>
           </div>
         </div>

@@ -36,6 +36,11 @@ This document provides a highly detailed and accurate breakdown of the **AgroMar
 - **Lifecycle Emails:** Welcome emails, OTPs, Order Confirmations, and Payment Receipts.
 - **PDF Generation:** Server-side `invoiceService` generates professional PDF invoices stored in `server/storage/invoices/`.
 
+### 6. i18n & Dynamic Translation Engine (LibreTranslate)
+- **Zero-Bloat Ephemeral Cache:** Translates massive datasets (News & Announcements) dynamically into regional languages (e.g., Gujarati) without flooding SQL databases.
+- **Persistent Cache Protocol:** Safe storage for critical entities like Product Names to improve subsequent fetching latency to 0ms.
+- **Hook-Driven Architecture:** Entire UI localization is handled via the centralized `useDynamicTranslation` React Hook natively mapping back into Zustand state.
+
 ---
 
 ## 📂 Accurate Codebase Map (Granular)
@@ -64,8 +69,8 @@ This document provides a highly detailed and accurate breakdown of the **AgroMar
 | `config/` | `db.js` (Sequelize init), `env.js` (Validation for `.env` variables). |
 | `middlewares/` | `authMiddleware.js` (JWT guard), `roleMiddleware.js` (Permissions), `errorHandler.js` (Centralized catch). |
 | `models/` | **Sequelize Models**: Defined with precise data types (`DataTypes.FLOAT` for currency). `index.js` handles associations (HasMany, BelongsTo). |
-| `controllers/` | Request parsing and calling Service layer (e.g., `orderController.js`). |
-| `services/` | **The Core Brain**: `orderService.js` (complex transactions), `reportService.js` (raw SQL analytics). |
+| `controllers/` | Request parsing and calling Service layer (`translation.controller.js`, `orderController.js`). |
+| `services/` | **The Core Brain**: `translation.service.js` (Proxy & cache engine), `orderService.js` (complex transactions). |
 | `jobs/` | `scheduler.js` using `node-cron` for periodic inventory/payment checks. |
 | `utils/` | `emailTemplates.js` (HTML templates), `logger.js` (Winston or console-based logging). |
 
