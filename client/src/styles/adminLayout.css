@@ -158,11 +158,8 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
-  min-width: 0;
-  width: 100%;
   position: relative;
+  /* Removed aggressive overflow: hidden to prevent cutting */
 }
 
 /* Topbar: The Management Hub */
@@ -253,7 +250,6 @@
 .admin-content {
   padding: clamp(16px, 3vw, 40px);
   flex: 1;
-  overflow-x: hidden;
   max-width: 100%;
   background-image: 
     radial-gradient(circle at 2px 2px, rgba(217, 179, 86, 0.05) 1px, transparent 0);

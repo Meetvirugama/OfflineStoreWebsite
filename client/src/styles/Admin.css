@@ -11,7 +11,7 @@
   background-color: var(--admin-bg, #f3f6f4);
   color: var(--admin-slate);
   min-height: 100vh;
-  overflow-x: hidden;
+  /* Removed restrictive overflow-x: hidden */
   max-width: 100%;
 }
 
