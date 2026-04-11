@@ -103,7 +103,7 @@ const AgriAnalyticsPage = () => {
 
             {!loading && !error && (
             <>
-            <div className="stats-grid" style={{gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '2rem'}}>
+            <div className="stats-grid agri-two-col" style={{gap: '2rem'}}>
                 <div className="agri-card" style={{padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)'}}>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem'}}>
                         <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
@@ -225,7 +225,7 @@ const AgriAnalyticsPage = () => {
                 </div>
             </div>
 
-            <div className="stats-grid" style={{marginTop: '2.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem'}}>
+            <div className="stats-grid" style={{marginTop: '2.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(min(400px, 100%), 1fr))', gap: '2rem'}}>
                 {aiAnalysis && (
                     <div className="agri-card" style={{padding: '2.5rem', background: 'rgba(16, 185, 129, 0.03)', borderLeft: '6px solid var(--agri-green)', borderRadius: '32px'}}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>

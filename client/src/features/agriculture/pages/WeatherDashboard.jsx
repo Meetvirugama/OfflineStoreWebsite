@@ -105,12 +105,12 @@ const WeatherDashboard = () => {
     }
 
     return (
-        <div className="serenity-hub" style={{maxWidth: '1200px', margin: '0 auto', color: 'inherit', paddingBottom: '3rem'}}>
+        <div className="serenity-hub" style={{maxWidth: '1200px', margin: '0 auto', color: 'inherit', paddingBottom: '3rem', overflowX: 'hidden'}}>
             
             {/* 1. ELITE HEADER */}
-            <header style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem'}}>
+            <header className="weather-header" style={{marginBottom: '2rem'}}>
                 <div>
-                    <h1 style={{fontSize: '2.5rem', fontWeight: 900, margin: 0, letterSpacing: '-1.5px', color: 'inherit'}}>Meteorological Command Center</h1>
+                    <h1 style={{fontSize: 'clamp(1.4rem, 5vw, 2.5rem)', fontWeight: 900, margin: 0, letterSpacing: '-1.5px', color: 'inherit'}}>Meteorological Command Center</h1>
                     <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem'}}>
                         <div style={{width: '8px', height: '8px', borderRadius: '50%', background: 'var(--agri-green)', boxShadow: '0 0 10px var(--agri-green)'}}></div>
                         <span style={{color: '#64748b', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.5px'}}>
@@ -119,7 +119,7 @@ const WeatherDashboard = () => {
                     </div>
                 </div>
 
-                <div style={{position: 'relative', width: '380px', display: 'flex', gap: '12px'}}>
+                <div className="weather-search-bar" style={{position: 'relative'}}>
                     <div style={{ 
                         flex: 1,
                         background: '#ffffff', 
@@ -187,10 +187,10 @@ const WeatherDashboard = () => {
             </header>
 
             {/* 2. PRIMARY IMPACT (HERO) */}
-            <div style={{background: '#ffffff', borderRadius: '32px', padding: '3.5rem', border: '1px solid rgba(0,0,0,0.06)', marginBottom: '2rem', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.04)'}}>
+            <div style={{background: '#ffffff', borderRadius: '24px', padding: 'clamp(1.2rem, 4vw, 3.5rem)', border: '1px solid rgba(0,0,0,0.06)', marginBottom: '2rem', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.04)'}}>
                 <div style={{position: 'absolute', top: '-10%', right: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(5, 150, 105, 0.05) 0%, transparent 70%)', filter: 'blur(50px)'}}></div>
                 
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 1}}>
+                <div className="weather-hero-content" style={{position: 'relative', zIndex: 1}}>
                     <div>
                         <div style={{display: 'flex', alignItems: 'baseline', gap: '1.5rem'}}>
                             <span style={{fontSize: '9rem', fontWeight: 900, letterSpacing: '-5px', color: 'inherit', lineHeight: 1}}>{Math.round(currentWeather?.main?.temp || 0)}°</span>
@@ -211,8 +211,9 @@ const WeatherDashboard = () => {
                 </div>
             </div>
 
-            {/* 3. THE HORIZON (WEEKLY STRIP) */}
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1.2rem', marginBottom: '2.5rem'}}>
+            {/* 3. THE HORIZON (WEEKLY STRIP) — horizontal scroll on mobile */}
+            <div style={{overflowX: 'auto', paddingBottom: '0.5rem', marginBottom: '2.5rem'}}>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(7, minmax(90px, 1fr))', gap: '1rem', minWidth: '560px'}}>
                 {(extendedForecast || []).slice(0, 7).map((day, i) => (
                     <div key={i} style={{background: '#ffffff', borderRadius: '24px', padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid rgba(0,0,0,0.06)', transition: 'transform 0.3s ease', boxShadow: '0 4px 12px rgba(0,0,0,0.02)'}}>
                         <span style={{color: '#64748b', fontWeight: 800, fontSize: '0.8rem', marginBottom: '1rem'}}>
@@ -222,6 +223,7 @@ const WeatherDashboard = () => {
                         <span style={{fontSize: '1.6rem', fontWeight: 900, marginTop: '1.2rem', color: 'inherit'}}>{Math.round(day.temp_max)}°</span>
                     </div>
                 ))}
+              </div>
             </div>
 
             {/* 4. CLINICAL SATELLITE AREA */}
@@ -254,7 +256,7 @@ const WeatherDashboard = () => {
             </div>
 
             {/* 5. ENVIRONMENTAL DIAGNOSTICS */}
-            <div style={{display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem'}}>
+            <div className="weather-diagnostics-grid">
                 <div style={{display: 'flex', flexDirection: 'column', gap: '1.2rem'}}>
                     <div style={{background: 'rgba(15, 23, 42, 0.4)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 20px 40px rgba(0,0,0,0.3)'}}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>

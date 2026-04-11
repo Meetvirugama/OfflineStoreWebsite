@@ -229,7 +229,7 @@
   border: none;
 }
 
-/* ACTIONS SECTION: Precision Alignment */
+/* ACTIONS SECTION: Premium Pill Design */
 .navbar-natural__actions {
   display: flex;
   align-items: center;
@@ -239,13 +239,15 @@
 .action-pills-group {
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: #f8fafc;
-  padding: 6px 12px;
+  gap: 10px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);
+  padding: 8px 14px;
   border-radius: 50px;
-  border: 1px solid #e2e8f0;
+  border: 1.5px solid rgba(16, 185, 129, 0.15);
+  box-shadow: 0 4px 16px rgba(6, 78, 59, 0.06);
 }
 
+/* Cart Button — Premium Amber Glow */
 .action-btn {
   width: 44px;
   height: 44px;
@@ -253,41 +255,82 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  color: #64748b;
+  color: #064e3b;
   cursor: pointer;
-  transition: all 0.2s;
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+  border: 1.5px solid rgba(16, 185, 129, 0.2);
   position: relative;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 8px rgba(6, 78, 59, 0.08);
 }
 
 .action-btn:hover {
-  background: var(--nav-primary);
+  background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
   color: #fff;
-  border-color: var(--nav-primary);
-  transform: translateY(-2px);
+  border-color: transparent;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(6, 78, 59, 0.25);
+}
+
+.cart-btn {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #b45309;
+}
+
+.cart-btn:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+}
+
+.notif-wrapper {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #065f46;
+}
+
+.notif-wrapper:hover {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
 }
 
 .cart-badge, .notif-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
-  background-color: var(--nav-primary);
-  color: white;
+  top: -6px;
+  right: -6px;
   font-size: 10px;
-  font-weight: 800;
-  height: 18px;
-  min-width: 18px;
+  font-weight: 900;
+  height: 20px;
+  min-width: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #fff;
+  border: 2.5px solid #fff;
   padding: 0 4px;
+  animation: badgePop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-.cart-badge { background-color: #f59e0b; color: #fff; }
+.cart-badge {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: #fff;
+}
+
+.notif-badge {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+}
+
+@keyframes badgePop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
 
 /* PROFILE SECTION */
 .profile-menu {

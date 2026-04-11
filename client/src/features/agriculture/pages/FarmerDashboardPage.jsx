@@ -84,7 +84,7 @@ const FarmerDashboardPage = () => {
                 </div>
             </div>
 
-            <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
+            <div className="stats-grid farmer-two-col" style={{ gap: '2rem' }}>
                 
                 {/* LEFT COL: CROP & FINANCIAL MANAGEMENT */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>

@@ -90,9 +90,11 @@
   transform: translateY(-2px);
 }
 
-/* Scroll Utilities (Subtle cues, no locking) */
+/* Scroll Utilities */
 .agri-page {
-  padding: 2.5rem 2.5rem 5rem !important; /* Increased padding bottom for natural flow */
+  padding: clamp(16px, 3vw, 2.5rem) clamp(16px, 3vw, 2.5rem) 5rem !important;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* Premium Scrollbar Styling for scrollable containers if used */
