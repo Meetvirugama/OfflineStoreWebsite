@@ -1,139 +1,178 @@
-# 🏪 AgroPlatform: Independent Offline Store ERP System
+# 🏪 AgroPlatform (ERP System)
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 
-> **A highly scalable, production-ready ERP system designed explicitly for offline stores. Built with an independent-instance architecture, the system is engineered to be deployed individually for different physical stores, each provisioned with its own dedicated cloud infrastructure, database, and domain name.**
-
-*The current implementation showcases **AgroPlatform**, a high-end, nature-inspired instance fully customized for the agricultural supply chain and retail sector.*
-
----
-
-## 👨‍💻 Developer & Origin
-- **Developer**: **Meet Virugama**
-- **Institution**: **DA-IICT** (Dhirubhai Ambani Institute of Information and Communication Technology, Gandhinagar)
-- **Domain**: Enterprise Resource Planning (ERP), Cloud Infrastructure, Offline-to-Digital Business Transformation
+> **Developed by Meet Virugama | DA-IICT (B.Tech Project)**
+> 
+> *An independent-instance Enterprise Resource Planning (ERP) platform customized for offline agricultural retail stores.*
 
 ---
 
-## 🖼️ Visual Gallery
+## 🚀 Core Features
 
-### 🏠 Public Storefront & Product Discovery
-A high-performance product browsing grid crafted for an organic, smooth shopping experience.
-| Home Page | Products Grid |
-| :--- | :--- |
-| ![Home Page](docs/screenshots/home.png) | ![Products Page](docs/screenshots/products.png) |
+### 🔐 Security & Auth
+- [x] stateless `JWT` Authorization
+- [x] Google `OAuth 2.0` Single Sign-On
+- [x] `Nodemailer` Native 6-Digit Email OTP Fallbacks
+- [x] Role-Based Access Control (Admin/User)
 
-### 🔐 Secure Multi-Role Portal
-State-of-the-art gateway providing robust Google OAuth 2.0 integration alongside secure 6-digit OTP fallbacks.
-| Login Gateway (OAuth + OTP) | Customer Profile |
-| :--- | :--- |
-| ![Login Portal](docs/screenshots/login.png) | ![User Profile](docs/screenshots/profile.png) |
+### 🛒 E-Commerce & Checkout
+- [x] Intrastate GST auto-calculation splits (9% CGST / 9% SGST)
+- [x] High-volume Tiered Cart Discounts (5%, 10%, 15%)
+- [x] `Razorpay` payment gateway integration
+- [x] PDF Invoice auto-generation & storage
+- [x] SQL Atomic Transactions (Checkout Rollbacks)
 
-### 📊 Admin Intelligence & ERP Insights
-A powerful administrative dashboard displaying financial analytics, inventory health, and order lifecycles with pixel-perfect accuracy.
-| Analytics Dashboard | Inventory Management |
-| :--- | :--- |
-| ![Admin Dashboard](docs/screenshots/admin_dashboard.png) | ![Admin Products](docs/screenshots/admin_products.png) |
+### 🧠 Agri-Intelligence
+- [x] Local Mandi (Market) Price Radars (Live Govt. Data)
+- [x] Farming News Streams Sync Pipeline
+- [x] LibreTranslate i18n Engine (Dynamic English -> Gujarati caching via RAM)
+- [x] OpenWeather Telemetry (Heat Stress/Irrigation alerts)
+- [x] AI Pesticide Analysis (Image integration)
 
----
-
-## ✨ Features & Intelligence Modules
-
-AgroPlatform was built with massive functionality tailored to the agricultural landscape, pushing the boundaries of typical E-Commerce applications:
-
-### 🛍️ Storefront & e-Commerce Engine
-- **Dynamic Cart Systems**: Multi-tiered discounts matching actual wholesaler purchasing logic (e.g., automatically scales discounts past 10,000₹).
-- **GST Taxation Pipeline**: Live calculation of 18% Interstate GST seamlessly integrated into the buyer's checkout cart drawer.
-- **Secure Transaction Gateway**: Full Razorplay integration backed by strict Server-Side Order Checksum validations.
-- **Full Authentication suite**: Google OAuth2 + Native 6-Digit Email OTP Fallbacks. Stateful security leveraging JWT standards.
-
-### 🧠 Agri-Intelligence Hub
-- **Live Mandi (Market) Prices Radar**: Syncs district-level crop prices from `data.gov.in` (Agmarknet) mapping real-time supply and demand variations natively for farmers.
-- **Dynamic News Aggregator**: Constantly fetches live agricultural and government briefing streams from `newsdata.io`.
-- **Neuro-Analytics Pesticide Scanner**: Allows image uploads to query deep learning APIs to identify and map crop diseases and instantly recommend pesticides stocked within the store's inventory.
-- **Climate Telemetry Module**: Hyper-local weather forecasting relying upon the OpenWeather OneCall API triggering high-intelligence warnings (E.g. Heat stress, excessive rain pausing).
-- **Internationalization (i18n)**: Fully autonomous Gujarati (ગુજરાતી) capability. Utilizing a self-hosted custom LibreTranslate caching layer to autonomously translate external Dynamic data while keeping the database free from structural bloat.
-
-### 📊 Enterprise Administrator Dashboard
-- **Financial Projections**: Integrated Recharts graphs comparing daily Ledger PnL, Inventory movements, and Supplier fulfillment rates.
-- **Notification Grid**: Email triggering mechanisms for low-stock warnings natively integrated with Nodemailer.
-- **Supplier & Product DB**: Unrestricted management capabilities representing a complete end-to-end PIM (Product Information Management) schema.
+### 📊 Admin Operations
+- [x] Low-Stock automated guardrails (<20 units)
+- [x] Dual-entry Ledger tracking (Purchases/Sales entries)
+- [x] Recharts analytical dashboards (Customer LTV & PnL)
 
 ---
 
-## 📂 File Architecture
+## 📚 Topics & Architecture Domains
 
-The repository revolves around a full strict Monorepo design, dividing frontend experiences from the internal API layers:
+- **Frontend Core**: SPAs, Custom Hooks (`useDynamicTranslation`), Zustand Stores.
+- **Backend Core**: Domain-Driven Router (`modules/`), Express middleware guards.
+- **Database**: PostgreSQL Relational Schemas, Sequelize ORM (HasMany, BelongsTo).
+- **Internationalization**: Local `.json` static maps + Dynamic PostgreSQL Text Proxying.
+- **Automation**: Data synchronizations via `node-cron`.
+
+---
+
+## 📂 Full File Structure
 
 ```text
 .
-├── client/                     # Frontend Environment (React 19 + Vite + Zustand)
+├── client/                     # React 19 Frontend Environment
+│   ├── public/                 # Static PWA Assets & Icons
 │   ├── src/
-│   │   ├── components/         # Reusable Custom Modal & Toast components
-│   │   ├── core/               # Routing mappings, translations Engine (i18n)
-│   │   ├── features/           # Module specific logic (Agriculture, Stores, Checkout)
-│   │   └── styles/             # 'Living Forest' aesthetic CSS tokens & animations
-├── server/                     # Backend Environment (Node.js + Express)
+│   │   ├── components/         # Reusable Custom Components (Toasts, Modals)
+│   │   ├── core/               
+│   │   │   ├── api/            # Axios API config & interceptors
+│   │   │   └── i18n/           # English/Gujarati logic & Dynamic Cache Hooks
+│   │   ├── features/           # Module-Specific implementations
+│   │   │   ├── admin/          # Dashboard analytics UI
+│   │   │   ├── agriculture/    # News, Weather, Mandi, Crop logic
+│   │   │   ├── auth/           # Login & OTP screens
+│   │   │   └── shop/           # Catalog, Checkout cart drawer, Orders
+│   │   └── styles/             # Global CSS & specific module styling
+│   └── vite.config.js          # Next-gen bundler configuration
+│
+├── server/                     # Node/Express Backend Environment
 │   ├── backend/
-│   │   ├── config/             # DB & Environment variables loaders
-│   │   ├── middleware/         # Security, Rate Limiting & Auth JWT extraction pipelines
-│   │   └── modules/            # Domain-driven architecture (News, Models, Carts, Ledgers)
-├── database/                   # Raw SQL configurations and static data
-└── docs/                       # Screenshots and Architectural Artifacts (E.g., API.md)
+│   │   ├── config/             # Environment, DB string connections
+│   │   ├── middleware/         # Auth, Error handlers, Roles
+│   │   └── modules/            # Micro-Routers per Domain
+│   │       ├── auth/           # Login Controllers
+│   │       ├── cart/           # Basket APIs
+│   │       ├── crop/           # Advisory & Pest Detection APIs
+│   │       ├── product/        # Suppliers & Inventories
+│   │       ├── translation/    # LibreTranslate Server Proxy
+│   │       └── ...             # (Orders, Payments, Mandi, News, Weather)
+│   ├── app.js                  # Main Express Application Core
+│   └── server.js               # Application Entry & Sequelize Sync
+│
+├── database/                   # Static schema references & SQL setups
+└── docs/                       # External Architectures (API.md / project-details.md)
 ```
 
 ---
 
-## 🔌 Core APIs & Routing (Documentation)
+## 🛠 Tech Stack & Resources
 
-The Node backend executes using an Express App following highly decoupled Domain-Driven conventions. This allows for deep scalability over time.
+**Frontend Layer**
+- React 19 (`vite`)
+- Zustand (Global Data Stores)
+- React Router DOM
+- Recharts (Analytics Graphs)
+- Lucide React (Icons)
 
-For a comprehensive layout of all API endpoints and Request/Response standards, see the dedicated documentation block:
-👉 **[API Visualization Guide & Payloads](./docs/API.md)**
+**Backend Layer**
+- Node.js & Express
+- Sequelize ORM
+- PostgreSQL
+- JWT & bcryptjs
+- Nodemailer (SMTP Server)
+
+**External Intelligence APIs**
+- `NewsData.io` (Farming Announcements)
+- `data.gov.in` (Agmarknet Mandi Pricing)
+- `OpenWeather` (Synoptic Telemetry)
+- `LibreTranslate` (Open-Source Machine Translation)
 
 ---
 
-## 🏁 Deployment Strategies (Independent Instance Design)
+## 🔑 Environment Variables (`.env.example`)
 
-This ERP operates explicitly out of independent deployments. That means for every new store utilizing this ERP software, a fresh deployment across their own isolated domains will spin up keeping Data extremely private.
+To deploy instances locally, place these fake `.env` structures in your `/server/backend/` directory:
 
-### 1. Requirements
-- Node.js (v18+)
-- PostgreSQL Server Instance (Local or Supabase)
-
-### 2. Required Core `.env` Layout (server/backend)
 ```env
-DATABASE_URL=postgres://...
-JWT_SECRET=super_secret_signing_key_here
+# -----------------------------
+# DATABASE CONNECTION
+# -----------------------------
+DATABASE_URL=postgres://demo_admin:DemoSecurePass123@your-db-cluster.us-east-1.rds.amazonaws.com:5432/agromart_db
+
+# -----------------------------
+# SECURITY & AUTHENTICATION
+# -----------------------------
+JWT_SECRET=super_secret_local_dev_token_x9v2
+GOOGLE_CLIENT_ID=1234567890-fakegoogleid.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-fake_google_client_secret_xyz
+
+# -----------------------------
+# EMAIL SMTP CONFIGURATION
+# -----------------------------
+EMAIL=support_agro@fake-company.com
+EMAIL_PASS=smtp_app_password_abcd
+
+# -----------------------------
+# PAYMENT GATEWAY
+# -----------------------------
+RAZORPAY_KEY=rzp_test_fake123abc
+RAZORPAY_SECRET=rzp_secret_fakeXYZ789
+
+# -----------------------------
+# EXTERNAL INTELLIGENCE APIs
+# -----------------------------
+NEWS_KEY=pub_fake_news_api_token_001
+AGMARKNET_API_KEY=fake_data_gov_in_token_xyz
+LIBRETRANSLATE_URL=https://libretranslate.de/translate
+
+# -----------------------------
+# FRONTEND MAPPING
+# -----------------------------
 FRONTEND_URL=http://localhost:5173
-EMAIL=your-store-support@gmail.com
-EMAIL_PASS=smtp_app_password
-RAZORPAY_KEY=rzp_key_id
-RAZORPAY_SECRET=rzp_secret_id
-NEWS_KEY=newsdata_io_api_token
-AGMARKNET_API_KEY=data_gov_in_api_token
+PORT=5000
+NODE_ENV=development
 ```
 
-### 3. Startup Procedures
-With your database configured, the ORM Sequelize automates database synchronization schemas immediately upon the server connection starting sequence.
+---
 
-**Execute Frontend:**
+## 🏁 Setup Instructions
+
 ```bash
+# 1. Clone the repository locally
+git clone https://github.com/Meetvirugama/OfflineStoreWebsite.git
+cd OfflineStoreWebsite
+
+# 2. Start the Frontend Application
 cd client
 npm install
 npm run dev
-```
 
-**Execute Backend:**
-```bash
-cd server
+# 3. Start the Backend API Server (In a new terminal)
+cd ../server
 npm install
 npm run dev
 ```
-
----
-
-*Architected & Maintained by **Meet Virugama** for academic and enterprise expansion workflows.*
