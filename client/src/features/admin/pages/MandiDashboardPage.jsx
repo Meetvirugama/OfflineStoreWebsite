@@ -38,19 +38,27 @@ export default function MandiDashboardPage() {
         }
     }, [selectedCrop, days]);
 
+    const TIMELINE_OPTIONS = [
+        { label: "7 Days", value: 7 },
+        { label: "15 Days", value: 15 },
+        { label: "30 Days", value: 30 },
+        { label: "90 Days", value: 90 },
+        { label: "All Time (1 Year)", value: 365 }
+    ];
+
     return (
         <div className="admin-page">
             <div className="admin-actions-bar">
                 <div>
-                    <h2>Regional Market Intelligence</h2>
-                    <p style={{ color: '#64748b', fontSize: '14px' }}>Data-driven insights for optimized harvest liquidation.</p>
+                    <h2 style={{ fontSize: '24px', fontWeight: '900', color: '#0f172a' }}>Regional Market Intelligence</h2>
+                    <p style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Live spatial tracking of commodity price velocity across Gujarat.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '12px' }}>
                     <select 
                         value={selectedCrop} 
                         onChange={(e) => setSelectedCrop(e.target.value)}
                         className="modal-form-input"
-                        style={{ padding: '8px 16px', borderRadius: '50px' }}
+                        style={{ padding: '10px 20px', borderRadius: '12px', background: '#fff', border: '1.5px solid #e2e8f0', fontWeight: '700' }}
                     >
                         {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}>{c}</option>)}
                     </select>
@@ -59,84 +67,97 @@ export default function MandiDashboardPage() {
 
             {/* Stats Cards */}
             <div className="summary-grid" style={{ 
-                display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', 
-                gap: '20px', marginBottom: '30px' 
+                display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', 
+                gap: '24px', marginBottom: '32px' 
             }}>
-                <div className="stat-card" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', padding: '24px', borderRadius: '16px' }}>
-                    <p style={{ opacity: 0.8, fontSize: '13px' }}>Total Active Mandis</p>
-                    <h3 style={{ fontSize: '28px', margin: '8px 0', color: 'white' }}>{summary?.totalMandis || 0}</h3>
-                    <p style={{ fontSize: '11px' }}>Gujarat State Network</p>
+                <div className="stat-card" style={{ background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', color: 'white', padding: '28px', borderRadius: '24px', boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' }}>
+                    <p style={{ opacity: 0.9, fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Trade Nodes</p>
+                    <h3 style={{ fontSize: '36px', margin: '12px 0', color: 'white', fontWeight: '900' }}>{summary?.totalMandis || 0}</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '700' }}>Gujarat Integrated Network</span>
+                    </div>
                 </div>
-                <div className="stat-card" style={{ background: '#fff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                    <p style={{ color: '#64748b', fontSize: '13px' }}>Peak Price ({selectedCrop})</p>
-                    <h3 style={{ fontSize: '28px', margin: '8px 0' }}>₹{bestMandi?.modal_price || 0}</h3>
-                    <p style={{ fontSize: '11px', color: '#059669' }}>At {bestMandi?.market || 'N/A'}</p>
+                <div className="stat-card" style={{ background: '#fff', padding: '28px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                    <p style={{ color: '#64748b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Peak Price Index ({selectedCrop})</p>
+                    <h3 style={{ fontSize: '36px', margin: '12px 0', fontWeight: '900', color: '#0f172a' }}>₹{bestMandi?.modal_price || 0}</h3>
+                    <p style={{ fontSize: '12px', color: '#059669', fontWeight: '700' }}>Benchmark at {bestMandi?.market || 'Primary Terminal'}</p>
                 </div>
-                <div className="stat-card" style={{ background: '#fff', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-                    <p style={{ color: '#64748b', fontSize: '13px' }}>Overall Max Rate</p>
-                    <h3 style={{ fontSize: '28px', margin: '8px 0' }}>₹{summary?.highestPrice || 0}</h3>
-                    <p style={{ fontSize: '11px', color: '#10b981' }}>Across all commodities</p>
+                <div className="stat-card" style={{ background: '#fff', padding: '28px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                    <p style={{ color: '#64748b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Market Ceiling (Highest)</p>
+                    <h3 style={{ fontSize: '36px', margin: '12px 0', fontWeight: '900', color: '#0f172a' }}>₹{summary?.highestPrice || 0}</h3>
+                    <p style={{ fontSize: '12px', color: '#10b981', fontWeight: '700' }}>Regional High Intensity Point</p>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '32px' }}>
                 {/* Crop Trend Chart */}
-                <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <h4 style={{ margin: 0 }}>Price Trend: {selectedCrop}</h4>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: '#f8fafc', padding: '6px 10px', borderRadius: '8px', border: '1px solid #f1f5f9' }}>
-                            <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Timeline:</span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <input 
-                                    type="number" 
-                                    value={days} 
-                                    onChange={(e) => setDays(Math.max(1, parseInt(e.target.value) || 0))}
-                                    style={{ 
-                                        width: '45px', 
-                                        border: '1px solid #e2e8f0', 
-                                        borderRadius: '4px', 
-                                        padding: '2px 4px', 
-                                        fontSize: '12px', 
-                                        fontWeight: '800',
-                                        textAlign: 'center',
-                                        outline: 'none',
-                                        color: '#0f172a'
-                                    }}
-                                />
-                                <span style={{ fontSize: '10px', fontWeight: '700', color: '#94a3b8' }}>D</span>
-                            </div>
+                <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                        <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>Historical Price Radar: {selectedCrop}</h4>
+                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', background: '#f8fafc', padding: '8px 16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                            <span style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' }}>Time Window:</span>
+                            <select 
+                                value={days}
+                                onChange={(e) => setDays(parseInt(e.target.value))}
+                                style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', fontWeight: '800', color: '#0f172a', cursor: 'pointer' }}
+                            >
+                                {TIMELINE_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                            </select>
                         </div>
                     </div>
-                    <div style={{ height: '300px' }}>
+                    <div style={{ height: '320px' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={cropTrends}>
                                 <defs>
                                     <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.15}/>
                                         <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="date" tick={{fontSize: 10}} tickFormatter={(v) => v.split('-').slice(1).join('/')} />
-                                <YAxis tick={{fontSize: 10}} domain={['auto', 'auto']} />
-                                <Tooltip />
-                                <Area type="monotone" dataKey="modal" stroke="#10b981" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={2} />
+                                <XAxis 
+                                    dataKey="date" 
+                                    tick={{fontSize: 11, fontWeight: 600, fill: '#64748b'}} 
+                                    tickFormatter={(v) => v.split('-').slice(1).join('/')}
+                                    axisLine={false}
+                                    tickLine={false}
+                                />
+                                <YAxis 
+                                    tick={{fontSize: 11, fontWeight: 600, fill: '#64748b'}} 
+                                    domain={['auto', 'auto']}
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tickFormatter={(v) => `₹${v}`}
+                                />
+                                <Tooltip 
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '12px' }}
+                                />
+                                <Area type="monotone" dataKey="modal" stroke="#10b981" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={3} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
                 {/* District Comparison Chart */}
-                <div style={{ background: '#fff', padding: '24px', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-                    <h4 style={{ marginBottom: '20px' }}>District Comparison (Avg Price)</h4>
-                    <div style={{ height: '300px' }}>
+                <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                    <h4 style={{ marginBottom: '32px', fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>District Intensity Map (Avg)</h4>
+                    <div style={{ height: '320px' }}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={districtTrends.slice(0, 8)}>
+                            <BarChart data={districtTrends.slice(0, 10)}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="district" tick={{fontSize: 10}} />
-                                <YAxis tick={{fontSize: 10}} />
-                                <Tooltip cursor={{fill: '#f8fafc'}} />
-                                <Bar dataKey="avg_price" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={30} />
+                                <XAxis 
+                                    dataKey="district" 
+                                    tick={{fontSize: 10, fontWeight: 600, fill: '#64748b'}} 
+                                    axisLine={false}
+                                    tickLine={false}
+                                />
+                                <YAxis 
+                                    tick={{fontSize: 11, fontWeight: 600, fill: '#64748b'}}
+                                    axisLine={false}
+                                    tickLine={false}
+                                />
+                                <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                                <Bar dataKey="avg_price" name="Avg Modal Price" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={24} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

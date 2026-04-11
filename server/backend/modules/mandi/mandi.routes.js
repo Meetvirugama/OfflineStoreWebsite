@@ -9,6 +9,7 @@ router.get("/prices", mandiController.getPrices);
 router.get("/trends", mandiController.getTrends);
 router.get("/summary", mandiController.getSummary);
 router.get("/best-mandi", mandiController.getBestMandi);
+router.get("/comparison", mandiController.getDistrictComparison);
 router.get("/trends/multi", mandiController.getMultiTrends);
 
 export default router;

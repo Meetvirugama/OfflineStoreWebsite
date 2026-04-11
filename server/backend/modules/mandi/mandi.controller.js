@@ -19,9 +19,20 @@ export const search = asyncHandler(async (req, res) => {
 });
 
 export const getPrices = asyncHandler(async (req, res) => {
-    const { state, district, crop } = req.query;
-    const prices = await mandiService.getLiveMandiPrices({ state, district, crop });
-    sendResponse(res, 200, `Live prices fetched successfully`, prices);
+    const { state, district, crop, date, page, limit } = req.query;
+    const data = await mandiService.getLiveMandiPrices({ 
+        state, district, crop, date, 
+        page: parseInt(page) || 1, 
+        limit: parseInt(limit) || 20 
+    });
+    sendResponse(res, 200, `Prices fetched successfully`, data);
+});
+
+export const getDistrictComparison = asyncHandler(async (req, res) => {
+    const { crop, state } = req.query;
+    if (!crop) return sendResponse(res, 400, "Crop is required");
+    const data = await mandiService.getDistrictComparison(crop, state || "Gujarat");
+    sendResponse(res, 200, "District comparisons fetched successfully", data);
 });
 
 export const getTrends = asyncHandler(async (req, res) => {

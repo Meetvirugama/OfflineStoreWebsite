@@ -208,9 +208,9 @@ export default function MandiPricesPage() {
             {/* Price Feed Section */}
             <div className="admin-table-filters" style={{ 
                 background: '#fff', 
-                padding: '16px 24px', 
-                borderRadius: '16px', 
-                marginBottom: '16px',
+                padding: '20px 24px', 
+                borderRadius: '20px', 
+                marginBottom: '20px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '20px',
@@ -219,18 +219,42 @@ export default function MandiPricesPage() {
                 boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
             }}>
                 <div style={{ flex: 1, minWidth: '180px' }}>
-                    <select name="commodity" value={filters.commodity} onChange={handleFilterChange} className="modal-form-input" style={{ width: '100%', padding: '8px', borderRadius: '10px' }}>
-                        <option value="">All Crops</option>
+                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Search Crop</label>
+                    <select name="commodity" value={filters.commodity} onChange={handleFilterChange} className="modal-form-input" style={{ width: '100%', padding: '10px', borderRadius: '12px' }}>
+                        <option value="">All Commodities</option>
                         {COMMON_CROPS.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                 </div>
                 <div style={{ flex: 1, minWidth: '180px' }}>
-                    <select name="district" value={filters.district} onChange={handleFilterChange} className="modal-form-input" style={{ width: '100%', padding: '8px', borderRadius: '10px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Market District</label>
+                    <select name="district" value={filters.district} onChange={handleFilterChange} className="modal-form-input" style={{ width: '100%', padding: '10px', borderRadius: '12px' }}>
                         <option value="">All Districts</option>
                         {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
                     </select>
                 </div>
-                <button className="btn-elite primary" onClick={fetchPrices}>Refresh</button>
+                <div style={{ flex: 1, minWidth: '180px' }}>
+                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Arrival Date</label>
+                    <input 
+                        type="date" 
+                        name="date" 
+                        value={filters.date} 
+                        onChange={handleFilterChange} 
+                        className="modal-form-input" 
+                        style={{ width: '100%', padding: '9px', borderRadius: '12px' }}
+                    />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                    <button 
+                        className="btn-elite primary" 
+                        style={{ padding: '10px 24px', borderRadius: '12px' }}
+                        onClick={() => {
+                            setPage(1);
+                            fetchPrices();
+                        }}
+                    >
+                        Sync Data
+                    </button>
+                </div>
             </div>
 
             {loading ? (
@@ -273,20 +297,43 @@ export default function MandiPricesPage() {
                         </tbody>
                     </table>
 
-                    {/* Pagination */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
-                        <p style={{ fontSize: '13px', color: '#64748b' }}>Showing {prices.length} of {totalCount} records</p>
-                        <div style={{ display: 'flex', gap: '8px' }}>
+                    {/* Page Navigation */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px', padding: '20px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                        <p style={{ fontSize: '13px', color: '#64748b', fontWeight: '600' }}>
+                            Showing page <span style={{ color: '#0f172a', fontWeight: '800' }}>{page}</span> 
+                            {totalCount > 0 && <span> — Results <span style={{ color: '#0f172a', fontWeight: '800' }}>{((page-1)*20)+1} to {Math.min(page*20, totalCount)}</span> of <span style={{ color: '#0f172a', fontWeight: '800' }}>{totalCount}</span></span>}
+                        </p>
+                        <div style={{ display: 'flex', gap: '12px' }}>
                             <button 
                                 className="t-btn view" 
+                                style={{ 
+                                    padding: '8px 16px', borderRadius: '8px', background: page === 1 ? '#f1f5f9' : '#fff', 
+                                    border: '1px solid #e2e8f0', color: page === 1 ? '#94a3b8' : '#0f172a', fontWeight: '700',
+                                    cursor: page === 1 ? 'not-allowed' : 'pointer'
+                                }}
                                 disabled={page === 1}
-                                onClick={() => setPage(page - 1)}
-                            >Previous</button>
+                                onClick={() => {
+                                    setPage(page - 1);
+                                    window.scrollTo({ top: 400, behavior: 'smooth' });
+                                }}
+                            >
+                                ← Previous Page
+                            </button>
                             <button 
                                 className="t-btn view" 
+                                style={{ 
+                                    padding: '8px 16px', borderRadius: '8px', background: prices.length < 20 ? '#f1f5f9' : '#fff', 
+                                    border: '1px solid #e2e8f0', color: prices.length < 20 ? '#94a3b8' : '#0f172a', fontWeight: '700',
+                                    cursor: prices.length < 20 ? 'not-allowed' : 'pointer'
+                                }}
                                 disabled={prices.length < 20}
-                                onClick={() => setPage(page + 1)}
-                            >Next</button>
+                                onClick={() => {
+                                    setPage(page + 1);
+                                    window.scrollTo({ top: 400, behavior: 'smooth' });
+                                }}
+                            >
+                                Next Page →
+                            </button>
                         </div>
                     </div>
                 </div>

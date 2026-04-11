@@ -8,6 +8,7 @@ const useMandiStore = create((set, get) => ({
         state: "Gujarat",
         district: "",
         commodity: "",
+        date: "",
     },
     summary: null,
     cropTrends: [],
@@ -26,11 +27,16 @@ const useMandiStore = create((set, get) => ({
     fetchPrices: async () => {
         set({ loading: true });
         try {
-            const { state, district, commodity } = get().filters;
+            const { state, district, commodity, date } = get().filters;
+            const page = get().page;
             const res = await apiClient.get("/mandi/prices", { 
-                params: { state, district, crop: commodity } 
+                params: { state, district, crop: commodity, date, page, limit: 20 } 
             });
-            set({ prices: Array.isArray(res) ? res : [], loading: false });
+            set({ 
+                prices: Array.isArray(res.records) ? res.records : [], 
+                totalCount: res.totalCount || 0,
+                loading: false 
+            });
         } catch (err) {
             set({ loading: false });
         }
@@ -80,24 +86,8 @@ const useMandiStore = create((set, get) => ({
     fetchDistrictTrends: async (crop) => {
         try {
             const state = get().filters.state;
-            // Reusing prices logic to get current district comparisons
-            const res = await apiClient.get("/mandi/prices", { params: { crop, state } });
-            const data = Array.isArray(res) ? res : [];
-            
-            // Group by district
-            const districtMap = {};
-            data.forEach(r => {
-                if (!districtMap[r.district]) districtMap[r.district] = { sum: 0, count: 0 };
-                districtMap[r.district].sum += parseFloat(r.modal_price) || 0;
-                districtMap[r.district].count += 1;
-            });
-
-            const trends = Object.entries(districtMap).map(([district, stats]) => ({
-                district,
-                avg_price: Math.round(stats.sum / stats.count)
-            }));
-
-            set({ districtTrends: trends });
+            const res = await apiClient.get("/mandi/comparison", { params: { crop, state } });
+            set({ districtTrends: Array.isArray(res) ? res : [] });
         } catch (err) {
             console.error("Fetch district trends error:", err);
         }

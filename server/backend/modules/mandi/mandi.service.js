@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Op } from "sequelize";
 import MandiPrice from "./mandi.model.js";
+import sequelize from "../../config/db.js";
 import { ENV } from "../../config/env.js";
 
 /**
@@ -56,37 +57,59 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
  * Fetch Live Mandi Prices from data.gov.in and sync to DB
  */
 export const getLiveMandiPrices = async (filters = {}) => {
-    const { state, district, crop } = filters;
+    const { state, district, crop, date, page = 1, limit = 20 } = filters;
     const API_KEY = ENV.DATA_GOV_KEY;
     const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
 
-    if (!API_KEY) {
-        throw new Error("DATA_GOV_API_KEY missing. Cannot fetch live prices.");
-    }
+    const offset = (page - 1) * limit;
 
     try {
-        const params = {
-            "api-key": API_KEY,
-            format: "json",
-            limit: 200
-        };
+        // Query local database first
+        const whereClause = {};
+        if (state) whereClause.state = state;
+        if (district) whereClause.district = district;
+        if (crop) whereClause.commodity = crop;
+        if (date) whereClause.arrival_date = date;
 
-        if (state) params["filters[state]"] = state;
-        if (district) params["filters[district]"] = district;
-        if (crop) params["filters[commodity]"] = crop;
+        const { rows, count } = await MandiPrice.findAndCountAll({
+            where: whereClause,
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            order: [['arrival_date', 'DESC']]
+        });
 
-        const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, { params });
-        const records = response.data.records || [];
+        // If no data, try fetching from API
+        if (rows.length === 0 && API_KEY) {
+            const params = {
+                "api-key": API_KEY,
+                format: "json",
+                limit: 200
+            };
 
-        // ASYNC SHADOW SYNC: Don't await this to keep the response fast
-        if (records.length > 0) {
-            syncPricesToDb(records).catch(err => console.error("Sync Error:", err));
+            if (state) params["filters[state]"] = state;
+            if (district) params["filters[district]"] = district;
+            if (crop) params["filters[commodity]"] = crop;
+
+            const response = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, { params });
+            const records = response.data.records || [];
+
+            if (records.length > 0) {
+                await syncPricesToDb(records);
+                // Re-query for accurate data
+                const refreshed = await MandiPrice.findAndCountAll({
+                    where: whereClause,
+                    limit: parseInt(limit),
+                    offset: parseInt(offset),
+                    order: [['arrival_date', 'DESC']]
+                });
+                return { records: refreshed.rows, totalCount: refreshed.count };
+            }
         }
 
-        return records;
+        return { records: rows, totalCount: count };
     } catch (err) {
-        console.error("Data.gov.in API Error:", err.message);
-        throw new Error("Failed to fetch live mandi prices from API");
+        console.error("Mandi API/DB Error:", err.message);
+        throw new Error("Failed to fetch mandi prices");
     }
 };
 
@@ -251,6 +274,36 @@ export const getMultiCropComparison = async (crops = [], days = 30, district = n
             .sort((a, b) => new Date(a.date) - new Date(b.date));
     } catch (err) {
         console.error("MultiCrop Error:", err.message);
+        return [];
+    }
+};
+
+/**
+ * Optimized District Price Comparison
+ */
+export const getDistrictComparison = async (crop, state = "Gujarat") => {
+    try {
+        const results = await MandiPrice.findAll({
+            attributes: [
+                'district',
+                [sequelize.fn('AVG', sequelize.col('modal_price')), 'avg_price'],
+                [sequelize.fn('MAX', sequelize.col('max_price')), 'peak_price']
+            ],
+            where: {
+                commodity: crop,
+                state: state
+            },
+            group: ['district'],
+            order: [[sequelize.fn('AVG', sequelize.col('modal_price')), 'DESC']]
+        });
+
+        return results.map(r => ({
+            district: r.district,
+            avg_price: Math.round(r.get('avg_price')),
+            peak_price: r.get('peak_price')
+        }));
+    } catch (err) {
+        console.error("District Comparison Error:", err.message);
         return [];
     }
 };
