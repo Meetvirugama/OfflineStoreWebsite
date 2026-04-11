@@ -83,7 +83,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!token) {
-      addToast("Please login to add items to cart", "info");
+      addToast(<DynText text="Please login to add items to cart" />, "info");
       navigate("/auth/login");
       return;
     }
@@ -91,7 +91,7 @@ export default function ProductDetailPage() {
     setAdding(true);
     try {
       await addToCart(customer.id, product.id, qty);
-      addToast(`${product.name} added to cart!`, "success");
+      addToast(<><DynText text={product.name} /> <DynText text="added to cart!" /></>, "success");
     } catch (err) {
       addToast(err.message, "error");
     } finally {
@@ -101,7 +101,7 @@ export default function ProductDetailPage() {
 
   const handleBuyNow = async () => {
     if (!token || !customer) {
-      addToast("Please login to proceed with Buy Now", "info");
+      addToast(<DynText text="Please login to proceed with Buy Now" />, "info");
       // Use state to remember where to return
       navigate("/auth/login", { state: { from: { pathname: window.location.pathname } } });
       return;
@@ -170,8 +170,8 @@ export default function ProductDetailPage() {
           <h1 className="product-detail__name">{product.name}</h1>
 
           <div className="product-detail__meta">
-            {product.category && <span className="tag">{product.category}</span>}
-            {product.unit && <span className="tag">per {product.unit}</span>}
+            {product.category && <span className="tag"><DynText text={product.category} /></span>}
+            {product.unit && <span className="tag">per <DynText text={product.unit} /></span>}
           </div>
 
           {/* PRICING */}
@@ -204,15 +204,15 @@ export default function ProductDetailPage() {
             <table className="product-detail__table">
               <tbody>
                 {product.batch_number && (
-                  <tr><td>Batch No.</td><td>{product.batch_number}</td></tr>
+                  <tr><td><DynText text="Batch No." /></td><td>{product.batch_number}</td></tr>
                 )}
                 {product.expiry_date && (
-                  <tr><td>Expiry Date</td><td>{new Date(product.expiry_date).toLocaleDateString("en-IN")}</td></tr>
+                  <tr><td><DynText text="Expiry Date" /></td><td>{new Date(product.expiry_date).toLocaleDateString("en-IN")}</td></tr>
                 )}
-                {product.category && <tr><td>Category</td><td>{product.category}</td></tr>}
-                {product.brand && <tr><td>Brand</td><td>{product.brand}</td></tr>}
-                {product.unit && <tr><td>Unit</td><td>{product.unit}</td></tr>}
-                {product.Supplier?.name && <tr><td>Supplier</td><td>{product.Supplier.name}</td></tr>}
+                {product.category && <tr><td><DynText text="Category" /></td><td><DynText text={product.category} /></td></tr>}
+                {product.brand && <tr><td><DynText text="Brand" /></td><td><DynText text={product.brand} /></td></tr>}
+                {product.unit && <tr><td><DynText text="Unit" /></td><td><DynText text={product.unit} /></td></tr>}
+                {product.Supplier?.name && <tr><td><DynText text="Supplier" /></td><td><DynText text={product.Supplier.name} /></td></tr>}
               </tbody>
             </table>
           </div>

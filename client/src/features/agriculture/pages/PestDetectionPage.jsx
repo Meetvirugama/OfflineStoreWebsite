@@ -107,7 +107,7 @@ const PestDetectionPage = () => {
                                 className="agri-card"
                                 style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', borderRadius: '0.6rem', color: '#1e293b', border: '1px solid rgba(0,0,0,0.08)' }}
                             >
-                                {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}><DynText text={c} /></option>)}
+                                {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}><DynText text={c.toUpperCase()} /></option>)}
                             </select>
                         </div>
 
@@ -188,7 +188,7 @@ const PestDetectionPage = () => {
                     {error && (
                         <div className="agri-card" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '1rem', display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
                             <AlertCircle size={20} />
-                            <span style={{ fontSize: '0.9rem' }}>{error}</span>
+                            <span style={{ fontSize: '0.9rem' }}><DynText text={error} /></span>
                         </div>
                     )}
                 </div>
@@ -222,7 +222,7 @@ const PestDetectionPage = () => {
                                         }}></div>
                                         <div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
-                                                <h4 style={{ fontSize: '1rem', margin: 0 }}>{h.disease_name}</h4>
+                                                <h4 style={{ fontSize: '1rem', margin: 0 }}><DynText text={h.disease_name} /></h4>
                                                 <span style={{ 
                                                     fontSize: '0.7rem', 
                                                     padding: '0.2rem 0.6rem', 

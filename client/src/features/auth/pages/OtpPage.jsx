@@ -60,7 +60,7 @@ export default function OtpPage() {
     try {
       setLoading(true);
       await resendOtp(email);
-      addToast("A new OTP has been sent to your email! 📧", "success");
+      addToast(<DynText text="A new OTP has been sent to your email! 📧" />, "success");
       setResendTimer(60);
     } catch (err) {
       addToast(err.message, "error");
@@ -73,12 +73,12 @@ export default function OtpPage() {
     e.preventDefault();
     const code = otp.join("");
     if (code.length < 6) {
-      addToast("Please enter all 6 digits", "error");
+      addToast(<DynText text="Please enter all 6 digits" />, "error");
       return;
     }
     try {
       await verifyOtp(email, code);
-      addToast("Email verified successfully! 🎉 Please login.", "success");
+      addToast(<DynText text="Email verified successfully! 🎉 Please login." />, "success");
       navigate("/auth/login");
     } catch (err) {
       addToast(err.message, "error");

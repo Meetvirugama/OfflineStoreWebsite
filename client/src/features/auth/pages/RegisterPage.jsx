@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@features/auth/store/auth.store";
 import GoogleLoginButton from "@features/auth/components/GoogleLoginButton";
+import useToastStore from "@core/hooks/useToast";
 import DynText from '@core/i18n/DynText';
 import "@/styles/AuthPage.css";
 
@@ -9,6 +10,7 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const { register, loading } = useAuthStore();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -20,19 +22,19 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
-      addToast("Passwords do not match", "error");
+      addToast(<DynText text="Passwords do not match" />, "error");
       return;
     }
     if (form.password.length < 6) {
-      addToast("Password must be at least 6 characters", "error");
+      addToast(<DynText text="Password must be at least 6 characters" />, "error");
       return;
     }
     try {
       await register({ name: form.name, email: form.email, mobile: form.mobile, password: form.password });
-      addToast("OTP sent to your email! 📧", "success");
+      addToast(<DynText text="OTP sent to your email! 🔐" />, "success");
       navigate("/auth/verify-otp", { state: { email: form.email } });
     } catch (err) {
-      addToast(err.message, "error");
+      addToast(<DynText text="Please enter all 6 digits" />, "error");
     }
   };
 
@@ -53,7 +55,7 @@ export default function RegisterPage() {
                 id="reg-name"
                 type="text"
                 className="form-input"
-                placeholder="Your full name"
+                placeholder={t('auth.namePlaceholder') || "Your full name"}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
@@ -66,7 +68,7 @@ export default function RegisterPage() {
                 id="reg-mobile"
                 type="tel"
                 className="form-input"
-                placeholder="10-digit mobile number"
+                placeholder={t('auth.mobilePlaceholder') || "10-digit mobile number"}
                 value={form.mobile}
                 onChange={(e) => setForm({ ...form, mobile: e.target.value })}
                 required
@@ -80,7 +82,7 @@ export default function RegisterPage() {
               id="reg-email"
               type="email"
               className="form-input"
-              placeholder="you@example.com"
+              placeholder={t('auth.emailPlaceholder') || "you@example.com"}
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -94,7 +96,7 @@ export default function RegisterPage() {
                 id="reg-password"
                 type="password"
                 className="form-input"
-                placeholder="Min. 6 characters"
+                placeholder={t('auth.passwordPlaceholder') || "Min. 6 characters"}
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 required
@@ -106,7 +108,7 @@ export default function RegisterPage() {
                 id="reg-confirm"
                 type="password"
                 className="form-input"
-                placeholder="Repeat password"
+                placeholder={t('auth.confirmPasswordPlaceholder') || "Repeat password"}
                 value={form.confirmPassword}
                 onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                 required

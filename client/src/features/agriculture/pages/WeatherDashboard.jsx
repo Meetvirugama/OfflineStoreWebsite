@@ -132,7 +132,7 @@ const WeatherDashboard = () => {
                         <Search size={18} color="#475569" />
                         <input 
                             type="text" 
-                            placeholder="Find Village..." 
+                            placeholder="ગામ શોધો..." 
                             value={searchQuery}
                             onChange={handleSearch}
                             style={{background: 'transparent', border: 'none', color: 'inherit', width: '100%', outline: 'none', fontSize: '1rem'}}
@@ -175,8 +175,8 @@ const WeatherDashboard = () => {
                         <div className="search-results-container" style={{background: '#ffffff', top: '120%', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.1)', overflow: 'hidden', zIndex: 100, boxShadow: '0 10px 30px rgba(0,0,0,0.1)', position: 'absolute', width: '100%', maxWidth: '320px', left: 0}}>
                             {searchResults.map((res, i) => (
                                 <div key={i} onClick={() => selectResult(res)} className="search-result-item" style={{padding: '1rem 1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)', cursor: 'pointer'}}>
-                                    <span style={{color: 'inherit', fontWeight: 700}}>{res.name}</span>
-                                    <span style={{color: '#64748b', fontSize: '0.8rem'}}>{res.state}</span>
+                                    <span style={{color: 'inherit', fontWeight: 700}}><DynText text={res.name} /></span>
+                                    <span style={{color: '#64748b', fontSize: '0.8rem'}}><DynText text={res.state} /></span>
                                 </div>
                             ))}
                         </div>

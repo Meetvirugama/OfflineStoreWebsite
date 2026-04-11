@@ -159,7 +159,7 @@ const FarmingNewsPage = () => {
                                     </button>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', opacity: 0.5, fontSize: '0.9rem', fontWeight: 700 }}>
                                         <Calendar size={18} />
-                                        {latestNews[0].published_at ? new Date(latestNews[0].published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Recently'}
+                                        {latestNews[0].published_at ? new Date(latestNews[0].published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : <DynText text="Recently" />}
                                     </div>
                                 </div>
                             </div>
@@ -184,8 +184,10 @@ const FarmingNewsPage = () => {
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                        <span style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--agri-green)', letterSpacing: '1px' }}>{item.source?.toUpperCase() || item.category?.toUpperCase() || t('news.externalAgri')}</span>
-                                        <span style={{ fontSize: '0.7rem', opacity: 0.4, fontWeight: 700 }}>{item.published_at ? new Date(item.published_at).toLocaleDateString() : 'Recently'}</span>
+                                        <span style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--agri-green)', letterSpacing: '1px' }}>
+                                            <DynText text={item.source?.toUpperCase() || item.category?.toUpperCase() || t('news.externalAgri')} />
+                                        </span>
+                                        <span style={{ fontSize: '0.7rem', opacity: 0.4, fontWeight: 700 }}>{item.published_at ? new Date(item.published_at).toLocaleDateString() : <DynText text="Recently" />}</span>
                                     </div>
                                     <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1e293b', margin: '0 0 1rem 0', lineHeight: 1.3, height: '3.4rem', overflow: 'hidden' }}>
                                         <DynText text={item.title} />
@@ -228,7 +230,9 @@ const FarmingNewsPage = () => {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div>
                                             <div style={{ fontSize: '3.5rem', fontWeight: 900, color: '#1e293b', letterSpacing: '-2px' }}>{Math.round(currentWeather.main?.temp)}°C</div>
-                                            <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 700, letterSpacing: '1px' }}>{(currentWeather.weather?.[0]?.description || 'Clear').toUpperCase()}</div>
+                                            <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 700, letterSpacing: '1px' }}>
+                                                <DynText text={currentWeather.weather?.[0]?.description || 'Clear'} />
+                                            </div>
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
                                             <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--agri-green)', marginBottom: '4px' }}>{currentWeather.main?.humidity}% RH</div>

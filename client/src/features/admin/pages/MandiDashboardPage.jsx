@@ -4,6 +4,7 @@ import {
     Tooltip, Legend, ResponsiveContainer, AreaChart, Area 
 } from "recharts";
 import DynText from "@core/i18n/DynText";
+import { useDynamicTranslation } from "@core/i18n/useDynamicTranslation";
 import useMandiStore from "@features/agriculture/mandi/mandi.store";
 import "@/styles/Admin.css";
 
@@ -61,7 +62,11 @@ export default function MandiDashboardPage() {
                         className="modal-form-input"
                         style={{ padding: '10px 20px', borderRadius: '12px', background: '#fff', border: '1.5px solid #e2e8f0', fontWeight: '700' }}
                     >
-                        {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}>{c}</option>)}
+                        {COMMON_CROPS.map((c, idx) => (
+                            <option key={`${c}-${idx}`} value={c}>
+                                <DynText text={c} />
+                            </option>
+                        ))}
                     </select>
                 </div>
             </div>
@@ -99,7 +104,11 @@ export default function MandiDashboardPage() {
                                 onChange={(e) => setDays(parseInt(e.target.value))}
                                 style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', fontWeight: '800', color: '#0f172a', cursor: 'pointer' }}
                             >
-                                {TIMELINE_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                                {TIMELINE_OPTIONS.map(opt => (
+                                    <option key={opt.value} value={opt.value}>
+                                        <DynText text={opt.label} />
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>

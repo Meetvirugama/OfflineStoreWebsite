@@ -22,11 +22,11 @@ export default function LoginPage() {
     const errorParam = params.get("error");
     if (errorParam) {
       if (errorParam === "access_denied") {
-        addToast("Permission denied. Ensure your email is in the 'Test Users' list! 🌿", "error");
+        addToast(<DynText text="Permission denied. Ensure your email is in the 'Test Users' list! 🌿" />, "error");
       } else if (errorParam === "auth_failed") {
-        addToast("Authentication logic failed. Check server logs.", "error");
+        addToast(<DynText text="Authentication logic failed. Check server logs." />, "error");
       } else {
-        addToast(`Google login error: ${errorParam}`, "error");
+        addToast(<><DynText text="Google login error:" /> {errorParam}</>, "error");
       }
       
       // Clear URL params without reloading to prevent repeated toasts

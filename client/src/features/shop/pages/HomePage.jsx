@@ -4,12 +4,16 @@ import { Sprout, Skull, Info, Leaf, ArrowRight, Star, Award, ShieldCheck } from 
 import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
 import useTranslation from "@core/i18n/useTranslation";
+import useAuthStore from "@core/auth/useAuthStore";
+import DynText from "@core/i18n/DynText";
 import "@/styles/HomePage.css";
 
 export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { customer } = useAuthStore();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const CATEGORY_MAP = {
@@ -21,7 +25,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    document.title = "AgroPlatform – India's Trusted Source";
+    document.title = "એગ્રોપ્લેટફોર્મ – ભારતનું વિશ્વસનીય સ્ત્રોત";
 
     const fetchHomeData = async () => {
       try {
@@ -88,7 +92,7 @@ export default function HomePage() {
                 >
                   {config.icon}
                 </div>
-                <h3 className="home-cat-card__name">{name}</h3>
+                <h3 className="home-cat-card__name"><DynText text={name} /></h3>
                 <p style={{ color: "var(--text-muted)", fontSize: "14px", marginBottom: "12px" }}>{config.desc}</p>
                 <span className="home-cat-card__arrow">{t('home.explore')} <ArrowRight size={14} /></span>
               </Link>

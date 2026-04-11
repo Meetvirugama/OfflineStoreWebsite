@@ -130,7 +130,7 @@ export default function MandiPricesPage() {
                                 className="modal-form-input" 
                                 style={{ width: '100%', borderRadius: '12px', border: '1.5px solid #e2e8f0' }}
                             >
-                                {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}>{c}</option>)}
+                                {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}><DynText text={c} /></option>)}
                             </select>
                         </div>
                         <div className="control-field">
@@ -141,7 +141,7 @@ export default function MandiPricesPage() {
                                 className="modal-form-input" 
                                 style={{ width: '100%', borderRadius: '12px', border: '1.5px solid #e2e8f0' }}
                             >
-                                {DISTRICTS.map((d, idx) => <option key={`${d}-${idx}`} value={d}>{d}</option>)}
+                                {DISTRICTS.map((d, idx) => <option key={`${d}-${idx}`} value={d}><DynText text={d} /></option>)}
                             </select>
                         </div>
                         

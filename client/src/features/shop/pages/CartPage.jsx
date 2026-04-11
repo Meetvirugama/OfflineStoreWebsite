@@ -18,7 +18,7 @@ export default function CartPage() {
 
   const handleCheckout = async () => {
     if (items.length === 0) {
-      alert("Cart is empty");
+      alert(t('cart.emptyCartAlert') || "Cart is empty");
       return;
     }
 
@@ -33,7 +33,7 @@ export default function CartPage() {
 
       if (!orderId) {
         console.error("Invalid response:", res);
-        alert("Checkout failed: invalid response");
+        alert(t('cart.checkoutFailed') || "Checkout failed: invalid response");
         return;
       }
 
@@ -64,7 +64,7 @@ export default function CartPage() {
           {items.map(item => (
             <div key={item.id} className="cart-item">
               <div className="item-info">
-                <h4>{item.name}</h4>
+                <h4><DynText text={item.name} /></h4>
                 <p>₹{item.price}</p>
               </div>
 

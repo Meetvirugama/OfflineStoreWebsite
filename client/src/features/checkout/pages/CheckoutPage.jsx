@@ -40,12 +40,12 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!customer) {
-      addToast("Customer profile not loaded. Please re-login.", "error");
+      addToast(<DynText text="Customer profile not loaded. Please re-login." />, "error");
       return;
     }
 
     if (items.length === 0) {
-      addToast("Your cart is empty!", "error");
+      addToast(<DynText text="Your cart is empty!" />, "error");
       navigate("/products");
       return;
     }
@@ -66,11 +66,11 @@ export default function CheckoutPage() {
       const orderAmount = Number(order?.final_amount) || amountBeforeCheckout || 1;
 
       if (!orderId) {
-        addToast("Order created but could not get order ID", "error");
+        addToast(<DynText text="Order created but could not get order ID" />, "error");
         return;
       }
 
-      addToast("Order placed! Starting payment...", "success");
+      addToast(<DynText text="Order placed! Starting payment..." />, "success");
 
       // ✅ STEP 2: Create Razorpay payment order
       const rzpRes = await api.post("/payments/create-order", {
@@ -101,7 +101,7 @@ export default function CheckoutPage() {
         currency: "INR",
         order_id: rzpOrder.id,
         name: "AgroMart",
-        description: `Order #${orderId}`,
+        description: <DynText text="Order" /> + ` #${orderId}`,
         prefill: {
           name: customer?.name || "Customer",
           contact: customer?.mobile || "",
@@ -120,13 +120,13 @@ export default function CheckoutPage() {
               amount: orderAmount
             });
 
-            addToast("Payment successful!", "success");
+            addToast(<DynText text="Payment successful!" />, "success");
 
             const targetPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
             navigate(targetPath);
           } catch (err) {
             console.error("VERIFY ERROR:", err);
-            addToast("Payment verification failed. Contact support.", "error");
+            addToast(<DynText text="Payment verification failed. Contact support." />, "error");
             const failPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
             navigate(failPath);
           }
@@ -134,7 +134,7 @@ export default function CheckoutPage() {
 
         modal: {
           ondismiss: function () {
-            addToast("Payment cancelled. You can pay later from Orders.", "info");
+            addToast(<DynText text="Payment cancelled. You can pay later from Orders." />, "info");
             const targetPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
             navigate(targetPath);
           }
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
 
     } catch (err) {
       console.error("CHECKOUT ERROR:", err);
-      addToast(err.message || "Checkout failed", "error");
+      addToast(<DynText text={err.message || "Checkout failed"} />, "error");
     }
   };
 
@@ -190,7 +190,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="checkout-item__info">
-                <p className="checkout-item__name">{item.name}</p>
+                <p className="checkout-item__name"><DynText text={item.name} /></p>
                 <p className="checkout-item__meta">
                   ₹{item.price?.toFixed(2)} × {item.quantity}
                 </p>
@@ -211,7 +211,7 @@ export default function CheckoutPage() {
               <p className="checkout-delivery__title"><DynText text="Farm Delivery" /></p>
               <p className="checkout-delivery__desc">
                 <DynText text="Estimated 2–5 days · Delivering to" />{" "}
-                {customer?.village || "your location"}
+                {customer?.village ? <DynText text={customer.village} /> : <DynText text="your location" />}
               </p>
             </div>
             <span className="checkout-delivery__free"><DynText text="FREE" /></span>
@@ -249,7 +249,7 @@ export default function CheckoutPage() {
 
             {discount > 0 && (
               <p className="checkout-summary__savings">
-                Great! You save ₹{discount?.toFixed(2)}
+                <DynText text="Great! You save" /> ₹{discount?.toFixed(2)}
               </p>
             )}
           </div>
@@ -257,9 +257,9 @@ export default function CheckoutPage() {
           {/* CUSTOMER */}
           {customer && (
             <div className="checkout-customer">
-              <h3>Delivering to</h3>
+              <h3><DynText text="Delivering to" /></h3>
               <p className="customer-name">
-                <CheckCircle size={16} /> <strong>{customer.name}</strong>
+                <CheckCircle size={16} /> <strong><DynText text={customer.name} /></strong>
               </p>
               <p><Phone size={14} /> {customer.mobile}</p>
               {customer.village && <p><MapPin size={14} /> {customer.village}</p>}

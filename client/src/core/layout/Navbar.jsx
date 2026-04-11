@@ -28,6 +28,7 @@ import useNotificationStore from "@features/notifications/store/notification.sto
 import api from "@core/api/client";
 import NotificationPanel from "@core/components/NotificationPanel";
 import useTranslation from "@core/i18n/useTranslation";
+import DynText from "@core/i18n/DynText";
 import "@/styles/Navbar.css";
 
 export default function Navbar() {
@@ -103,7 +104,7 @@ export default function Navbar() {
           
           <Link to="/" className="navbar-natural__logo">
             <Leaf className="logo-icon" size={28} />
-            Agro<span className="logo-accent">Platform</span>
+            <DynText text="AgroMart" />
           </Link>
 
           <div className="navbar-natural__search-container" ref={searchRef}>
@@ -132,8 +133,8 @@ export default function Navbar() {
                     }}
                   >
                     <div className="suggestion-info">
-                      <p className="suggestion-name">{p.name}</p>
-                      <p className="suggestion-meta">{p.category} • ₹{p.selling_price}</p>
+                      <p className="suggestion-name"><DynText text={p.name} /></p>
+                      <p className="suggestion-meta"><DynText text={p.category} /> • ₹{p.selling_price}</p>
                     </div>
                   </div>
                 ))}

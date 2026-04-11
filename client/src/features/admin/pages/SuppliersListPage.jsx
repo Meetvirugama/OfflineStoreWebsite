@@ -21,7 +21,7 @@ export default function SuppliersListPage() {
             const res = await api.get("/suppliers");
             setSuppliers(Array.isArray(res) ? res : []);
         } catch (err) {
-            addToast("Failed to fetch suppliers", "error");
+            addToast(<DynText text="Failed to fetch suppliers" />, "error");
         } finally {
             setLoading(false);
         }
@@ -35,18 +35,18 @@ export default function SuppliersListPage() {
         e.preventDefault();
         try {
             await api.post("/suppliers", createForm);
-            addToast("Supplier created successfully", "success");
+            addToast(<DynText text="Supplier created successfully" />, "success");
             setIsCreateOpen(false);
             setCreateForm({ name: "", mobile: "" });
             fetchSuppliers();
         } catch (err) {
-            addToast(err.response?.data?.message || "Failed to create supplier", "error");
+            addToast(<DynText text={err.response?.data?.message || "Failed to create supplier"} />, "error");
         }
     };
 
     if (loading) return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', width: '100%' }}>
-            <AgroLoader text="Tracing supplier network..." />
+            <AgroLoader text={<DynText text="Tracing supplier network..." />} />
         </div>
     );
 
@@ -57,7 +57,7 @@ export default function SuppliersListPage() {
                     <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', margin: 0 }}><DynText text="Suppliers Management" /></h2>
                     <p style={{ fontSize: '13px', color: '#64748b' }}><DynText text="Coordinate and track secondary market supply partners." /></p>
                 </div>
-                <button className="btn-elite primary" onClick={() => setIsCreateOpen(true)}>+ New Supplier</button>
+                <button className="btn-elite primary" onClick={() => setIsCreateOpen(true)}><DynText text="+ New Supplier" /></button>
             </div>
 
             <table className="admin-table">
@@ -76,7 +76,7 @@ export default function SuppliersListPage() {
                         suppliers.map(s => (
                             <tr key={s.id}>
                                 <td style={{ fontWeight: 600, color: '#64748b' }}>#{s.id}</td>
-                                <td style={{ fontWeight: 600 }}>{s.name}</td>
+                                <td style={{ fontWeight: 600 }}><DynText text={s.name} /></td>
                                 <td>{s.mobile}</td>
                                 <td>
                                     <div className="table-actions">
@@ -97,13 +97,13 @@ export default function SuppliersListPage() {
                 isOpen={isCreateOpen}
                 onClose={() => setIsCreateOpen(false)}
                 onConfirm={handleCreate}
-                title="Register New Strategic Partner"
-                confirmText="Create Connection"
+                title={<DynText text="Register New Strategic Partner" />}
+                confirmText={<DynText text="Create Connection" />}
             >
                 <div className="elite-form">
                     <div className="elite-form-group">
                         <label><DynText text="Partner Identity / Name" /></label>
-                        <input className="elite-input" placeholder="Supplier Name" required value={createForm.name} onChange={e => setCreateForm({...createForm, name: e.target.value})} />
+                        <input className="elite-input" placeholder={t('admin.supplierNamePlaceholder') || "Supplier Name"} required value={createForm.name} onChange={e => setCreateForm({...createForm, name: e.target.value})} />
                     </div>
                     <div className="elite-form-group">
                         <label><DynText text="Secure Mobile Contact" /></label>

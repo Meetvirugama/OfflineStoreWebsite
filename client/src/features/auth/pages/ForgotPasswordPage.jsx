@@ -9,13 +9,14 @@ export default function ForgotPasswordPage() {
   const navigate = useNavigate();
   const { forgotPassword, loading } = useAuthStore();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await forgotPassword(email);
-      addToast("OTP sent to your email! 🔐", "success");
+      addToast(<DynText text="OTP sent to your email! 🔐" />, "success");
       // Redirect to reset page with email in state
       navigate("/auth/reset-password", { state: { email } });
     } catch (err) {
@@ -38,7 +39,7 @@ export default function ForgotPasswordPage() {
             <input
               type="email"
               className="form-input"
-              placeholder="you@example.com"
+              placeholder={t('auth.emailPlaceholder') || "you@example.com"}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

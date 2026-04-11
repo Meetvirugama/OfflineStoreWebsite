@@ -52,11 +52,11 @@ const NearbyMandisPage = () => {
                     console.warn("Geolocation blocked, using fallback location.");
                     setUserLocation(fallbackCenter);
                     fetchNearbyMandis(fallbackCenter.lat, fallbackCenter.lng);
-                    setError("Location access denied. Displaying default agricultural region.");
+                    setError(<DynText text="Location access denied. Displaying default agricultural region." />);
                 }
             );
         } else {
-            setError("Geolocation is not supported by this browser.");
+            setError(<DynText text="Geolocation is not supported by this browser." />);
             setLoading(false);
         }
     };
@@ -67,7 +67,7 @@ const NearbyMandisPage = () => {
             setMandis(Array.isArray(res) ? res : []);
             setLoading(false);
         } catch (err) {
-            setError("Failed to fetch nearby mandis.");
+            setError(<DynText text="Failed to fetch nearby mandis." />);
             setLoading(false);
         }
     };
@@ -168,6 +168,7 @@ const NearbyMandisPage = () => {
                                         {mandi.rating ? (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fffbeb', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid #fef3c7' }}>
                                                 <Star size={14} fill="#f59e0b" color="#f59e0b" /> 
+                                                <Star size={14} fill="#f59e0b" color="#f59e0b" /> 
                                                 <span style={{fontWeight: 900, color: '#f59e0b', fontSize: '0.85rem'}}>{mandi.rating}</span>
                                                 <span style={{color: '#92400e', opacity: 0.5, fontSize: '0.8rem'}}>({mandi.user_ratings_total})</span>
                                             </div>
@@ -251,8 +252,8 @@ const NearbyMandisPage = () => {
                                     onCloseClick={() => setActiveMarker(null)}
                                 >
                                     <div style={{ color: '#0f172a', padding: '1rem', minWidth: '220px' }}>
-                                        <h4 style={{ margin: '0 0 0.8rem 0', borderBottom: '2px solid #10b981', paddingBottom: '0.4rem', fontWeight: 900, fontSize: '1.1rem' }}>{activeMarker.name}</h4>
-                                        <p style={{ fontSize: '0.9rem', margin: '0', fontWeight: 600, opacity: 0.8 }}>{activeMarker.address}</p>
+                                        <h4 style={{ margin: '0 0 0.8rem 0', borderBottom: '2px solid #10b981', paddingBottom: '0.4rem', fontWeight: 900, fontSize: '1.1rem' }}><DynText text={activeMarker.name} /></h4>
+                                        <p style={{ fontSize: '0.9rem', margin: '0', fontWeight: 600, opacity: 0.8 }}><DynText text={activeMarker.address} /></p>
                                     </div>
                                 </InfoWindow>
                             )}

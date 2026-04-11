@@ -67,10 +67,10 @@ export default function ProductsPage() {
               onChange={(e) => setSort(e.target.value)}
               style={{ width: "auto", padding: "8px 12px" }}
             >
-              <option value="default">Relevance</option>
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="name">Name A–Z</option>
+               <option value="default"><DynText text="Relevance" /></option>
+               <option value="price-asc"><DynText text="Price: Low to High" /></option>
+               <option value="price-desc"><DynText text="Price: High to Low" /></option>
+               <option value="name"><DynText text="Name A–Z" /></option>
             </select>
           </div>
         </div>

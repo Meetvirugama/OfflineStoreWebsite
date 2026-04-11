@@ -10,6 +10,7 @@ export default function ResetPasswordPage() {
   const location = useLocation();
   const { resetPassword, loading } = useAuthStore();
   const { addToast } = useToastStore();
+  const { t } = useTranslation();
 
   const [form, setForm] = useState({
     email: location.state?.email || "",
@@ -21,12 +22,12 @@ export default function ResetPasswordPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.newPassword !== form.confirmPassword) {
-      return addToast("Passwords do not match", "error");
+      return addToast(<DynText text="Passwords do not match" />, "error");
     }
     
     try {
       await resetPassword(form.email, form.otp, form.newPassword);
-      addToast("Password reset successful! Please login. 🌿", "success");
+      addToast(<DynText text="Password reset successful! Please login. 🌿" />, "success");
       navigate("/auth/login");
     } catch (err) {
       addToast(err.message, "error");
@@ -60,7 +61,7 @@ export default function ResetPasswordPage() {
             <input
               type="text"
               className="form-input"
-              placeholder="000000"
+              placeholder={t('auth.otpPlaceholder') || "000000"}
               maxLength="6"
               value={form.otp}
               onChange={(e) => setForm({ ...form, otp: e.target.value })}

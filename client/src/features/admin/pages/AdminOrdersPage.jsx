@@ -20,7 +20,7 @@ export default function AdminOrdersPage() {
             // Interceptor returns the body, so data is in res.data
             setOrders(res || []);
         } catch (err) {
-            addToast("Failed to fetch all orders", "error");
+            addToast(<DynText text="Failed to fetch all orders" />, "error");
         } finally {
             setLoading(false);
         }
@@ -39,7 +39,7 @@ export default function AdminOrdersPage() {
         if (s === "CANCELLED") { color = "#e11d48"; bg = "#ffe4e6"; }
         if (s === "PAID") { color = "#d9b356"; bg = "rgba(217,179,86,0.1)"; } // Executive Gold
 
-        return <span style={{ background: bg, color: color, padding: '4px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 'bold', border: `1px solid ${color}20` }}>{s}</span>;
+        return <span style={{ background: bg, color: color, padding: '4px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 'bold', border: `1px solid ${color}20` }}><DynText text={s} /></span>;
     };
 
     const getPaymentBadge = (order) => {
@@ -56,26 +56,24 @@ export default function AdminOrdersPage() {
             bg = "#d1fae5";
         } else if (paid > 0) {
             const pending = (final - paid).toFixed(2);
-            label = `PARTIAL (Pending: ₹${pending})`;
-            color = "#d97706"; // amber
-            bg = "#fef3c7";
+            return <span style={{ background: "#fef3c7", color: "#d97706", padding: '4px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 'bold' }}><DynText text="PARTIAL" /> (<DynText text="Pending" />: ₹{pending})</span>;
         }
 
-        return <span style={{ background: bg, color: color, padding: '4px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 'bold' }}>{label}</span>;
+        return <span style={{ background: bg, color: color, padding: '4px 10px', borderRadius: '50px', fontSize: '11px', fontWeight: 'bold' }}><DynText text={label} /></span>;
     };
 
     const handleSendReminder = async (orderId) => {
         try {
             await api.post(`/notifications/remind/${orderId}`);
-            addToast(`Payment reminder dispatched to customer for Order #${orderId} 📧`, "success");
+            addToast(<><DynText text="Payment reminder dispatched to customer for Order #" />{orderId} 📧</>, "success");
         } catch (err) {
-            addToast(err.response?.data?.message || "Failed to send reminder", "error");
+            addToast(<DynText text={err.response?.data?.message || "Failed to send reminder"} />, "error");
         }
     };
 
     if (loading) return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh', width: '100%' }}>
-            <AgroLoader text="Tracing order history..." />
+            <AgroLoader text={<DynText text="Tracing order history..." />} />
         </div>
     );
 
@@ -87,7 +85,7 @@ export default function AdminOrdersPage() {
                     <p style={{ fontSize: '13px', color: '#64748b' }}><DynText text="Full oversight of all AgroMart sales and payment health." /></p>
                 </div>
                 <div style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn-elite secondary" onClick={fetchAllOrders}>🔄 Refresh Data</button>
+                    <button className="btn-elite secondary" onClick={fetchAllOrders}>🔄 <DynText text="Refresh Data" /></button>
                 </div>
             </div>
 
@@ -110,7 +108,7 @@ export default function AdminOrdersPage() {
                         orders.map(order => (
                             <tr key={order.id}>
                                 <td style={{ fontWeight: 600 }}>#{order.id}</td>
-                                <td>{order.order_date ? new Date(order.order_date).toLocaleDateString() : "Processing..."}</td>
+                                <td>{order.order_date ? new Date(order.order_date).toLocaleDateString() : <DynText text="Processing..." />}</td>
                                 <td>
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                                         <span style={{ fontWeight: 800, color: '#0f172a' }}>

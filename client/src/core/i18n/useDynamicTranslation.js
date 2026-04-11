@@ -62,8 +62,8 @@ export const useDynamicTranslation = (text, persistent = true) => {
                     persistent: persistent
                 });
                 
-                if (isMounted && res && res.data && res.data.translated) {
-                    const resultText = res.data.translated;
+                if (isMounted && res && res.translated) {
+                    const resultText = res.translated;
                     translationCache.set(cacheKey, resultText);
                     setTranslatedText(resultText);
                 }

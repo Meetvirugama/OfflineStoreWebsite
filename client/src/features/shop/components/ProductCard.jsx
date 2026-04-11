@@ -4,6 +4,7 @@ import { ShoppingCart, CheckCircle, XCircle } from "lucide-react";
 import useAuthStore from "@features/auth/store/auth.store";
 import useCartStore from "@features/checkout/store/cart.store";
 import useToastStore from "@core/hooks/useToast";
+import DynText from "@core/i18n/DynText";
 import "@/styles/productCard.css";
 
 function calcDiscount(mrp, selling) {
@@ -24,16 +25,16 @@ export default function ProductCard({ product }) {
   const handleAddToCart = async (e) => {
     e.stopPropagation();
     if (!token) {
-      addToast("Please login to add items to cart", "info");
+      addToast(<DynText text="Please login to add items to cart" />, "info");
       navigate("/auth/login");
       return;
     }
     setAdding(true);
     try {
       await addItem(product.id, 1);
-      addToast(`${product.name} added to cart!`, "success");
+      addToast(<><DynText text={product.name} /> <DynText text="added to cart!" /></>, "success");
     } catch (err) {
-      addToast(err.message || "Failed to add item", "error");
+      addToast(<DynText text={err.message || "Failed to add item"} />, "error");
     } finally {
       setAdding(false);
     }
@@ -49,7 +50,7 @@ export default function ProductCard({ product }) {
     >
       {/* DISCOUNT BADGE */}
       {discount > 0 && (
-        <div className="agri-card__discount-badge">Save {discount}%</div>
+        <div className="agri-card__discount-badge"><DynText text="Save" /> {discount}%</div>
       )}
 
       {/* IMAGE */}
@@ -60,23 +61,23 @@ export default function ProductCard({ product }) {
       {/* INFO */}
       <div className="agri-card__body">
         {product.category && (
-          <div className="agri-card__category">{product.category}</div>
+          <div className="agri-card__category"><DynText text={product.category} /></div>
         )}
         
-        <h3 className="agri-card__name">{product.name}</h3>
+        <h3 className="agri-card__name"><DynText text={product.name} /></h3>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           {product.unit && (
-            <div className="agri-card__unit" style={{ margin: 0, padding: '2px 8px', fontSize: '11px' }}>{product.unit}</div>
+            <div className="agri-card__unit" style={{ margin: 0, padding: '2px 8px', fontSize: '11px' }}><DynText text={product.unit} /></div>
           )}
           <div className="agri-card__stock">
             {product.stock > 0 ? (
               <span className="stock-in" style={{ fontSize: '10px' }}>
-                In Stock
+                <DynText text="In Stock" />
               </span>
             ) : (
               <span className="stock-out" style={{ fontSize: '10px' }}>
-                Out
+                <DynText text="Out of Stock" />
               </span>
             )}
           </div>
@@ -103,7 +104,7 @@ export default function ProductCard({ product }) {
             <span className="spinner-sm"></span>
           ) : (
             <>
-              <ShoppingCart size={18} className="svg-colorful-icon" /> Add to Cart
+              <ShoppingCart size={18} className="svg-colorful-icon" /> <DynText text="Add to Cart" />
             </>
           )}
         </button>

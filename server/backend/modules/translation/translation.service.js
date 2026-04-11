@@ -27,9 +27,13 @@ export const translateText = async (text, targetLang, sourceLang = "en", persist
             return ephemeralCache.get(cacheKey);
         }
 
-        // 2. Check local database cache
+        // 2. Check local database cache (Case-Insensitive for maximum dictionary reliability)
+        const { Op } = await import("sequelize");
         const cached = await Translation.findOne({
-            where: { original_text: originalText, target_lang: targetLang }
+            where: { 
+                original_text: { [Op.iLike]: originalText },
+                target_lang: targetLang 
+            }
         });
         
         if (cached) {

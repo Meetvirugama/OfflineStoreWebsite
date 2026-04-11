@@ -88,9 +88,9 @@ const AgriAnalyticsPage = () => {
                             onChange={(e) => setDays(e.target.value)}
                             style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 500, opacity: 0.7, fontSize: '0.8rem'}}
                         >
-                            <option value={7} style={{background: '#ffffff', color: '#1e293b'}}>7D</option>
-                            <option value={30} style={{background: '#ffffff', color: '#1e293b'}}>30D</option>
-                            <option value={90} style={{background: '#ffffff', color: '#1e293b'}}>90D</option>
+                            <option value={7} style={{background: '#ffffff', color: '#1e293b'}}><DynText text="7D" /></option>
+                            <option value={30} style={{background: '#ffffff', color: '#1e293b'}}><DynText text="30D" /></option>
+                            <option value={90} style={{background: '#ffffff', color: '#1e293b'}}><DynText text="90D" /></option>
                         </select>
                     </div>
                 </div>
@@ -188,7 +188,7 @@ const AgriAnalyticsPage = () => {
                                 <h4 style={{opacity: 0.4, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem', fontWeight: 800}}><DynText text="Live Trading Price" /></h4>
                                 <div style={{display: 'flex', alignItems: 'baseline', gap: '0.8rem'}}>
                                     <span style={{fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', fontWeight: 900, letterSpacing: '-2px', color: 'inherit'}}>₹{trends[trends.length - 1]?.price}</span>
-                                    <span style={{fontSize: '1.2rem', opacity: 0.3, fontWeight: 700}}>INR/Q</span>
+                                    <span style={{fontSize: '1.2rem', opacity: 0.3, fontWeight: 700}}><DynText text="INR/Q" /></span>
                                 </div>
                             </div>
                             {(trends || []).length > 1 && (

@@ -26,7 +26,7 @@ export default function OrdersPage() {
   const [payingOrderId, setPayingOrderId] = useState(null);
 
   useEffect(() => {
-    document.title = "My Orders – AgroMart";
+    document.title = "Orders – AgroMart";
     fetchOrders();
   }, [customer?.id]);
 
@@ -55,7 +55,7 @@ export default function OrdersPage() {
       const pendingAmount = Number(order.final_amount) - Number(order.paid_amount || 0);
 
       if (pendingAmount <= 0) {
-        addToast("Order already fully paid!", "info");
+        addToast(<DynText text="Order already fully paid!" />, "info");
         return;
       }
 
@@ -68,14 +68,14 @@ export default function OrdersPage() {
       const rzpOrder = rzpRes;
 
       if (!rzpOrder?.id) {
-        addToast("Failed to create payment order", "error");
+        addToast(<DynText text="Failed to create payment order" />, "error");
         return;
       }
 
       // ✅ Ensure SDK is loaded before opening modal
       const sdkLoaded = await loadRazorpaySDK();
       if (!sdkLoaded || !window.Razorpay) {
-        addToast("Payment SDK failed to load. Please refresh and try again.", "error");
+        addToast(<DynText text="Payment SDK failed to load. Please refresh and try again." />, "error");
         return;
       }
 
@@ -103,24 +103,24 @@ export default function OrdersPage() {
               amount: pendingAmount
             });
 
-            addToast("Payment successful!", "success");
+            addToast(<DynText text="Payment successful!" />, "success");
             fetchOrders(); // Refresh orders list
 
           } catch (err) {
             console.error("Payment verification failed:", err);
-            addToast("Payment verification failed", "error");
+            addToast(<DynText text="Payment verification failed" />, "error");
           }
         },
 
         modal: {
           ondismiss: () => {
-            addToast("Payment cancelled", "info");
+            addToast(<DynText text="Payment cancelled" />, "info");
           }
         }
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", () => addToast("Payment failed", "error"));
+      rzp.on("payment.failed", () => addToast(<DynText text="Payment failed" />, "error"));
       rzp.open();
 
     } catch (err) {
@@ -150,8 +150,8 @@ export default function OrdersPage() {
     } catch (err) {
       addToast(
         err.response?.status === 404
-          ? "Invoice not generated yet"
-          : "Failed to download invoice",
+          ? <DynText text="Invoice not generated yet" />
+          : <DynText text="Failed to download invoice" />,
         "error"
       );
     }

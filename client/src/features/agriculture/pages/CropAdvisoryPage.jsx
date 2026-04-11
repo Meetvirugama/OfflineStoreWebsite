@@ -320,7 +320,7 @@ const CropAdvisoryPage = () => {
                                         border: `1px solid ${curAdvisory?.accuracy_meta?.season_match ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
                                         letterSpacing: '1px'
                                     }}>
-                                        {curAdvisory?.accuracy_meta?.season_match ? '✓ AGRI-SYNC ACTIVE' : '⚠ SEASON MISMATCH'}
+                                        {curAdvisory?.accuracy_meta?.season_match ? <DynText text="✓ AGRI-SYNC ACTIVE" /> : <DynText text="⚠ SEASON MISMATCH" />}
                                     </div>
                                     <div style={{ 
                                         padding: '0.8rem 1.8rem', 
@@ -421,7 +421,7 @@ const CropAdvisoryPage = () => {
                             )) : (
                                 <div style={{ textAlign: 'center', opacity: 0.4, padding: '5rem 2rem', border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
                                     <Calendar size={48} style={{ marginBottom: '1.5rem', color: '#64748b' }} />
-                                    <p style={{fontWeight: 800, letterSpacing: '1px', color: '#64748b'}}>NO ARCHIVED TELEMETRY</p>
+                                    <p style={{fontWeight: 800, letterSpacing: '1px', color: '#64748b'}}><DynText text="NO ARCHIVED TELEMETRY" /></p>
                                 </div>
                             )}
                         </div>
