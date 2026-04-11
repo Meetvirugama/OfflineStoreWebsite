@@ -24,7 +24,7 @@ export default function ProductsPage() {
     
     api.get(`/products?${params.toString()}`)
       .then((res) => {
-        setProducts(res.data || []);
+        setProducts(res || []);
         setLoading(false);
       })
       .catch(() => setLoading(false));

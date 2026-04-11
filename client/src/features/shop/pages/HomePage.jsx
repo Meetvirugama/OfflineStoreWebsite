@@ -27,8 +27,8 @@ export default function HomePage() {
           api.get("/products?limit=8"),
           api.get("/products/categories")
         ]);
-        setProducts(prodRes.data || []);
-        setCategories(catRes.data || []);
+        setProducts(prodRes || []);
+        setCategories(catRes || []);
       } catch (err) {
         console.error("Error fetching home data:", err);
       } finally {

@@ -32,7 +32,7 @@ export default function PaymentPage() {
     const fetchOrder = async () => {
       try {
         const res = await api.get(`/orders/${orderId}`);
-        setOrder(res.data);
+        setOrder(res);
       } catch {
         const targetPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
         navigate(targetPath);
@@ -64,7 +64,7 @@ export default function PaymentPage() {
         amount: amountToPay,
       });
 
-      const rzpOrder = rzpRes.data?.data;
+      const rzpOrder = rzpRes;
       if (!rzpOrder?.id) {
         addToast("Failed to create payment order. Try again.", "error");
         return;

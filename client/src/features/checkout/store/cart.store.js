@@ -89,7 +89,8 @@ const useCartStore = create((set, get) => ({
     try {
       const res = await checkoutService.placeOrder(customerId);
       // Backend returns { success: true, message: '...', data: order }
-      const orderData = res.data; 
+      // Interceptor flattens this, so res is the order object itself.
+      const orderData = res; 
       
       // Clear local cart state only after successful order creation
       set({ 

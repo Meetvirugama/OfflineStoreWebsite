@@ -77,7 +77,7 @@ export default function CheckoutPage() {
         amount: orderAmount
       });
 
-      const rzpOrder = rzpRes.data;
+      const rzpOrder = rzpRes;
 
       if (!rzpOrder || !rzpOrder.id) {
         const targetOrdersPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";

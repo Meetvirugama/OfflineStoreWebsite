@@ -52,7 +52,7 @@ export default function Navbar() {
       }
       try {
         const res = await api.get(`/products?search=${searchQuery}&limit=5`);
-        setSuggestions(res.data || []);
+        setSuggestions(res || []);
         setShowSuggestions(true);
       } catch (err) {
         console.error("Search error:", err);

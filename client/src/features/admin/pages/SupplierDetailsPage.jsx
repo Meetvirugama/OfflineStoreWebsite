@@ -20,8 +20,8 @@ export default function SupplierDetailsPage() {
                     api.get(`/suppliers/${id}`),
                     api.get(`/suppliers/${id}/products`)
                 ]);
-                setSupplier(suppRes.data);
-                setProducts(prodRes.data);
+                setSupplier(suppRes);
+                setProducts(prodRes);
             } catch (err) {
                 addToast("Failed to fetch supplier details", "error");
             } finally {

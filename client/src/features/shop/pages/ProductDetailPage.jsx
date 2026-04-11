@@ -73,7 +73,7 @@ export default function ProductDetailPage() {
   useEffect(() => {
     setLoading(true);
     api.get("/products").then((res) => {
-      const found = res.data?.find((p) => String(p.id) === String(id));
+      const found = res?.find((p) => String(p.id) === String(id));
       setProduct(found || null);
       if (found) document.title = `${found.name} – AgroMart`;
       setLoading(false);

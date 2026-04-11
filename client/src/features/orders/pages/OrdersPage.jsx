@@ -38,7 +38,7 @@ export default function OrdersPage() {
 
     try {
       const res = await api.get(`/orders?customer_id=${customer.id}`);
-      setOrders(Array.isArray(res.data) ? res.data : []);
+      setOrders(Array.isArray(res) ? res : []);
     } catch {
       setOrders([]);
     } finally {
@@ -64,7 +64,7 @@ export default function OrdersPage() {
         amount: pendingAmount
       });
 
-      const rzpOrder = rzpRes.data;
+      const rzpOrder = rzpRes;
 
       if (!rzpOrder?.id) {
         addToast("Failed to create payment order", "error");
@@ -137,7 +137,7 @@ export default function OrdersPage() {
         responseType: "blob"
       });
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const blob = new Blob([response], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
