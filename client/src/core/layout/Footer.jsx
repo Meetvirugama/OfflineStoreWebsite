@@ -31,7 +31,7 @@ export default function Footer() {
             <a href="https://leetcode.com/u/meetvirugama/" className="footer__social-link social--leetcode" target="_blank" rel="noreferrer" aria-label="LeetCode">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 16v-6M18 16V8M12 16v-4"/></svg>
             </a>
-            <a href="https://wa.me/916352860412" className="footer__social-link social--whatsapp" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+            <a href="https://wa.me/919876500000" className="footer__social-link social--whatsapp" target="_blank" rel="noreferrer" aria-label="WhatsApp">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
             </a>
           </div>
@@ -71,7 +71,7 @@ export default function Footer() {
         <div className="footer__col">
           <h4 className="footer__col-title">{t('footer.contact')}</h4>
           <ul className="footer__links footer__links--info">
-            <li>📞 +91 6352860412</li>
+            <li>📞 +91 98765 00000</li>
             <li>📧 support@agroplatform.app</li>
             <li>🕐 Mon–Sat: 9 AM – 6 PM</li>
             <li>🌐 www.agroplatform.app</li>

@@ -24,6 +24,11 @@
 - [x] `Nodemailer` Native 6-Digit Email OTP Fallbacks
 - [x] Role-Based Access Control (Admin/User)
 
+### 📱 User Experience & Interface
+- [x] fully Responsive Mobile-First Design (PWA Ready)
+- [x] CSS-driven Micro-Animations & Glassmorphism themes
+- [x] Toast-based unified notification system (Zero standard browser popups)
+
 ### 🛒 E-Commerce & Checkout
 - [x] Intrastate GST auto-calculation splits (9% CGST / 9% SGST)
 - [x] High-volume Tiered Cart Discounts (5%, 10%, 15%)
