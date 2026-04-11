@@ -5,19 +5,6 @@ import "./adminLayout.css";
 
 const NAV_ITEMS = [
   { 
-    to: "/admin", 
-    label: "Admin Dashboard", 
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7"></rect>
-        <rect x="14" y="3" width="7" height="7"></rect>
-        <rect x="14" y="14" width="7" height="7"></rect>
-        <rect x="3" y="14" width="7" height="7"></rect>
-      </svg>
-    ), 
-    exact: true 
-  },
-  { 
     to: "/admin/products", 
     label: "Products & Inventory", 
     icon: (
@@ -26,7 +13,8 @@ const NAV_ITEMS = [
         <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
         <line x1="12" y1="22.08" x2="12" y2="12"></line>
       </svg>
-    ) 
+    ),
+    exact: true
   },
   { 
     to: "/admin/orders", 

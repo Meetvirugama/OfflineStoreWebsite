@@ -45,7 +45,7 @@ export const login = async (email, password) => {
         throw new Error("Please verify your email first");
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(String(password), String(user.password || ""));
     if (!isMatch) throw new Error("Invalid password");
 
     const token = jwt.sign(
