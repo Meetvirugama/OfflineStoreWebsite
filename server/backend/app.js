@@ -66,12 +66,12 @@ const corsOptions = {
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  optionsSuccessStatus: 200 // important for legacy browsers / preflight
+  optionsSuccessStatus: 200
 };
 
-// Handle preflight OPTIONS requests before all routes
-app.options("/(.*)", cors(corsOptions));
+// Use CORS middleware (handles preflight automatically)
 app.use(cors(corsOptions));
+
 
 // ─── ROOT ROUTE ─────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
