@@ -76,10 +76,10 @@ export default function AdminOrderDetailsPage() {
                 <button className="btn-elite secondary" onClick={() => navigate("/admin/orders")}>← Back to Ledger</button>
             </div>
 
-            <div className="admin-profile-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
+            <div className="admin-profile-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '25px' }}>
                 
                 {/* ORDER CONTENT */}
-                <div className="elite-card" style={{ background: 'white', padding: '30px', borderRadius: '20px', border: '1px solid #e2e8f0' }}>
+                <div className="elite-card" style={{ background: 'white', padding: '20px', borderRadius: '20px', border: '1px solid #e2e8f0', overflowX: 'auto' }}>
                     <h3 style={{ fontSize: '18px', fontWeight: '800', borderBottom: '2px solid #f1f5f9', paddingBottom: '15px', marginBottom: '20px' }}>Items & Procurement</h3>
                     <table className="admin-table" style={{ boxShadow: 'none', border: 'none' }}>
                         <thead>
@@ -102,9 +102,9 @@ export default function AdminOrderDetailsPage() {
                         </tbody>
                     </table>
 
-                    <div style={{ marginTop: '30px', padding: '20px', background: '#f8fafc', borderRadius: '12px', display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ marginTop: '30px', padding: '20px', background: '#f8fafc', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         {/* LEFT SIDE: SMART INSIGHTS & PAYMENT GAUGE */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '320px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', maxWidth: '400px' }}>
                             <div style={{ background: 'white', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0', position: 'relative', overflow: 'hidden' }}>
                                 <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: '#059669', borderRadius: '4px 0 0 4px' }} />
                                 
@@ -145,7 +145,7 @@ export default function AdminOrderDetailsPage() {
                         </div>
 
                         {/* RIGHT SIDE: SUMMARY */}
-                        <div style={{ width: '250px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div style={{ width: '100%', maxWidth: '300px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             <SummaryRow label="Subtotal" value={`₹${Number(order.total_amount).toFixed(2)}`} />
                             <SummaryRow label="GST (CGST+SGST)" value={`₹${Number(order.gst_total).toFixed(2)}`} />
                             <SummaryRow label="Discount" value={`-₹${Number(order.discount).toFixed(2)}`} color="#e11d48" />
@@ -197,7 +197,7 @@ export default function AdminOrderDetailsPage() {
                         <p style={{ fontSize: '15px', fontWeight: 700, margin: '0 0 15px 0' }}>ID: {order.customer_id}</p>
                         
                         <p style={{ fontSize: '13px', margin: '0 0 5px 0', opacity: 0.7 }}>Billing Address</p>
-                        <p style={{ fontSize: '14px', lineHeight: '1.5' }}>Verified System Address<br />AgroMart Registered Node</p>
+                        <p style={{ fontSize: '14px', lineHeight: '1.5' }}>Verified System Address<br />AgroPlatform Registered Node</p>
                     </div>
                 </div>
             </div>

@@ -88,7 +88,7 @@ export default function OtpPage() {
     <div className="auth-page">
       <div className="auth-card animate-pop">
         <div className="auth-card__header">
-          <Link to="/" className="auth-logo">🌿 AgroMart</Link>
+          <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
           <h1 className="auth-card__title">Verify Email</h1>
           <p className="auth-card__subtitle">
             We sent a 6-digit OTP to<br />

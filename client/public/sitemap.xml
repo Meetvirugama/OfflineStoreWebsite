@@ -1,100 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Public Commerce Routes -->
   <url>
     <loc>https://agroplatform.app/</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://agroplatform.app/products</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>daily</changefreq>
     <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://agroplatform.app/pest-detection</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://agroplatform.app/nearby-mandis</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://agroplatform.app/farmer-dashboard</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  
-  <!-- Intelligence Hub Routes -->
-  <url>
-    <loc>https://agroplatform.app/farming-news</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://agroplatform.app/intelligence/mandi</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://agroplatform.app/intelligence/mandi/prices</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://agroplatform.app/intelligence/weather</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://agroplatform.app/farming-news</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://agroplatform.app/nearby-mandis</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://agroplatform.app/pest-detection</loc>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://agroplatform.app/intelligence/mandi/prices</loc>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://agroplatform.app/intelligence/advisory</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://agroplatform.app/intelligence/agri/analytics</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- High Priority Crop Specific Hubs (Examples) -->
-  <url>
-    <loc>https://agroplatform.app/intelligence/agri/crop/Wheat</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://agroplatform.app/intelligence/agri/crop/Cotton</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Auth Routes -->
-  <url>
-    <loc>https://agroplatform.app/auth/login</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://agroplatform.app/auth/register</loc>
-    <lastmod>2026-04-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.6</priority>
   </url>
 </urlset>

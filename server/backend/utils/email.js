@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 /**
- * Global Email Utility for AgroMart ERP
+ * Global Email Utility for AgroPlatform ERP
  * Uses SMTP (Gmail App Password) for digital communication
  */
 let transporter = null;
@@ -60,7 +60,7 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
 
     try {
         const info = await transport.sendMail({
-            from: `"AgroMart 🌾" <${process.env.EMAIL}>`,
+            from: `"AgroPlatform 🌾" <${process.env.EMAIL}>`,
             to,
             subject,
             text,
@@ -79,7 +79,7 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
 };
 
 /**
- * MASTER_WRAPPER: Premium Design System for AgroMart Emails
+ * MASTER_WRAPPER: Premium Design System for AgroPlatform Emails
  */
 const MASTER_WRAPPER = (title, content, subtext = "") => `
     <!DOCTYPE html>
@@ -108,7 +108,7 @@ const MASTER_WRAPPER = (title, content, subtext = "") => `
         <div class="container">
             <div class="header">
                 <div style="font-size: 42px; margin-bottom: 8px;">🌾</div>
-                <div style="font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px;">AgroMart</div>
+                <div style="font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px;">AgroPlatform</div>
                 <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; opacity: 0.85;">${title}</div>
             </div>
             <div class="content">
@@ -119,7 +119,7 @@ const MASTER_WRAPPER = (title, content, subtext = "") => `
                 </p>
             </div>
             <div class="footer">
-                <div style="margin-bottom: 16px; font-weight: 700; color: #334155; font-size: 14px;">AgroMart ERP • Decentralized Agriculture Infrastructure</div>
+                <div style="margin-bottom: 16px; font-weight: 700; color: #334155; font-size: 14px;">AgroPlatform ERP • Decentralized Agriculture Infrastructure</div>
                 <div style="line-height: 2;">
                     DA-IICT Research Park Node • Gandhinagar, India<br/>
                     Managed by Elite Agriculture Operations Group
@@ -136,10 +136,10 @@ const MASTER_WRAPPER = (title, content, subtext = "") => `
 export const getWelcomeTemplate = (name) => {
     const content = `
         <h2>Welcome to the Network, ${name}!</h2>
-        <p>Your node has been successfully activated within the AgroMart ecosystem. You now have full access to our executive sourcing tools, mandi intelligence, and financial ledgers.</p>
+        <p>Your node has been successfully activated within the AgroPlatform ecosystem. You now have full access to our executive sourcing tools, mandi intelligence, and financial ledgers.</p>
         <p>We've prepared your environment for maximum efficiency. Start by exploring the live mandi rates or configuring your supplier profiles.</p>
         <div style="text-align: center;">
-            <a href="https://agromart-erp.vercel.app/dashboard" class="btn">Initialize Your Dashboard</a>
+            <a href="https://agroplatform.app/dashboard" class="btn">Initialize Your Dashboard</a>
         </div>
     `;
     return MASTER_WRAPPER("Onboarding Activation", content, "Pro Tip: Complete your profile to unlock high-limit credit lines.");
@@ -197,7 +197,7 @@ export const getOrderConfirmationTemplate = (order, customerName) => {
 export const getOTPTemplate = (otp, name) => {
     const content = `
         <h2>Identity Authentication</h2>
-        <p>Hello ${name}, use the secure authorization code below to verify your session and access the AgroMart network.</p>
+        <p>Hello ${name}, use the secure authorization code below to verify your session and access the AgroPlatform network.</p>
         <div style="background-color: #f8fafc; padding: 48px 24px; border-radius: 20px; text-align: center; border: 2px solid #e2e8f0; margin: 32px 0;">
             <div style="font-size: 56px; font-weight: 800; letter-spacing: 12px; color: #059669; font-family: monospace;">${otp}</div>
             <div style="margin-top: 24px; font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Expires in 10 minutes</div>
@@ -222,7 +222,7 @@ export const getRecoveryTemplate = (otp, name) => {
 export const getOrderReceiptTemplate = (order, name, amount, mode) => {
     const content = `
         <h2>Payment Processed ✅</h2>
-        <p>Success! Your financial transaction has been verified and settled in the AgroMart ledger.</p>
+        <p>Success! Your financial transaction has been verified and settled in the AgroPlatform ledger.</p>
         
         <div style="background-color: #f8fafc; padding: 40px; border-radius: 20px; text-align: center; margin: 32px 0; border: 1px solid #e2e8f0;">
             <div style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Settlement Amount</div>
@@ -253,7 +253,7 @@ export const getInvoiceSettledTemplate = (order, name) => {
             <div style="font-size: 42px; font-weight: 800;">₹${Number(order.final_amount).toFixed(2)}</div>
         </div>
         <div style="text-align: center;">
-            <a href="https://agromart-erp.vercel.app/orders" class="btn">Archive & Review Invoices</a>
+            <a href="https://agroplatform.app/orders" class="btn">Archive & Review Invoices</a>
         </div>
     `;
     return MASTER_WRAPPER("Official Tax Invoice Settled", content, "This settlement triggers final clearance for delivery if pending.");
@@ -269,10 +269,10 @@ export const getPaymentReminderTemplate = (order, name, balance) => {
             <div style="margin-top: 16px; font-size: 14px; font-weight: 700; color: #9a3412;">Reference Order: #${order.id}</div>
         </div>
         <div style="text-align: center;">
-            <a href="https://agromart-erp.vercel.app/orders/${order.id}" class="btn" style="background-color: #ea580c;">Settle Balance Now</a>
+            <a href="https://agroplatform.app/orders/${order.id}" class="btn" style="background-color: #ea580c;">Settle Balance Now</a>
         </div>
     `;
-    return MASTER_WRAPPER("Immediate Payment Alert", content, "Late settlement may affect your credit rating within the AgroMart ecosystem.");
+    return MASTER_WRAPPER("Immediate Payment Alert", content, "Late settlement may affect your credit rating within the AgroPlatform ecosystem.");
 };
 
 export const getNotificationTemplate = (title, message) => {
@@ -280,7 +280,7 @@ export const getNotificationTemplate = (title, message) => {
         <h2>${title}</h2>
         <p style="font-size: 18px; color: #1e293b; margin-bottom: 32px;">${message}</p>
         <div style="text-align: center;">
-            <a href="https://agromart-erp.vercel.app/dashboard" class="btn">View Details in Dashboard</a>
+            <a href="https://agroplatform.app/dashboard" class="btn">View Details in Dashboard</a>
         </div>
     `;
     return MASTER_WRAPPER("System Notification", content);

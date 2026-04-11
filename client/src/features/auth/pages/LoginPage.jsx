@@ -47,7 +47,7 @@ export default function LoginPage() {
     <div className="auth-page">
       <div className="auth-card animate-pop">
         <div className="auth-card__header">
-          <Link to="/" className="auth-logo">🌿 AgroMart</Link>
+          <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
           <h1 className="auth-card__title">Welcome Back</h1>
           <p className="auth-card__subtitle">Login to your farmer account</p>
         </div>
@@ -102,7 +102,7 @@ export default function LoginPage() {
 
         <div className="auth-card__footer">
           <p className="auth-footer-text">
-            New to AgroMart?{" "}
+            New to AgroPlatform?{" "}
             <Link to="/auth/register" className="auth-link" id="go-register-link">
               Create Account
             </Link>

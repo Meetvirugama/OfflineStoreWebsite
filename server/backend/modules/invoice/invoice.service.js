@@ -34,7 +34,7 @@ export const generateInvoicePDF = async (order, streamOrRes) => {
             doc
                 .fillColor("#059669")
                 .fontSize(24)
-                .text("AgroMart", 50, 50)
+                .text("AgroPlatform", 50, 50)
                 .fillColor("#444444")
                 .fontSize(10)
                 .text("Executive Sourcing Node", 50, 80)
@@ -144,8 +144,8 @@ export const generateInvoicePDF = async (order, streamOrRes) => {
             doc
                 .fontSize(8)
                 .fillColor("#94a3b8")
-                .text("This document is a computer-generated transaction record for the AgroMart Executive Sourcing Network.", 50, 750, { align: "center" })
-                .text("Powered by AgroMart ERP Smart Ledger Technology.", 50, 765, { align: "center" });
+                .text("This document is a computer-generated transaction record for the AgroPlatform Executive Sourcing Network.", 50, 750, { align: "center" })
+                .text("Powered by AgroPlatform ERP Smart Ledger Technology.", 50, 765, { align: "center" });
 
             doc.on("error", (err) => {
                 console.error("PDFDoc Error:", err);

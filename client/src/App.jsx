@@ -1,58 +1,63 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import MainLayout from "@core/layout/MainLayout";
 import AdminLayout from "@core/layout/AdminLayout";
 import RoleGuard from "@core/guards/RoleGuard";
 import LoadingBar from "@core/components/LoadingBar";
 import IntelligenceLayout from "@core/layout/IntelligenceLayout";
+import AgroLoader from "@core/components/AgroLoader";
+import ScrollToTop from "@core/components/ScrollToTop";
 
 // Features: Shop & Products
-import HomePage from "@features/shop/pages/HomePage";
-import ProductsPage from "@features/shop/pages/ProductsPage";
-import ProductDetailPage from "@features/shop/pages/ProductDetailPage";
+const HomePage = lazy(() => import("@features/shop/pages/HomePage"));
+const ProductsPage = lazy(() => import("@features/shop/pages/ProductsPage"));
+const ProductDetailPage = lazy(() => import("@features/shop/pages/ProductDetailPage"));
 
 // Features: Checkout & Orders
-import CheckoutPage from "@features/checkout/pages/CheckoutPage";
-import OrderSuccessPage from "@features/checkout/pages/OrderSuccessPage";
-import PaymentPage from "@features/checkout/pages/PaymentPage";
-import OrdersPage from "@features/orders/pages/OrdersPage";
-import OrderDetailsPage from "@features/orders/pages/OrderDetailsPage";
+const CheckoutPage = lazy(() => import("@features/checkout/pages/CheckoutPage"));
+const OrderSuccessPage = lazy(() => import("@features/checkout/pages/OrderSuccessPage"));
+const PaymentPage = lazy(() => import("@features/checkout/pages/PaymentPage"));
+const OrdersPage = lazy(() => import("@features/orders/pages/OrdersPage"));
+const OrderDetailsPage = lazy(() => import("@features/orders/pages/OrderDetailsPage"));
 
 // Features: User & Profile
-import ProfilePage from "@features/user/pages/ProfilePage";
+const ProfilePage = lazy(() => import("@features/user/pages/ProfilePage"));
 
 // Features: Auth
-import LoginPage from "@features/auth/pages/LoginPage";
-import RegisterPage from "@features/auth/pages/RegisterPage";
-import OtpPage from "@features/auth/pages/OtpPage";
-import ForgotPasswordPage from "@features/auth/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@features/auth/pages/ResetPasswordPage";
-import GoogleSuccessPage from "@features/auth/pages/GoogleSuccessPage";
+const LoginPage = lazy(() => import("@features/auth/pages/LoginPage"));
+const RegisterPage = lazy(() => import("@features/auth/pages/RegisterPage"));
+const OtpPage = lazy(() => import("@features/auth/pages/OtpPage"));
+const ForgotPasswordPage = lazy(() => import("@features/auth/pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("@features/auth/pages/ResetPasswordPage"));
+const GoogleSuccessPage = lazy(() => import("@features/auth/pages/GoogleSuccessPage"));
 
 // Features: Agriculture Intelligence
-import CropDetailsPage from "@features/agriculture/pages/CropDetailsPage";
-import AgriAnalyticsPage from "@features/agriculture/pages/AgriAnalyticsPage";
-import FarmingNewsPage from "@features/agriculture/pages/FarmingNewsPage";
-import CropAdvisoryPage from "@features/agriculture/pages/CropAdvisoryPage";
-import PestDetectionPage from "@features/agriculture/pages/PestDetectionPage";
-import NearbyMandisPage from "@features/agriculture/pages/NearbyMandisPage";
-import FarmerDashboardPage from "@features/agriculture/pages/FarmerDashboardPage";
-import WeatherDashboard from "@features/agriculture/pages/WeatherDashboard";
+const CropDetailsPage = lazy(() => import("@features/agriculture/pages/CropDetailsPage"));
+const AgriAnalyticsPage = lazy(() => import("@features/agriculture/pages/AgriAnalyticsPage"));
+const FarmingNewsPage = lazy(() => import("@features/agriculture/pages/FarmingNewsPage"));
+const CropAdvisoryPage = lazy(() => import("@features/agriculture/pages/CropAdvisoryPage"));
+const PestDetectionPage = lazy(() => import("@features/agriculture/pages/PestDetectionPage"));
+const NearbyMandisPage = lazy(() => import("@features/agriculture/pages/NearbyMandisPage"));
+const FarmerDashboardPage = lazy(() => import("@features/agriculture/pages/FarmerDashboardPage"));
+const WeatherDashboard = lazy(() => import("@features/agriculture/pages/WeatherDashboard"));
 
 // Features: Admin
-import AnalyticsPage from "@features/admin/pages/AnalyticsPage";
-import AdminProductsPage from "@features/admin/pages/AdminProductsPage";
-import AdminOrdersPage from "@features/admin/pages/AdminOrdersPage";
-import AdminOrderDetailsPage from "@features/admin/pages/AdminOrderDetailsPage";
-import AdminProfilePage from "@features/admin/pages/AdminProfilePage";
-import SuppliersListPage from "@features/admin/pages/SuppliersListPage";
-import SupplierDetailsPage from "@features/admin/pages/SupplierDetailsPage";
-import MandiPricesPage from "@features/admin/pages/MandiPricesPage";
-import MandiDashboardPage from "@features/admin/pages/MandiDashboardPage";
+const AnalyticsPage = lazy(() => import("@features/admin/pages/AnalyticsPage"));
+const AdminProductsPage = lazy(() => import("@features/admin/pages/AdminProductsPage"));
+const AdminOrdersPage = lazy(() => import("@features/admin/pages/AdminOrdersPage"));
+const AdminOrderDetailsPage = lazy(() => import("@features/admin/pages/AdminOrderDetailsPage"));
+const AdminProfilePage = lazy(() => import("@features/admin/pages/AdminProfilePage"));
+const SuppliersListPage = lazy(() => import("@features/admin/pages/SuppliersListPage"));
+const SupplierDetailsPage = lazy(() => import("@features/admin/pages/SupplierDetailsPage"));
+const MandiPricesPage = lazy(() => import("@features/admin/pages/MandiPricesPage"));
+const MandiDashboardPage = lazy(() => import("@features/admin/pages/MandiDashboardPage"));
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <LoadingBar />
+      <Suspense fallback={<AgroLoader />}>
       <Routes>
         {/* PUBLIC */}
         <Route element={<MainLayout />}>
@@ -103,6 +108,7 @@ function App() {
           <Route path="/admin/suppliers/:id" element={<SupplierDetailsPage />} />
         </Route>
       </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

@@ -40,7 +40,7 @@ export default function RegisterPage() {
     <div className="auth-page">
       <div className="auth-card auth-card--wide animate-pop">
         <div className="auth-card__header">
-          <Link to="/" className="auth-logo">🌿 AgroMart</Link>
+          <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
           <h1 className="auth-card__title">Create Account</h1>
           <p className="auth-card__subtitle">Join 50,000+ Indian farmers today</p>
         </div>

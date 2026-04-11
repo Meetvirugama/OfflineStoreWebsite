@@ -78,7 +78,7 @@ app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.json({
     success: true,
-    message: "Welcome to AgroMart ERP API 🌾",
+    message: "Welcome to AgroPlatform ERP API 🌾",
     version: "1.0.0",
     status: "operational",
     endpoints: {
@@ -93,7 +93,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Health Check
-app.get("/health", (req, res) => res.send("AgroMart ERP API is alive 🌾"));
+app.get("/health", (req, res) => res.send("AgroPlatform ERP API is alive 🌾"));
 
 // Mount Module Routes
 app.use("/api/auth", authRoutes);

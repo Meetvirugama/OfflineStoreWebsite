@@ -329,7 +329,7 @@
     height: auto;
     min-height: 100dvh;
     border: none;
-    padding: 60px 24px;
+    padding: 32px 20px;
     align-items: center;
     justify-content: flex-start;
   }

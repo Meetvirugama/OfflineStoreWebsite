@@ -69,7 +69,7 @@ export default function AdminLayout() {
         <div className="admin-sidebar__brand">
           <span className="admin-sidebar__logo">🌿</span>
           <div>
-            <p className="admin-sidebar__name">AgroMart</p>
+            <p className="admin-sidebar__name">AgroPlatform</p>
             <p className="admin-sidebar__role">Administrator</p>
           </div>
         </div>

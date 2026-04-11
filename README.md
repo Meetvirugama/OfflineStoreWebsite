@@ -1,4 +1,4 @@
-# 🏪 AgroMart: Independent Offline Store ERP System
+# 🏪 AgroPlatform: Independent Offline Store ERP System
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
@@ -7,7 +7,7 @@
 
 > **A highly scalable, production-ready ERP system designed explicitly for offline stores. Built with an independent-instance architecture, the system is engineered to be deployed individually for different physical stores, each provisioned with its own dedicated cloud infrastructure, database, and domain name.**
 
-*The current implementation showcases **AgroMart**, a high-end, nature-inspired instance fully customized for the agricultural supply chain and retail sector.*
+*The current implementation showcases **AgroPlatform**, a high-end, nature-inspired instance fully customized for the agricultural supply chain and retail sector.*
 
 ---
 

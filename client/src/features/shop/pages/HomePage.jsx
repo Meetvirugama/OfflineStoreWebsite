@@ -19,7 +19,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = "AgroMart – India's Trusted Source";
+    document.title = "AgroPlatform – India's Trusted Source";
 
     const fetchHomeData = async () => {
       try {
@@ -45,7 +45,7 @@ export default function HomePage() {
       {/* HERO BANNER */}
       <section className="hero">
         <div className="hero__bg svg-pattern-leaves">
-          <img src="/hero_banner.png" alt="AgroMart Banner" className="hero__img" style={{ opacity: 0.1 }} />
+          <img src="/hero_banner.png" alt="AgroPlatform Banner" className="hero__img" style={{ opacity: 0.1 }} />
           <div className="hero__overlay" style={{ background: 'linear-gradient(to bottom, rgba(2, 44, 34, 0.95), rgba(2, 44, 34, 0.8))' }} />
         </div>
 

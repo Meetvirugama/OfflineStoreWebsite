@@ -198,4 +198,5 @@
 @media (max-width: 900px) {
   .checkout-page__layout { grid-template-columns: 1fr; }
   .checkout-summary { position: static; }
+  .checkout-page { padding-bottom: 100px; }
 }

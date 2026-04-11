@@ -59,8 +59,8 @@
 ========================= */
 .grid-products {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
 }
 
 /* =========================
@@ -86,20 +86,9 @@
 /* =========================
    RESPONSIVE
 ========================= */
-@media (max-width: 1200px) {
+@media (min-width: 769px) {
   .grid-products {
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  }
-}
-
-@media (max-width: 900px) {
-  .products-page__main {
-    width: 100%;
-  }
-}
-
-@media (max-width: 500px) {
-  .grid-products {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 24px;
   }
 }

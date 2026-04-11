@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="footer__main container">
         <div className="footer__brand">
           <Link to="/" className="footer__logo">
-            <span>🌿</span> AgroMart
+            <span>🌿</span> AgroPlatform
           </Link>
           <p className="footer__tagline">
             India's trusted marketplace for quality fertilizers, crop medicines,
@@ -70,16 +70,16 @@ export default function Footer() {
           <h4 className="footer__col-title">Contact</h4>
           <ul className="footer__links footer__links--info">
             <li>📞 +91 6352860412</li>
-            <li>📧 support@agromart.in</li>
+            <li>📧 support@agroplatform.app</li>
             <li>🕐 Mon–Sat: 9 AM – 6 PM</li>
-            <li>🌐 www.agromart.in</li>
+            <li>🌐 www.agroplatform.app</li>
           </ul>
         </div>
       </div>
 
       <div className="footer__bottom">
         <div className="container footer__bottom-inner">
-          <p>© 2025 AgroMart. All rights reserved. | Made with 🌿 for Indian farmers</p>
+          <p>© 2025 AgroPlatform. All rights reserved. | Made with 🌿 for Indian farmers</p>
           <div className="footer__badges">
             <span className="footer__badge">✅ Certified Products</span>
             <span className="footer__badge">🚜 Farm Delivery</span>

@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
     <div className="auth-page">
       <div className="auth-card animate-pop">
         <div className="auth-card__header">
-          <Link to="/" className="auth-logo">🌿 AgroMart</Link>
+          <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
           <h1 className="auth-card__title">Create New Password</h1>
           <p className="auth-card__subtitle">Enter the 6-digit code sent to your email</p>
         </div>

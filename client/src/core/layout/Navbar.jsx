@@ -100,7 +100,7 @@ export default function Navbar() {
           
           <Link to="/" className="navbar-natural__logo">
             <Leaf className="logo-icon" size={28} />
-            Agro<span className="logo-accent">Mart</span>
+            Agro<span className="logo-accent">Platform</span>
           </Link>
 
           <div className="navbar-natural__search-container" ref={searchRef}>
@@ -193,19 +193,24 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* MOBILE OVERLAY */}
+      {mobileMenuOpen && (
+        <div className="navbar-mobile-overlay" onClick={() => setMobileMenuOpen(false)} />
+      )}
+
       {/* SECONDARY RIBBON: PUBLIC FEATURES HUB */}
-      <div className="navbar-natural__ribbon">
+      <div className={`navbar-natural__ribbon ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="navbar-natural__container">
           <nav className="ribbon-nav">
-            <Link to="/intelligence/mandi" className={`ribbon-link ${isActive('/intelligence/mandi') ? 'active' : ''}`}>
+            <Link to="/intelligence/mandi" className={`ribbon-link ${isActive('/intelligence/mandi') ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
               <Newspaper size={18} />
               <span>Market</span>
             </Link>
-            <Link to="/nearby-mandis" className={`ribbon-link ${isActive('/nearby-mandis') ? 'active' : ''}`}>
+            <Link to="/nearby-mandis" className={`ribbon-link ${isActive('/nearby-mandis') ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
               <MapPin size={18} />
               <span>Mandi NearBy</span>
             </Link>
-            <Link to="/pest-detection" className={`ribbon-link ${isActive('/pest-detection') ? 'active' : ''}`}>
+            <Link to="/pest-detection" className={`ribbon-link ${isActive('/pest-detection') ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
               <Skull size={18} />
               <span>Pest Alerts</span>
             </Link>

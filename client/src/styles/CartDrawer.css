@@ -347,4 +347,7 @@
 
 @media (max-width: 768px) {
   .cart-drawer { width: 100vw; }
+  .cart-drawer__header { padding: 20px 20px; }
+  .cart-drawer__footer { padding: 20px 20px 32px; }
+  .cart-drawer__items { padding: 16px; }
 }

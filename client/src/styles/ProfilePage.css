@@ -263,4 +263,7 @@
   .profile-edit__view { grid-template-columns: 1fr; }
   .profile-edit__actions { flex-direction: column; }
   .profile-edit__actions button { width: 100%; }
+  .profile-stats { grid-template-columns: 1fr; }
+  .profile-page { padding: 24px 16px 100px; }
+  .profile-edit { padding: 20px; }
 }

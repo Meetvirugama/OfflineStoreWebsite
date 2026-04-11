@@ -158,4 +158,7 @@
     flex-direction: column;
     align-items: flex-start;
   }
+  .footer__bottom {
+    padding-bottom: calc(var(--mobile-nav-h, 70px) + 20px);
+  }
 }

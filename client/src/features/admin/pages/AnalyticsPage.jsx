@@ -106,7 +106,7 @@ export default function AnalyticsPage() {
 
         <div style={{ borderLeft: '4px solid var(--admin-accent)', paddingLeft: '20px' }}>
           <h1 className="analytics-title" style={{ fontSize: '32px', fontWeight: '900', color: '#0f172a' }}>Executive Council Dashboard</h1>
-          <p className="analytics-subtitle" style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>Comprehensive performance oversight and structural engagement metrics for AgroMart.</p>
+          <p className="analytics-subtitle" style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>Comprehensive performance oversight and structural engagement metrics for AgroPlatform.</p>
         </div>
 
       {/* KPI */}
@@ -167,7 +167,7 @@ export default function AnalyticsPage() {
           <BarChart data={safeProducts} layout="vertical" margin={{ left: 10, right: 30 }}>
             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e0e0e0" />
             <XAxis type="number" axisLine={false} tickLine={false} />
-            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={150} style={{ fontSize: '12px', fontWeight: '600' }} />
+            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={100} style={{ fontSize: '11px', fontWeight: '600' }} />
             <Tooltip cursor={{fill: '#f4f6f8'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
             <Bar dataKey="revenue" name="Revenue (₹)" fill={themeColors.blue} radius={[0, 4, 4, 0]} barSize={24} />
           </BarChart>
