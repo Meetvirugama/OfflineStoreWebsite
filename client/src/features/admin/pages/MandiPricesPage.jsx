@@ -119,7 +119,7 @@ export default function MandiPricesPage() {
                     </div>
                 </div>
 
-                <div className="radar-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '24px' }}>
+                <div className="agri-grid-1-3">
                     <div className="radar-controls" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div className="control-field">
                             <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Target Commodity</label>
@@ -153,7 +153,7 @@ export default function MandiPricesPage() {
                         )}
                     </div>
 
-                    <div className="radar-chart-container" style={{ height: '300px', background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', padding: '20px' }}>
+                    <div className="radar-chart-container" style={{ height: '300px', background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', padding: '20px', minWidth: 'min(500px, 100vw)' }}>
                         {trendsLoading ? (
                             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontSize: '14px' }}>
                                 Syncing Market Radar Data...
@@ -260,7 +260,7 @@ export default function MandiPricesPage() {
             {loading ? (
                 <div style={{ textAlign: 'center', padding: '50px' }}>Collecting market data...</div>
             ) : (
-                <div className="admin-table-wrapper">
+                <div className="mandi-table-container">
                     <table className="admin-table">
                         <thead>
                             <tr>

@@ -190,7 +190,7 @@ const WeatherDashboard = () => {
             <div style={{background: '#ffffff', borderRadius: '24px', padding: 'clamp(1.2rem, 4vw, 3.5rem)', border: '1px solid rgba(0,0,0,0.06)', marginBottom: '2rem', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.04)'}}>
                 <div style={{position: 'absolute', top: '-10%', right: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(5, 150, 105, 0.05) 0%, transparent 70%)', filter: 'blur(50px)'}}></div>
                 
-                <div className="weather-hero-content" style={{position: 'relative', zIndex: 1}}>
+                <div className="weather-hero-content agri-grid-2-1" style={{position: 'relative', zIndex: 1}}>
                     <div>
                         <div style={{display: 'flex', alignItems: 'baseline', gap: '1.5rem'}}>
                             <span style={{fontSize: '9rem', fontWeight: 900, letterSpacing: '-5px', color: 'inherit', lineHeight: 1}}>{Math.round(currentWeather?.main?.temp || 0)}°</span>
@@ -205,8 +205,8 @@ const WeatherDashboard = () => {
                             <div><p style={{fontSize: '0.8rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>PRECIPITATION</p><p style={{fontSize: '1.8rem', fontWeight: 900, margin: 0}}>0%</p></div>
                         </div>
                     </div>
-                    <div style={{width: '240px', height: '240px', background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 20px rgba(0,0,0,0.02)'}}>
-                        {getWeatherIcon(currentWeather?.weather?.[0]?.main, 140)}
+                    <div className="weather-hero-icon-container" style={{width: 'clamp(140px, 20vw, 240px)', height: 'clamp(140px, 20vw, 240px)', background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 20px rgba(0,0,0,0.02)', margin: '0 auto'}}>
+                        {getWeatherIcon(currentWeather?.weather?.[0]?.main, 'clamp(80px, 15vw, 140px)')}
                     </div>
                 </div>
             </div>
@@ -256,7 +256,7 @@ const WeatherDashboard = () => {
             </div>
 
             {/* 5. ENVIRONMENTAL DIAGNOSTICS */}
-            <div className="weather-diagnostics-grid">
+            <div className="agri-grid-2-1">
                 <div style={{display: 'flex', flexDirection: 'column', gap: '1.2rem'}}>
                     <div style={{background: 'rgba(15, 23, 42, 0.4)', padding: '2.5rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 20px 40px rgba(0,0,0,0.3)'}}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>

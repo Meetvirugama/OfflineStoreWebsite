@@ -66,10 +66,7 @@ export default function MandiDashboardPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="summary-grid" style={{ 
-                display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', 
-                gap: '24px', marginBottom: '32px' 
-            }}>
+            <div className="summary-grid">
                 <div className="stat-card" style={{ background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', color: 'white', padding: '28px', borderRadius: '24px', boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.3)' }}>
                     <p style={{ opacity: 0.9, fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Active Trade Nodes</p>
                     <h3 style={{ fontSize: '36px', margin: '12px 0', color: 'white', fontWeight: '900' }}>{summary?.totalMandis || 0}</h3>
@@ -89,9 +86,9 @@ export default function MandiDashboardPage() {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '32px' }}>
+            <div className="agri-grid-2-1">
                 {/* Crop Trend Chart */}
-                <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <div style={{ background: '#fff', padding: 'clamp(16px, 5vw, 32px)', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', minWidth: '0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                         <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>Historical Price Radar: {selectedCrop}</h4>
                         <div style={{ display: 'flex', gap: '12px', alignItems: 'center', background: '#f8fafc', padding: '8px 16px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
@@ -139,7 +136,7 @@ export default function MandiDashboardPage() {
                 </div>
 
                 {/* District Comparison Chart */}
-                <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+                <div style={{ background: '#fff', padding: 'clamp(16px, 5vw, 32px)', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', minWidth: '0' }}>
                     <h4 style={{ marginBottom: '32px', fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>District Intensity Map (Avg)</h4>
                     <div style={{ height: '320px' }}>
                         <ResponsiveContainer width="100%" height="100%">
