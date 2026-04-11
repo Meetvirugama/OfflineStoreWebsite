@@ -36,31 +36,56 @@ import healthRoutes from "./modules/health/health.routes.js";
 const app = express();
 
 // ─── CORS ──────────────────────────────────────────────────────────────────
-// Explicit list of allowed origins (add any new domains here)
-const ALLOWED_ORIGINS = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://offlinestorewebsite.onrender.com",
-  "https://agroplatform.app",
-  "https://www.agroplatform.app",
-];
-
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, Postman)
+    // 1. Allow internal requests (no origin) or server-to-server
     if (!origin) return callback(null, true);
-    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
-    return callback(new Error(`CORS blocked for origin: ${origin}`));
+
+    // 2. Allow local development
+    if (origin.includes("localhost") || origin.includes("127.0.0.1")) {
+      return callback(null, true);
+    }
+
+    // 3. Allow production domains and subdomains
+    const allowedPatterns = [
+      /\.agroplatform\.app$/,
+      /^https:\/\/agroplatform\.app$/,
+      /\.vercel\.app$/,
+      /\.onrender\.com$/
+    ];
+
+    const isAllowed = allowedPatterns.some(pattern => pattern.test(origin));
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.warn(`🛑 CORS blocked for origin: ${origin}`);
+      callback(new Error(`CORS blocked for origin: ${origin}`));
+    }
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  optionsSuccessStatus: 200 // important for legacy browsers / preflight
 };
 
 // Handle preflight OPTIONS requests before all routes
-// Use regex to bypass path-to-regexp v8 which rejects string wildcards
-app.options(/.*/, cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
+
+// ─── ROOT ROUTE ─────────────────────────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Welcome to AgroMart ERP API 🌾",
+    version: "1.0.0",
+    status: "operational",
+    endpoints: {
+      health: "/health",
+      diagnostics: "/api/health/diagnostics"
+    }
+  });
+});
 
 // ─── STANDARD MIDDLEWARE ────────────────────────────────────────────────────
 app.use(express.json());

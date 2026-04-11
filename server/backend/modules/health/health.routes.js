@@ -5,6 +5,10 @@ import axios from "axios";
 
 const router = express.Router();
 
+router.get("/", (req, res) => {
+    res.json({ success: true, message: "Health module is active" });
+});
+
 router.get("/diagnostics", async (req, res) => {
     const diagnostics = {
         timestamp: new Date().toISOString(),
