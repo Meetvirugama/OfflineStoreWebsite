@@ -36,15 +36,15 @@ const AgriAnalyticsPage = () => {
 
     return (
         <div className="agri-page">
-            <div className="agri-page__header" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem'}}>
+            <div className="agri-page__header" style={{display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem'}}>
                 <div>
                     <h1 className="agri-title">Market Intel Analytics</h1>
-                    <div style={{display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.2rem'}}>
-                        <p style={{opacity: 0.5, fontSize: '0.95rem'}}>Predictive indexing and price telemetry.</p>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.2rem', flexWrap: 'wrap'}}>
+                        <p style={{opacity: 0.5, fontSize: '0.85rem', margin: 0}}>Predictive indexing and price telemetry.</p>
                         {selectedLocation && (
                             <span style={{
-                                fontSize: '0.75rem', padding: '0.2rem 0.6rem', background: 'rgba(16, 185, 129, 0.1)', 
-                                border: '1px solid #10b981', borderRadius: '1rem', color: '#10b981', fontWeight: 700
+                                fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(16, 185, 129, 0.1)', 
+                                border: '1px solid #10b981', borderRadius: '1rem', color: '#10b981', fontWeight: 700, whiteSpace: 'nowrap'
                             }}>
                                 SYNC: {selectedLocation.name.toUpperCase()}
                             </span>
@@ -52,31 +52,32 @@ const AgriAnalyticsPage = () => {
                     </div>
                 </div>
                 
-                <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                <div style={{display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap'}}>
                     <button 
                         onClick={() => window.location.href = `/admin/agri/crop/${selectedCrop}`}
                         className="agri-card hover-bg" 
                         style={{
-                            padding: '0.5rem 1.2rem', 
+                            padding: '0.5rem 1rem', 
                             background: 'var(--agri-green)', 
                             border: 'none', 
                             color: '#fff', 
                             fontWeight: 700, 
                             cursor: 'pointer',
                             borderRadius: '0.8rem',
-                            fontSize: '0.9rem'
+                            fontSize: '0.8rem',
+                            whiteSpace: 'nowrap'
                         }}
                     >
                         Explore Asset
                     </button>
 
-                    <div className="agri-card" style={{padding: '0.5rem 1rem', display: 'flex', gap: '1rem', alignItems: 'center', background: '#f1f5f9'}}>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', borderRight: '1px solid rgba(0,0,0,0.1)', paddingRight: '1rem'}}>
-                            <Filter size={16} className="agri-green" />
+                    <div className="agri-card" style={{padding: '0.4rem 0.8rem', display: 'flex', gap: '0.6rem', alignItems: 'center', background: '#f1f5f9', flexWrap: 'wrap'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '0.4rem', borderRight: '1px solid rgba(0,0,0,0.1)', paddingRight: '0.6rem'}}>
+                            <Filter size={14} className="agri-green" />
                             <select 
                                 value={selectedCrop} 
                                 onChange={(e) => setSelectedCrop(e.target.value)}
-                                style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem'}}
+                                style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem'}}
                             >
                                 {crops.map(c => <option key={c} value={c} style={{background: '#ffffff', color: '#1e293b'}}>{c}</option>)}
                             </select>
@@ -84,11 +85,11 @@ const AgriAnalyticsPage = () => {
                         <select 
                             value={days} 
                             onChange={(e) => setDays(e.target.value)}
-                            style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 500, opacity: 0.7, fontSize: '0.85rem'}}
+                            style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 500, opacity: 0.7, fontSize: '0.8rem'}}
                         >
-                            <option value={7} style={{background: '#ffffff', color: '#1e293b'}}>7D Index</option>
-                            <option value={30} style={{background: '#ffffff', color: '#1e293b'}}>30D Index</option>
-                            <option value={90} style={{background: '#ffffff', color: '#1e293b'}}>90D Index</option>
+                            <option value={7} style={{background: '#ffffff', color: '#1e293b'}}>7D</option>
+                            <option value={30} style={{background: '#ffffff', color: '#1e293b'}}>30D</option>
+                            <option value={90} style={{background: '#ffffff', color: '#1e293b'}}>90D</option>
                         </select>
                     </div>
                 </div>
@@ -103,7 +104,7 @@ const AgriAnalyticsPage = () => {
 
             {!loading && !error && (
             <>
-            <div className="stats-grid agri-two-col" style={{gap: '2rem'}}>
+            <div style={{display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem'}}>
                 <div className="agri-card" style={{padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)'}}>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem'}}>
                         <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
@@ -125,7 +126,7 @@ const AgriAnalyticsPage = () => {
                         )}
                     </div>
                     
-                    <div style={{height: '350px', marginTop: '1rem'}}>
+                    <div style={{height: 'clamp(200px, 40vw, 350px)', marginTop: '1rem'}}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={trends || []}>
                                 <defs>
@@ -185,7 +186,7 @@ const AgriAnalyticsPage = () => {
                             <div style={{background: 'rgba(0,0,0,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.04)'}}>
                                 <h4 style={{opacity: 0.4, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem', fontWeight: 800}}>Live Trading Price</h4>
                                 <div style={{display: 'flex', alignItems: 'baseline', gap: '0.8rem'}}>
-                                    <span style={{fontSize: '4.5rem', fontWeight: 900, letterSpacing: '-2px', color: 'inherit'}}>₹{trends[trends.length - 1]?.price}</span>
+                                    <span style={{fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', fontWeight: 900, letterSpacing: '-2px', color: 'inherit'}}>₹{trends[trends.length - 1]?.price}</span>
                                     <span style={{fontSize: '1.2rem', opacity: 0.3, fontWeight: 700}}>INR/Q</span>
                                 </div>
                             </div>
@@ -225,7 +226,7 @@ const AgriAnalyticsPage = () => {
                 </div>
             </div>
 
-            <div className="stats-grid" style={{marginTop: '2.5rem', gridTemplateColumns: 'repeat(auto-fit, minmax(min(400px, 100%), 1fr))', gap: '2rem'}}>
+            <div style={{marginTop: '1.5rem', display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem'}}>
                 {aiAnalysis && (
                     <div className="agri-card" style={{padding: '2.5rem', background: 'rgba(16, 185, 129, 0.03)', borderLeft: '6px solid var(--agri-green)', borderRadius: '32px'}}>
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>

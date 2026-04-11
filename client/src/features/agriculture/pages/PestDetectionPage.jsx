@@ -89,7 +89,7 @@ const PestDetectionPage = () => {
                 </p>
             </div>
 
-            <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
                 
                 {/* UPLOAD SECTION */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -104,22 +104,22 @@ const PestDetectionPage = () => {
                                 value={selectedCrop}
                                 onChange={(e) => setSelectedCrop(e.target.value)}
                                 className="agri-card"
-                                style={{ width: '100%', padding: '0.8rem', background: 'rgba(255,255,255,0.05)', borderRadius: '0.6rem', color: '#fff' }}
+                                style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', borderRadius: '0.6rem', color: '#1e293b', border: '1px solid rgba(0,0,0,0.08)' }}
                             >
-                                {CROPS.map(c => <option key={c} value={c} style={{ background: '#022c22' }}>{c}</option>)}
+                                {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}>{c}</option>)}
                             </select>
                         </div>
 
                         <div 
                             onClick={() => fileInputRef.current?.click()}
                             style={{ 
-                                border: '2px dashed rgba(255,255,255,0.1)', 
+                                border: '2px dashed rgba(0,0,0,0.1)', 
                                 borderRadius: '1rem', 
                                 padding: '3rem 1.5rem', 
                                 textAlign: 'center', 
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
-                                background: previewUrl ? `url(${previewUrl}) center/cover no-repeat` : 'rgba(255,255,255,0.02)',
+                                background: previewUrl ? `url(${previewUrl}) center/cover no-repeat` : '#f8fafc',
                                 position: 'relative',
                                 overflow: 'hidden'
                             }}
@@ -275,7 +275,7 @@ const PestDetectionPage = () => {
                             <X size={20} />
                         </button>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
                             <div style={{ 
                                 background: `url(${currentDetection.image_url}) center/cover no-repeat`,
                                 minHeight: '400px'
