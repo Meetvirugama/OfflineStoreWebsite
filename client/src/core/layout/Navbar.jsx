@@ -197,9 +197,9 @@ export default function Navbar() {
       <div className="navbar-natural__ribbon">
         <div className="navbar-natural__container">
           <nav className="ribbon-nav">
-            <Link to="/farming-news" className={`ribbon-link ${isActive('/farming-news') ? 'active' : ''}`}>
+            <Link to="/intelligence/mandi" className={`ribbon-link ${isActive('/intelligence/mandi') ? 'active' : ''}`}>
               <Newspaper size={18} />
-              <span>News</span>
+              <span>Market</span>
             </Link>
             <Link to="/intelligence/mandi" className={`ribbon-link ${isActive('/intelligence/mandi') ? 'active' : ''}`}>
               <Zap size={18} />

@@ -122,10 +122,10 @@ const NearbyMandisPage = () => {
             <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(350px, 400px) 1fr', gap: '2.5rem', alignItems: 'start' }}>
                 
                 {/* LIST VIEW */}
-                <div className="agri-card" style={{ padding: '2.5rem', maxHeight: '700px', overflowY: 'auto', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '1.5rem'}}>
-                        <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0 }}>Active Terminals</h3>
-                        <span style={{background: 'rgba(255,255,255,0.05)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900, color: 'var(--agri-green)'}}>{mandis.length} DETECTED</span>
+                <div className="agri-card" style={{ padding: '2.5rem', maxHeight: '700px', overflowY: 'auto', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
+                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '1.5rem'}}>
+                        <h3 style={{ fontSize: '1.4rem', fontWeight: 800, margin: 0, color: '#1e293b' }}>Active Terminals</h3>
+                        <span style={{background: 'rgba(16, 185, 129, 0.05)', padding: '0.4rem 0.8rem', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 900, color: 'var(--agri-green)'}}>{mandis.length} DETECTED</span>
                     </div>
                     
                     {loading ? (
@@ -146,8 +146,8 @@ const NearbyMandisPage = () => {
                                     style={{ 
                                         padding: '1.8rem', 
                                         borderRadius: '24px', 
-                                        background: activeMarker?.id === mandi.id ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.02)',
-                                        border: activeMarker?.id === mandi.id ? '1px solid var(--agri-green)' : '1px solid rgba(255,255,255,0.06)',
+                                        background: activeMarker?.id === mandi.id ? 'rgba(16, 185, 129, 0.08)' : '#f8fafc',
+                                        border: activeMarker?.id === mandi.id ? '1px solid var(--agri-green)' : '1px solid rgba(0,0,0,0.06)',
                                         cursor: 'pointer',
                                         transition: 'all 0.3s ease',
                                         position: 'relative',
@@ -157,17 +157,17 @@ const NearbyMandisPage = () => {
                                     {activeMarker?.id === mandi.id && (
                                         <div style={{position: 'absolute', top: 0, left: 0, bottom: 0, width: '4px', background: 'var(--agri-green)'}}></div>
                                     )}
-                                    <h4 style={{ margin: '0 0 0.8rem 0', fontSize: '1.2rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                    <h4 style={{ margin: '0 0 0.8rem 0', fontSize: '1.2rem', fontWeight: 800, color: '#1e293b', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
                                         <Store size={20} className="agri-green" /> {mandi.name}
                                     </h4>
-                                    <p style={{ fontSize: '0.9rem', opacity: 0.5, marginBottom: '1.5rem', lineHeight: 1.5, fontWeight: 500 }}>{mandi.address}</p>
+                                    <p style={{ fontSize: '0.9rem', color: '#64748b', opacity: 0.8, marginBottom: '1.5rem', lineHeight: 1.5, fontWeight: 500 }}>{mandi.address}</p>
                                     
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         {mandi.rating ? (
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(245, 158, 11, 0.05)', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid rgba(245, 158, 11, 0.1)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#fffbeb', padding: '0.4rem 0.8rem', borderRadius: '10px', border: '1px solid #fef3c7' }}>
                                                 <Star size={14} fill="#f59e0b" color="#f59e0b" /> 
                                                 <span style={{fontWeight: 900, color: '#f59e0b', fontSize: '0.85rem'}}>{mandi.rating}</span>
-                                                <span style={{opacity: 0.3, fontSize: '0.8rem'}}>({mandi.user_ratings_total})</span>
+                                                <span style={{color: '#92400e', opacity: 0.5, fontSize: '0.8rem'}}>({mandi.user_ratings_total})</span>
                                             </div>
                                         ) : <div></div>}
                                         {mandi.isOpen !== null && (
@@ -196,7 +196,7 @@ const NearbyMandisPage = () => {
                 </div>
 
                 {/* MAP VIEW */}
-                <div style={{ position: 'relative', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 30px 60px rgba(0,0,0,0.4)', background: '#0f172a' }}>
+                <div style={{ position: 'relative', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 30px 60px rgba(0,0,0,0.05)', background: '#f1f5f9' }}>
                     {isLoaded ? (
                         <GoogleMap
                             mapContainerStyle={{ width: '100%', height: '700px' }}
@@ -205,16 +205,7 @@ const NearbyMandisPage = () => {
                             onLoad={onLoad}
                             onUnmount={onUnmount}
                             options={{
-                                styles: [
-                                    { elementType: "geometry", stylers: [{ color: "#0f172a" }] },
-                                    { elementType: "labels.text.stroke", stylers: [{ color: "#0f172a" }] },
-                                    { elementType: "labels.text.fill", stylers: [{ color: "#64748b" }] },
-                                    { featureType: "water", elementType: "geometry", stylers: [{ color: "#1e293b" }] },
-                                    { featureType: "road", elementType: "geometry", stylers: [{ color: "#1e293b" }] },
-                                    { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#475569" }] },
-                                    { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#475569" }] },
-                                    { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#020617" }] }
-                                ],
+                                styles: [], // standard light theme
                                 disableDefaultUI: false,
                                 zoomControl: true,
                             }}

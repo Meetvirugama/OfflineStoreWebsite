@@ -143,8 +143,8 @@ const CropAdvisoryPage = () => {
                 
                 {/* LEFT: Generator Controls */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div className="agri-card" style={{ padding: '2.5rem', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800 }}>
+                    <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
+                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
                             <div style={{width: '6px', height: '24px', background: 'var(--agri-green)', borderRadius: '4px'}}></div>
                             Telemetry Parameters
                         </h3>
@@ -155,9 +155,9 @@ const CropAdvisoryPage = () => {
                                 <select 
                                     value={formData.crop}
                                     onChange={(e) => setFormData({...formData, crop: e.target.value})}
-                                    style={{ width: '100%', padding: '1.2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', color: '#fff', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
+                                    style={{ width: '100%', padding: '1.2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
                                 >
-                                    {CROPS.map(c => <option key={c} value={c} style={{ background: '#0f172a' }}>{c.toUpperCase()}</option>)}
+                                    {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}>{c.toUpperCase()}</option>)}
                                 </select>
                             </div>
 
@@ -166,9 +166,9 @@ const CropAdvisoryPage = () => {
                                 <select 
                                     value={formData.stage}
                                     onChange={(e) => setFormData({...formData, stage: e.target.value})}
-                                    style={{ width: '100%', padding: '1.2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', color: '#fff', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
+                                    style={{ width: '100%', padding: '1.2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
                                 >
-                                    {STAGES.map(s => <option key={s} value={s} style={{ background: '#0f172a' }}>{s.toUpperCase()}</option>)}
+                                    {STAGES.map(s => <option key={s} value={s} style={{ background: '#ffffff', color: '#1e293b' }}>{s.toUpperCase()}</option>)}
                                 </select>
                             </div>
 
@@ -185,7 +185,7 @@ const CropAdvisoryPage = () => {
                                                 setFormData({...formData, location: e.target.value, lat: null, lon: null});
                                                 setSyncStatus('MANUAL');
                                             }}
-                                            style={{ width: '100%', padding: '1.2rem 1.2rem 1.2rem 3.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', color: '#fff', fontSize: '1rem', fontWeight: 600 }}
+                                            style={{ width: '100%', padding: '1.2rem 1.2rem 1.2rem 3.5rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', fontWeight: 600 }}
                                         />
                                     </div>
                                     <button 
@@ -228,7 +228,7 @@ const CropAdvisoryPage = () => {
                     </div>
 
                     {/* HISTORY TREND */}
-                    <div className="agri-card" style={{ padding: '2.5rem', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                         <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '1.1rem', fontWeight: 800 }}>
                             <TrendingUp className="agri-green" size={22} /> Risk Density Matrix
                         </h3>
@@ -238,23 +238,23 @@ const CropAdvisoryPage = () => {
                                     <AreaChart data={chartData}>
                                         <defs>
                                             <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
                                                 <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                                             </linearGradient>
                                         </defs>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                                        <XAxis dataKey="date" stroke="rgba(255,255,255,0.2)" fontSize={10} tickLine={false} axisLine={false} />
-                                        <YAxis stroke="rgba(255,255,255,0.2)" fontSize={10} tickLine={false} axisLine={false} />
+                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.03)" vertical={false} />
+                                        <XAxis dataKey="date" stroke="rgba(0,0,0,0.2)" fontSize={10} tickLine={false} axisLine={false} />
+                                        <YAxis stroke="rgba(0,0,0,0.2)" fontSize={10} tickLine={false} axisLine={false} />
                                         <Tooltip 
-                                            contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#fff' }}
+                                            contentStyle={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '16px', color: '#1e293b', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}
                                             itemStyle={{ color: '#10b981', fontWeight: 800 }}
                                         />
                                         <Area type="monotone" dataKey="temp" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorTemp)" />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.2, border: '2px dashed rgba(255,255,255,0.05)', borderRadius: '24px' }}>
-                                    <p style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '0.8rem' }}>WAITING FOR TELEMETRY...</p>
+                                <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3, border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
+                                    <p style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '0.8rem', color: '#64748b' }}>WAITING FOR TELEMETRY...</p>
                                 </div>
                             )}
                         </div>
@@ -275,12 +275,12 @@ const CropAdvisoryPage = () => {
                     )}
 
                     {!curAdvisory && !loading && (
-                        <div className="agri-card" style={{ padding: '8rem 4rem', textAlign: 'center', background: 'rgba(15, 23, 42, 0.2)', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '40px' }}>
-                            <div style={{ width: '100px', height: '100px', borderRadius: '30px', background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2.5rem', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+                        <div className="agri-card" style={{ padding: '8rem 4rem', textAlign: 'center', background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', borderRadius: '40px', boxShadow: '0 10px 30px rgba(0,0,0,0.02)' }}>
+                            <div style={{ width: '100px', height: '100px', borderRadius: '30px', background: 'rgba(5, 150, 105, 0.05)', border: '1px solid rgba(5, 150, 105, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2.5rem', boxShadow: '0 10px 20px rgba(0,0,0,0.03)' }}>
                                 <Sprout size={48} className="agri-green" />
                             </div>
-                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-0.5px' }}>Terminal Standby</h3>
-                            <p style={{ opacity: 0.4, maxWidth: '450px', margin: '0 auto', fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500 }}>Synchronize your regional telemetry to generate precision-grade agricultural benchmarks and risk assessments.</p>
+                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-0.5px', color: '#1e293b' }}>Terminal Standby</h3>
+                            <p style={{ opacity: 0.5, maxWidth: '450px', margin: '0 auto', fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500, color: '#64748b' }}>Synchronize your regional telemetry to generate precision-grade agricultural benchmarks and risk assessments.</p>
                         </div>
                     )}
 
@@ -340,33 +340,33 @@ const CropAdvisoryPage = () => {
                             {/* Advisory Cards */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
                                 {loading ? (
-                                    [1, 2, 3].map(i => <div key={i} className="agri-card" style={{ height: '140px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '24px', opacity: 0.3 }}></div>)
+                                    [1, 2, 3].map(i => <div key={i} className="agri-card" style={{ height: '140px', background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', borderRadius: '24px', opacity: 0.3 }}></div>)
                                 ) : (
                                     curAdvisory?.advisory.map((item, idx) => (
-                                        <div key={idx} className="agri-card hover-bg" style={{ padding: '2.5rem', display: 'flex', gap: '2rem', alignItems: 'center', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '28px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                                        <div key={idx} className="agri-card hover-bg" style={{ padding: '2.5rem', display: 'flex', gap: '2rem', alignItems: 'center', background: '#ffffff', borderRadius: '28px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
                                             <div style={{ 
                                                 width: '72px', 
                                                 height: '72px', 
                                                 borderRadius: '20px', 
-                                                background: 'rgba(255,255,255,0.03)', 
+                                                background: '#f8fafc', 
                                                 display: 'flex', 
                                                 alignItems: 'center', 
                                                 justifyContent: 'center',
                                                 fontSize: '2.4rem',
-                                                border: '1px solid rgba(255,255,255,0.08)',
-                                                boxShadow: '0 10px 20px rgba(0,0,0,0.2)'
+                                                border: '1px solid rgba(0,0,0,0.06)',
+                                                boxShadow: '0 4px 10px rgba(0,0,0,0.02)'
                                             }}>
                                                 {item.icon}
                                             </div>
                                             <div style={{ flex: 1 }}>
-                                                <h4 style={{ color: '#fff', fontSize: '1.3rem', marginBottom: '0.6rem', fontWeight: '800', letterSpacing: '-0.3px' }}>
+                                                <h4 style={{ color: '#1e293b', fontSize: '1.3rem', marginBottom: '0.6rem', fontWeight: '800', letterSpacing: '-0.3px' }}>
                                                     {item.title.toUpperCase()}
                                                 </h4>
-                                                <p style={{ fontSize: '1.05rem', opacity: 0.6, lineHeight: 1.7, fontWeight: 500 }}>
+                                                <p style={{ fontSize: '1.05rem', color: '#64748b', opacity: 0.8, lineHeight: 1.7, fontWeight: 500 }}>
                                                     {item.message}
                                                 </p>
                                             </div>
-                                            <ChevronRight size={24} style={{ opacity: 0.1 }} />
+                                            <ChevronRight size={24} style={{ opacity: 0.2 }} />
                                         </div>
                                     ))
                                 )}
@@ -375,8 +375,8 @@ const CropAdvisoryPage = () => {
                     )}
 
                     {/* HISTORY LIST */}
-                    <div className="agri-card" style={{ padding: '3rem', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800 }}>
+                    <div className="agri-card" style={{ padding: '3rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
+                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
                             <History size={24} className="agri-green" /> Smart Activity Pulse
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -384,11 +384,11 @@ const CropAdvisoryPage = () => {
                                 <div key={h.id} className="history-item" style={{ 
                                     padding: '1.8rem', 
                                     borderRadius: '24px', 
-                                    background: 'rgba(255,255,255,0.02)',
+                                    background: '#f8fafc',
                                     display: 'flex',
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    border: '1px solid rgba(255,255,255,0.05)',
+                                    border: '1px solid rgba(0,0,0,0.04)',
                                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                                     cursor: 'pointer'
                                 }}>
@@ -398,18 +398,18 @@ const CropAdvisoryPage = () => {
                                             height: '45px', 
                                             background: getRiskColor(h.risk_level), 
                                             borderRadius: '8px',
-                                            boxShadow: `0 0 15px ${getRiskColor(h.risk_level)}60`
+                                            boxShadow: `0 0 15px ${getRiskColor(h.risk_level)}30`
                                         }}></div>
                                         <div>
-                                            <p style={{ fontWeight: '900', fontSize: '1.1rem', color: '#fff', letterSpacing: '-0.2px' }}>{h.crop} <span style={{ opacity: 0.2, fontWeight: '400', margin: '0 0.8rem' }}>/</span> <span style={{ opacity: 0.5 }}>{h.stage.toUpperCase()}</span></p>
-                                            <p style={{ fontSize: '0.85rem', opacity: 0.4, display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', fontWeight: 600 }}>
+                                            <p style={{ fontWeight: '900', fontSize: '1.1rem', color: '#1e293b', letterSpacing: '-0.2px' }}>{h.crop} <span style={{ opacity: 0.2, fontWeight: '400', margin: '0 0.8rem' }}>/</span> <span style={{ opacity: 0.5 }}>{h.stage.toUpperCase()}</span></p>
+                                            <p style={{ fontSize: '0.85rem', color: '#64748b', opacity: 0.7, display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', fontWeight: 600 }}>
                                                 <Calendar size={14} /> {new Date(h.created_at).toLocaleDateString()}
                                                 <MapPin size={14} /> {h.location}
                                             </p>
                                         </div>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: '1.4rem', fontWeight: '900', color: '#fff', letterSpacing: '-1px' }}>
+                                        <div style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', letterSpacing: '-1px' }}>
                                             {Math.round(h.weather_data?.main?.temp || h.weather_data?.temp || 0)}°C
                                         </div>
                                         <div style={{ fontSize: '0.75rem', color: getRiskColor(h.risk_level), fontWeight: '900', letterSpacing: '1px', marginTop: '4px' }}>
@@ -418,9 +418,9 @@ const CropAdvisoryPage = () => {
                                     </div>
                                 </div>
                             )) : (
-                                <div style={{ textAlign: 'center', opacity: 0.2, padding: '5rem 2rem', border: '2px dashed rgba(255,255,255,0.05)', borderRadius: '24px' }}>
-                                    <Calendar size={48} style={{ marginBottom: '1.5rem' }} />
-                                    <p style={{fontWeight: 800, letterSpacing: '1px'}}>NO ARCHIVED TELEMETRY</p>
+                                <div style={{ textAlign: 'center', opacity: 0.4, padding: '5rem 2rem', border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
+                                    <Calendar size={48} style={{ marginBottom: '1.5rem', color: '#64748b' }} />
+                                    <p style={{fontWeight: 800, letterSpacing: '1px', color: '#64748b'}}>NO ARCHIVED TELEMETRY</p>
                                 </div>
                             )}
                         </div>

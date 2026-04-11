@@ -70,25 +70,25 @@ const AgriAnalyticsPage = () => {
                         Explore Asset
                     </button>
 
-                    <div className="agri-card" style={{padding: '0.5rem 1rem', display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(255,255,255,0.02)'}}>
-                        <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '1rem'}}>
+                    <div className="agri-card" style={{padding: '0.5rem 1rem', display: 'flex', gap: '1rem', alignItems: 'center', background: '#f1f5f9'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', borderRight: '1px solid rgba(0,0,0,0.1)', paddingRight: '1rem'}}>
                             <Filter size={16} className="agri-green" />
                             <select 
                                 value={selectedCrop} 
                                 onChange={(e) => setSelectedCrop(e.target.value)}
-                                style={{background: 'transparent', color: '#fff', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem'}}
+                                style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem'}}
                             >
-                                {crops.map(c => <option key={c} value={c} style={{background: '#022c22'}}>{c}</option>)}
+                                {crops.map(c => <option key={c} value={c} style={{background: '#ffffff', color: '#1e293b'}}>{c}</option>)}
                             </select>
                         </div>
                         <select 
                             value={days} 
                             onChange={(e) => setDays(e.target.value)}
-                            style={{background: 'transparent', color: '#fff', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 500, opacity: 0.7, fontSize: '0.85rem'}}
+                            style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 500, opacity: 0.7, fontSize: '0.85rem'}}
                         >
-                            <option value={7} style={{background: '#022c22'}}>7D Index</option>
-                            <option value={30} style={{background: '#022c22'}}>30D Index</option>
-                            <option value={90} style={{background: '#022c22'}}>90D Index</option>
+                            <option value={7} style={{background: '#ffffff', color: '#1e293b'}}>7D Index</option>
+                            <option value={30} style={{background: '#ffffff', color: '#1e293b'}}>30D Index</option>
+                            <option value={90} style={{background: '#ffffff', color: '#1e293b'}}>90D Index</option>
                         </select>
                     </div>
                 </div>
@@ -104,7 +104,7 @@ const AgriAnalyticsPage = () => {
             {!loading && !error && (
             <>
             <div className="stats-grid" style={{gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: '2rem'}}>
-                <div className="agri-card" style={{padding: '2.5rem', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)'}}>
+                <div className="agri-card" style={{padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)'}}>
                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem'}}>
                         <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
                             <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px'}}>
@@ -152,9 +152,9 @@ const AgriAnalyticsPage = () => {
                                     tickFormatter={(val) => `₹${val}`}
                                 />
                                 <Tooltip 
-                                    contentStyle={{background: '#0f172a', border: '1px solid var(--agri-green)', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', padding: '1rem'}}
-                                    itemStyle={{color: '#fff', fontWeight: 800}}
-                                    labelStyle={{color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', marginBottom: '4px'}}
+                                    contentStyle={{background: '#ffffff', border: '1px solid var(--agri-green)', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', padding: '1rem'}}
+                                    itemStyle={{color: '#1e293b', fontWeight: 800}}
+                                    labelStyle={{color: 'rgba(0,0,0,0.4)', fontSize: '0.7rem', marginBottom: '4px'}}
                                 />
                                 <Area 
                                     type="monotone" 
@@ -170,7 +170,7 @@ const AgriAnalyticsPage = () => {
                     </div>
                 </div>
 
-                <div className="agri-card" style={{display: 'flex', flexDirection: 'column', padding: '2.5rem', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.06)'}}>
+                <div className="agri-card" style={{display: 'flex', flexDirection: 'column', padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)'}}>
                     <div style={{display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '2.5rem'}}>
                         <div style={{padding: '0.8rem', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '14px'}}>
                             <BarChart3 className="agri-accent" size={24} />
@@ -182,10 +182,10 @@ const AgriAnalyticsPage = () => {
                     </div>
                     {(trends || []).length > 0 ? (
                         <div style={{display: 'flex', flexDirection: 'column', gap: '3rem', flex: 1}}>
-                            <div style={{background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.04)'}}>
+                            <div style={{background: 'rgba(0,0,0,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.04)'}}>
                                 <h4 style={{opacity: 0.4, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem', fontWeight: 800}}>Live Trading Price</h4>
                                 <div style={{display: 'flex', alignItems: 'baseline', gap: '0.8rem'}}>
-                                    <span style={{fontSize: '4.5rem', fontWeight: 900, letterSpacing: '-2px', color: '#fff'}}>₹{trends[trends.length - 1]?.price}</span>
+                                    <span style={{fontSize: '4.5rem', fontWeight: 900, letterSpacing: '-2px', color: 'inherit'}}>₹{trends[trends.length - 1]?.price}</span>
                                     <span style={{fontSize: '1.2rem', opacity: 0.3, fontWeight: 700}}>INR/Q</span>
                                 </div>
                             </div>
