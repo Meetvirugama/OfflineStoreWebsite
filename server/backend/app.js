@@ -70,7 +70,7 @@ const corsOptions = {
 };
 
 // Handle preflight OPTIONS requests before all routes
-app.options("*", cors(corsOptions));
+app.options("/(.*)", cors(corsOptions));
 app.use(cors(corsOptions));
 
 // ─── ROOT ROUTE ─────────────────────────────────────────────────────────────
