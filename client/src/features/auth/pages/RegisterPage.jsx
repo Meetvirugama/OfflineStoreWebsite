@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@features/auth/store/auth.store";
-import useToastStore from "@core/hooks/useToast";
 import GoogleLoginButton from "@features/auth/components/GoogleLoginButton";
+import DynText from '@core/i18n/DynText';
 import "@/styles/AuthPage.css";
 
 export default function RegisterPage() {
@@ -41,14 +41,14 @@ export default function RegisterPage() {
       <div className="auth-card auth-card--wide animate-pop">
         <div className="auth-card__header">
           <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
-          <h1 className="auth-card__title">Create Account</h1>
-          <p className="auth-card__subtitle">Join 50,000+ Indian farmers today</p>
+          <h1 className="auth-card__title"><DynText text="Create Account" /></h1>
+          <p className="auth-card__subtitle"><DynText text="Join 50,000+ Indian farmers today" /></p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit} id="register-form">
           <div className="auth-form__row">
             <div className="form-group">
-              <label className="form-label">Full Name</label>
+              <label className="form-label"><DynText text="Full Name" /></label>
               <input
                 id="reg-name"
                 type="text"
@@ -61,7 +61,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Mobile Number</label>
+              <label className="form-label"><DynText text="Mobile Number" /></label>
               <input
                 id="reg-mobile"
                 type="tel"
@@ -75,7 +75,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Email Address</label>
+            <label className="form-label"><DynText text="Email Address" /></label>
             <input
               id="reg-email"
               type="email"
@@ -89,7 +89,7 @@ export default function RegisterPage() {
 
           <div className="auth-form__row">
             <div className="form-group">
-              <label className="form-label">Password</label>
+              <label className="form-label"><DynText text="Password" /></label>
               <input
                 id="reg-password"
                 type="password"
@@ -101,7 +101,7 @@ export default function RegisterPage() {
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Confirm Password</label>
+              <label className="form-label"><DynText text="Confirm Password" /></label>
               <input
                 id="reg-confirm"
                 type="password"
@@ -122,39 +122,39 @@ export default function RegisterPage() {
           >
             {loading
               ? <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} />
-              : "Create Account →"}
+              : <><DynText text="Create Account" /> →</>}
           </button>
         </form>
 
         <div className="auth-divider">
-          <span>OR</span>
+          <span><DynText text="OR" /></span>
         </div>
 
         <GoogleLoginButton />
 
         <div className="auth-card__footer">
           <p className="auth-footer-text">
-            Already have an account?{" "}
-            <Link to="/auth/login" className="auth-link" id="go-login-link">Login</Link>
+            <DynText text="Already have an account?" />{" "}
+            <Link to="/auth/login" className="auth-link" id="go-login-link"><DynText text="Login" /></Link>
           </p>
         </div>
       </div>
 
       <div className="auth-side">
         <div className="auth-side__content">
-          <h2>Logistics Network Onboarding</h2>
+          <h2><DynText text="Logistics Network Onboarding" /></h2>
           <div className="auth-side__points">
             <div className="auth-side__point">
               <span className="auth-side__icon">📋</span>
-              <span>Managed Sourcing Protocols</span>
+              <span><DynText text="Managed Sourcing Protocols" /></span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">🆔</span>
-              <span>Verified Supply-Chain IDs</span>
+              <span><DynText text="Verified Supply-Chain IDs" /></span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">📦</span>
-              <span>Real-Time Inventory Control</span>
+              <span><DynText text="Real-Time Inventory Control" /></span>
             </div>
           </div>
         </div>

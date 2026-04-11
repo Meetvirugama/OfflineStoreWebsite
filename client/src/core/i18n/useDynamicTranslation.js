@@ -25,7 +25,7 @@ export const useDynamicTranslation = (text, persistent = true) => {
         textRef.current = text;
         langRef.current = lang;
 
-        if (!text) {
+        if (text === null || text === undefined || text === "") {
             setTranslatedText("");
             return;
         }
@@ -51,11 +51,12 @@ export const useDynamicTranslation = (text, persistent = true) => {
         // 3. Fetch from our backend proxy which handles LibreTranslate caching
         const fetchTranslation = async () => {
             try {
+                const textStr = String(text || "");
                 // Ignore empty spaces
-                if (!text.trim()) return;
+                if (!textStr.trim()) return;
 
                 const res = await apiClient.post("/translate", { 
-                    text: text, 
+                    text: textStr, 
                     targetLang: lang,
                     sourceLang: "en",
                     persistent: persistent

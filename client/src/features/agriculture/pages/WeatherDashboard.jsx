@@ -11,7 +11,7 @@ import {
     Moon, Sun as SunIcon, BarChart3, Radio, Layers,
     Compass, Timer
 } from 'lucide-react';
-} from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import DynText from '@core/i18n/DynText';
 import '@/styles/agriIntelligence.css';
 

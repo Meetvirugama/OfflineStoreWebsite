@@ -14,7 +14,6 @@ import {
     Info,
     History,
     X,
-import {
     Maximize2
 } from 'lucide-react';
 import DynText from '@core/i18n/DynText';

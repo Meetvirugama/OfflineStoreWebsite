@@ -1,6 +1,11 @@
 import { create } from "zustand";
 import apiClient from "@core/api/client";
-import { toast } from "react-hot-toast";
+import useToastStore from "@core/hooks/useToast";
+
+const toast = {
+    success: (msg) => useToastStore.getState().addToast(msg, "success"),
+    error: (msg) => useToastStore.getState().addToast(msg, "error"),
+};
 
 const useTranslationAdminStore = create((set, get) => ({
     translations: [],

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
+import DynText from '@core/i18n/DynText';
 import "@/styles/AuthPage.css";
 
 export default function ForgotPasswordPage() {
@@ -27,13 +28,13 @@ export default function ForgotPasswordPage() {
       <div className="auth-card animate-pop">
         <div className="auth-card__header">
           <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
-          <h1 className="auth-card__title">Reset Password</h1>
-          <p className="auth-card__subtitle">Enter your email to receive recovery instructions</p>
+          <h1 className="auth-card__title"><DynText text="Reset Password" /></h1>
+          <p className="auth-card__subtitle"><DynText text="Enter your email to receive recovery instructions" /></p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Email Address</label>
+            <label className="form-label"><DynText text="Email Address" /></label>
             <input
               type="email"
               className="form-input"
@@ -51,15 +52,15 @@ export default function ForgotPasswordPage() {
             disabled={loading}
             style={{ marginTop: '10px' }}
           >
-            {loading ? <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> : "Send Reset Link 📧"}
+            {loading ? <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} /> : <><DynText text="Send Reset Link" /> 📧</>}
           </button>
         </form>
 
         <div className="auth-card__footer" style={{ marginTop: '24px' }}>
           <p style={{ fontSize: '14px', color: '#64748b' }}>
-            Remembered your password?{" "}
+            <DynText text="Remembered your password?" />{" "}
             <Link to="/auth/login" className="auth-link">
-              Back to Login
+              <DynText text="Back to Login" />
             </Link>
           </p>
         </div>
@@ -67,19 +68,19 @@ export default function ForgotPasswordPage() {
 
       <div className="auth-side">
         <div className="auth-side__content">
-          <h2>Access Path Restoration</h2>
+          <h2><DynText text="Access Path Restoration" /></h2>
           <div className="auth-side__points">
             <div className="auth-side__point">
               <span className="auth-side__icon">🛡️</span>
-              <span>Secure Encryption Rollback</span>
+              <span><DynText text="Secure Encryption Rollback" /></span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">🔄</span>
-              <span>Identity Validation Sync</span>
+              <span><DynText text="Identity Validation Sync" /></span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">📋</span>
-              <span>System Logs Continuity</span>
+              <span><DynText text="System Logs Continuity" /></span>
             </div>
           </div>
         </div>
