@@ -12,7 +12,6 @@
 - **Institution:** DA-IICT (Dhirubhai Ambani Institute of Information and Communication Technology)
 - **Degree Program:** B.Tech (ICT) Enterprise Engineering
 - **Production Portal:** [agroplatform.app](https://agroplatform.app)
-- **Inquiry & Support:** +91 98765 00000
 
 ---
 
