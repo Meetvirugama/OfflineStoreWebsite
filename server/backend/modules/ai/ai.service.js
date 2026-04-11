@@ -1,16 +1,27 @@
 import Groq from "groq-sdk";
 import { ENV } from "../../config/env.js";
 
-const groq = new Groq({
-    apiKey: ENV.GROQ_KEY
-});
-
 const MODEL = "llama3-70b-8192";
+
+let groqClient = null;
+
+const getGroqClient = () => {
+    if (groqClient) return groqClient;
+    if (!ENV.GROQ_KEY) {
+        console.warn("⚠️ [AI] GROQ_API_KEY is missing. AI features will use fallback logic.");
+        return null;
+    }
+    groqClient = new Groq({ apiKey: ENV.GROQ_KEY });
+    return groqClient;
+};
 
 /**
  * FEATURE 1: Generate Smart AI Advisory
  */
 export const getAdvisoryAI = async (crop, stage, weather, rules) => {
+    const groq = getGroqClient();
+    if (!groq) return rules.length > 0 ? rules.join(" ") : "Maintain standard care for your crop. Monitor weather changes.";
+    
     try {
         const prompt = `
             You are a professional agricultural advisor.
@@ -39,6 +50,15 @@ export const getAdvisoryAI = async (crop, stage, weather, rules) => {
  * FEATURE 2: Disease Insight
  */
 export const getDiseaseInsightAI = async (crop, disease) => {
+    const groq = getGroqClient();
+    if (!groq) {
+        return {
+            cause: "Unable to retrieve cause. Consult a local expert.",
+            prevention: "Common prevention includes crop rotation and clean tools.",
+            treatment: "Treat with appropriate fungicides or organic alternatives."
+        };
+    }
+    
     try {
         const prompt = `
             Explain the following plant disease for a farmer.
@@ -76,6 +96,9 @@ export const getDiseaseInsightAI = async (crop, disease) => {
  * FEATURE 3: Farmer Chatbot
  */
 export const getChatResponseAI = async (message) => {
+    const groq = getGroqClient();
+    if (!groq) return "I am currently offline. Please try again later for farming advice.";
+    
     try {
         const prompt = `
             You are a helpful assistant for a farmer. 
@@ -100,6 +123,9 @@ export const getChatResponseAI = async (message) => {
  * ENHANCEMENT: Strategic Advisory
  */
 export const generateStrategicAdvisory = async (crop, stage, weather, rules) => {
+    const groq = getGroqClient();
+    if (!groq) return "";
+    
     try {
         const prompt = `
             You are a senior agricultural strategist.
@@ -128,6 +154,9 @@ export const generateStrategicAdvisory = async (crop, stage, weather, rules) => 
  * ENHANCEMENT: Market Trend Analysis
  */
 export const analyzeMarketInsights = async (crop, trends) => {
+    const groq = getGroqClient();
+    if (!groq) return "";
+    
     try {
         const prompt = `
             Analyze these 7-day price trends for ${crop} and provide a professional market outlook for a farmer.
@@ -152,6 +181,9 @@ export const analyzeMarketInsights = async (crop, trends) => {
  * ENHANCEMENT: Weather Strategic Outlook
  */
 export const generateWeatherOutlook = async (forecast) => {
+    const groq = getGroqClient();
+    if (!groq) return "";
+    
     try {
         const prompt = `
             Given this 7-day weather forecast summary: ${JSON.stringify(forecast)}
