@@ -121,178 +121,159 @@ export default function AnalyticsPage() {
       {/* GRID */}
       <div className="analytics-grid">
 
-        <Chart title="Revenue Performance" subtitle="Daily revenue (Line) and order volume (Bars)" isEmpty={safeRevenue.length === 0}>
-          <ComposedChart data={revenueComposedData}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
-            <XAxis dataKey="day" axisLine={false} tickLine={false} />
-            <YAxis yAxisId="left" axisLine={false} tickLine={false} />
-            <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} domain={[0, 'auto']} />
-            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-            <Legend />
-            <Bar yAxisId="right" dataKey="orders" name="Orders" barSize={30} fill={themeColors.blue} radius={[4, 4, 0, 0]} opacity={0.8} />
-            <Line yAxisId="left" type="monotone" dataKey="revenue" name="Revenue (₹)" stroke={themeColors.lightGreen} strokeWidth={4} dot={{ r: 4, fill: themeColors.lightGreen }} activeDot={{ r: 6 }} />
-          </ComposedChart>
-        </Chart>
+        {/* HERO CHART: FULL WIDTH */}
+        <div className="analytics-hero">
+          <Chart title="Revenue Performance" subtitle="Daily revenue (Line) and order volume (Bars)" isEmpty={safeRevenue.length === 0}>
+            <ComposedChart data={revenueComposedData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+              <XAxis dataKey="day" axisLine={false} tickLine={false} dy={10} />
+              <YAxis yAxisId="left" axisLine={false} tickLine={false} />
+              <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} domain={[0, 'auto']} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: 'var(--shadow-lg)' }} />
+              <Legend verticalAlign="top" align="right" height={36}/>
+              <Bar yAxisId="right" dataKey="orders" name="Orders" barSize={35} fill={themeColors.blue} radius={[6, 6, 0, 0]} opacity={0.8} />
+              <Line yAxisId="left" type="monotone" dataKey="revenue" name="Revenue (₹)" stroke={themeColors.lightGreen} strokeWidth={5} dot={{ r: 6, fill: themeColors.lightGreen, strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8, strokeWidth: 0 }} />
+            </ComposedChart>
+          </Chart>
+        </div>
 
         <Chart title="Customer Traffic" subtitle="Daily unique visitors interaction" isEmpty={safeVisits.length === 0}>
-          <AreaChart data={safeVisits}>
+          <AreaChart data={safeVisits} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorVisits" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={themeColors.blue} stopOpacity={0.3}/>
                 <stop offset="95%" stopColor={themeColors.blue} stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
-            <XAxis dataKey="day" axisLine={false} tickLine={false} />
-            <YAxis axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
+            <XAxis dataKey="day" axisLine={false} tickLine={false} hide />
+            <YAxis hide />
+            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: 'var(--shadow-md)' }} />
             <Area type="monotone" dataKey="visits" name="Visits" stroke={themeColors.blue} strokeWidth={3} fillOpacity={1} fill="url(#colorVisits)" />
           </AreaChart>
         </Chart>
 
-        <Chart title="Engagement Metrics" subtitle="Daily click interactions across platform" isEmpty={clickData.length === 0}>
-          <LineChart data={clickData}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
-            <XAxis dataKey="day" axisLine={false} tickLine={false} />
-            <YAxis axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-            <Legend />
+        <Chart title="Engagement Metrics" subtitle="Click velocity across nodes" isEmpty={clickData.length === 0}>
+          <LineChart data={clickData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <XAxis dataKey="day" hide />
+            <YAxis hide />
+            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: 'var(--shadow-md)' }} />
+            <Legend iconType="circle" />
             {pages.map((p, i) => (
-              <Line key={i} type="monotone" dataKey={p} stroke={chartColors[i % chartColors.length]} strokeWidth={3} dot={false} activeDot={{ r: 6 }} />
+              <Line key={i} type="monotone" dataKey={p} stroke={chartColors[i % chartColors.length]} strokeWidth={3} dot={false} />
             ))}
           </LineChart>
         </Chart>
 
         <Chart title="Top Performing Products" subtitle="Revenue generated by item" isEmpty={safeProducts.length === 0}>
           <BarChart data={safeProducts} layout="vertical" margin={{ left: 10, right: 30 }}>
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e0e0e0" />
-            <XAxis type="number" axisLine={false} tickLine={false} />
+            <XAxis type="number" hide />
             <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={100} style={{ fontSize: '11px', fontWeight: '600' }} />
-            <Tooltip cursor={{fill: '#f4f6f8'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-            <Bar dataKey="revenue" name="Revenue (₹)" fill={themeColors.blue} radius={[0, 4, 4, 0]} barSize={24} />
+            <Tooltip cursor={{fill: 'rgba(0,0,0,0.03)'}} />
+            <Bar dataKey="revenue" name="Revenue (₹)" fill={themeColors.lightGreen} radius={[0, 4, 4, 0]} barSize={20} />
           </BarChart>
         </Chart>
 
-        <Chart title="Revenue by Payment Method" subtitle="Distribution of transaction modes" isEmpty={safePayments.length === 0}>
+        <Chart title="Revenue Distribution" subtitle="Payment method settlement" isEmpty={safePayments.length === 0}>
           <PieChart>
             <Pie 
               data={safePayments} 
               dataKey="total_amount" 
               nameKey="payment_mode"
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={100}
-              paddingAngle={5}
+              cx="50%" cy="50%" innerRadius={60} outerRadius={85} paddingAngle={5}
             >
               {safePayments.map((entry, i) => (
-                <Cell 
-                  key={i} 
-                  fill={entry.payment_mode === "UNPAID / OUTSTANDING" ? themeColors.grey : chartColors[i % chartColors.length]} 
-                />
+                <Cell key={i} fill={entry.payment_mode === "UNPAID / OUTSTANDING" ? themeColors.grey : chartColors[i % chartColors.length]} />
               ))}
             </Pie>
-            <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-            <Legend verticalAlign="bottom" height={36} />
+            <Tooltip />
+            <Legend verticalAlign="bottom" align="center" iconType="circle" />
           </PieChart>
         </Chart>
 
-        <Chart 
-          title="Sales Pipeline" 
-          subtitle="Customer drop-off analysis" 
-          isEmpty={!Object.values(safeFunnel).some(v => v > 0)}
-        >
-          <BarChart data={funnelData}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+        <Chart title="Sales Pipeline" subtitle="Conversion drop-off" isEmpty={!Object.values(safeFunnel).some(v => v > 0)}>
+          <BarChart data={funnelData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
             <XAxis dataKey="name" axisLine={false} tickLine={false} />
-            <YAxis axisLine={false} tickLine={false} />
-            <Tooltip cursor={{fill: '#f4f6f8'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-            <Bar dataKey="value" name="Users" radius={[4, 4, 0, 0]}>
+            <Tooltip cursor={{fill: 'rgba(0,0,0,0.03)'}} />
+            <Bar dataKey="value" name="Users" radius={[6, 6, 0, 0]} barSize={40}>
               {funnelData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
+                <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} opacity={0.8} />
               ))}
             </Bar>
           </BarChart>
         </Chart>
 
         {notifAnalytics && (
-          <Chart title="Notification Insights" subtitle="System notification interactions">
+          <Chart title="Notification Insights" subtitle="Interactions telemetry">
             <BarChart
               data={[
-                { name: "Total Sent", value: parseInt(notifAnalytics.total) || 0 },
+                { name: "Sent", value: parseInt(notifAnalytics.total) || 0 },
                 { name: "Opened", value: parseInt(notifAnalytics.opened) || 0 },
                 { name: "Clicked", value: parseInt(notifAnalytics.clicked) || 0 },
               ]}
               layout="vertical"
               margin={{ left: 20 }}
             >
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e0e0e0" />
-              <XAxis type="number" axisLine={false} tickLine={false} />
+              <XAxis type="number" hide />
               <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={80} />
-              <Tooltip cursor={{fill: '#f4f6f8'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-              <Bar dataKey="value" name="Count" radius={[0, 4, 4, 0]} barSize={24}>
-                {funnelData.map((entry, index) => (
-                   <Cell key={`notif-cell-${index}`} fill={chartColors[index % chartColors.length]} />
-                 ))}
-              </Bar>
+              <Bar dataKey="value" name="Count" radius={[0, 4, 4, 0]} barSize={20} fill={themeColors.blue} />
             </BarChart>
           </Chart>
         )}
 
       </div>
 
-      <div style={{ marginTop: '4rem', borderLeft: '4px solid #10b981', paddingLeft: '20px' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#064e3b' }}>🌿 Agriculture Intelligence</h2>
-          <p style={{ fontSize: '14px', color: '#64748b', fontWeight: '500' }}>Live market price trends and crop-specific structural demand insights.</p>
+      <div style={{ marginTop: '5rem', borderLeft: '5px solid #10b981', paddingLeft: '24px', marginBottom: '2rem' }}>
+          <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#064e3b', letterSpacing: '-0.5px' }}>🌿 Agriculture Intelligence Node</h2>
+          <p style={{ fontSize: '15px', color: '#64748b', fontWeight: '500' }}>Live market price trends and structural commodity demand insights.</p>
       </div>
 
-      <div className="analytics-grid" style={{ marginTop: '20px' }}>
-          <Chart title="Top Crops by Volume" subtitle="Most traded commodities across Mandis">
+      <div className="analytics-grid">
+          {/* MAJOR AGRI CHART */}
+          <div className="analytics-hero">
+            <Chart title="Global Price Trend" subtitle="Daily average modal price (last 7 days)">
+              <AreaChart data={safeDashboard.agriInsights?.trends || []} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                      <linearGradient id="colorAgri" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#d9b356" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#d9b356" stopOpacity={0}/>
+                      </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} domain={['auto', 'auto']} tickFormatter={(v) => `₹${v}`} />
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: 'var(--shadow-lg)' }} />
+                  <Area type="monotone" dataKey="avg_price" name="Avg Price" stroke="#d9b356" strokeWidth={4} fillOpacity={1} fill="url(#colorAgri)" />
+              </AreaChart>
+            </Chart>
+          </div>
+
+          <Chart title="Top Crops by Volume" subtitle="Traded commodities">
             <BarChart data={safeDashboard.agriInsights?.topCrops || []}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
-                <XAxis dataKey="commodity" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} />
-                <Tooltip cursor={{fill: '#f4f6f8'}} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-                <Bar dataKey="volume" name="Volume" fill="#10b981" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="commodity" hide />
+                <YAxis hide />
+                <Tooltip cursor={{fill: 'rgba(0,0,0,0.03)'}} />
+                <Bar dataKey="volume" name="Volume" fill="#10b981" radius={[4, 4, 0, 0]} barSize={40} />
             </BarChart>
           </Chart>
 
-          <Chart title="Global Price Trend" subtitle="Daily average modal price (last 7 days)">
-            <AreaChart data={safeDashboard.agriInsights?.trends || []}>
-                <defs>
-                    <linearGradient id="colorAgri" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#d9b356" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#d9b356" stopOpacity={0}/>
-                    </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e0e0" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} domain={['auto', 'auto']} />
-                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-                <Area type="monotone" dataKey="avg_price" name="Avg Price (₹)" stroke="#d9b356" strokeWidth={3} fillOpacity={1} fill="url(#colorAgri)" />
-            </AreaChart>
-          </Chart>
-
-          <Chart title="Consumer Demand insights" subtitle="High movement categories based on sales">
+          <Chart title="Category Demand" subtitle="Consumer movement insights">
             <PieChart>
                 <Pie 
                     data={safeDashboard.agriInsights?.demand || []} 
                     dataKey="movement" 
                     nameKey="category"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label
+                    cx="50%" cy="50%" outerRadius={80}
                 >
                     { (safeDashboard.agriInsights?.demand || []).map((entry, i) => (
                         <Cell key={i} fill={chartColors[i % chartColors.length]} />
                     ))}
                 </Pie>
-                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }} />
-                <Legend />
+                <Tooltip />
+                <Legend iconType="circle" />
             </PieChart>
           </Chart>
       </div>
+
     </div>
   );
 }

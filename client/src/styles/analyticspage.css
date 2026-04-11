@@ -122,20 +122,18 @@
 }
 
 /* Responsive adjustments */
-@media (min-width: 769px) {
+@media (min-width: 900px) {
   .analytics-grid {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
   }
 
-  /* Make the first few major charts span full or 2/3 width if they are prominent */
-  .analytics-chart:first-child,
-  .analytics-chart:nth-child(2) {
+  .analytics-hero {
     grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 899px) {
   .analytics {
     padding: 16px;
   }
