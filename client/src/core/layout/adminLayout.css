@@ -1,18 +1,17 @@
 /* Executive Sovereign - Modern Premium Admin Layout */
 
 :root {
-  /* Prestige Emerald & Victory Gold Palette */
-  --admin-bg: #f9fbfa;
-  --admin-sidebar: #06402b; /* Deep Elite Forest */
-  --admin-sidebar-hover: rgba(217, 179, 86, 0.12);
-  --admin-sidebar-active: rgba(217, 179, 86, 0.2);
-  --admin-primary: #059669; /* Rich Emerald */
-  --admin-accent: #d9b356; /* Victory Gold */
+  /* Soft Professional Emerald & White Palette */
+  --admin-bg: #f3f6f4;
+  --admin-sidebar: #064e3b; /* Professional Forest Green (Same as storefront) */
+  --admin-sidebar-hover: rgba(5, 150, 105, 0.1);
+  --admin-sidebar-active: rgba(5, 150, 105, 0.15);
+  --admin-primary: #059669; 
+  --admin-accent: #f59e0b;  /* Amber Accent */
   --admin-text-light: #f8fafc;
-  --admin-text-dark: #0f172a;
-  --admin-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-  --admin-shadow-sidebar: 8px 0 35px rgba(0,0,0,0.2);
-  --admin-glass: rgba(255, 255, 255, 0.85);
+  --admin-text-dark: #1e293b;
+  --admin-shadow: 0 4px 12px rgba(6, 78, 59, 0.05);
+  --admin-shadow-sidebar: 4px 0 20px rgba(0,0,0,0.05);
 }
 
 .admin-layout {

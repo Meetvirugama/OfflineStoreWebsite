@@ -32,7 +32,7 @@ export default function AdminProductsPage() {
         try {
             setLoading(true);
             const res = await api.get("/products");
-            setProducts(res.data);
+            setProducts(Array.isArray(res) ? res : []);
         } catch (err) {
             addToast("Failed to fetch products", "error");
         } finally {

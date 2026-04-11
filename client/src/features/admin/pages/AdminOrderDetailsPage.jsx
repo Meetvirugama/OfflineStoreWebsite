@@ -18,7 +18,7 @@ export default function AdminOrderDetailsPage() {
         try {
             setLoading(true);
             const res = await api.get(`/orders/${id}`);
-            setOrder(res.data);
+            setOrder(res);
         } catch (err) {
             addToast("Failed to fetch order details", "error");
             navigate("/admin/orders");

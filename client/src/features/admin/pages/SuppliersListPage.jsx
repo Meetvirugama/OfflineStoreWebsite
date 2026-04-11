@@ -18,9 +18,7 @@ export default function SuppliersListPage() {
         try {
             setLoading(true);
             const res = await api.get("/suppliers");
-            // Handle standardized { success, message, data } response
-            // res is already the body due to interceptor
-            setSuppliers(res.data || res || []);
+            setSuppliers(Array.isArray(res) ? res : []);
         } catch (err) {
             addToast("Failed to fetch suppliers", "error");
         } finally {

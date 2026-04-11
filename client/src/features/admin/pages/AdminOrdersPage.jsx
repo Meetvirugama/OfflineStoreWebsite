@@ -17,7 +17,7 @@ export default function AdminOrdersPage() {
             const res = await api.get("/orders");
             // Standardized response body: { success, message, data }
             // Interceptor returns the body, so data is in res.data
-            setOrders(res.data || []);
+            setOrders(res || []);
         } catch (err) {
             addToast("Failed to fetch all orders", "error");
         } finally {

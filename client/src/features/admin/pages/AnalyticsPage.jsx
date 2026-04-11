@@ -29,7 +29,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     fetchReports();
     getNotificationAnalytics().then(res => {
-        setNotifAnalytics(res.data);
+        setNotifAnalytics(res);
     }).catch(console.error);
   }, []);
 
