@@ -53,11 +53,22 @@ const processValue = async (value, key, targetLang) => {
  * Overrides res.json to dynamically translate descriptive fields
  */
 const translateResponse = async (req, res, next) => {
-    // 1. Identify Target Language
-    const lang = (req.headers['x-lang'] || req.query.lang || 'en').toLowerCase();
+    // 1. Identify Target Language (Multi-Source Detection for Robustness)
+    const lang = (
+        req.headers['x-lang'] || 
+        req.headers['lang'] || 
+        req.query.lang || 
+        req.cookies?.lang || 
+        'en'
+    ).toLowerCase();
     
     // Validate language selection
     const targetLang = ['en', 'gu'].includes(lang) ? lang : 'en';
+
+    // Production Debug Pulse: Verify if the system sees your choice
+    if (targetLang !== 'en') {
+        console.log(`[LOCALIZATION] 🌐 Target: ${targetLang.toUpperCase()} | Path: ${req.path}`);
+    }
 
     // 2. Skip logic if target is English
     if (targetLang === 'en') return next();
