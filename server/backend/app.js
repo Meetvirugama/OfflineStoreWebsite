@@ -34,6 +34,7 @@ import inventoryRoutes from "./modules/product/inventory.routes.js";
 import healthRoutes from "./modules/health/health.routes.js";
 import aiRoutes from "./modules/ai/ai.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
+import pestRoutes from "./modules/pest/pest.routes.js";
 
 const app = express();
 
@@ -93,6 +94,10 @@ app.get("/", (req, res) => {
 app.use(express.json());
 app.use(morgan("dev"));
 
+// Serving Uploads (Product images, Crop captures, etc.)
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // Health Check
 app.get("/health", (req, res) => res.send("AgroPlatform ERP API is alive 🌾"));
 
@@ -121,6 +126,7 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/pest", pestRoutes);
 
 // --- END OF ROUTES ---
 

@@ -9,10 +9,10 @@ const usePestStore = create((set, get) => ({
     detectPest: async (formData) => {
         set({ loading: true });
         try {
-            const res = await apiClient.post("/crops/detect-pest", formData, {
+            const res = await apiClient.post("/pest/detect", formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
-            // interceptor auto-flattens: res is the detection result directly
+            // res is already flattened by interceptor
             set({ currentDetection: res || null, loading: false });
             get().fetchHistory();
             return res;
@@ -24,8 +24,7 @@ const usePestStore = create((set, get) => ({
 
     fetchHistory: async () => {
         try {
-            const res = await apiClient.get("/crops/pest-history");
-            // interceptor auto-flattens: res is the array directly
+            const res = await apiClient.get("/pest/history");
             set({ history: Array.isArray(res) ? res : [] });
         } catch {}
     }

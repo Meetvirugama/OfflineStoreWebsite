@@ -218,12 +218,12 @@ const PestDetectionPage = () => {
                                             width: '60px', 
                                             height: '60px', 
                                             borderRadius: '0.6rem', 
-                                            background: `url(${h.image_url}) center/cover no-repeat`,
+                                            background: `url(${h.image_url.startsWith('http') ? h.image_url : (import.meta.env.VITE_API_URL?.replace('/api', '') + h.image_url)}) center/cover no-repeat`,
                                             border: '1px solid rgba(255,255,255,0.1)'
                                         }}></div>
                                         <div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
-                                                <h4 style={{ fontSize: '1rem', margin: 0 }}>{h.disease_name}</h4>
+                                                <h4 style={{ fontSize: '1rem', margin: 0 }}>{h.disease || h.disease_name}</h4>
                                                 <span style={{ 
                                                     fontSize: '0.7rem', 
                                                     padding: '0.2rem 0.6rem', 
@@ -236,7 +236,7 @@ const PestDetectionPage = () => {
                                                 </span>
                                             </div>
                                             <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>
-                                                {h.crop} • {new Date(h.created_at).toLocaleDateString()}
+                                                {h.crop} • {new Date(h.created_at || h.date).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>
@@ -279,7 +279,7 @@ const PestDetectionPage = () => {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr' }}>
                             <div style={{ 
-                                background: `url(${currentDetection.image_url}) center/cover no-repeat`,
+                                background: `url(${currentDetection.image_url.startsWith('http') ? currentDetection.image_url : (import.meta.env.VITE_API_URL?.replace('/api', '') + currentDetection.image_url)}) center/cover no-repeat`,
                                 minHeight: '400px'
                             }}></div>
                             
@@ -298,7 +298,7 @@ const PestDetectionPage = () => {
                                         </span>
                                         <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>{currentDetection.plant}</span>
                                     </div>
-                                    <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem' }}>{currentDetection.disease_name}</h2>
+                                    <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem' }}>{currentDetection.disease || currentDetection.disease_name}</h2>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                         <div style={{ height: '4px', width: '100px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px' }}>
                                             <div style={{ height: '100%', width: `${currentDetection.confidence}%`, background: '#10b981', borderRadius: '2px' }}></div>
@@ -312,7 +312,7 @@ const PestDetectionPage = () => {
                                         <FlaskConical size={18} /> Chemical Solution
                                     </h4>
                                     <p style={{ fontSize: '0.95rem', opacity: 0.8, lineHeight: 1.5 }}>
-                                        {currentDetection.solution}
+                                        {currentDetection.treatment || currentDetection.solution}
                                     </p>
                                 </div>
 
@@ -321,7 +321,7 @@ const PestDetectionPage = () => {
                                         <Leaf size={18} /> Organic Solution
                                     </h4>
                                     <p style={{ fontSize: '0.95rem', opacity: 0.8, lineHeight: 1.5 }}>
-                                        {currentDetection.organic_solution}
+                                        {currentDetection.organic_prevention || currentDetection.organic_solution}
                                     </p>
                                 </div>
 
