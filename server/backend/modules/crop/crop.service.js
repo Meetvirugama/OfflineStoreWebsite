@@ -180,12 +180,11 @@ export const generateAdvisory = async (userId, formData) => {
     }
 
     // 2. Fetch Market Context (Nearby Mandis)
-    const mandis = await mandiService.getNearbyMandis(finalLat || 22.3, finalLon || 71.2);
-    const top3Mandis = mandis.slice(0, 3);
+    const nearbyMandis = await mandiService.getNearbyMandis(finalLat || 22.3, finalLon || 71.2); 
     
-    // Identify Best Mandi (Simplified: Highest price in the top 3)
-    let bestMandi = top3Mandis.length > 0 ? top3Mandis[0] : null;
-    top3Mandis.forEach(m => {
+    // Identify Best Mandi (Simplified: Highest price in the list)
+    let bestMandi = nearbyMandis.length > 0 ? nearbyMandis[0] : null;
+    nearbyMandis.forEach(m => {
         if (m.modal_price > (bestMandi?.modal_price || 0)) {
             bestMandi = m;
         }
@@ -197,7 +196,7 @@ export const generateAdvisory = async (userId, formData) => {
         stage,
         location: location || "Detected Location",
         weather: weatherData,
-        mandis: top3Mandis.map(m => ({ 
+        mandis: nearbyMandis.map(m => ({ 
             name: m.name, 
             price: m.modal_price, 
             distance: m.distance,
@@ -227,7 +226,7 @@ export const generateAdvisory = async (userId, formData) => {
         risk_level: riskLevel,
         advisory: advisories, // Store actions as legacy list for compatibility
         best_mandi: bestMandi,
-        mandis_list: top3Mandis,
+        mandis_list: nearbyMandis,
         accuracy_meta: { 
             season_match: true,
             ai_text: aiResponse.advisory_text,
