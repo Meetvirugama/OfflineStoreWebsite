@@ -34,6 +34,10 @@ const useAdvisoryStore = create((set, get) => ({
 
     clearCurrent: () => {
         set({ curAdvisory: null });
+    },
+
+    setCurAdvisory: (advisory) => {
+        set({ curAdvisory: advisory });
     }
 }));
 

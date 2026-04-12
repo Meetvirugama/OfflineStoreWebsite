@@ -132,7 +132,7 @@ const CropAdvisoryPage = () => {
                                             {history.slice(0, 4).map((h, idx) => (
                                                 <button 
                                                     key={idx}
-                                                    onClick={() => useAdvisoryStore.getState().generateAdvisory(h)}
+                                                    onClick={() => useAdvisoryStore.getState().setCurAdvisory(h)}
                                                     style={{ 
                                                         display: 'flex', 
                                                         justifyContent: 'space-between', 
@@ -148,7 +148,7 @@ const CropAdvisoryPage = () => {
                                                     }}
                                                 >
                                                     <div style={{ textAlign: 'left' }}>
-                                                        <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{h?.crop || "Pulse"}</div>
+                                                        <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{h?.crop || "Advisory"}</div>
                                                         <div style={{ fontSize: '0.65rem', opacity: 0.6 }}>{h?.location || "Regional Node"} • {h?.stage || "Active"}</div>
                                                     </div>
                                                     <ChevronRight size={16} style={{ opacity: 0.4 }} />
@@ -162,7 +162,6 @@ const CropAdvisoryPage = () => {
                     )}
                 </div>
             </div>
-        </div>
         </div>
     );
 };
