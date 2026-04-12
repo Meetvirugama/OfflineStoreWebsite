@@ -228,17 +228,22 @@ const AgriAnalyticsPage = () => {
 
             <div style={{marginTop: '1.5rem', display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem'}}>
                 {aiAnalysis && (
-                    <div className="agri-card" style={{padding: '2.5rem', background: 'rgba(16, 185, 129, 0.03)', borderLeft: '6px solid var(--agri-green)', borderRadius: '32px'}}>
-                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
+                    <div className="agri-card" style={{padding: '2.5rem', background: 'rgba(16, 185, 129, 0.03)', borderLeft: `6px solid ${aiAnalysis.signal === 'BUY' || aiAnalysis.signal === 'HOLD' ? 'var(--agri-green)' : (aiAnalysis.signal === 'WAIT' ? '#f59e0b' : '#ef4444')}`, borderRadius: '32px'}}>
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem'}}>
                             <h4 style={{fontSize: '1.2rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '1rem'}}>
-                                <div style={{width: '12px', height: '12px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 15px #10b981'}}></div>
+                                <div style={{width: '12px', height: '12px', background: aiAnalysis.signal === 'BUY' || aiAnalysis.signal === 'HOLD' ? '#10b981' : (aiAnalysis.signal === 'WAIT' ? '#f59e0b' : '#ef4444'), borderRadius: '50%', boxShadow: `0 0 15px ${aiAnalysis.signal === 'BUY' || aiAnalysis.signal === 'HOLD' ? '#10b981' : (aiAnalysis.signal === 'WAIT' ? '#f59e0b' : '#ef4444')}`}}></div>
                                 AI Strategic Outlook
                             </h4>
-                            <span style={{fontSize: '0.85rem', fontWeight: 900, color: aiAnalysis.outlook.includes('Bullish') ? '#10b981' : '#ef4444', letterSpacing: '1px', background: 'rgba(0,0,0,0.2)', padding: '0.4rem 1rem', borderRadius: '8px'}}>
-                                {aiAnalysis.outlook.toUpperCase()}
-                            </span>
+                            <div style={{display: 'flex', gap: '0.8rem'}}>
+                                <span style={{fontSize: '0.85rem', fontWeight: 900, color: aiAnalysis.risk === 'LOW' ? '#10b981' : (aiAnalysis.risk === 'MEDIUM' ? '#f59e0b' : '#ef4444'), letterSpacing: '1px', background: 'rgba(0,0,0,0.05)', padding: '0.4rem 1rem', borderRadius: '8px', border: `1px solid ${aiAnalysis.risk === 'LOW' ? '#10b981' : (aiAnalysis.risk === 'MEDIUM' ? '#f59e0b' : '#ef4444')}`}}>
+                                    RISK: {aiAnalysis.risk?.toUpperCase() || 'UNKNOWN'}
+                                </span>
+                                <span style={{fontSize: '0.85rem', fontWeight: 900, color: '#fff', letterSpacing: '1px', background: aiAnalysis.signal === 'BUY' || aiAnalysis.signal === 'HOLD' ? '#10b981' : (aiAnalysis.signal === 'WAIT' ? '#f59e0b' : '#ef4444'), padding: '0.4rem 1rem', borderRadius: '8px'}}>
+                                    SIGNAL: {aiAnalysis.signal?.toUpperCase() || 'HOLD'}
+                                </span>
+                            </div>
                         </div>
-                        <p style={{fontSize: '1.05rem', lineHeight: 1.8, opacity: 0.8, fontWeight: 500}}>{aiAnalysis.ai_recommendation}</p>
+                        <p style={{fontSize: '1.05rem', lineHeight: 1.8, opacity: 0.8, fontWeight: 500}}>{aiAnalysis.reason || 'Sufficient market equilibrium.'}</p>
                     </div>
                 )}
 

@@ -43,7 +43,7 @@ const useCropStore = create((set) => ({
     fetchAIInsights: async (name) => {
         set({ loading: true, error: null });
         try {
-            const res = await apiClient.get(`/crops/${name}/insights`);
+            const res = await apiClient.get(`/analytics/market-outlook?commodity=${name}`);
             set({ aiAnalysis: res || null, loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
