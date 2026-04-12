@@ -51,21 +51,26 @@ export const translateText = async (text, targetLang = 'en') => {
             const completion = await groq.chat.completions.create({
                 messages: [{ role: "user", content: prompt }],
                 model: "llama-3.3-70b-versatile",
-                temperature: 0, // Deterministic for translation
+                temperature: 0,
                 max_tokens: 1000
             });
 
-            const translatedText = completion.choices[0]?.message?.content?.trim()?.replace(/^"(.*)"$/, '$1');
+            const rawResponse = completion.choices[0]?.message?.content || '';
+            let translatedText = rawResponse.trim().replace(/^"(.*)"$/, '$1');
 
-            console.log(`[AI DEBUG] Input: "${text.substring(0, 30)}..." | Output: "${translatedText?.substring(0, 30)}..."`);
+            // 🚀 SMART CLEANUP: If the response contains English preamble, extract only Gujarati characters
+            // Gujarati Unicode Range: \u0A80-\u0AFF
+            const gujaratiMatch = translatedText.match(/[\u0A80-\u0AFF][\s\S]*[\u0A80-\u0AFF]/);
+            if (gujaratiMatch && translatedText.length > rawResponse.length / 2) {
+                translatedText = gujaratiMatch[0];
+            }
 
             if (translatedText && translatedText !== text) {
-                console.log(`[AI TRANSLATE] Success: "${text.substring(0, 15)}..." -> GU`);
                 translationCache.set(cacheKey, translatedText);
                 return translatedText;
             }
         } catch (error) {
-            console.warn(`[AI TRANSLATE] Groq failed, falling back to ML. Error: ${error.message}`);
+            console.warn(`[AI TRANSLATE] Error: ${error.message}`);
         }
     }
 
@@ -74,10 +79,9 @@ export const translateText = async (text, targetLang = 'en') => {
         const apiResponse = await axios.post(ENV.TRANSLATE_API_URL, {
             q: text,
             source: 'en',
-            target: 'gu',
-            format: 'text'
+            target: 'gu'
         }, { 
-            timeout: 3000, // Increased for high-volume news reliability
+            timeout: 5000, // Maximum resilience for news feed
             headers: { 'Content-Type': 'application/json' }
         });
 
@@ -87,9 +91,8 @@ export const translateText = async (text, targetLang = 'en') => {
             return mlTranslated;
         }
     } catch (error) {
-        // Log sparingly for fallback failures
-        if (text.length > 3) {
-            console.warn(`[ML FALLBACK] Engine busy for: "${text.substring(0, 10)}..."`);
+        if (text.length > 5) {
+            console.warn(`[ML FALLBACK] Busy for: "${text.substring(0, 15)}..."`);
         }
     }
 
