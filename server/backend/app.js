@@ -36,6 +36,7 @@ import healthRoutes from "./modules/health/health.routes.js";
 import aiRoutes from "./modules/ai/ai.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 import pestRoutes from "./modules/pest/pest.routes.js";
+import translationRoutes from "./modules/translation/translation.routes.js";
 
 const app = express();
 
@@ -131,6 +132,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/pest", pestRoutes);
+app.use("/api/translate", translationRoutes);
 
 // --- END OF ROUTES ---
 
