@@ -167,5 +167,3 @@ const CropAdvisoryPage = () => {
 };
 
 export default CropAdvisoryPage;
- 
- export default CropAdvisoryPage;

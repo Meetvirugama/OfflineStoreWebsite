@@ -13,18 +13,59 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import '@/styles/agriIntelligence.css';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Elite Leaflet Configuration
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+const WEATHER_API_KEY = "9a20aaac15df24df7e36aafcd6695408";
+
+const RecenterMap = ({ lat, lon }) => {
+    const map = useMap();
+    useEffect(() => {
+        if (lat && lon) map.setView([lat, lon], 7);
+    }, [lat, lon, map]);
+    return null;
+};
+
+const ClickToLocate = ({ onLocationClick }) => {
+    useMapEvents({
+        click: async (e) => {
+            const { lat, lng } = e.latlng;
+            onLocationClick(lat, lng);
+        },
+    });
+    return null;
+};
 
 const WeatherDashboard = () => {
     const { 
         currentWeather, todayTimeline, extendedForecast, 
         alerts, indices, loading, initialize, 
         searchLocations, setSelectedLocation,
-        selectedLocation, strategic_outlook
+        selectedLocation, strategic_outlook, reverseGeocode
     } = useWeatherStore();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
+
+    const handleMapLocationSync = async (lat, lng) => {
+        const loc = await reverseGeocode(lat, lng);
+        if (loc) {
+            setSelectedLocation(loc);
+        } else {
+            // Fallback if reverse geocode fails
+            setSelectedLocation({ name: "Custom Sector", lat, lon: lng });
+        }
+    };
 
     // Removed aggressive DOM overrides that were hiding the sidebar layout
     useEffect(() => {
@@ -238,20 +279,65 @@ const WeatherDashboard = () => {
                         <div style={{padding: '0.3rem 0.8rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, opacity: 0.5, color: '#64748b'}}>INFRARED</div>
                     </div>
                 </div>
-                <div style={{height: 'clamp(250px, 50vw, 500px)', borderRadius: '20px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.06)', position: 'relative'}}>
-                    <iframe
-                        width="100%"
-                        height="100%"
-                        style={{border: 0, filter: 'grayscale(0.7) contrast(1.1) brightness(0.8)'}}
-                        src={`https://www.google.com/maps/embed/v1/view?key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&center=${selectedLocation?.lat || 22.3039},${selectedLocation?.lon || 70.8022}&zoom=14&maptype=satellite`}
-                    ></iframe>
-                    <div style={{position: 'absolute', bottom: '1rem', right: '1rem', left: '1rem', background: '#fff', color: '#000', padding: 'clamp(0.8rem, 2vw, 1.5rem)', borderRadius: '16px', boxShadow: '0 15px 30px rgba(0,0,0,0.3)', maxWidth: '250px'}}>
-                        <p style={{fontSize: '0.6rem', fontWeight: 900, opacity: 0.5, margin: '0 0 0.3rem'}}>FIELD CONNECTED</p>
-                        <h4 style={{fontSize: '0.95rem', fontWeight: 900, margin: '0 0 0.5rem'}}>8 Active Nodes</h4>
-                        <div style={{display: 'flex', gap: '0.4rem', marginBottom: '0.8rem'}}>
-                            {[1,2,3,4,5].map(i => <div key={i} style={{width: '5px', height: '5px', borderRadius: '50%', background: 'var(--agri-green)'}}></div>)}
+                <div style={{height: 'clamp(300px, 60vw, 600px)', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.06)', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.1)'}}>
+                    <MapContainer 
+                        center={[selectedLocation?.lat || 22.3, selectedLocation?.lon || 70.8]} 
+                        zoom={7} 
+                        style={{ height: '100%', width: '100%' }}
+                    >
+                        {/* High-Precision Satellite Base */}
+                        <TileLayer
+                            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                            attribution='&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                        />
+                        
+                        {/* Dynamic Atmospheric Overlays */}
+                        <TileLayer
+                            url={`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`}
+                            opacity={0.6}
+                            zIndex={10}
+                        />
+                        <TileLayer
+                            url={`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`}
+                            opacity={0.7}
+                            zIndex={11}
+                        />
+
+                        <RecenterMap lat={selectedLocation?.lat} lon={selectedLocation?.lon} />
+                        <ClickToLocate onLocationClick={handleMapLocationSync} />
+
+                        {selectedLocation && (
+                            <Marker position={[selectedLocation.lat, selectedLocation.lon]}>
+                                <Popup>
+                                    <div style={{fontWeight: 800, padding: '0.5rem'}}>
+                                        <div style={{fontSize: '0.7rem', opacity: 0.5, marginBottom: '2px'}}>ACTIVE SECTOR</div>
+                                        {selectedLocation.name}
+                                    </div>
+                                </Popup>
+                            </Marker>
+                        )}
+                    </MapContainer>
+
+                    <div style={{position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', padding: '0.6rem 1.2rem', borderRadius: '12px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 20px rgba(0,0,0,0.1)'}}>
+                        <div className="pulse-green" style={{width: '10px', height: '10px', background: '#10b981', borderRadius: '50%'}}></div>
+                        <span style={{fontSize: '0.75rem', fontWeight: 900, color: '#1e293b', letterSpacing: '0.5px'}}>CLICK MAP TO ANALYZE REGION</span>
+                    </div>
+
+                    <div style={{position: 'absolute', bottom: '1.5rem', left: '1.5rem', background: '#ffffff', color: '#1e293b', padding: '1.5rem', borderRadius: '20px', boxShadow: '0 15px 40px rgba(0,0,0,0.2)', maxWidth: '280px', zIndex: 1000, border: '1px solid rgba(0,0,0,0.05)'}}>
+                        <p style={{fontSize: '0.65rem', fontWeight: 900, opacity: 0.5, margin: '0 0 0.5rem', letterSpacing: '1px'}}>DATA STREAM: ACTIVE</p>
+                        <h4 style={{fontSize: '1rem', fontWeight: 900, margin: '0 0 0.8rem', display: 'flex', alignItems: 'center', gap: '0.6rem'}}>
+                            <Zap size={18} className="agri-green" /> Atmospheric Topology
+                        </h4>
+                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.2rem'}}>
+                            <div style={{padding: '0.3rem 0.6rem', border: '1px solid rgba(16,185,129,0.3)', color: '#059669', background: 'rgba(16,185,129,0.05)', borderRadius: '6px', fontSize: '0.6rem', fontWeight: 900}}>CLOUDS: LIVE</div>
+                            <div style={{padding: '0.3rem 0.6rem', border: '1px solid rgba(59,130,246,0.3)', color: '#2563eb', background: 'rgba(59,130,246,0.05)', borderRadius: '6px', fontSize: '0.6rem', fontWeight: 900}}>STORM: INDEXED</div>
                         </div>
-                        <button style={{width: '100%', background: '#020617', color: '#fff', border: 'none', padding: '0.7rem', borderRadius: '10px', fontWeight: 800, fontSize: '0.75rem', cursor: 'pointer'}}>SCAN SECTOR</button>
+                        <button 
+                            onClick={() => initialize?.()}
+                            style={{width: '100%', background: '#1e293b', color: '#fff', border: 'none', padding: '0.8rem', borderRadius: '12px', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s'}}
+                        >
+                            REFRESH TOPOLOGY
+                        </button>
                     </div>
                 </div>
             </div>
