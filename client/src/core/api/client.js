@@ -5,22 +5,20 @@ import axios from "axios";
  * Centralizes endpoint configuration and base request logic.
  */
 const getBaseUrl = () => {
-  // 1. If we are on localhost, ALWAYS try local backend first unless explicitly forced otherwise
-  const isLocalhost = window.location.host.includes("localhost") || window.location.host.includes("127.0.0.1");
-  
+  // 1. Always prioritize the explicit environment variable if provided
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+      return envUrl;
+  }
+
+  // 2. Fallback to local routing if on localhost
+  const isLocalhost = typeof window !== "undefined" && (window.location.host.includes("localhost") || window.location.host.includes("127.0.0.1"));
   if (isLocalhost) {
     return "http://localhost:5001/api";
   }
 
-  // 2. Fallback to env URL (for production or custom staging)
-  const envUrl = import.meta.env.VITE_API_URL;
-  const baseUrl = envUrl || "https://offlinestorewebsite.onrender.com/api";
-  
-  if (typeof window !== "undefined") {
-    console.log("🌾 [AgroMart] API Base URL:", baseUrl);
-  }
-  
-  return baseUrl;
+  // 3. Absolute Fallback for production if ENV fails to inject
+  return "https://offlinestorewebsite.onrender.com/api";
 };
 
 const apiClient = axios.create({
