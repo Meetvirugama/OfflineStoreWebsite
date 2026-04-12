@@ -73,25 +73,27 @@ const translateResponse = async (req, res, next) => {
     // 2. Skip logic if target is English
     if (targetLang === 'en') return next();
 
-    // 3. Override res.json
+    // 3. SAFE INTERCEPTION PATTERN
+    // Logic: Intercept 'res.json', perform async translation, then call original 'res.json'.
     const originalJson = res.json;
 
-    res.json = async function (body) {
-        try {
-            // Handle if body is an envelope { success: true, data: ... }
-            if (body && typeof body === 'object' && 'data' in body) {
-                const translatedData = await processValue(body.data, null, targetLang);
-                return originalJson.call(this, { ...body, data: translatedData });
-            }
+    res.json = function (body) {
+        // Prevent recursive calls
+        res.json = originalJson;
 
-            // Direct object/array response
-            const translatedBody = await processValue(body, null, targetLang);
-            return originalJson.call(this, translatedBody);
-        } catch (error) {
-            console.error('[TRANSLATE MIDDLEWARE ERROR]', error);
-            // Fallback: Always return original body to prevent breaking the API
-            return originalJson.call(this, body);
-        }
+        // Perform translation in a self-contained async scope
+        processValue(body, null, targetLang)
+            .then(translatedBody => {
+                // Return to the original JSON flow with translated data
+                return originalJson.call(this, translatedBody);
+            })
+            .catch(error => {
+                console.error('[TRANSLATE MIDDLEWARE ERROR]', error);
+                // Resilient fallback: send original body if translation fails
+                return originalJson.call(this, body);
+            });
+
+        return this; // res.json is chainable in Express
     };
 
     next();

@@ -12,26 +12,38 @@ router.get("/", (req, res) => {
 
 /**
  * PATH: GET /api/health/translate-test
- * Purpose: Verify LibreTranslate engine connectivity
+ * Purpose: Deep Diagnostic for Hybrid AI Translation (Groq + ML)
  */
 router.get("/translate-test", async (req, res) => {
-    const testString = "Hello Farmer, welcome to AgroPlatform. Let's work together for a better harvest.";
+    const testString = "Fresh cotton crop ready for market in Gujarat.";
     try {
+        const startTime = Date.now();
         const translated = await translateText(testString, 'gu');
+        const duration = Date.now() - startTime;
+
+        const isAI = translated.includes('કપાસ') || translated.includes('ગુજરાત');
+        const isFallback = (translated === testString);
+
         res.json({
             success: true,
-            engine: "LibreTranslate",
-            source_language: "English",
-            target_language: "Gujarati",
-            input: testString,
-            output: translated,
-            status: testString === translated ? "ERROR/FALLBACK (Matches Input)" : "SUCCESS (Translated)"
+            status: isFallback ? "FALLBACK_ACTIVE ⚠️" : "OPERATIONAL ✅",
+            engine: isAI ? "Groq (AI-Tier)" : "LibreTranslate (ML-Tier)",
+            performance: `${duration}ms`,
+            localization: {
+                target: "Gujarati",
+                input: testString,
+                output: translated
+            },
+            config: {
+                has_groq_key: !!ENV.GROQ_KEY,
+                target_url: ENV.TRANSLATE_API_URL
+            }
         });
     } catch (err) {
         res.json({
             success: false,
             error: err.message,
-            message: "Translation service unreachable"
+            message: "Translation infrastructure completely unreachable"
         });
     }
 });
