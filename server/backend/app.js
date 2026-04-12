@@ -6,6 +6,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 
 // Utils & Middleware
+import { globalErrorHandler } from "./middleware/error.middleware.js";
 import { ENV } from "./config/env.js";
 import translateResponse from "./middleware/translateResponse.js";
 
