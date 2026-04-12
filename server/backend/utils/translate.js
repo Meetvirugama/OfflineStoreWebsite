@@ -35,7 +35,7 @@ export const translateText = async (text, targetLang = 'en') => {
 
     // 3. ATTEMPT AI TRANSLATION (Best Accuracy)
     const groq = getGroq();
-    if (groq) {
+    if (groq && text.length < 3000) { // Safety: Skip AI for extremely massive blocks
         try {
             const prompt = `
                 Translate the following English agricultural/ERP text into localized Gujarati for a farmer.
@@ -52,8 +52,7 @@ export const translateText = async (text, targetLang = 'en') => {
                 messages: [{ role: "user", content: prompt }],
                 model: "llama-3.3-70b-versatile",
                 temperature: 0, // Deterministic for translation
-                max_tokens: 500,
-                timeout: 2500 // Snappy timeout for AI
+                max_tokens: 1000
             });
 
             const translatedText = completion.choices[0]?.message?.content?.trim()?.replace(/^"(.*)"$/, '$1');

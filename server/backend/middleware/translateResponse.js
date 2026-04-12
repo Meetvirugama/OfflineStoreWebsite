@@ -13,38 +13,54 @@ const EXCLUDED_KEYS = new Set([
 ]);
 
 /**
- * RECURSIVE TRANSLATION ENGINE
+ * RECURSIVE TRANSLATION ENGINE (Memory-Safe Version)
+ * @param {any} value - The data to translate
+ * @param {string} key - Current JSON key
+ * @param {string} targetLang - Language code
+ * @param {number} depth - Recursion depth to prevent stack overflow
+ * @param {WeakSet} visited - Tracking for circular reference protection
  */
-const processValue = async (value, key, targetLang) => {
-    // 1. Skip if value is not exist or lang is English
+const processValue = async (value, key, targetLang, depth = 0, visited = new WeakSet()) => {
+    // 1. Base Safety Guards
     if (value === null || value === undefined) return value;
     if (targetLang === 'en') return value;
+    if (depth > 5) return value; // Prevent deep nesting memory blowup
 
-    // 2. Handle Arrays
-    if (Array.isArray(value)) {
-        return await Promise.all(value.map(item => processValue(item, key, targetLang)));
+    // 2. Circular Reference Prevention
+    if (typeof value === 'object' && value !== null) {
+        if (visited.has(value)) return value;
+        visited.add(value);
     }
 
-    // 3. Handle Objects
+    // 3. Handle Arrays (e.g., News feeds)
+    if (Array.isArray(value)) {
+        // Limit processing for massive arrays to avoid heap bloat
+        const limitedArray = value.slice(0, 50); 
+        return await Promise.all(limitedArray.map(item => processValue(item, key, targetLang, depth + 1, visited)));
+    }
+
+    // 4. Handle Objects
     if (typeof value === 'object' && value !== null) {
         const processedObj = {};
         for (const [k, v] of Object.entries(value)) {
-            // Check exclusion list for keys
-            if (EXCLUDED_KEYS.has(k.toLowerCase())) {
+            const lowKey = k.toLowerCase();
+            // Critical: Skip technical / metadata keys
+            if (EXCLUDED_KEYS.has(lowKey) || lowKey.includes('id') || lowKey.includes('at') || lowKey.includes('url')) {
                 processedObj[k] = v;
             } else {
-                processedObj[k] = await processValue(v, k, targetLang);
+                processedObj[k] = await processValue(v, k, targetLang, depth + 1, visited);
             }
         }
         return processedObj;
     }
 
-    // 4. Handle Strings (The actual translation step)
+    // 5. Handle Strings (The actual translation step)
     if (typeof value === 'string') {
+        // Additional Safety: Don't translate very short strings or numeric strings
+        if (value.length < 2 || /^\d+$/.test(value)) return value;
         return await translateText(value, targetLang);
     }
 
-    // 5. Fallback for primitives (Numbers, Booleans)
     return value;
 };
 
