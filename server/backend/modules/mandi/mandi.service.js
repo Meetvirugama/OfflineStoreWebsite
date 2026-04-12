@@ -278,29 +278,21 @@ export const getMandiDetails = async (mandiName) => {
  */
 export const searchMandis = async (query) => {
     try {
-        const nominatimUrl = ENV.NOMINATIM_URL || "https://nominatim.openstreetmap.org/search";
-        
-        // Strategy: 1. Search for specific 'mandi' in Gujarat 2. Fallback to just city
-        let response = await axios.get(nominatimUrl, {
-            params: { q: `${query} mandi gujarat`, format: 'json', limit: 5 },
-            headers: { 'User-Agent': 'AgroMart-ERP/1.0' }
+        const GOOGLE_KEY = ENV.GOOGLE_GEO_KEY;
+        const res = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+            params: { address: `${query}, Gujarat, India`, key: GOOGLE_KEY }
         });
 
-        if (!response.data || response.data.length === 0) {
-            response = await axios.get(nominatimUrl, {
-                params: { q: `${query} gujarat`, format: 'json', limit: 5 },
-                headers: { 'User-Agent': 'AgroMart-ERP/1.0' }
-            });
-        }
+        if (res.data.status !== "OK") return [];
 
-        return (response.data || []).map(place => ({
+        return res.data.results.map(place => ({
             id: place.place_id,
-            name: place.display_name,
-            lat: parseFloat(place.lat),
-            lng: parseFloat(place.lon)
+            name: place.formatted_address,
+            lat: place.geometry.location.lat,
+            lng: place.geometry.location.lng
         }));
     } catch (err) {
-        console.error("Search API Error:", err.message);
+        console.error("Mandi Search Error:", err.message);
         return [];
     }
 };
