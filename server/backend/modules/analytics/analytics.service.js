@@ -55,7 +55,8 @@ export async function getMarketOutlook(queryData) {
     signal: finalSignal,
     reason: finalReason,
     risk: finalRisk,
-    confidence: parsedAiResponse ? 95 : 60,
+    confidence: parsedAiResponse?.confidence_score || (parsedAiResponse ? 95 : 60),
+    velocity: parsedAiResponse?.velocity || (data.trend > 0 ? "HIGH" : "LOW"),
     // Optional (Advanced): Logging the original response
     raw_ai_insight: parsedAiResponse || aiResponse
   };

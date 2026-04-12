@@ -92,7 +92,7 @@ function App() {
           <Route path="/intelligence/weather" element={<WeatherDashboard />} />
           <Route path="/intelligence/advisory" element={<CropAdvisoryPage />} />
           <Route path="/intelligence/agri/crop/:name" element={<CropDetailsPage />} />
-          <Route path="/farming-news" element={<FarmingNewsPage />} />
+          <Route path="/intelligence/agri/news" element={<FarmingNewsPage />} />
         </Route>
 
         {/* ADMIN */}

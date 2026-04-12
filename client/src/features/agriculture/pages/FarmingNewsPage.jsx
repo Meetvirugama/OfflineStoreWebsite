@@ -4,29 +4,23 @@ import useWeatherStore from '@features/agriculture/weather/weather.store';
 import { 
     Newspaper, 
     Megaphone, 
-    CloudRain, 
     TrendingUp, 
     Volume2, 
-    ExternalLink, 
     Filter, 
     RefreshCw,
-    AlertTriangle,
-    Info,
-    ChevronRight,
     MapPin,
-    Calendar
+    Calendar,
+    ArrowUpRight
 } from 'lucide-react';
 import '@/styles/agriIntelligence.css';
 
 const FarmingNewsPage = () => {
-    const { news, fetchNews, loading, error, sync: syncNews } = useNewsStore();
+    const { news, fetchNews, loading, sync: syncNews } = useNewsStore();
     const { currentWeather, fetchAtmosphericDetails } = useWeatherStore();
     const [filter, setFilter] = useState('all');
-    const [speaking, setSpeaking] = useState(null);
 
     useEffect(() => {
         fetchNews();
-        // Fetch weather for a default location if not available (e.g., Ahmedabad/Gujarat)
         if (!currentWeather) {
             fetchAtmosphericDetails(23.0225, 72.5714); 
         }
@@ -37,173 +31,164 @@ const FarmingNewsPage = () => {
         return item.type === filter;
     }) : [];
 
-    const announcements = Array.isArray(news) ? news.filter(item => item.type === 'announcement').slice(0, 3) : [];
-
-    const latestNews = filteredNews.filter(item => item.type === 'news');
-
-    const handleSpeak = (text, id) => {
-        if (speaking === id) {
-            window.speechSynthesis.cancel();
-            setSpeaking(null);
-            return;
-        }
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.onend = () => setSpeaking(null);
-        window.speechSynthesis.speak(utterance);
-        setSpeaking(id);
-    };
+    const featuredNews = filteredNews.length > 0 ? filteredNews[0] : null;
+    const feedNews = filteredNews.slice(1);
 
     return (
         <div className="agri-page">
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '3.5rem' }}>
-                <div>
-                    <h1 className="agri-title" style={{ fontSize: '2.8rem', fontWeight: 900, letterSpacing: '-1.2px', display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
-                        <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
-                            <Newspaper className="agri-green" size={32} />
-                        </div>
-                        Agri-Intelligence Hub
-                    </h1>
-                    <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                        <MapPin size={16} className="agri-green" /> 
-                        Aggregated agricultural journals & real-time telemetry
-                    </p>
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                    <div className="agri-card" style={{ padding: '0.6rem 1.2rem', display: 'flex', gap: '1.5rem', alignItems: 'center', background: '#f1f5f9', borderRadius: '16px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', opacity: 0.6 }}>
-                            <Filter size={16} />
-                            <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Filter Journals</span>
-                        </div>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            {['all', 'news', 'announcements'].map(tType => (
-                                <button 
-                                    key={tType}
-                                    onClick={() => setFilter(tType === 'announcements' ? 'announcement' : tType)}
-                                    style={{
-                                        background: filter === (tType === 'announcements' ? 'announcement' : tType) ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
-                                        color: filter === (tType === 'announcements' ? 'announcement' : tType) ? '#10b981' : '#64748b',
-                                        border: 'none',
-                                        padding: '0.4rem 1rem',
-                                        borderRadius: '8px',
-                                        fontSize: '0.75rem',
-                                        fontWeight: 800,
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s'
-                                    }}
-                                >
-                                    {tType === 'all' ? 'All Entries' : tType === 'news' ? 'Market News' : 'Announcements'}
-                                </button>
-                            ))}
+            {/* Header Area */}
+            <div className="agri-page__header" style={{display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '3rem'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem'}}>
+                    <div>
+                        <h1 className="agri-title" style={{fontSize: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem'}}>
+                             <div className="pulse-green" style={{width: '40px', height: '40px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(16, 185, 129, 0.3)'}}>
+                                <Newspaper className="agri-green" size={24} />
+                             </div>
+                             Intelligence Feed
+                        </h1>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.4rem'}}>
+                            <p style={{opacity: 0.5, fontSize: '0.9rem', margin: 0, fontWeight: 500}}>Aggregated global agricultural journals & policy briefs.</p>
+                            <span style={{
+                                fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(16, 185, 129, 0.1)', 
+                                border: '1px solid #10b981', borderRadius: '1rem', color: '#10b981', fontWeight: 700, letterSpacing: '0.5px'
+                            }}>
+                                API SYNC: ACTIVE
+                            </span>
                         </div>
                     </div>
-                    
-                    <button 
-                        onClick={() => syncNews()}
-                        className="agri-card hover-bg" 
-                        style={{
-                            padding: '1.1rem 1.8rem', 
-                            background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', 
-                            border: 'none', 
-                            color: '#fff', 
-                            fontWeight: 900, 
-                            cursor: 'pointer',
-                            borderRadius: '18px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.8rem',
-                            fontSize: '0.85rem',
-                            letterSpacing: '0.5px'
-                        }}
-                    >
-                        <RefreshCw size={16} className={loading ? 'spin' : ''} />
-                        Update Repository
-                    </button>
+
+                    <div style={{display: 'flex', gap: '0.8rem', alignItems: 'center'}}>
+                        <button 
+                            onClick={() => syncNews()}
+                            className="agri-card hover-bg" 
+                            disabled={loading}
+                            style={{
+                                padding: '0.9rem 1.8rem', 
+                                background: 'var(--agri-green)', 
+                                border: 'none', 
+                                color: '#fff', 
+                                fontWeight: 800, 
+                                cursor: 'pointer',
+                                borderRadius: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.8rem',
+                                fontSize: '0.9rem',
+                                boxShadow: '0 10px 20px rgba(16, 185, 129, 0.15)'
+                            }}
+                        >
+                            <RefreshCw size={18} className={loading ? 'spin' : ''} />
+                            {loading ? 'SYNCING...' : 'SYNC REPOSITORY'}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Filter Bar */}
+                <div className="agri-card glass-card" style={{padding: '0.6rem 1rem', display: 'flex', gap: '1.5rem', alignItems: 'center', width: 'fit-content', borderRadius: '20px', marginTop: '1rem'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', opacity: 0.6, borderRight: '1px solid rgba(0,0,0,0.1)', paddingRight: '1.5rem'}}>
+                        <Filter size={14} className="agri-green" />
+                        <span style={{fontSize: '0.75rem', fontWeight: 900, letterSpacing: '0.5px', color: '#1e293b'}}>FILTERS</span>
+                    </div>
+                    <div style={{display: 'flex', gap: '0.5rem'}}>
+                        {['all', 'news', 'market', 'tech'].map(type => (
+                            <button 
+                                key={type}
+                                onClick={() => setFilter(type)}
+                                style={{
+                                    background: filter === type ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
+                                    color: filter === type ? '#059669' : '#64748b',
+                                    border: 'none',
+                                    padding: '0.5rem 1.4rem',
+                                    borderRadius: '12px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: filter === type ? 900 : 700,
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s',
+                                    letterSpacing: '0.3px'
+                                }}
+                            >
+                                {type.toUpperCase()}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: '3rem', alignItems: 'start' }}>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-                    {/* Featured Headline */}
-                    {latestNews.length > 0 && filter === 'all' && (
-                        <div className="agri-card" style={{ padding: 0, overflow: 'hidden', height: '480px', position: 'relative', display: 'flex', flexDirection: 'column' }}>
-                            <div style={{ height: '100%', width: '100%', position: 'absolute', top: 0, left: 0 }}>
+            <div className="stats-grid" style={{gridTemplateColumns: 'minmax(0, 1fr) 350px', gap: '2.5rem', alignItems: 'start'}}>
+                {/* Main Feed Column */}
+                <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
+                    {/* Featured Hero Card */}
+                    {featuredNews && (
+                        <div className="agri-card premium-panel" style={{padding: 0, overflow: 'hidden', minHeight: '450px', display: 'flex', flexDirection: 'column', borderRadius: '32px'}}>
+                            <div style={{height: '280px', position: 'relative'}}>
                                 <img 
-                                    src={latestNews[0].image_url || latestNews[0].image || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80"} 
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} 
+                                    src={featuredNews.image || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80"} 
+                                    style={{width: '100%', height: '100%', objectFit: 'cover'}} 
                                     alt="featured"
                                 />
-                                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '80%', background: 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.8) 40%, transparent 100%)' }}></div>
+                                <div style={{position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(255,255,255,1) 0%, transparent 100%)'}}></div>
+                                <div style={{position: 'absolute', top: '2rem', left: '2rem'}}>
+                                    <span style={{background: 'var(--agri-accent)', color: '#fff', padding: '0.5rem 1.2rem', borderRadius: '2rem', fontSize: '0.75rem', fontWeight: 900, letterSpacing: '1px', boxShadow: '0 4px 12px rgba(245, 158, 11, 0.2)'}}>TOP JOURNAL</span>
+                                </div>
                             </div>
-                            <div style={{ position: 'relative', zIndex: 2, padding: '3.5rem', marginTop: 'auto' }}>
-                                <div style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#059669', padding: '0.5rem 1.2rem', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 900, display: 'inline-block', marginBottom: '1.5rem', border: '1px solid rgba(16, 185, 129, 0.3)', letterSpacing: '1px' }}>FEATURED ANALYSIS</div>
-                                <h2 style={{ fontSize: '2.8rem', fontWeight: 900, margin: '0 0 1.5rem 0', lineHeight: 1.1, letterSpacing: '-1px', color: '#1e293b' }}>
-                                    {latestNews[0].title}
+                            <div style={{padding: '3rem', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', background: '#fff'}}>
+                                <h2 style={{fontSize: '2.2rem', fontWeight: 900, marginBottom: '1.5rem', lineHeight: 1.1, letterSpacing: '-1.2px', color: '#1e293b'}}>
+                                    {featuredNews.title}
                                 </h2>
-                                <p style={{ fontSize: '1.1rem', color: '#475569', opacity: 0.8, marginBottom: '2rem', maxWidth: '800px', lineHeight: 1.6, fontWeight: 500 }}>
-                                    {latestNews[0].content?.substring(0, 200) || latestNews[0].description?.substring(0, 200)}...
+                                <p style={{fontSize: '1.1rem', color: '#475569', opacity: 0.85, marginBottom: '2.5rem', lineHeight: 1.6, fontWeight: 500, maxWidth: '90%'}}>
+                                    {featuredNews.description?.substring(0, 200)}...
                                 </p>
-                                <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto'}}>
                                     <button 
-                                        onClick={() => window.open(latestNews[0].url || latestNews[0].link, '_blank')}
-                                        style={{ background: '#1e293b', color: '#ffffff', padding: '1rem 2rem', borderRadius: '14px', border: 'none', fontWeight: 800, cursor: 'pointer', fontSize: '1rem' }}
+                                        onClick={() => window.open(featuredNews.link, '_blank')}
+                                        className="agri-card hover-bg"
+                                        style={{background: '#1e293b', color: '#fff', padding: '1rem 2.2rem', borderRadius: '16px', border: 'none', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '1rem'}}
                                     >
-                                        Read Full Analysis
+                                        Access Report <ArrowUpRight size={20} />
                                     </button>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', opacity: 0.5, fontSize: '0.9rem', fontWeight: 700 }}>
+                                    <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', opacity: 0.5, fontSize: '0.85rem', fontWeight: 800}}>
                                         <Calendar size={18} />
-                                        {latestNews[0].published_at ? new Date(latestNews[0].published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : "Recently"}
+                                        {new Date(featuredNews.published_at).toLocaleDateString()}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* News Feed Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem' }}>
-                        {loading && (!news || news.length === 0) ? (
-                            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '10rem 0' }}>
-                                <RefreshCw className="spin" size={48} style={{ opacity: 0.2, marginBottom: '1.5rem', color: 'var(--agri-green)' }} />
-                                <p style={{ fontWeight: 800, letterSpacing: '2px', opacity: 0.4 }}>Indexing agricultural telemetry...</p>
+                    {/* Standard Feed Grid */}
+                    <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '2rem'}}>
+                        {loading && feedNews.length === 0 ? (
+                            <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '10rem 0'}}>
+                                <RefreshCw className="spin agri-green" size={40} style={{opacity: 0.2}} />
+                                <p style={{marginTop: '1rem', fontWeight: 800, opacity: 0.3, letterSpacing: '1px'}}>INDEXING LIVE DATA...</p>
                             </div>
-                        ) : filteredNews.map((item, idx) => (
-                            <div 
-                                key={idx} 
-                                className="agri-card hover-bg" 
-                                style={{ padding: '2rem', background: '#ffffff', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}
-                            >
-                                <div style={{ height: '220px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(0,0,0,0.2)' }}>
-                                    <img src={item.image_url || item.image || "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80"} style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} alt="news" />
+                        ) : feedNews.map((item, idx) => (
+                            <div key={idx} className="agri-card glass-card hover-bg" style={{padding: '1.8rem', borderRadius: '28px', display: 'flex', flexDirection: 'column', gap: '1.5rem', border: '1px solid rgba(0,0,0,0.06)'}}>
+                                <div style={{height: '200px', borderRadius: '20px', overflow: 'hidden', position: 'relative'}}>
+                                    <img src={item.image || "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80"} style={{width: '100%', height: '100%', objectFit: 'cover'}} alt="news" />
+                                    <div style={{position: 'absolute', top: '1rem', right: '1rem'}}>
+                                        <span style={{background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(8px)', color: '#1e293b', padding: '0.4rem 1rem', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 900, border: '1px solid rgba(0,0,0,0.05)'}}>
+                                            {item.type?.toUpperCase() || 'NEWS'}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                        <span style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--agri-green)', letterSpacing: '1px' }}>
-                                            {item.source?.toUpperCase() || item.category?.toUpperCase() || "External Agri-Sync"}
-                                        </span>
-                                        <span style={{ fontSize: '0.7rem', opacity: 0.4, fontWeight: 700 }}>{item.published_at ? new Date(item.published_at).toLocaleDateString() : "Recently"}</span>
-                                    </div>
-                                    <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#1e293b', margin: '0 0 1rem 0', lineHeight: 1.3, height: '3.4rem', overflow: 'hidden' }}>
+                                    <h3 style={{fontSize: '1.2rem', fontWeight: 900, color: '#1e293b', marginBottom: '1rem', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
                                         {item.title}
                                     </h3>
-                                    <p style={{ fontSize: '0.95rem', color: '#64748b', opacity: 0.8, lineHeight: 1.6, height: '4.5rem', overflow: 'hidden', marginBottom: '1.5rem' }}>
-                                        {item.content?.substring(0, 150) || item.description?.substring(0, 150)}...
+                                    <p style={{fontSize: '0.95rem', color: '#64748b', opacity: 0.8, lineHeight: 1.6, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: '1.5rem', fontWeight: 500}}>
+                                        {item.description}
                                     </p>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto'}}>
                                         <button 
-                                            onClick={() => window.open(item.url || item.link, '_blank')}
-                                            style={{ background: 'transparent', border: '1px solid rgba(0,0,0,0.1)', color: '#1e293b', padding: '0.6rem 1.2rem', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}
+                                            onClick={() => window.open(item.link, '_blank')}
+                                            style={{background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16,185,129,0.15)', color: 'var(--agri-green)', padding: '0.6rem 1.4rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'}}
                                         >
-                                            Continue Reading
+                                            View Analysis
                                         </button>
-                                        <button 
-                                            onClick={() => handleSpeak(`${item.title}. ${item.content || item.description}`, idx)}
-                                            style={{ color: speaking === idx ? 'var(--agri-green)' : 'rgba(0,0,0,0.3)', background: 'none', border: 'none', cursor: 'pointer' }}
-                                        >
-                                            <Volume2 size={20} />
-                                        </button>
+                                        <div style={{fontSize: '0.75rem', opacity: 0.4, fontWeight: 800}}>
+                                            {new Date(item.published_at).toLocaleDateString()}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -211,69 +196,49 @@ const FarmingNewsPage = () => {
                     </div>
                 </div>
 
-                {/* RIGHT SIDEBAR: ADVISORIES & CLIMATE */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', position: 'sticky', top: '100px' }}>
-                    
-                    {/* Climate Telemetry */}
-                    <div className="agri-card" style={{ padding: '2.5rem', background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '32px' }}>
-                        <h4 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#1e293b', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                            <div style={{width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981'}}></div>
-                            Climate Telemetry
+                {/* Sidebar Column */}
+                <div style={{display: 'flex', flexDirection: 'column', gap: '2.5rem', position: 'sticky', top: '100px'}}>
+                    {/* Live Telemetry Card */}
+                    <div className="agri-card premium-panel" style={{padding: '2.5rem', borderRadius: '32px', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%)'}}>
+                        <h4 style={{fontSize: '1.2rem', fontWeight: 900, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem', color: '#1e293b'}}>
+                            <div className="pulse-green" style={{width: '12px', height: '12px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 12px #10b981'}}></div>
+                            Climate Vectors
                         </h4>
                         {currentWeather ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                <div style={{ background: '#ffffff', padding: '1.8rem', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 10px rgba(0,0,0,0.02)' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div>
-                                            <div style={{ fontSize: '3.5rem', fontWeight: 900, color: '#1e293b', letterSpacing: '-2px' }}>{Math.round(currentWeather.main?.temp)}°C</div>
-                                            <div style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 700, letterSpacing: '1px' }}>
-                                                {currentWeather.weather?.[0]?.description || 'Clear'}
-                                            </div>
-                                        </div>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--agri-green)', marginBottom: '4px' }}>{currentWeather.main?.humidity}% RH</div>
-                                            <div style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 800 }}>Rel. Humidity</div>
-                                        </div>
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
+                                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(0,0,0,0.04)'}}>
+                                    <div>
+                                        <div style={{fontSize: '3.2rem', fontWeight: 900, letterSpacing: '-2px', color: '#1e293b'}}>{Math.round(currentWeather.main?.temp)}°C</div>
+                                        <div style={{fontSize: '0.8rem', fontWeight: 800, color: 'var(--agri-green)', letterSpacing: '0.5px'}}>LOCAL SYNC ACTIVE</div>
                                     </div>
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                    <div style={{ padding: '1rem', background: '#ffffff', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '14px', textAlign: 'center' }}>
-                                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b' }}>{currentWeather.wind?.speed} m/s</div>
-                                        <div style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 700 }}>Wind Spd</div>
-                                    </div>
-                                    <div style={{ padding: '1rem', background: '#ffffff', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '14px', textAlign: 'center' }}>
-                                        <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#1e293b' }}>{currentWeather.main?.pressure} hPa</div>
-                                        <div style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 700 }}>Barometer</div>
+                                    <div style={{textAlign: 'right'}}>
+                                        <div style={{fontSize: '1.2rem', fontWeight: 900, color: '#1e293b'}}>{currentWeather.main?.humidity}%</div>
+                                        <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: 900}}>HUMIDITY</div>
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <div style={{ padding: '3rem 0', textAlign: 'center', opacity: 0.3 }}>
-                                <RefreshCw className="spin" size={32} style={{ marginBottom: '1rem' }} />
-                                <p style={{fontWeight: 800, fontSize: '0.75rem'}}>Climate Handshaking...</p>
+                            <div style={{padding: '2rem 0', textAlign: 'center', opacity: 0.3}}>
+                                <RefreshCw className="spin" size={32} style={{marginBottom: '0.8rem'}} />
+                                <p style={{fontSize: '0.75rem', fontWeight: 800}}>SYNCING SENSORS...</p>
                             </div>
                         )}
                     </div>
 
-                    {/* Announcements Spotlight */}
-                    <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
-                        <h4 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#1e293b', marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                             <Megaphone className="agri-accent" size={24} /> Policy Briefs & Advisories
+                    {/* Government Policy Hub */}
+                    <div className="agri-card glass-card" style={{padding: '2.5rem', borderRadius: '32px'}}>
+                        <h4 style={{fontSize: '1.2rem', fontWeight: 900, marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', color: '#1e293b'}}>
+                            <Megaphone className="agri-accent pulse-green" size={24} /> Policy Journal
                         </h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            {announcements.length > 0 ? announcements.map((ann, idx) => (
-                                <div key={idx} style={{ paddingLeft: '1.5rem', borderLeft: '3px solid var(--agri-accent)', cursor: 'pointer' }} onClick={() => window.open(ann.link || ann.url, '_blank')}>
-                                    <h5 style={{ fontSize: '1rem', fontWeight: 800, color: '#1e293b', margin: '0 0 0.5rem 0', lineHeight: 1.4 }}>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
+                            {news.filter(n => n.type === 'market' || n.type === 'alert' || n.type === 'news').slice(0, 5).map((ann, idx) => (
+                                <div key={idx} style={{paddingLeft: '1.5rem', borderLeft: '4px solid var(--agri-accent)', cursor: 'pointer', transition: 'all 0.2s'}} onClick={() => window.open(ann.link, '_blank')}>
+                                    <h5 style={{fontSize: '1rem', fontWeight: 800, color: '#1e293b', margin: '0 0 0.5rem 0', lineHeight: 1.4, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
                                         {ann.title}
                                     </h5>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', opacity: 0.4, fontWeight: 700 }}>
-                                        <span>Government Strategic Scheme</span>
-                                        <ChevronRight size={14} />
-                                    </div>
+                                    <div style={{fontSize: '0.7rem', opacity: 0.5, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px'}}>STRATEGIC UPDATE</div>
                                 </div>
-                            )) : (
-                                <p style={{opacity: 0.3, fontSize: '0.9rem', textAlign: 'center'}}>No strategic briefings recorded today.</p>
-                            )}
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -282,27 +247,4 @@ const FarmingNewsPage = () => {
     );
 };
 
-
-const animations = `
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
-}
-.spin { animation: spin 1s linear infinite; }
-.pulse { animation: pulse 2s ease-in-out infinite; }
-`;
-
-const FarmingNewsPageWrapper = () => (
-    <>
-        <style>{animations}</style>
-        <FarmingNewsPage />
-    </>
-);
-
-export default FarmingNewsPageWrapper;
-
+export default FarmingNewsPage;

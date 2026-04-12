@@ -70,6 +70,7 @@ export const syncNews = async () => {
                     description: art.description || art.content || "Agricultural insight and updates.",
                     link: art.link,
                     image: art.image_url || MOCK_NEWS[0].image,
+                    type: art.category?.[0]?.toLowerCase() === 'technology' ? 'tech' : (art.category?.[0]?.toLowerCase() === 'business' ? 'market' : 'news'),
                     published_at: art.pubDate || new Date()
                 }
             });
