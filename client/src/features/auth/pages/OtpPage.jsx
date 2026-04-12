@@ -173,7 +173,4 @@ export default function OtpPage() {
       </div>
     </div>
   );
-}v>
-    </div>
-  );
 }
