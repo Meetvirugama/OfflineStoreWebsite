@@ -59,8 +59,9 @@ async function seedOfficialApmcs() {
             if (BLACKLIST.test(m.name)) continue;
 
             try {
-                // High-precision query: "Amreli APMC Yard, Gujarat, India"
-                const address = `${m.name} APMC Market Yard, ${m.district}, Gujarat, India`;
+                // HIGH-PRECISION QUERY: Township First. 
+                // We remove District from primary query to prevent 'District Stacking'
+                const address = `${m.name}, Gujarat, India`;
                 const gRes = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
                     params: { address, key: GOOGLE_KEY }
                 });

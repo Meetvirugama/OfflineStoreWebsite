@@ -292,28 +292,72 @@ const CropAdvisoryPage = () => {
                                 </div>
                             </div>
 
-                            <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px' }}>
-                                <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.2rem', fontWeight: 800 }}>
-                                    <History className="agri-green" /> Strategic Activity Pulse
-                                </h3>
-                                {curAdvisory?.advisory?.map((h, idx) => (
-                                    <div key={idx} style={{ padding: '1.5rem', borderRadius: '20px', background: '#f8fafc', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                                            <ChevronRight className="agri-green" />
-                                            <div>
-                                                <p style={{ fontWeight: '800', color: '#1e293b' }}>{h.message}</p>
-                                                <p style={{ fontSize: '0.7rem', color: 'var(--agri-green)', fontWeight: 900 }}>ACTION REQUIRED ● PRIORITY {idx + 1}</p>
-                                            </div>
+                                 {/* Strategic Activity Pulse & History */}
+                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                                    <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px' }}>
+                                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.2rem', fontWeight: 800 }}>
+                                            <History className="agri-green" /> Strategic Activity Pulse
+                                        </h3>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                                            {(loading ? [1, 2, 3] : (curAdvisory?.advisory || [])).map((h, idx) => (
+                                                <div key={idx} style={{ padding: '1.5rem', borderRadius: '24px', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.03)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                                                    <div style={{ padding: '0.8rem', background: '#fff', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.04)' }}>
+                                                        <ChevronRight className="agri-green" size={20} />
+                                                    </div>
+                                                    <div>
+                                                        <p style={{ fontWeight: '800', color: '#1e293b', fontSize: '0.95rem' }}>{loading ? '---' : h.message}</p>
+                                                        <p style={{ fontSize: '0.65rem', color: 'var(--agri-green)', fontWeight: 900, marginTop: '4px', letterSpacing: '0.5px' }}>
+                                                            ACTION REQUIRED ● PRIORITY {idx + 1}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};
 
-export default CropAdvisoryPage;
+                                    {/* Historical Context Pulsar */}
+                                    {history?.length > 0 && (
+                                        <div className="agri-card" style={{ padding: '2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '32px' }}>
+                                            <h4 style={{ fontSize: '0.75rem', fontWeight: 900, opacity: 0.4, letterSpacing: '1px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                                <History size={14} /> RECENT INTELLIGENCE PULSES
+                                            </h4>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                                                {history.slice(0, 5).map((h, idx) => (
+                                                    <button 
+                                                        key={idx}
+                                                        onClick={() => useAdvisoryStore.setState({ curAdvisory: h })}
+                                                        style={{ 
+                                                            display: 'flex', 
+                                                            justifyContent: 'space-between', 
+                                                            alignItems: 'center', 
+                                                            padding: '1rem 1.2rem', 
+                                                            background: curAdvisory?.id === h.id ? 'var(--agri-green)' : '#fff', 
+                                                            color: curAdvisory?.id === h.id ? '#fff' : '#1e293b',
+                                                            border: 'none',
+                                                            borderRadius: '16px',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                                                            boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+                                                        }}
+                                                    >
+                                                        <div style={{ textAlign: 'left' }}>
+                                                            <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>{h.crop}</div>
+                                                            <div style={{ fontSize: '0.65rem', opacity: 0.6 }}>{h.location} • {h.stage}</div>
+                                                        </div>
+                                                        <ChevronRight size={16} style={{ opacity: 0.4 }} />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                 </div>
+                             </div>
+                         </div>
+                     )}
+                 </div>
+             </div>
+         </div>
+     );
+ };
+ 
+ export default CropAdvisoryPage;
