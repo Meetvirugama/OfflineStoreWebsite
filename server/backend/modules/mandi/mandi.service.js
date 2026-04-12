@@ -330,8 +330,28 @@ export const getAgriDashboardStats = async (state = "Gujarat") => {
 };
 
 export const getBestMandiPrice = async (commodity) => {
-    const cached = await PriceCache.findOne({ where: { commodity }, order: [['modal_price', 'DESC']] });
-    return cached || { modal_price: 0, market: 'Aggregated Data' };
+    // Layer 1: Live Cache
+    let result = await PriceCache.findOne({ 
+        where: { commodity: { [Op.iLike]: `%${commodity}%` } }, 
+        order: [['modal_price', 'DESC']] 
+    });
+
+    if (result) return result;
+
+    // Layer 2: Historical Fallback
+    console.log(`⚠️ Cache miss for ${commodity}. Falling back to historical search.`);
+    const fallback = await MandiPrice.findOne({
+        where: { commodity: { [Op.iLike]: `%${commodity}%` } },
+        order: [['modal_price', 'DESC'], ['arrival_date', 'DESC']]
+    });
+
+    return fallback ? { 
+        modal_price: fallback.modal_price, 
+        market: fallback.market 
+    } : { 
+        modal_price: 0, 
+        market: 'Aggregated Data' 
+    };
 };
 
 export const getMultiCropComparison = async (crops, days, district, state) => {
