@@ -6,8 +6,8 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 
 // Utils & Middleware
-import { globalErrorHandler } from "./middleware/error.middleware.js";
 import { ENV } from "./config/env.js";
+import translateResponse from "./middleware/translateResponse.js";
 
 // Routes
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -93,6 +93,9 @@ app.get("/", (req, res) => {
 // ─── STANDARD MIDDLEWARE ────────────────────────────────────────────────────
 app.use(express.json());
 app.use(morgan("dev"));
+
+// ─── TRANSLATION MIDDLEWARE ────────────────────────────────────────────────
+app.use(translateResponse);
 
 // Serving Uploads (Product images, Crop captures, etc.)
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

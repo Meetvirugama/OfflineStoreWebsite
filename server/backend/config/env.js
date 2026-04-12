@@ -33,6 +33,10 @@ export const ENV = {
     // Internal Service URLs
     BASE_API_URL: process.env.BASE_API_URL || 'https://agroplatform.app/api',
     FRONTEND_URL: process.env.FRONTEND_URL || 'https://www.agroplatform.app',
+    
+    // AI & Translation Services
+    HF_TOKEN: process.env.HF_TOKEN,
+    TRANSLATE_API_URL: process.env.TRANSLATE_API_URL || 'http://localhost:5000/translate',
 };
 
 export default ENV;
