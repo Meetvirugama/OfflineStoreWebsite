@@ -24,27 +24,43 @@ const processValue = async (value, key, targetLang, depth = 0, visited = new Wea
     // 1. Base Safety Guards
     if (value === null || value === undefined) return value;
     if (targetLang === 'en') return value;
-    if (depth > 5) return value; // Prevent deep nesting memory blowup
+    if (depth > 6) return value; // Slightly deeper for nested news lists
 
-    // 2. Circular Reference Prevention
+    // 2. Normalize: Unpack Sequelize Models or Class Instances to Plain Objects
+    let normalizedValue = value;
     if (typeof value === 'object' && value !== null) {
-        if (visited.has(value)) return value;
-        visited.add(value);
+        if (typeof value.toJSON === 'function') {
+            normalizedValue = value.toJSON();
+        } else if (value.dataValues) {
+            normalizedValue = value.dataValues;
+        }
     }
 
-    // 3. Handle Arrays (e.g., News feeds)
-    if (Array.isArray(value)) {
-        // Limit processing for massive arrays to avoid heap bloat
-        const limitedArray = value.slice(0, 50); 
+    // 3. Circular Reference Prevention
+    if (typeof normalizedValue === 'object' && normalizedValue !== null) {
+        if (visited.has(normalizedValue)) return normalizedValue;
+        visited.add(normalizedValue);
+    }
+
+    // 4. Handle Arrays (e.g., News feeds)
+    if (Array.isArray(normalizedValue)) {
+        const limitedArray = normalizedValue.slice(0, 30); // Leaner limit for news stability
         return await Promise.all(limitedArray.map(item => processValue(item, key, targetLang, depth + 1, visited)));
     }
 
-    // 4. Handle Objects
-    if (typeof value === 'object' && value !== null) {
+    // 5. Handle Objects
+    if (typeof normalizedValue === 'object' && normalizedValue !== null) {
         const processedObj = {};
-        for (const [k, v] of Object.entries(value)) {
+        for (const [k, v] of Object.entries(normalizedValue)) {
             const lowKey = k.toLowerCase();
-            // Critical: Skip technical / metadata keys
+            
+            // PRIORITY KEYS: Always translate these regardless of depth
+            if (['title', 'description', 'message', 'name'].includes(lowKey)) {
+                processedObj[k] = await processValue(v, k, targetLang, depth + 1, visited);
+                continue;
+            }
+
+            // EXCLUSION LOGIC: Skip technical / metadata keys
             if (EXCLUDED_KEYS.has(lowKey) || lowKey.includes('id') || lowKey.includes('at') || lowKey.includes('url')) {
                 processedObj[k] = v;
             } else {
@@ -54,14 +70,13 @@ const processValue = async (value, key, targetLang, depth = 0, visited = new Wea
         return processedObj;
     }
 
-    // 5. Handle Strings (The actual translation step)
-    if (typeof value === 'string') {
-        // Additional Safety: Don't translate very short strings or numeric strings
-        if (value.length < 2 || /^\d+$/.test(value)) return value;
-        return await translateText(value, targetLang);
+    // 6. Handle Strings (The actual translation step)
+    if (typeof normalizedValue === 'string') {
+        if (normalizedValue.length < 2 || /^\d+$/.test(normalizedValue)) return normalizedValue;
+        return await translateText(normalizedValue, targetLang);
     }
 
-    return value;
+    return normalizedValue;
 };
 
 /**

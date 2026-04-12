@@ -57,6 +57,8 @@ export const translateText = async (text, targetLang = 'en') => {
 
             const translatedText = completion.choices[0]?.message?.content?.trim()?.replace(/^"(.*)"$/, '$1');
 
+            console.log(`[AI DEBUG] Input: "${text.substring(0, 30)}..." | Output: "${translatedText?.substring(0, 30)}..."`);
+
             if (translatedText && translatedText !== text) {
                 console.log(`[AI TRANSLATE] Success: "${text.substring(0, 15)}..." -> GU`);
                 translationCache.set(cacheKey, translatedText);
