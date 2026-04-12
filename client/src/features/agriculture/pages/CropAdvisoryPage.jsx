@@ -1,3 +1,23 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import useAdvisoryStore from '@features/agriculture/crop/advisory.store';
+import useWeatherStore from '@features/agriculture/weather/weather.store';
+import { 
+    Sprout, 
+    MapPin, 
+    Navigation, 
+    AlertTriangle, 
+    Thermometer, 
+    Droplets, 
+    CloudRain,
+    ChevronRight,
+    History,
+    TrendingUp,
+    ShieldCheck,
+    Loader2,
+    Calendar,
+    Target,
+    RefreshCw
+} from 'lucide-react';
 import { 
     MapContainer, 
     TileLayer, 
@@ -7,6 +27,9 @@ import {
 } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+
+const CROPS = ["Wheat", "Rice", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Maize"];
+const STAGES = ["Sowing", "Vegetative", "Flowering", "Fruiting", "Harvesting"];
 
 // Fix Leaflet icon issue
 delete L.Icon.Default.prototype._getIconUrl;
