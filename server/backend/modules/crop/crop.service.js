@@ -180,7 +180,12 @@ export const generateAdvisory = async (userId, formData) => {
     }
 
     if (finalLat && finalLon) {
-        weatherData = (await weatherService.getAtmosphericDetails(finalLat, finalLon))?.current;
+        const fullWeather = await weatherService.getAtmosphericDetails(finalLat, finalLon);
+        weatherData = {
+            current: fullWeather.current,
+            forecast: fullWeather.extendedForecast,
+            outlook: fullWeather.strategic_outlook
+        };
     }
 
     // 2. Fetch Market Context (Nearby Mandis) - Enforced distance cap of 100km for advisory relevance

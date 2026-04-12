@@ -247,13 +247,19 @@ const CropAdvisoryPage = () => {
 
                     {(curAdvisory || loading) && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            <div className="agri-card" style={{ padding: '2.5rem', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', borderRadius: '32px' }}>
-                                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                    <ShieldCheck className="agri-green" size={24} /> AI STRATEGIC ADVISORY
-                                </h3>
-                                <p style={{ fontSize: '1.2rem', lineHeight: 1.8, opacity: 0.9 }}>
-                                    {loading ? 'Synthesizing data...' : curAdvisory?.accuracy_meta?.ai_text}
-                                </p>
+                            <div className="agri-card" style={{ padding: '2.5rem', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', borderRadius: '32px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)', filter: 'blur(30px)' }}></div>
+                                <div style={{ position: 'relative', zIndex: 1 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                            <ShieldCheck className="agri-green" size={24} /> AI STRATEGIC ADVISORY
+                                        </h3>
+                                        <span style={{ fontSize: '0.65rem', fontWeight: 900, color: 'rgba(255,255,255,0.4)', letterSpacing: '1px' }}>LLAMA-3 SYNTHS ● V2.0</span>
+                                    </div>
+                                    <p style={{ fontSize: '1.2rem', lineHeight: 1.8, opacity: 0.9, fontWeight: 500, color: 'rgba(255,255,255,0.85)' }}>
+                                        {loading ? 'Synthesizing internal patterns and external telemetry...' : curAdvisory?.accuracy_meta?.ai_text}
+                                    </p>
+                                </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
@@ -270,11 +276,13 @@ const CropAdvisoryPage = () => {
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                    <div className="agri-card" style={{ padding: '2rem', background: '#fff', border: '2px solid var(--agri-green)', borderRadius: '32px' }}>
-                                        <div style={{ padding: '0.4rem 0.8rem', background: 'var(--agri-green)', color: '#fff', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 900, display: 'inline-block', marginBottom: '1rem' }}>BEST OPTION</div>
+                                    <div className="agri-card" style={{ padding: '2rem', background: '#fff', border: '2px solid var(--agri-green)', borderRadius: '32px', boxShadow: '0 10px 30px rgba(16, 185, 129, 0.1)' }}>
+                                        <div style={{ padding: '0.4rem 0.8rem', background: 'var(--agri-green)', color: '#fff', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 900, display: 'inline-block', marginBottom: '1rem' }}>BEST MARKET LOGIC</div>
                                         <h3 style={{ fontSize: '1.5rem', fontWeight: 900 }}>{loading ? '---' : curAdvisory?.best_mandi?.name}</h3>
                                         <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--agri-green)', margin: '1rem 0' }}>{loading ? '---' : ('₹' + curAdvisory?.best_mandi?.modal_price)}</div>
-                                        <p style={{ fontSize: '0.9rem', opacity: 0.6 }}>{loading ? '---' : curAdvisory?.accuracy_meta?.best_mandi_reason}</p>
+                                        <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.04)', fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, fontWeight: 500 }}>
+                                            {loading ? 'Analyzing market velocity...' : (curAdvisory?.accuracy_meta?.best_mandi_reason || 'AI is calculating the optimal trade node based on proximity and price ceiling.')}
+                                        </div>
                                     </div>
 
                                     <div className="agri-card" style={{ padding: '1.5rem', background: '#fff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', flex: 1, maxHeight: '250px', overflowY: 'auto' }}>

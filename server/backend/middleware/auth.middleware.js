@@ -28,6 +28,34 @@ export const protect = (req, res, next) => {
 };
 
 /**
+ * Optional Authentication Middleware
+ * Populates req.user if token is present, but doesn't block guests.
+ */
+export const optionalProtect = (req, res, next) => {
+    let token;
+
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies && req.cookies.jwt) {
+        token = req.cookies.jwt;
+    }
+
+    if (!token) {
+        return next();
+    }
+
+    try {
+        const decoded = jwt.verify(token, ENV.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        // For optional protect, we don't throw 401 on invalid token, 
+        // just treat as guest, but we log the attempt.
+        next();
+    }
+};
+
+/**
  * Role-based Authorization
  */
 export const restrictTo = (...roles) => {
