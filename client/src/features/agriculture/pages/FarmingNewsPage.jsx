@@ -162,6 +162,20 @@ const FarmingNewsPage = () => {
                                 <RefreshCw className="spin agri-green" size={40} style={{opacity: 0.2}} />
                                 <p style={{marginTop: '1rem', fontWeight: 800, opacity: 0.3, letterSpacing: '1px'}}>INDEXING LIVE DATA...</p>
                             </div>
+                        ) : feedNews.length === 0 && !loading ? (
+                            <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '6rem 0', background: 'rgba(0,0,0,0.02)', borderRadius: '32px', border: '2px dashed rgba(0,0,0,0.05)'}}>
+                                <div style={{width: '60px', height: '60px', background: 'rgba(0,0,0,0.03)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem'}}>
+                                    <Filter size={24} style={{opacity: 0.2}} />
+                                </div>
+                                <h3 style={{fontSize: '1.2rem', fontWeight: 900, color: '#1e293b', marginBottom: '0.5rem'}}>No {filter.toUpperCase()} Intelligence</h3>
+                                <p style={{color: '#64748b', fontSize: '0.9rem', fontWeight: 500}}>We couldn't find any localized updates for this segment today.</p>
+                                <button 
+                                    onClick={() => setFilter('all')}
+                                    style={{marginTop: '1.5rem', background: 'transparent', border: '1px solid rgba(0,0,0,0.1)', padding: '0.5rem 1.5rem', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer', color: '#64748b'}}
+                                >
+                                    View All News
+                                </button>
+                            </div>
                         ) : feedNews.map((item, idx) => (
                             <div key={idx} className="agri-card glass-card hover-bg" style={{padding: '1.8rem', borderRadius: '28px', display: 'flex', flexDirection: 'column', gap: '1.5rem', border: '1px solid rgba(0,0,0,0.06)'}}>
                                 <div style={{height: '200px', borderRadius: '20px', overflow: 'hidden', position: 'relative'}}>

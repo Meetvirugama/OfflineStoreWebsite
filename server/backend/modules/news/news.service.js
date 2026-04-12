@@ -16,7 +16,7 @@ const MOCK_NEWS = [
     description: "The ICAR has released three new wheat cultivars that can withstand heat waves during the critical flowering stage.",
     link: "https://icar.org.in",
     image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&q=80&w=800",
-    type: "alert",
+    type: "tech",
     published_at: new Date()
   },
   {
@@ -24,7 +24,7 @@ const MOCK_NEWS = [
     description: "A new ₹2,000 crore fund has been established to support the deployment of IoT sensors and drone technology in rural districts.",
     link: "https://digitalindia.gov.in",
     image: "https://images.unsplash.com/photo-1560340155-a72d73cb2292?auto=format&fit=crop&q=80&w=800",
-    type: "news",
+    type: "market",
     published_at: new Date()
   }
 ];
@@ -32,7 +32,6 @@ const MOCK_NEWS = [
 export const listNews = async () => {
   const news = await News.findAll({ order: [["published_at", "DESC"]], limit: 20 });
   
-  // If empty and no API key, seed with mock data for premium feel
   if (news.length === 0) {
     console.log("🌱 Database empty. Seeding mock agricultural news...");
     await News.bulkCreate(MOCK_NEWS);
@@ -64,13 +63,20 @@ export const syncNews = async () => {
         const articles = response.data.results || [];
     
         for (const art of articles) {
+            const rawCat = (art.category?.[0] || 'news').toLowerCase();
+            
+            // Map global categories to our focused filters
+            let mappedType = 'news'; // Default
+            if (['business', 'finance', 'politics', 'top', 'world'].includes(rawCat)) mappedType = 'market';
+            if (['technology', 'science', 'environment'].includes(rawCat)) mappedType = 'tech';
+
             await News.findOrCreate({
                 where: { title: art.title },
                 defaults: {
                     description: art.description || art.content || "Agricultural insight and updates.",
                     link: art.link,
-                    image: art.image_url || MOCK_NEWS[0].image,
-                    type: art.category?.[0]?.toLowerCase() === 'technology' ? 'tech' : (art.category?.[0]?.toLowerCase() === 'business' ? 'market' : 'news'),
+                    image: art.image_url || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80",
+                    type: mappedType,
                     published_at: art.pubDate || new Date()
                 }
             });
