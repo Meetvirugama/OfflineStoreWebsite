@@ -22,37 +22,59 @@ const parseDataGovDate = (dateStr) => {
  * Plus caching in local DB
  */
 export const getNearbyMandis = async (lat, lon, radius = 50000) => {
-    try {
-        const userLat = parseFloat(lat);
-        const userLon = parseFloat(lon);
+    const userLat = parseFloat(lat);
+    const userLon = parseFloat(lon);
+    
+    // List of reliable Overpass Mirrors for redundancy
+    const discoveryMirrors = [
+        ENV.OVERPASS_API_URL || "https://overpass-api.de/api/interpreter",
+        "https://overpass.kumi.systems/api/interpreter",
+        "https://overpass.nchc.org.tw/api/interpreter",
+        "https://overpass.osm.ch/api/interpreter"
+    ];
 
-        // 1. Discovery Phase via Overpass API
-        const overpassUrl = ENV.OVERPASS_URL || "https://overpass-api.de/api/interpreter";
-        const query = `[out:json];node["marketplace"](around:${radius},${userLat},${userLon});out;`;
-        
-        const response = await axios.post(overpassUrl, query, { headers: { 'Content-Type': 'text/plain' } });
-        const elements = response.data.elements || [];
+    let elements = [];
+    let discoveryAttemptSucceeded = false;
 
-        const results = [];
-        const cacheEntries = [];
+    // 1. Discovery Phase: Try mirrors sequentially
+    for (const url of discoveryMirrors) {
+        try {
+            const query = `[out:json][timeout:15];node["marketplace"](around:${radius},${userLat},${userLon});out;`;
+            const response = await axios.post(url, query, { 
+                headers: { 'Content-Type': 'text/plain' },
+                timeout: 10000 
+            });
+            
+            if (response.data && response.data.elements) {
+                elements = response.data.elements;
+                discoveryAttemptSucceeded = true;
+                break; // Found data, stop trying mirrors
+            }
+        } catch (err) {
+            console.warn(`Discovery Mirror Failed (${url}):`, err.message);
+            continue; // Try next mirror
+        }
+    }
 
+    const results = [];
+    const cacheEntries = [];
+
+    if (discoveryAttemptSucceeded) {
+        // Handle findings from Overpass
         for (const el of elements) {
             const name = el.tags?.name || "Market Node";
             const mLat = el.lat;
             const mLon = el.lon;
             const dist = getDistance(userLat, userLon, mLat, mLon);
 
-            const mandiData = {
+            results.push({
                 name,
                 lat: mLat,
                 lng: mLon,
                 distance: dist.toFixed(2),
                 id: el.id
-            };
-
-            results.push(mandiData);
+            });
             
-            // Prepare for cache
             cacheEntries.push({
                 name,
                 lat: mLat,
@@ -60,13 +82,41 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
                 last_updated: new Date()
             });
         }
-
         // Async Cache Update
-        MandiCache.bulkCreate(cacheEntries, { ignoreDuplicates: true }).catch(() => {});
+        if (cacheEntries.length > 0) {
+            MandiCache.bulkCreate(cacheEntries, { ignoreDuplicates: true }).catch(() => {});
+        }
+    } else {
+        // 2. Fallback Phase: Search Local Database Cache
+        console.log("⚠️ External Discovery Failed. Falling back to local cache...");
+        
+        // Simple bounding box for 50km (~0.45 degrees)
+        const latDelta = radius / 111000;
+        const lonDelta = radius / (111000 * Math.cos(userLat * Math.PI / 180));
 
-        // 2. Pricing Phase: Merge with latest Agmarknet prices
+        const cachedMandis = await MandiCache.findAll({
+            where: {
+                lat: { [Op.between]: [userLat - latDelta, userLat + latDelta] },
+                lng: { [Op.between]: [userLon - lonDelta, userLon + lonDelta] }
+            },
+            limit: 50
+        });
+
+        for (const m of cachedMandis) {
+            const dist = getDistance(userLat, userLon, m.lat, m.lng);
+            results.push({
+                name: m.name,
+                lat: m.lat,
+                lng: m.lng,
+                distance: dist.toFixed(2),
+                id: m.id
+            });
+        }
+    }
+
+    // 3. Pricing Phase: Merge with latest prices (Legacy or Cache)
+    try {
         const enrichedResults = await Promise.all(results.map(async (m) => {
-            // Check Price Cache first
             const cachedPrice = await PriceCache.findOne({
                 where: { mandi_name: { [Op.iLike]: `%${m.name}%` } },
                 order: [['date', 'DESC']]
@@ -76,7 +126,6 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
                 return { ...m, top_crop: cachedPrice.commodity, modal_price: cachedPrice.modal_price };
             }
 
-            // Fallback: Search in legacy mandi_prices table
             const legacyPrice = await MandiPrice.findOne({
                 where: { market: { [Op.iLike]: `%${m.name}%` } },
                 order: [['arrival_date', 'DESC']]
@@ -89,12 +138,10 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
             };
         }));
 
-        // Sort by nearest distance
-        return enrichedResults.sort((a, b) => a.distance - b.distance);
-
+        return enrichedResults.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
     } catch (err) {
-        console.error("Discovery Error:", err);
-        throw new Error("Failed to discover nearby markets");
+        console.error("Enrichment Error:", err);
+        return results.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
     }
 };
 
