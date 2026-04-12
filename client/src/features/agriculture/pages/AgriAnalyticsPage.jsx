@@ -128,7 +128,7 @@ const AgriAnalyticsPage = () => {
                     
                     <div style={{height: 'clamp(200px, 40vw, 350px)', marginTop: '1rem'}}>
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={trends || []}>
+                            <AreaChart data={trends?.length === 1 ? [{...trends[0], date: 'T-1'}, trends[0]] : (trends || [])}>
                                 <defs>
                                     <linearGradient id="velocityGlow" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#10b981" stopOpacity={0.25}/>
