@@ -39,10 +39,19 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
     // 1. Discovery Phase: Try mirrors sequentially
     for (const url of discoveryMirrors) {
         try {
-            const query = `[out:json][timeout:15];node["marketplace"](around:${radius},${userLat},${userLon});out;`;
+            // Broaden query to include ways, relations, and name-based matching (APMC/Mandi)
+            const query = `[out:json][timeout:25];
+                (
+                  node["amenity"="marketplace"](around:${radius},${userLat},${userLon});
+                  way["amenity"="marketplace"](around:${radius},${userLat},${userLon});
+                  node["marketplace"](around:${radius},${userLat},${userLon});
+                  node["name"~"mandi",i](around:${radius},${userLat},${userLon});
+                  node["name"~"APMC",i](around:${radius},${userLat},${userLon});
+                );
+                out center;`;
             const response = await axios.post(url, query, { 
                 headers: { 'Content-Type': 'text/plain' },
-                timeout: 10000 
+                timeout: 15000 
             });
             
             if (response.data && response.data.elements) {
@@ -63,8 +72,12 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
         // Handle findings from Overpass
         for (const el of elements) {
             const name = el.tags?.name || "Market Node";
-            const mLat = el.lat;
-            const mLon = el.lon;
+            // For 'way' or 'relation', Overpass 'out center' provides 'center.lat'
+            const mLat = el.lat || el.center?.lat;
+            const mLon = el.lon || el.center?.lon;
+            
+            if (!mLat || !mLon) continue;
+            
             const dist = getDistance(userLat, userLon, mLat, mLon);
 
             results.push({
@@ -257,10 +270,19 @@ export const getMandiDetails = async (mandiName) => {
 export const searchMandis = async (query) => {
     try {
         const nominatimUrl = ENV.NOMINATIM_URL || "https://nominatim.openstreetmap.org/search";
-        const response = await axios.get(nominatimUrl, {
+        
+        // Strategy: 1. Search for specific 'mandi' in Gujarat 2. Fallback to just city
+        let response = await axios.get(nominatimUrl, {
             params: { q: `${query} mandi gujarat`, format: 'json', limit: 5 },
             headers: { 'User-Agent': 'AgroMart-ERP/1.0' }
         });
+
+        if (!response.data || response.data.length === 0) {
+            response = await axios.get(nominatimUrl, {
+                params: { q: `${query} gujarat`, format: 'json', limit: 5 },
+                headers: { 'User-Agent': 'AgroMart-ERP/1.0' }
+            });
+        }
 
         return (response.data || []).map(place => ({
             id: place.place_id,
@@ -269,6 +291,7 @@ export const searchMandis = async (query) => {
             lng: parseFloat(place.lon)
         }));
     } catch (err) {
+        console.error("Search API Error:", err.message);
         return [];
     }
 };
