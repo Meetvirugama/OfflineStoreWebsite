@@ -18,7 +18,9 @@ import {
 } from 'lucide-react';
 import '@/styles/agriIntelligence.css';
 
-const CROPS = ["Cotton", "Groundnut", "Wheat", "Rice", "Sugarcane", "Mustard"];
+import { CROP_CATALOG } from '../constants/crops';
+
+const CROPS = CROP_CATALOG;
 
 const PestDetectionPage = () => {
     const { history, loading, error, currentDetection, detectPest, fetchHistory } = usePestStore();

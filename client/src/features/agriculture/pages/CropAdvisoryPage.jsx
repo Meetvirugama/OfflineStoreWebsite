@@ -12,8 +12,10 @@ import MarketMapSection from '../components/advisory/MarketMapSection';
 import RiskAssessmentList from '../components/advisory/RiskAssessmentList';
 import ActivityPulse from '../components/advisory/ActivityPulse';
 
-const CROPS = ["Wheat", "Rice", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Maize"];
-const STAGES = ["Sowing", "Vegetative", "Flowering", "Fruiting", "Harvesting"];
+import { CROP_CATALOG, CROP_STAGES } from '../constants/crops';
+
+const CROPS = CROP_CATALOG;
+const STAGES = CROP_STAGES;
 
 const CropAdvisoryPage = () => {
     const { curAdvisory, history, loading, generateAdvisory, fetchHistory } = useAdvisoryStore();
