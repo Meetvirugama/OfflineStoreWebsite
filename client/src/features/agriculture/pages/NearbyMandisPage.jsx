@@ -16,6 +16,7 @@ import {
     Target
 } from 'lucide-react';
 import apiClient from '@core/api/client';
+import useWeatherStore from '@features/agriculture/weather/weather.store';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '@/styles/agriIntelligence.css';
@@ -46,6 +47,7 @@ const NearbyMandisPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [activeMandi, setActiveMandi] = useState(null);
+    const { setSelectedLocation } = useWeatherStore();
 
     const fetchNearbyMandis = useCallback(async (lat, lng) => {
         setLoading(true);
@@ -68,6 +70,13 @@ const NearbyMandisPage = () => {
                     const loc = [parseFloat(pos.coords.latitude), parseFloat(pos.coords.longitude)];
                     setUserLocation(loc);
                     fetchNearbyMandis(loc[0], loc[1]);
+                    
+                    // Global Sync
+                    setSelectedLocation({ 
+                        name: "Detected Location", 
+                        lat: loc[0], 
+                        lon: loc[1] 
+                    });
                 },
                 () => {
                     setUserLocation(fallbackCenter);
@@ -89,6 +98,13 @@ const NearbyMandisPage = () => {
                 setUserLocation(loc);
                 fetchNearbyMandis(loc[0], loc[1]);
                 setActiveMandi(null);
+
+                // Global Sync
+                setSelectedLocation({ 
+                    name: first.name || searchQuery, 
+                    lat: first.lat, 
+                    lon: first.lng 
+                });
             } else {
                 setError("Locality not found in official roster.");
             }
