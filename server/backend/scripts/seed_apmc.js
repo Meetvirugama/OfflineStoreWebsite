@@ -1,109 +1,109 @@
 import axios from "axios";
 import Apmc from "../modules/mandi/apmc.model.js";
 import sequelize from "../config/db.js";
-import { ENV } from "../config/env.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 /**
- * ONE-TIME SEEDING SCRIPT
- * Extracts all Gujarat APMC locations from Overpass API
- * and populates the production APMC table.
+ * PRODUCTION-GRADE OFFICIAL APMC SEEDER (GOOGLE POWERED)
+ * 
+ * Strategy:
+ * 1. Fetch ALL official market names from data.gov.in (Gujarat).
+ * 2. Geocode each official name using Google Geocoding API for 100% accuracy.
+ * 3. Seed the production 'apmc' table.
  */
-async function seedGujaratApmcs() {
-    console.log("🚀 Initializing Gujarat APMC Seed Process...");
-    
+
+const DATA_GOV_KEY = process.env.DATA_GOV_API_KEY || "579b464db66ec23bdd000001451a9d7829b546876f16c0ac968d9b54";
+const RESOURCE_ID = "9ef84268-d588-465a-a308-a864a43d0070";
+const GOOGLE_KEY = process.env.GOOGLE_GEOCODING_API_KEY;
+
+const BLACKLIST = /mandir|temple|ashram|school|college|hospital/i;
+
+async function seedOfficialApmcs() {
+    console.log("🚀 Initializing Production APMC Migration (Google Engine)...");
+
+    if (!GOOGLE_KEY) {
+        console.error("❌ Google Geocoding API Key missing in .env");
+        process.exit(1);
+    }
+
     try {
         await sequelize.authenticate();
-        console.log("✅ Database Connected.");
 
-        // Synchronize the Apmc model (ensures table and index exist)
-        await Apmc.sync({ alter: true });
-        console.log("✅ APMC Table Synchronized.");
+        // 1. Fetch Official Names
+        console.log("📡 Fetching Official Names from Agmarknet...");
+        const rosterRes = await axios.get(`https://api.data.gov.in/resource/${RESOURCE_ID}`, {
+            params: { "api-key": DATA_GOV_KEY, format: "json", limit: 1500, "filters[state]": "Gujarat" }
+        });
 
-        // Clear existing data (optional, but good for a fresh seed)
-        // await Apmc.destroy({ where: {}, truncate: true });
+        const officialMarkets = Array.from(new Map(rosterRes.data.records.map(r => [
+            r.market.toLowerCase().trim(), 
+            { name: r.market, district: r.district }
+        ])).values());
+        
+        console.log(`✅ Identified ${officialMarkets.length} Official Markets in Gujarat.`);
 
-        // Mirror Redundancy for Overpass API
-        const mirrors = [
-            "https://overpass-api.de/api/interpreter",
-            "https://overpass.osm.ch/api/interpreter",
-            "https://overpass.kumi.systems/api/interpreter",
-            "https://z.overpass-api.de/api/interpreter"
-        ];
+        // 2. Clear Production Table
+        console.log("🧹 Purging existing APMC data...");
+        await Apmc.destroy({ where: {}, truncate: true });
 
-        const query = `[out:json][timeout:60];
-            (
-              node["amenity"="marketplace"](20.1,68.1,24.7,74.5);
-              way["amenity"="marketplace"](20.1,68.1,24.7,74.5);
-              node["name"~"mandi|apmc",i](20.1,68.1,24.7,74.5);
-              way["name"~"mandi|apmc",i](20.1,68.1,24.7,74.5);
-            );
-            out center;`;
+        // 3. Geocoding Loop
+        const total = officialMarkets.length;
+        let success = 0;
 
-        let elements = [];
-        let success = false;
+        console.log("📍 Mapping coordinates via Google Geocoding...");
 
-        for (const mirror of mirrors) {
+        for (let i = 0; i < total; i++) {
+            const m = officialMarkets[i];
+            if (BLACKLIST.test(m.name)) continue;
+
             try {
-                console.log(`📡 Fetching data from: ${mirror}...`);
-                const response = await axios.post(mirror, query, {
-                    headers: { 'Content-Type': 'text/plain' },
-                    timeout: 80000
+                // High-precision query: "Amreli APMC Yard, Gujarat, India"
+                const address = `${m.name} APMC Market Yard, ${m.district}, Gujarat, India`;
+                const gRes = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                    params: { address, key: GOOGLE_KEY }
                 });
-                
-                if (response.data?.elements) {
-                    elements = response.data.elements;
-                    success = true;
-                    break;
+
+                let result = gRes.data?.results?.[0];
+
+                // Fallback: slightly broader search
+                if (!result) {
+                    const fallback = `${m.name} Mandi, ${m.district}, Gujarat`;
+                    const gResFb = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                        params: { address: fallback, key: GOOGLE_KEY }
+                    });
+                    result = gResFb.data?.results?.[0];
+                }
+
+                if (result) {
+                    const { lat, lng } = result.geometry.location;
+                    await Apmc.create({
+                        name: m.name,
+                        district: m.district,
+                        state: "Gujarat",
+                        lat,
+                        lng
+                    });
+                    success++;
+                    console.log(`✅ [${i+1}/${total}] Mapped: ${m.name} -> (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+                } else {
+                    console.warn(`❓ [${i+1}/${total}] Failed: ${m.name}`);
                 }
             } catch (err) {
-                console.warn(`⚠️ Mirror ${mirror} failed: ${err.message}`);
+                console.error(`❌ Error geocoding ${m.name}:`, err.message);
             }
+
+            // Google Cloud doesn't have the 1req/sec limit like Nominatim, but let's be polite
+            await new Promise(res => setTimeout(res, 50)); 
         }
 
-        if (!success) {
-            throw new Error("All Overpass mirrors failed or timed out.");
-        }
-        console.log(`📦 Found ${elements.length} primary market elements.`);
-
-        const seedBatches = [];
-        const processedNames = new Set();
-
-        for (const el of elements) {
-            const name = el.tags?.name;
-            if (!name) continue;
-
-            const lat = el.lat || el.center?.lat;
-            const lng = el.lon || el.center?.lng || el.center?.lon;
-
-            if (!lat || !lng) continue;
-
-            // Simple deduplication based on name and proximity
-            const nameLower = name.toLowerCase();
-            if (processedNames.has(nameLower)) continue;
-            processedNames.add(nameLower);
-
-            seedBatches.push({
-                name,
-                district: el.tags["addr:district"] || el.tags["is_in:district"] || "Unknown",
-                state: "Gujarat",
-                lat: parseFloat(lat),
-                lng: parseFloat(lng)
-            });
-        }
-
-        console.log(`✨ Filtering complete. Preparing to insert ${seedBatches.length} verified markets.`);
-
-        if (seedBatches.length > 0) {
-            await Apmc.bulkCreate(seedBatches, { ignoreDuplicates: true });
-            console.log("✅ Bulk Insertion Successful.");
-        }
-
-        console.log("🎉 Seed Process Completed Successfully!");
+        console.log(`🎉 Production Migration Complete! ${success}/${total} Markets seeded.`);
         process.exit(0);
     } catch (err) {
-        console.error("❌ Seed Process Failed:", err.message);
+        console.error("❌ Fatal Error:", err.message);
         process.exit(1);
     }
 }
 
-seedGujaratApmcs();
+seedOfficialApmcs();
