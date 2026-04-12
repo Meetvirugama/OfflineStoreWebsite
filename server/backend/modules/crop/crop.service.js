@@ -166,12 +166,16 @@ export const generateAdvisory = async (userId, formData) => {
     let finalLat = lat;
     let finalLon = lon;
 
-    // 1. Fetch/Detect Weather
+    // 1. Fetch/Detect Weather (with reliability fallbacks)
     if (!finalLat || !finalLon) {
-        const locations = await weatherService.searchLocations(location);
-        if (locations.length > 0) {
+        const locations = await weatherService.searchLocations(location || "Gujarat, India");
+        if (locations && locations.length > 0) {
             finalLat = locations[0].lat;
             finalLon = locations[0].lon;
+        } else {
+            // Safety Default: Central Gujarat
+            finalLat = 22.3;
+            finalLon = 71.2;
         }
     }
 
@@ -179,16 +183,18 @@ export const generateAdvisory = async (userId, formData) => {
         weatherData = (await weatherService.getAtmosphericDetails(finalLat, finalLon))?.current;
     }
 
-    // 2. Fetch Market Context (Nearby Mandis)
-    const nearbyMandis = await mandiService.getNearbyMandis(finalLat || 22.3, finalLon || 71.2); 
+    // 2. Fetch Market Context (Nearby Mandis) - Enforced distance cap of 100km for advisory relevance
+    const nearbyMandis = await mandiService.getNearbyMandis(finalLat, finalLon, 100000); 
     
-    // Identify Best Mandi (Simplified: Highest price in the list)
+    // Identify Best Mandi (Null-Safe selection)
     let bestMandi = nearbyMandis.length > 0 ? nearbyMandis[0] : null;
-    nearbyMandis.forEach(m => {
-        if (m.modal_price > (bestMandi?.modal_price || 0)) {
-            bestMandi = m;
-        }
-    });
+    if (nearbyMandis.length > 0) {
+        nearbyMandis.forEach(m => {
+            if (m.modal_price > (bestMandi?.modal_price || 0)) {
+                bestMandi = m;
+            }
+        });
+    }
 
     // 3. AI Intelligence Synthesis
     const aiPayload = {

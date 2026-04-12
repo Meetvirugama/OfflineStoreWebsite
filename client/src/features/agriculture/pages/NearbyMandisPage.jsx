@@ -232,10 +232,17 @@ const NearbyMandisPage = () => {
                         gap: '1.5rem' 
                     }}>
                         {mandis.length === 0 && !loading && (
-                            <div style={{ textAlign: 'center', padding: '10rem 4rem', opacity: 0.3 }}>
-                                <Store size={64} style={{ margin: '0 auto 2rem' }} />
-                                <h3 style={{ fontWeight: 900 }}>NO MARKETS IN RANGE</h3>
-                                <p style={{ fontWeight: 600 }}>Try expanding your search radius or district query.</p>
+                            <div style={{ textAlign: 'center', padding: '10rem 4rem', background: '#f8fafc', borderRadius: '40px', border: '2px dashed rgba(0,0,0,0.05)' }}>
+                                <Store size={64} style={{ margin: '0 auto 2rem', opacity: 0.1 }} />
+                                <h3 style={{ fontWeight: 900, fontSize: '1.4rem', color: '#1e293b', marginBottom: '1rem' }}>NO MARKETS IN RANGE</h3>
+                                <p style={{ fontWeight: 600, color: '#64748b', marginBottom: '2.5rem', lineHeight: '1.6' }}>We couldn't detect active trading centers within 50km. This can happen in specialized rural corridors.</p>
+                                <button 
+                                    onClick={locateUser}
+                                    className="agri-button"
+                                    style={{ padding: '1.2rem 2.5rem', borderRadius: '20px', background: 'var(--agri-green)', color: '#fff', border: 'none', fontWeight: 900, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '1rem' }}
+                                >
+                                    <RefreshCw size={20} /> BROADEN DISCOVERY SCALE
+                                </button>
                             </div>
                         )}
 
@@ -275,18 +282,21 @@ const NearbyMandisPage = () => {
                                     </span>
                                 </div>
                                 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
-                                    <div>
-                                        <p style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 900, marginBottom: '0.5rem', textTransform: 'uppercase' }}>MARKET VELOCITY</p>
-                                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--agri-green)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                            ₹{m.modal_price}
-                                            <TrendingUp size={24} />
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingTop: '1.5rem', borderTop: '1px solid rgba(0,0,0,0.04)' }}>
+                                        <div>
+                                            <p style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 900, marginBottom: '0.5rem', textTransform: 'uppercase' }}>MARKET VOLUME</p>
+                                            <div style={{ fontSize: '1.8rem', fontWeight: 900, color: m.modal_price > 0 ? 'var(--agri-green)' : '#cbd5e1', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                {m.modal_price > 0 ? `₹${m.modal_price}` : 'RATE PENDING'}
+                                                {m.modal_price > 0 && <TrendingUp size={24} />}
+                                            </div>
+                                            {m.modal_price === 0 && (
+                                                <p style={{ fontSize: '0.6rem', color: '#94a3b8', fontWeight: 800, marginTop: '4px' }}>Official daily update awaited...</p>
+                                            )}
+                                        </div>
+                                        <div style={{ width: '45px', height: '45px', borderRadius: '14px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <ChevronRight color="#cbd5e1" size={24} />
                                         </div>
                                     </div>
-                                    <div style={{ width: '45px', height: '45px', borderRadius: '14px', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <ChevronRight color="#cbd5e1" size={24} />
-                                    </div>
-                                </div>
                             </div>
                         ))}
                     </div>

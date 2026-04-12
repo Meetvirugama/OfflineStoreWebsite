@@ -51,14 +51,15 @@ export const getNearbyApmcs = async (lat, lon, radiusKm = 50) => {
     const userLat = parseFloat(lat);
     const userLon = parseFloat(lon);
     
-    // EDGE CASE: Handle NaN or Invalid Inputs
-    if (isNaN(userLat) || isNaN(userLon)) {
+    // EDGE CASE: Strict Latitude/Longitude Validation
+    if (isNaN(userLat) || isNaN(userLon) || 
+        userLat < -90 || userLat > 90 || 
+        userLon < -180 || userLon > 180) {
         return [];
     }
 
-    // 1. Calculate Bounding Box Ranges
-    // ~111km per degree latitude
-    const latDelta = radiusKm / 111.0;
+    // EDGE CASE: Enforce Radius Bounds (Safety Cap)
+    const activeRadius = Math.min(150, Math.max(1, radiusKm));
     
     // EDGE CASE: Handle Polar coordinates (Math.cos(90) -> 0)
     // Avoid division by zero. We use a floor of 0.0001 for cosine.
@@ -279,9 +280,21 @@ export const getMandiDetails = async (mandiName) => {
 export const searchMandis = async (query) => {
     try {
         const GOOGLE_KEY = ENV.GOOGLE_GEO_KEY;
-        const res = await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
-            params: { address: `${query}, Gujarat, India`, key: GOOGLE_KEY }
-        });
+        const searchWithRetry = async (retries = 2) => {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    return await axios.get("https://maps.googleapis.com/maps/api/geocode/json", {
+                        params: { address: `${query}, Gujarat, India`, key: GOOGLE_KEY },
+                        timeout: 8000
+                    });
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+                }
+            }
+        };
+
+        const res = await searchWithRetry();
 
         if (res.data.status !== "OK") return [];
 

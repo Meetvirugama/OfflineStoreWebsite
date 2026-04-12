@@ -24,105 +24,118 @@ export const getAtmosphericDetails = async (lat, lon) => {
     });
     if (cached) return cached.data;
 
-    // Fetch from Tomorrow.io
-    // Fields: temperature, humidity, windSpeed, windGust, precipitationProbability, weatherCode, 
-    //         soilMoisture, soilTemperature, airQualityIndex
-    const res = await axios.get(TOMORROW_BASE, {
-        params: { 
-            location: `${latitude},${longitude}`,
-            apikey: ENV.TOMORROW_KEY,
-            units: "metric",
-            timesteps: ["1h", "1d"],
-            fields: [
-                "temperature", "humidity", "windSpeed", "windGust", 
-                "precipitationProbability", "weatherCode", "pressureSurfaceLevel",
-                "soilMoisture0To10cm", "soilTemperature0To10cm", "evapotranspiration",
-                "pollenIndexTree", "epaIndex", "airQualityIndex", "dewPoint", "visibility",
-                "temperatureApparent"
-            ].join(",")
-        }
-    });
+    // Primary Path: Fetch from Tomorrow.io
+    try {
+        const res = await axios.get(TOMORROW_BASE, {
+            params: { 
+                location: `${latitude},${longitude}`,
+                apikey: ENV.TOMORROW_KEY,
+                units: "metric",
+                timesteps: ["1h", "1d"],
+                fields: [
+                    "temperature", "humidity", "windSpeed", "windGust", 
+                    "precipitationProbability", "weatherCode", "pressureSurfaceLevel",
+                    "soilMoisture0To10cm", "soilTemperature0To10cm", "evapotranspiration",
+                    "pollenIndexTree", "epaIndex", "airQualityIndex", "dewPoint", "visibility",
+                    "temperatureApparent"
+                ].join(",")
+            },
+            timeout: 10000 // 10s timeout protector
+        });
 
-    const timelines = res.data.timelines;
-    const hourly = timelines.hourly || [];
-    const daily = timelines.daily || [];
+        const timelines = res.data.timelines;
+        const hourly = timelines.hourly || [];
+        const daily = timelines.daily || [];
 
-    // Current is the first entry in hourly
-    const currentEntry = hourly[0]?.values || {};
-    
-    // 1. Current Weather Mapping
-    const current = {
-        main: {
-            temp: currentEntry.temperature,
-            feels_like: currentEntry.temperatureApparent || currentEntry.temperature,
-            humidity: currentEntry.humidity,
-            pressure: currentEntry.pressureSurfaceLevel,
-            temp_min: daily[0]?.values?.temperatureMin,
-            temp_max: daily[0]?.values?.temperatureMax
-        },
-        weather: [{
-            main: mapWeatherCode(currentEntry.weatherCode),
-            icon: currentEntry.weatherCode,
-            description: mapWeatherCode(currentEntry.weatherCode).toLowerCase()
-        }],
-        wind: {
-            speed: currentEntry.windSpeed,
-            gust: currentEntry.windGust
-        },
-        dt: Math.floor(Date.now() / 1000)
-    };
+        // Current is the first entry in hourly
+        const currentEntry = hourly[0]?.values || {};
+        
+        // 1. Current Weather Mapping
+        const current = {
+            main: {
+                temp: currentEntry.temperature,
+                feels_like: currentEntry.temperatureApparent || currentEntry.temperature,
+                humidity: currentEntry.humidity,
+                pressure: currentEntry.pressureSurfaceLevel,
+                temp_min: daily[0]?.values?.temperatureMin,
+                temp_max: daily[0]?.values?.temperatureMax
+            },
+            weather: [{
+                main: mapWeatherCode(currentEntry.weatherCode),
+                icon: currentEntry.weatherCode,
+                description: mapWeatherCode(currentEntry.weatherCode).toLowerCase()
+            }],
+            wind: {
+                speed: currentEntry.windSpeed,
+                gust: currentEntry.windGust
+            },
+            dt: Math.floor(Date.now() / 1000)
+        };
 
-    // 2. Today Timeline (Until 11:59 PM)
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
-    const endOfDayTs = endOfDay.getTime();
+        // 2. Today Timeline (Until 11:59 PM)
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+        const endOfDayTs = endOfDay.getTime();
 
-    const todayTimeline = hourly
-        .filter(item => new Date(item.time).getTime() <= endOfDayTs)
-        .map(item => ({
+        const todayTimeline = hourly
+            .filter(item => new Date(item.time).getTime() <= endOfDayTs)
+            .map(item => ({
+                dt: Math.floor(new Date(item.time).getTime() / 1000),
+                temp: item.values.temperature,
+                condition: mapWeatherCode(item.values.weatherCode),
+                pop: item.values.precipitationProbability / 100
+            }));
+
+        // 3. Extended Forecast (7 Days)
+        const extendedForecast = daily.slice(0, 7).map(item => ({
             dt: Math.floor(new Date(item.time).getTime() / 1000),
-            temp: item.values.temperature,
-            condition: mapWeatherCode(item.values.weatherCode),
+            temp_min: item.values.temperatureMin,
+            temp_max: item.values.temperatureMax,
+            weather: { main: mapWeatherCode(item.values.weatherCode) },
             pop: item.values.precipitationProbability / 100
         }));
 
-    // 3. Extended Forecast (7 Days)
-    const extendedForecast = daily.slice(0, 7).map(item => ({
-        dt: Math.floor(new Date(item.time).getTime() / 1000),
-        temp_min: item.values.temperatureMin,
-        temp_max: item.values.temperatureMax,
-        weather: { main: mapWeatherCode(item.values.weatherCode) },
-        pop: item.values.precipitationProbability / 100
-    }));
+        const agriData = getAgriInsights(currentEntry, todayTimeline);
+        const strategic_outlook = await aiService.generateWeatherOutlook(extendedForecast);
 
-    // 4. Agri-Precision Indices (Thinking Level Upgrade)
-    const agriData = getAgriInsights(currentEntry, todayTimeline);
+        const result = {
+            current,
+            todayTimeline,
+            extendedForecast,
+            strategic_outlook,
+            alerts: agriData.alerts,
+            indices: {
+                ...agriData.indices,
+                airQuality: currentEntry.airQualityIndex || currentEntry.epaIndex || 'EXCELLENT',
+                soilMoisture: currentEntry.soilMoisture0To10cm || currentEntry.soilMoisture || 0.22,
+                soilTemp: currentEntry.soilTemperature0To10cm || currentEntry.soilTemperature || currentEntry.temperature - 2
+            },
+            is_stale: false
+        };
 
-    // 5. Strategic AI Outlook (NEW)
-    const strategic_outlook = await aiService.generateWeatherOutlook(extendedForecast);
+        // Save Cache
+        await WeatherCache.upsert({
+            lat_lon_key: key,
+            data: result,
+            expires_at: new Date(Date.now() + 60 * 60 * 1000)
+        });
 
-    const result = {
-        current,
-        todayTimeline,
-        extendedForecast,
-        strategic_outlook,
-        alerts: agriData.alerts,
-        indices: {
-            ...agriData.indices,
-            airQuality: currentEntry.airQualityIndex || currentEntry.epaIndex || 'EXCELLENT',
-            soilMoisture: currentEntry.soilMoisture0To10cm || currentEntry.soilMoisture || 0.22, // 22% as realistic fallback
-            soilTemp: currentEntry.soilTemperature0To10cm || currentEntry.soilTemperature || currentEntry.temperature - 2
+        return result;
+    } catch (err) {
+        console.warn(`Weather API Failure (${err.message}). Attempting Deep Cache Fallback...`);
+        
+        // Deep Fallback: Find most recent cache regardless of expiry
+        const fallback = await WeatherCache.findOne({ 
+            where: { lat_lon_key: key },
+            order: [['expires_at', 'DESC']]
+        });
+        
+        if (fallback) {
+            return { ...fallback.data, is_stale: true };
         }
-    };
-
-    // Save Cache
-    await WeatherCache.upsert({
-        lat_lon_key: key,
-        data: result,
-        expires_at: new Date(Date.now() + 60 * 60 * 1000)
-    });
-
-    return result;
+        
+        throw new Error("AgroIntelligence Down: Critical Weather Telemetry Unavailable.");
+    }
 };
 
 /**
