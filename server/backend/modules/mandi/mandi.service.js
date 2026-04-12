@@ -27,14 +27,36 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
     
     // List of reliable Overpass Mirrors for redundancy
     const discoveryMirrors = [
-        ENV.OVERPASS_API_URL || "https://overpass-api.de/api/interpreter",
         "https://overpass.kumi.systems/api/interpreter",
-        "https://overpass.nchc.org.tw/api/interpreter",
-        "https://overpass.osm.ch/api/interpreter"
+        "https://overpass.osm.ch/api/interpreter",
+        ENV.OVERPASS_API_URL || "https://overpass-api.de/api/interpreter",
+        "https://z.overpass-api.de/api/interpreter"
     ];
 
     let elements = [];
     let discoveryAttemptSucceeded = false;
+
+    // Helper for retry logic
+    const fetchWithRetry = async (url, query, retries = 2) => {
+        for (let i = 0; i <= retries; i++) {
+            try {
+                const response = await axios.post(url, query, { 
+                    headers: { 'Content-Type': 'text/plain' },
+                    timeout: 30000 
+                });
+                return response;
+            } catch (err) {
+                const isRateLimit = err.response?.status === 429;
+                if (isRateLimit && i < retries) {
+                    const delay = Math.pow(2, i) * 1000;
+                    console.warn(`⚠️ Rate limited (429) on ${url}. Retrying in ${delay}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    continue;
+                }
+                throw err;
+            }
+        }
+    };
 
     // 1. Discovery Phase: Try mirrors sequentially
     for (const url of discoveryMirrors) {
@@ -49,10 +71,8 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
                   node["name"~"APMC",i](around:${radius},${userLat},${userLon});
                 );
                 out center;`;
-            const response = await axios.post(url, query, { 
-                headers: { 'Content-Type': 'text/plain' },
-                timeout: 15000 
-            });
+            
+            const response = await fetchWithRetry(url, query);
             
             if (response.data && response.data.elements) {
                 elements = response.data.elements;

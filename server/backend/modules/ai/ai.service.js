@@ -1,7 +1,7 @@
 import Groq from "groq-sdk";
 import { ENV } from "../../config/env.js";
 
-const MODEL = "llama3-70b-8192";
+const MODEL = "llama-3.3-70b-versatile";
 
 let groqClient = null;
 
