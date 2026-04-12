@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useCropStore from '@features/agriculture/crop/crop.store';
 import { Sprout, Thermometer, Droplets, Sun, Calendar, Info, FlaskConical, Shovel, ShieldCheck, MapPin, Wind, Wheat, Lightbulb } from 'lucide-react';
-import DynText from '@core/i18n/DynText';
 import '@/styles/agriIntelligence.css';
 
 const CropDetailsPage = () => {
@@ -16,8 +15,8 @@ const CropDetailsPage = () => {
         }
     }, [name, fetchCropInfo, fetchRecommendation]);
 
-    if (loading) return <div className="agri-page"><DynText text="Loading intelligence" />...</div>;
-    if (!selectedCrop) return <div className="agri-page"><DynText text="Crop not found or data fetching failed" />.</div>;
+    if (loading) return <div className="agri-page">Loading intelligence...</div>;
+    if (!selectedCrop) return <div className="agri-page">Crop not found or data fetching failed.</div>;
 
     return (
         <div className="agri-page">
@@ -47,11 +46,11 @@ const CropDetailsPage = () => {
                         <Thermometer size={24} className="agri-green" />
                     </div>
                     <div>
-                        <h2 style={{fontSize: '1.2rem', marginBottom: '0.2rem'}}><DynText text={recommendation.recommendation} /></h2>
+                        <h2 style={{fontSize: '1.2rem', marginBottom: '0.2rem'}}>{recommendation.recommendation}</h2>
                         <div style={{display: 'flex', gap: '1.5rem', opacity: 0.6, fontSize: '0.85rem'}}>
-                            <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}><MapPin size={14} /> <DynText text="Regional Hub" /></span>
+                            <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}><MapPin size={14} /> Regional Hub</span>
                             <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}><Thermometer size={14} /> {recommendation.weather.temperature}°C</span>
-                            <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}><Droplets size={14} /> {recommendation.weather.humidity}% <DynText text="Humidity" /></span>
+                            <span style={{display: 'flex', alignItems: 'center', gap: '0.4rem'}}><Droplets size={14} /> {recommendation.weather.humidity}% Humidity</span>
                         </div>
                     </div>
                 </div>
@@ -73,40 +72,40 @@ const CropDetailsPage = () => {
                         </div>
                         <div style={{marginTop: '1.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem'}}>
                             <div className="agri-card" style={{padding: '1rem', textAlign: 'center'}}>
-                                <h4 style={{opacity: 0.5, fontSize: '0.65rem', textTransform: 'uppercase', marginBottom: '0.3rem'}}><DynText text="CLASS" /></h4>
-                                <div style={{fontWeight: 800, fontSize: '0.9rem'}}><DynText text={selectedCrop.name} /></div>
+                                <h4 style={{opacity: 0.5, fontSize: '0.65rem', textTransform: 'uppercase', marginBottom: '0.3rem'}}>CLASS</h4>
+                                <div style={{fontWeight: 800, fontSize: '0.9rem'}}>{selectedCrop.name}</div>
                             </div>
                             <div className="agri-card" style={{padding: '1rem', textAlign: 'center'}}>
-                                <h4 style={{opacity: 0.5, fontSize: '0.65rem', textTransform: 'uppercase', marginBottom: '0.3rem'}}><DynText text="INDEX" /></h4>
-                                <div style={{fontWeight: 800, fontSize: '0.9rem'}}>AGRI-<DynText text={selectedCrop.name.slice(0,3).toUpperCase()} /></div>
+                                <h4 style={{opacity: 0.5, fontSize: '0.65rem', textTransform: 'uppercase', marginBottom: '0.3rem'}}>INDEX</h4>
+                                <div style={{fontWeight: 800, fontSize: '0.9rem'}}>AGRI-{selectedCrop.name.slice(0,3).toUpperCase()}</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div style={{flex: 1}}>
-                    <h1 className="agri-title" style={{fontSize: '2.8rem', marginBottom: '1.2rem'}}><DynText text={selectedCrop.name} /></h1>
+                    <h1 className="agri-title" style={{fontSize: '2.8rem', marginBottom: '1.2rem'}}>{selectedCrop.name}</h1>
                     <p style={{fontSize: '1rem', lineHeight: 1.6, opacity: 0.7, marginBottom: '2.5rem'}}>
-                        <DynText text={selectedCrop.description} />
+                        {selectedCrop.description}
                     </p>
 
                     <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
                         <div className="agri-card" style={{padding: '1.5rem'}}>
                             <h3 style={{fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem'}}>
-                                <Wheat className="agri-green" size={20} /> <DynText text="Cultivation Geometry" />
+                                <Wheat className="agri-green" size={20} /> Cultivation Geometry
                             </h3>
                             <div className="stats-grid" style={{gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem'}}>
                                 <div>
-                                    <h4 style={{opacity: 0.5, fontSize: '0.75rem', marginBottom: '0.3rem'}}><DynText text="SOWING" /></h4>
-                                    <p style={{fontSize: '1rem', fontWeight: 700}}><DynText text={selectedCrop.growing.sowing_method} /></p>
+                                    <h4 style={{opacity: 0.5, fontSize: '0.75rem', marginBottom: '0.3rem'}}>SOWING</h4>
+                                    <p style={{fontSize: '1rem', fontWeight: 700}}>{selectedCrop.growing.sowing_method}</p>
                                 </div>
                                 <div>
-                                    <h4 style={{opacity: 0.5, fontSize: '0.75rem', marginBottom: '0.3rem'}}><DynText text="ROW SPACING" /></h4>
+                                    <h4 style={{opacity: 0.5, fontSize: '0.75rem', marginBottom: '0.3rem'}}>ROW SPACING</h4>
                                     <p style={{fontSize: '1rem', fontWeight: 700}}>{selectedCrop.growing.row_spacing_cm} cm</p>
                                 </div>
                                 <div>
-                                    <h4 style={{opacity: 0.5, fontSize: '0.75rem', marginBottom: '0.3rem'}}><DynText text="SUNLIGHT" /></h4>
-                                    <p style={{fontSize: '1rem', fontWeight: 700}}><DynText text={selectedCrop.environment.sun} /></p>
+                                    <h4 style={{opacity: 0.5, fontSize: '0.75rem', marginBottom: '0.3rem'}}>SUNLIGHT</h4>
+                                    <p style={{fontSize: '1rem', fontWeight: 700}}>{selectedCrop.environment.sun}</p>
                                 </div>
                             </div>
                         </div>
@@ -114,29 +113,29 @@ const CropDetailsPage = () => {
                         <div className="stats-grid" style={{gridTemplateColumns: '1fr 1fr', gap: '2rem'}}>
                             <div className="agri-card" style={{padding: '1.5rem'}}>
                                 <h3 style={{fontSize: '1.1rem', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.6rem'}}>
-                                    <Droplets size={18} className="agri-green" /> <DynText text="Resource" />
+                                    <Droplets size={18} className="agri-green" /> Resource
                                 </h3>
                                 <div style={{display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.9rem'}}>
-                                    <p><strong style={{opacity: 0.5}}><DynText text="IRRIGATION" />:</strong> <DynText text={selectedCrop.watering.frequency} /></p>
-                                    <p><strong style={{opacity: 0.5}}><DynText text="SOIL" />:</strong> <DynText text={selectedCrop.environment.soil} /></p>
-                                    <p style={{marginTop: '0.5rem', opacity: 0.5, fontSize: '0.8rem', fontStyle: 'italic'}}><DynText text={selectedCrop.watering.notes} /></p>
+                                    <p><strong style={{opacity: 0.5}}>IRRIGATION:</strong> {selectedCrop.watering.frequency}</p>
+                                    <p><strong style={{opacity: 0.5}}>SOIL:</strong> {selectedCrop.environment.soil}</p>
+                                    <p style={{marginTop: '0.5rem', opacity: 0.5, fontSize: '0.8rem', fontStyle: 'italic'}}>{selectedCrop.watering.notes}</p>
                                 </div>
                             </div>
 
                             <div className="agri-card" style={{padding: '1.5rem'}}>
                                 <h3 style={{fontSize: '1.1rem', marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.6rem'}}>
-                                    <Info size={18} className="agri-green" /> <DynText text="Harvesting" />
+                                    <Info size={18} className="agri-green" /> Harvesting
                                 </h3>
                                 <div style={{display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.9rem'}}>
-                                    <p><strong style={{opacity: 0.5}}><DynText text="WINDOW" />:</strong> <DynText text={selectedCrop.harvesting.time} /></p>
-                                    <p><strong style={{opacity: 0.5}}><DynText text="METHOD" />:</strong> <DynText text={selectedCrop.harvesting.method} /></p>
+                                    <p><strong style={{opacity: 0.5}}>WINDOW:</strong> {selectedCrop.harvesting.time}</p>
+                                    <p><strong style={{opacity: 0.5}}>METHOD:</strong> {selectedCrop.harvesting.method}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="agri-card" style={{padding: '2rem', border: '1px solid rgba(245, 158, 11, 0.1)'}}>
                             <h3 style={{fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem'}}>
-                                <Lightbulb className="agri-accent" size={20} /> <DynText text="Institutional Tips" />
+                                <Lightbulb className="agri-accent" size={20} /> Institutional Tips
                             </h3>
                             <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem'}}>
                                 {selectedCrop.tips.map((tip, idx) => (
@@ -146,7 +145,7 @@ const CropDetailsPage = () => {
                                         border: '1px solid rgba(255,255,255,0.03)'
                                     }}>
                                         <div style={{color: 'var(--agri-accent)', fontWeight: 800, fontSize: '0.8rem'}}>0{idx + 1}</div>
-                                        <div style={{fontSize: '0.85rem', opacity: 0.6, lineHeight: 1.5}}><DynText text={tip} /></div>
+                                        <div style={{fontSize: '0.85rem', opacity: 0.6, lineHeight: 1.5}}>{tip}</div>
                                     </div>
                                 ))}
                             </div>

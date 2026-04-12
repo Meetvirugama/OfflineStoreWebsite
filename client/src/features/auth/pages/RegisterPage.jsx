@@ -3,14 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@features/auth/store/auth.store";
 import GoogleLoginButton from "@features/auth/components/GoogleLoginButton";
 import useToastStore from "@core/hooks/useToast";
-import DynText from '@core/i18n/DynText';
 import "@/styles/AuthPage.css";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { register, loading } = useAuthStore();
   const { addToast } = useToastStore();
-  const { t } = useTranslation();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -22,19 +20,19 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
-      addToast(<DynText text="Passwords do not match" />, "error");
+      addToast("Passwords do not match", "error");
       return;
     }
     if (form.password.length < 6) {
-      addToast(<DynText text="Password must be at least 6 characters" />, "error");
+      addToast("Password must be at least 6 characters", "error");
       return;
     }
     try {
       await register({ name: form.name, email: form.email, mobile: form.mobile, password: form.password });
-      addToast(<DynText text="OTP sent to your email! 🔐" />, "success");
+      addToast("OTP sent to your email! 🔐", "success");
       navigate("/auth/verify-otp", { state: { email: form.email } });
     } catch (err) {
-      addToast(<DynText text="Please enter all 6 digits" />, "error");
+      addToast(err.message || "Registration failed", "error");
     }
   };
 
@@ -43,19 +41,19 @@ export default function RegisterPage() {
       <div className="auth-card auth-card--wide animate-pop">
         <div className="auth-card__header">
           <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
-          <h1 className="auth-card__title"><DynText text="Create Account" /></h1>
-          <p className="auth-card__subtitle"><DynText text="Join 50,000+ Indian farmers today" /></p>
+          <h1 className="auth-card__title">Create Account</h1>
+          <p className="auth-card__subtitle">Join 50,000+ Indian farmers today</p>
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit} id="register-form">
           <div className="auth-form__row">
             <div className="form-group">
-              <label className="form-label"><DynText text="Full Name" /></label>
+              <label className="form-label">Full Name</label>
               <input
                 id="reg-name"
                 type="text"
                 className="form-input"
-                placeholder={t('auth.namePlaceholder') || "Your full name"}
+                placeholder="Your full name"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
@@ -63,12 +61,12 @@ export default function RegisterPage() {
               />
             </div>
             <div className="form-group">
-              <label className="form-label"><DynText text="Mobile Number" /></label>
+              <label className="form-label">Mobile Number</label>
               <input
                 id="reg-mobile"
                 type="tel"
                 className="form-input"
-                placeholder={t('auth.mobilePlaceholder') || "10-digit mobile number"}
+                placeholder="10-digit mobile number"
                 value={form.mobile}
                 onChange={(e) => setForm({ ...form, mobile: e.target.value })}
                 required
@@ -77,12 +75,12 @@ export default function RegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label"><DynText text="Email Address" /></label>
+            <label className="form-label">Email Address</label>
             <input
               id="reg-email"
               type="email"
               className="form-input"
-              placeholder={t('auth.emailPlaceholder') || "you@example.com"}
+              placeholder="you@example.com"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               required
@@ -91,24 +89,24 @@ export default function RegisterPage() {
 
           <div className="auth-form__row">
             <div className="form-group">
-              <label className="form-label"><DynText text="Password" /></label>
+              <label className="form-label">Password</label>
               <input
                 id="reg-password"
                 type="password"
                 className="form-input"
-                placeholder={t('auth.passwordPlaceholder') || "Min. 6 characters"}
+                placeholder="Min. 6 characters"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 required
               />
             </div>
             <div className="form-group">
-              <label className="form-label"><DynText text="Confirm Password" /></label>
+              <label className="form-label">Confirm Password</label>
               <input
                 id="reg-confirm"
                 type="password"
                 className="form-input"
-                placeholder={t('auth.confirmPasswordPlaceholder') || "Repeat password"}
+                placeholder="Repeat password"
                 value={form.confirmPassword}
                 onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                 required
@@ -124,39 +122,39 @@ export default function RegisterPage() {
           >
             {loading
               ? <span className="spinner" style={{ width: 20, height: 20, borderWidth: 2 }} />
-              : <><DynText text="Create Account" /> →</>}
+              : <>Create Account →</>}
           </button>
         </form>
 
         <div className="auth-divider">
-          <span><DynText text="OR" /></span>
+          <span>OR</span>
         </div>
 
         <GoogleLoginButton />
 
         <div className="auth-card__footer">
           <p className="auth-footer-text">
-            <DynText text="Already have an account?" />{" "}
-            <Link to="/auth/login" className="auth-link" id="go-login-link"><DynText text="Login" /></Link>
+            Already have an account?{" "}
+            <Link to="/auth/login" className="auth-link" id="go-login-link">Login</Link>
           </p>
         </div>
       </div>
 
       <div className="auth-side">
         <div className="auth-side__content">
-          <h2><DynText text="Logistics Network Onboarding" /></h2>
+          <h2>Logistics Network Onboarding</h2>
           <div className="auth-side__points">
             <div className="auth-side__point">
               <span className="auth-side__icon">📋</span>
-              <span><DynText text="Managed Sourcing Protocols" /></span>
+              <span>Managed Sourcing Protocols</span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">🆔</span>
-              <span><DynText text="Verified Supply-Chain IDs" /></span>
+              <span>Verified Supply-Chain IDs</span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">📦</span>
-              <span><DynText text="Real-Time Inventory Control" /></span>
+              <span>Real-Time Inventory Control</span>
             </div>
           </div>
         </div>

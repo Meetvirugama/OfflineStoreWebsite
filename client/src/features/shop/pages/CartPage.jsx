@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "@features/checkout/store/cart.store";
 import useAuthStore from "@features/auth/store/auth.store";
-import DynText from '@core/i18n/DynText';
 import "@/styles/cartPage.css";
 
 export default function CartPage() {
@@ -18,7 +17,7 @@ export default function CartPage() {
 
   const handleCheckout = async () => {
     if (items.length === 0) {
-      alert(t('cart.emptyCartAlert') || "Cart is empty");
+      alert("Cart is empty");
       return;
     }
 
@@ -33,7 +32,7 @@ export default function CartPage() {
 
       if (!orderId) {
         console.error("Invalid response:", res);
-        alert(t('cart.checkoutFailed') || "Checkout failed: invalid response");
+        alert("Checkout failed: invalid response");
         return;
       }
 
@@ -50,21 +49,21 @@ export default function CartPage() {
 
   return (
     <div className="cart-page">
-      <h2 className="cart-title">🛒 <DynText text="Your Cart" /></h2>
+      <h2 className="cart-title">🛒 Your Cart</h2>
 
       <div className="cart-container">
         {/* LEFT */}
         <div className="cart-left">
           {items.length === 0 && (
             <div className="empty-cart">
-              <h3><DynText text="No items in cart" /> 🚜</h3>
+              <h3>No items in cart 🚜</h3>
             </div>
           )}
 
           {items.map(item => (
             <div key={item.id} className="cart-item">
               <div className="item-info">
-                <h4><DynText text={item.name} /></h4>
+                <h4>{item.name}</h4>
                 <p>₹{item.price}</p>
               </div>
 
@@ -85,22 +84,22 @@ export default function CartPage() {
 
         {/* RIGHT */}
         <div className="cart-right">
-          <h3><DynText text="Price Details" /></h3>
+          <h3>Price Details</h3>
 
           <div className="summary-row">
-            <span><DynText text="Total" /></span>
+            <span>Total</span>
             <span>₹{total}</span>
           </div>
 
           <div className="summary-row discount">
-            <span><DynText text="Discount" /></span>
+            <span>Discount</span>
             <span>-₹{discount}</span>
           </div>
 
           <hr />
 
           <div className="summary-row final">
-            <span><DynText text="Final Amount" /></span>
+            <span>Final Amount</span>
             <span>₹{finalAmount}</span>
           </div>
 
@@ -109,7 +108,7 @@ export default function CartPage() {
             onClick={handleCheckout}
             disabled={loading}
           >
-            {loading ? <DynText text="Processing" /> : <DynText text="Proceed to Checkout" />}
+            {loading ? "Processing" : "Proceed to Checkout"}
           </button>
         </div>
       </div>

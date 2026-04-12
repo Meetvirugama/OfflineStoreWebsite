@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
-import DynText from "@core/i18n/DynText";
 import "@/styles/ProfilePage.css";
 
 export default function ProfilePage() {
@@ -32,7 +31,7 @@ export default function ProfilePage() {
 
   // ✅ Only update title (safe effect)
   useEffect(() => {
-    document.title = "પ્રોફાઇલ – એગ્રોમાર્ટ";
+    document.title = "Profile – AgroMart";
   }, []);
 
   // ✅ Sync form ONLY when entering edit mode
@@ -50,10 +49,10 @@ export default function ProfilePage() {
     e.preventDefault();
     try {
       await updateProfile(form);
-      addToast(<DynText text="Profile updated successfully!" />, "success");
+      addToast("Profile updated successfully!", "success");
       setEditing(false);
     } catch (err) {
-      addToast(<DynText text={err.message || "Update failed"} />, "error");
+      addToast(err.message || "Update failed", "error");
     }
   };
 
@@ -68,14 +67,14 @@ export default function ProfilePage() {
   return (
     <div className="profile-page container fade-in">
       <div className="profile-page__header">
-        <h1 className="profile-page__title"><DynText text="My Profile" /></h1>
+        <h1 className="profile-page__title">My Profile</h1>
         {customer?.role === "ADMIN" && (
           <button 
             className="btn btn-primary"
             onClick={() => window.location.href = "/admin"}
             style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
           >
-            <ArrowLeft size={18} /> <DynText text="Return to Admin Dashboard" />
+            <ArrowLeft size={18} /> Return to Admin Dashboard
           </button>
         )}
       </div>
@@ -86,7 +85,7 @@ export default function ProfilePage() {
           <div className="profile-card__avatar">
             <User size={40} />
           </div>
-          <h2 className="profile-card__name"><DynText text={customer.name} /></h2>
+          <h2 className="profile-card__name">{customer.name}</h2>
           
           <div className="profile-card__info">
             <div className="profile-card__info-row">
@@ -101,7 +100,7 @@ export default function ProfilePage() {
 
           <div className="profile-card__tags">
             <span className="badge badge-primary">
-              {customer?.role === "ADMIN" ? <DynText text="Administrator" /> : (<DynText text={customer?.tag || "ACTIVE"} />)}
+              {customer?.role === "ADMIN" ? "Administrator" : (customer?.tag || "ACTIVE")}
             </span>
           </div>
         </div>
@@ -113,25 +112,25 @@ export default function ProfilePage() {
               <Stat 
                 icon={<ShoppingCart size={20} />} 
                 value={customer.total_purchase} 
-                label={<DynText text="Total Purchase" />} 
+                label="Total Purchase" 
                 className="profile-stat-card--purchases"
               />
               <Stat 
                 icon={<CheckCircle size={20} />} 
                 value={customer.total_paid} 
-                label={<DynText text="Amount Paid" />} 
+                label="Amount Paid" 
                 className="profile-stat-card--paid"
               />
               <Stat 
                 icon={<Clock size={20} />} 
                 value={customer.total_due} 
-                label={<DynText text="Due Amount" />} 
+                label="Due Amount" 
                 className="profile-stat-card--due"
               />
               <Stat 
                 icon={<Gift size={20} />} 
                 value={customer.discount_percent} 
-                label={<DynText text="My Discount" />} 
+                label="My Discount" 
                 isPercent 
                 className="profile-stat-card--discount"
               />
@@ -141,7 +140,7 @@ export default function ProfilePage() {
           {/* EDIT */}
           <div className="profile-edit">
             <div className="profile-edit__header">
-              <h2><DynText text="Personal Information" /></h2>
+              <h2>Personal Information</h2>
 
               {!editing && (
                 <button
@@ -149,28 +148,28 @@ export default function ProfilePage() {
                   onClick={handleEdit}
                   style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                  <Edit3 size={14} /> <DynText text="Edit Profile" />
+                  <Edit3 size={14} /> Edit Profile
                 </button>
               )}
             </div>
 
             {editing ? (
               <form onSubmit={handleSave} className="profile-edit__form">
-                <Input label={<DynText text="Full Name" />} value={form.name}
+                <Input label="Full Name" value={form.name}
                   onChange={(v) => setForm({ ...form, name: v })} />
 
-                <Input label={<DynText text="Mobile" />} value={form.mobile}
+                <Input label="Mobile" value={form.mobile}
                   onChange={(v) => setForm({ ...form, mobile: v })} />
 
-                <Input label={<DynText text="Village" />} value={form.village}
+                <Input label="Village" value={form.village}
                   onChange={(v) => setForm({ ...form, village: v })} />
 
-                <Input label={<DynText text="GST Number" />} value={form.gst}
+                <Input label="GST Number" value={form.gst}
                   onChange={(v) => setForm({ ...form, gst: v })} />
 
                 <div className="profile-edit__actions">
                   <button className="btn btn-primary btn-lg" disabled={loading}>
-                    {loading ? <DynText text="Saving..." /> : <DynText text="Save Changes" />}
+                    {loading ? "Saving..." : "Save Changes"}
                   </button>
 
                   <button
@@ -178,16 +177,16 @@ export default function ProfilePage() {
                     className="btn btn-ghost btn-lg"
                     onClick={() => setEditing(false)}
                   >
-                    <DynText text="Cancel" />
+                    Cancel
                   </button>
                 </div>
               </form>
             ) : (
               <div className="profile-edit__view">
-                <Row label={<DynText text="Full Name" />} value={customer.name} icon={<User size={16} />} />
-                <Row label={<DynText text="Mobile Number" />} value={customer.mobile} icon={<Phone size={16} />} />
-                <Row label={<DynText text="Village / Location" />} value={customer.village} icon={<MapPin size={16} />} />
-                <Row label={<DynText text="GST Identification" />} value={customer.gst} icon={<Building size={16} />} />
+                <Row label="Full Name" value={customer.name} icon={<User size={16} />} />
+                <Row label="Mobile Number" value={customer.mobile} icon={<Phone size={16} />} />
+                <Row label="Village / Location" value={customer.village} icon={<MapPin size={16} />} />
+                <Row label="GST Identification" value={customer.gst} icon={<Building size={16} />} />
               </div>
             )}
           </div>
@@ -230,7 +229,7 @@ function Row({ label, value, icon }) {
       <span>{label}</span>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {icon}
-        <strong>{value ? <DynText text={value} /> : <DynText text="માહિતી ઉપલબ્ધ નથી" />}</strong>
+        <strong>{value || "Not provided"}</strong>
       </div>
     </div>
   );

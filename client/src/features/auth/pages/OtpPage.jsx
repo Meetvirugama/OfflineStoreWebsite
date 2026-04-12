@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
-import DynText from '@core/i18n/DynText';
 import "@/styles/AuthPage.css";
 
 export default function OtpPage() {
@@ -60,7 +59,7 @@ export default function OtpPage() {
     try {
       setLoading(true);
       await resendOtp(email);
-      addToast(<DynText text="A new OTP has been sent to your email! 📧" />, "success");
+      addToast("A new OTP has been sent to your email! 📧", "success");
       setResendTimer(60);
     } catch (err) {
       addToast(err.message, "error");
@@ -73,12 +72,12 @@ export default function OtpPage() {
     e.preventDefault();
     const code = otp.join("");
     if (code.length < 6) {
-      addToast(<DynText text="Please enter all 6 digits" />, "error");
+      addToast("Please enter all 6 digits", "error");
       return;
     }
     try {
       await verifyOtp(email, code);
-      addToast(<DynText text="Email verified successfully! 🎉 Please login." />, "success");
+      addToast("Email verified successfully! 🎉 Please login.", "success");
       navigate("/auth/login");
     } catch (err) {
       addToast(err.message, "error");
@@ -90,9 +89,9 @@ export default function OtpPage() {
       <div className="auth-card animate-pop">
         <div className="auth-card__header">
           <Link to="/" className="auth-logo">🌿 AgroPlatform</Link>
-          <h1 className="auth-card__title"><DynText text="Verify Email" /></h1>
+          <h1 className="auth-card__title">Verify Email</h1>
           <p className="auth-card__subtitle">
-            <DynText text="We sent a 6-digit OTP to" /><br />
+            We sent a 6-digit OTP to<br />
             <strong>{email}</strong>
           </p>
         </div>
@@ -123,55 +122,58 @@ export default function OtpPage() {
           >
             {storeLoading
               ? <span className="spinner" style={{ width: 22, height: 22, borderWidth: 2 }} />
-              : <><DynText text="Verify OTP" /> →</>}
+              : <>Verify OTP →</>}
           </button>
         </form>
 
         <div className="auth-card__footer">
           <div className="otp-resend-container">
             <p className="otp-resend-text">
-              <DynText text="Didn't get the code?" />{" "}
+              Didn't get the code?{" "}
               {resendTimer > 0 ? (
-                <span className="otp-timer"><DynText text="Wait" /> {resendTimer}s</span>
+                <span className="otp-timer">Wait {resendTimer}s</span>
               ) : (
                 <button 
-                  onClick={handleResend} 
-                  className="btn-resend"
+                   onClick={handleResend} 
+                   className="btn-resend"
                 >
-                  <DynText text="Resend OTP" />
+                   Resend OTP
                 </button>
               )}
             </p>
           </div>
           
           <p style={{ fontSize: '14px' }}>
-            <DynText text="Wrong email?" /> <Link to="/auth/register" className="auth-link"><DynText text="Register again" /></Link>
+            Wrong email? <Link to="/auth/register" className="auth-link">Register again</Link>
           </p>
           <p style={{ marginTop: 12, fontSize: '14px' }}>
-            <Link to="/auth/login" className="auth-link"><DynText text="Back to Login" /></Link>
+            <Link to="/auth/login" className="auth-link">Back to Login</Link>
           </p>
         </div>
       </div>
 
       <div className="auth-side">
         <div className="auth-side__content">
-          <h2><DynText text="Cryptographic Identity Link" /></h2>
+          <h2>Cryptographic Identity Link</h2>
           <div className="auth-side__points">
             <div className="auth-side__point">
               <span className="auth-side__icon">🔐</span>
-              <span><DynText text="Multi-Factor System Security" /></span>
+              <span>Multi-Factor System Security</span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">🆔</span>
-              <span><DynText text="Verified Supply-Chain IDs" /></span>
+              <span>Verified Supply-Chain IDs</span>
             </div>
             <div className="auth-side__point">
               <span className="auth-side__icon">📡</span>
-              <span><DynText text="Real-Time Node Sync" /></span>
+              <span>Real-Time Node Sync</span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+}v>
     </div>
   );
 }

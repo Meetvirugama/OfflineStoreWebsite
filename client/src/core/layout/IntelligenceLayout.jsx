@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import useTranslation from "@core/i18n/useTranslation";
-import { Globe } from "lucide-react";
 import "./intelligenceLayout.css";
 
 export default function IntelligenceLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
-  const { t, lang, toggle } = useTranslation();
 
   const NAV_ITEMS = [
     { 
       to: "/intelligence/mandi", 
-      label: t('intelligence.mandiAnalytics'), 
+      label: "Mandi Analytics", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="18" y1="20" x2="18" y2="10"></line>
@@ -23,7 +20,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/mandi/prices", 
-      label: t('intelligence.mandiIntelligence'), 
+      label: "Mandi Intelligence", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
@@ -32,7 +29,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/weather", 
-      label: t('intelligence.weatherIntelligence'), 
+      label: "Weather Intelligence", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
@@ -41,7 +38,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/agri/analytics", 
-      label: t('intelligence.agriIntelligence'), 
+      label: "Agri Intelligence", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9V3m-9 9a9 9 0 0 1 9-9"></path>
@@ -50,7 +47,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/advisory", 
-      label: t('intelligence.smartAdvisory'), 
+      label: "Smart Advisory", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="m2 4 3 12h14l3-12zm6 16a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm11 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"></path>
@@ -71,7 +68,7 @@ export default function IntelligenceLayout() {
           <span className="admin-sidebar__logo">🔬</span>
           <div>
             <p className="admin-sidebar__name">AgroIntelligence</p>
-            <p className="admin-sidebar__role">{t('intelligence.publicHub')}</p>
+            <p className="admin-sidebar__role">Public Hub</p>
           </div>
         </div>
 
@@ -98,7 +95,7 @@ export default function IntelligenceLayout() {
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
-            <span>{t('intelligence.exitToStore')}</span>
+            <span>Exit to Store</span>
           </button>
         </div>
       </aside>
@@ -117,17 +114,6 @@ export default function IntelligenceLayout() {
           </button>
           
           <div className="admin-topbar__right">
-            {/* Language Toggle */}
-            <button
-              className="lang-toggle-btn"
-              onClick={toggle}
-              title={t('lang.switchLang')}
-              aria-label={t('lang.switchLang')}
-            >
-              <Globe size={16} className="lang-toggle-icon" />
-              <span className="lang-toggle-label">{lang === 'en' ? 'EN' : 'ગુ'}</span>
-            </button>
-
             <button 
               className="executive-action-btn" 
               onClick={() => navigate("/")}
@@ -136,7 +122,7 @@ export default function IntelligenceLayout() {
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
               </svg>
-              <span>{t('intelligence.backToStore')}</span>
+              <span>Back to Store</span>
             </button>
           </div>
         </header>

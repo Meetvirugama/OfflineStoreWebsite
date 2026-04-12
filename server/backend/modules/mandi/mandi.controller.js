@@ -10,6 +10,31 @@ export const getNearby = asyncHandler(async (req, res) => {
     sendResponse(res, 200, "Nearby mandis fetched successfully", mandis);
 });
 
+export const getMapMarkers = asyncHandler(async (req, res) => {
+    const { lat, lng, radius } = req.query;
+    if (!lat || !lng) return sendResponse(res, 400, "Coordinates required");
+    
+    const mandis = await mandiService.getNearbyMandis(lat, lng, radius || 100000);
+    // Optimized for Map: minimal payload
+    const markers = mandis.map(m => ({
+        name: m.name,
+        lat: m.lat,
+        lng: m.lng,
+        price: m.modal_price,
+        distance: m.distance
+    }));
+    
+    sendResponse(res, 200, "Map markers fetched", markers);
+});
+
+export const getDetails = asyncHandler(async (req, res) => {
+    const { name } = req.params;
+    if (!name) return sendResponse(res, 400, "Mandi name required");
+    
+    const details = await mandiService.getMandiDetails(name);
+    sendResponse(res, 200, "Detailed mandi info fetched", details);
+});
+
 export const search = asyncHandler(async (req, res) => {
     const { q } = req.query;
     if (!q) return sendResponse(res, 400, "Query string is required");

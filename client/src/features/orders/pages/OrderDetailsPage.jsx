@@ -15,7 +15,6 @@ import {
 import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
-import DynText from "@core/i18n/DynText";
 import "@/styles/OrdersPage.css";
 
 // ✅ Dynamically load Razorpay SDK
@@ -47,7 +46,7 @@ function printInvoice(order, customer) {
 <html>
 <head>
   <meta charset="UTF-8"/>
-  <title>બીલ — ${order.invoice_number || `ORD-${order.id}`}</title>
+  <title>Invoice — ${order.invoice_number || `ORD-${order.id}`}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Arial, sans-serif; color: #0f172a; background: #fff; padding: 40px; }
@@ -81,20 +80,20 @@ function printInvoice(order, customer) {
 </head>
 <body>
   <div class="no-print" style="margin-bottom:20px;text-align:right">
-    <button onclick="window.print()" style="background:#059669;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer">🖨️ બીલ ડાઉનલોડ કરો</button>
-    <button onclick="window.close()" style="background:#f1f5f9;color:#0f172a;border:none;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer;margin-left:8px">✕ બંધ કરો</button>
+    <button onclick="window.print()" style="background:#059669;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer">🖨️ Download Invoice</button>
+    <button onclick="window.close()" style="background:#f1f5f9;color:#0f172a;border:none;padding:10px 24px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer;margin-left:8px">✕ Close</button>
   </div>
   
   <div class="header">
     <div>
-      <div class="brand">🌾 એગ્રોમાર્ટ</div>
-      <div class="brand-sub">એક્ઝિક્યુટિવ સોર્સિંગ નેટવર્ક · GSTIN: 24AAACA0000A1Z5</div>
+      <div class="brand">🌾 AgroMart</div>
+      <div class="brand-sub">Executive Sourcing Network · GSTIN: 24AAACA0000A1Z5</div>
     </div>
     <div class="invoice-meta">
-      <div class="invoice-title">ટેક્સ ઇન્વોઇસ</div>
-      <div class="invoice-ref">નંબર: ${order.invoice_number || `ORD-${order.id}`}</div>
-      <div class="invoice-ref">તારીખ: ${date}</div>
-      <div class="badge">${isPaid ? "✓ પેમેન્ટ થઈ ગયું છે" : "⚠ પેમેન્ટ બાકી છે"}</div>
+      <div class="invoice-title">Tax Invoice</div>
+      <div class="invoice-ref">Number: ${order.invoice_number || `ORD-${order.id}`}</div>
+      <div class="invoice-ref">Date: ${date}</div>
+      <div class="badge">${isPaid ? "✓ Payment Successful" : "⚠ Payment Pending"}</div>
     </div>
   </div>
 
@@ -102,43 +101,43 @@ function printInvoice(order, customer) {
 
   <div class="bill-section">
     <div class="bill-box">
-      <h4>ગ્રાહકની વિગત</h4>
+      <h4>Customer Details</h4>
       <p><strong>${customer?.name || "Verified Customer"}</strong></p>
       <p>${customer?.mobile || ""}</p>
-      <p>${customer?.village || "ગુજરાત, ભારત"}</p>
+      <p>${customer?.village || "Gujarat, India"}</p>
       ${customer?.gst ? `<p>GSTIN: ${customer.gst}</p>` : ""}
     </div>
     <div class="bill-box" style="text-align:right">
-      <h4>પેમેન્ટ સ્ટેટસ</h4>
-      <p>જમા થયેલ રકમ: <strong style="color:#059669">₹${Number(order.paid_amount || 0).toFixed(2)}</strong></p>
-      <p>બાકી રકમ: <strong style="color:${isPaid ? "#059669" : "#b91c1c"}">₹${balance.toFixed(2)}</strong></p>
+      <h4>Payment Status</h4>
+      <p>Paid Amount: <strong style="color:#059669">₹${Number(order.paid_amount || 0).toFixed(2)}</strong></p>
+      <p>Balance Amount: <strong style="color:${isPaid ? "#059669" : "#b91c1c"}">₹${balance.toFixed(2)}</strong></p>
     </div>
   </div>
 
   <table>
     <thead>
       <tr>
-        <th style="text-align:left">વસ્તુનું નામ</th>
-        <th style="text-align:right">કિંમત</th>
-        <th style="text-align:center">નંગ</th>
-        <th style="text-align:right">કુલ</th>
+        <th style="text-align:left">Product Name</th>
+        <th style="text-align:right">Price</th>
+        <th style="text-align:center">Qty</th>
+        <th style="text-align:right">Total</th>
       </tr>
     </thead>
-    <tbody>${items || '<tr><td colspan="4" style="padding:20px 0;color:#94a3b8">કોઈ વસ્તુ નથી</td></tr>'}</tbody>
+    <tbody>${items || '<tr><td colspan="4" style="padding:20px 0;color:#94a3b8">No items found</td></tr>'}</tbody>
   </table>
 
   <div class="summary">
-    <div class="summary-row"><span>કુલ કિંમત</span><span>₹${Number(order.total_amount || 0).toFixed(2)}</span></div>
-    ${Number(order.discount || 0) > 0 ? `<div class="summary-row" style="color:#e11d48"><span>ડિસ્કાઉન્ટ</span><span>-₹${Number(order.discount).toFixed(2)}</span></div>` : ""}
-    <div class="summary-row"><span>જીએસટી (GST 18%)</span><span>₹${Number(order.gst_total || 0).toFixed(2)}</span></div>
-    <div class="summary-row grand"><span>ચુકવવાની રકમ</span><span>₹${Number(order.final_amount || 0).toFixed(2)}</span></div>
-    <div class="summary-row balance"><span>બાકી રકમ</span><span>₹${balance.toFixed(2)}</span></div>
+    <div class="summary-row"><span>Subtotal</span><span>₹${Number(order.total_amount || 0).toFixed(2)}</span></div>
+    ${Number(order.discount || 0) > 0 ? `<div class="summary-row" style="color:#e11d48"><span>Discount</span><span>-₹${Number(order.discount).toFixed(2)}</span></div>` : ""}
+    <div class="summary-row"><span>GST (GST 18%)</span><span>₹${Number(order.gst_total || 0).toFixed(2)}</span></div>
+    <div class="summary-row grand"><span>Final Amount</span><span>₹${Number(order.final_amount || 0).toFixed(2)}</span></div>
+    <div class="summary-row balance"><span>Balance Due</span><span>₹${balance.toFixed(2)}</span></div>
   </div>
 
-  ${isPaid ? '<div class="stamp"><div class="stamp-text">પેમેન્ટ પૂર્ણ</div></div>' : ""}
+  ${isPaid ? '<div class="stamp"><div class="stamp-text">PAYMENT COMPLETE</div></div>' : ""}
 
   <div class="footer">
-    આ કોમ્પ્યુટર જનરેટેડ ઇન્વોઇસ છે. સહીની જરૂર નથી. · Powered by AgroMart ERP Smart Ledger Technology.
+    This is a computer-generated invoice. No signature required. · Powered by AgroMart ERP Smart Ledger Technology.
   </div>
 </body>
 </html>`;
@@ -166,7 +165,7 @@ export default function OrderDetailsPage() {
         // apiClient interceptor returns response.data = { success, message, data: {...} }
         setOrder(res?.data ?? res);
       } catch (err) {
-        addToast(<DynText text="Failed to fetch order details" />, "error");
+        addToast("Failed to fetch order details", "error");
         navigate("/orders");
       } finally {
         setLoading(false);
@@ -178,7 +177,7 @@ export default function OrderDetailsPage() {
   const handlePayNow = async () => {
     try {
       if (!import.meta.env.VITE_RAZORPAY_KEY) {
-        addToast(<DynText text="Razorpay Key is not configured" />, "error");
+        addToast("Razorpay Key is not configured", "error");
         return;
       }
       setPaying(true);
@@ -193,7 +192,7 @@ export default function OrderDetailsPage() {
       const sdkLoaded = await loadRazorpaySDK();
 
       if (!sdkLoaded || !window.Razorpay) {
-        addToast(<DynText text="Payment SDK failed to load" />, "error");
+        addToast("Payment SDK failed to load", "error");
         return;
       }
 
@@ -215,7 +214,7 @@ export default function OrderDetailsPage() {
             order_id: order.id,
             amount: pendingAmount
           });
-          addToast(<DynText text="Payment successful!" />, "success");
+          addToast("Payment successful!", "success");
           window.location.reload();
         }
       };
@@ -232,8 +231,8 @@ export default function OrderDetailsPage() {
     }
   };
 
-  if (loading) return <div className="container" style={{ padding: "100px 20px", textAlign: "center" }}><div className="spinner" style={{ margin: "0 auto" }} /><DynText text="Loading order data..." /></div>;
-  if (!order) return <div className="container" style={{ padding: "100px 20px", textAlign: "center" }}><DynText text="Order not found" /></div>;
+  if (loading) return <div className="container" style={{ padding: "100px 20px", textAlign: "center" }}><div className="spinner" style={{ margin: "0 auto" }} />Loading order data...</div>;
+  if (!order) return <div className="container" style={{ padding: "100px 20px", textAlign: "center" }}>Order not found</div>;
 
   const balance = Number(order.final_amount) - Number(order.paid_amount || 0);
 
@@ -241,7 +240,7 @@ export default function OrderDetailsPage() {
     <div className="order-details-page container fade-in" style={{ paddingBottom: "60px" }}>
       <div style={{ marginBottom: "24px" }}>
         <Link to="/orders" className="back-to-orders">
-          <ArrowLeft size={16} strokeWidth={3} /> <DynText text="Back to My Orders" />
+          <ArrowLeft size={16} strokeWidth={3} /> Back to My Orders
         </Link>
       </div>
 
@@ -251,10 +250,10 @@ export default function OrderDetailsPage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "32px" }}>
               <div>
                 <h1 style={{ fontSize: "24px", fontWeight: 800, margin: 0 }}>{order.invoice_number || `Order #${order.id}`}</h1>
-                <p style={{ color: "var(--text-muted)", marginTop: "4px" }}><DynText text="Placed on" /> {new Date(order.order_date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
+                <p style={{ color: "var(--text-muted)", marginTop: "4px" }}>Placed on {new Date(order.order_date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</p>
               </div>
               <span className={`badge ${order.status === "PAID" ? "badge-success" : "badge-warning"}`} style={{ padding: "8px 16px", borderRadius: "100px", fontSize: "14px", fontWeight: 700 }}>
-                <DynText text={order.status} />
+                {order.status}
               </span>
             </div>
 
@@ -266,7 +265,7 @@ export default function OrderDetailsPage() {
                   </div>
                   <div style={{ flex: 1 }}>
                     <p style={{ fontWeight: 700, margin: 0 }}>{item.Product?.name}</p>
-                    <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: "4px 0 0" }}><DynText text="Qty:" /> {item.quantity} × ₹{Number(item.price).toFixed(2)}</p>
+                    <p style={{ fontSize: "13px", color: "var(--text-muted)", margin: "4px 0 0" }}>Qty: {item.quantity} × ₹{Number(item.price).toFixed(2)}</p>
                   </div>
                   <div style={{ fontWeight: 800 }}>
                     ₹{(Number(item.price) * Number(item.quantity)).toFixed(2)}
@@ -278,26 +277,26 @@ export default function OrderDetailsPage() {
             <div style={{ marginTop: "40px", borderTop: "1px solid #f1f5f9", paddingTop: "32px" }}>
               <div style={{ maxWidth: "300px", marginLeft: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                  <span style={{ color: "var(--text-muted)" }}><DynText text="Subtotal" /></span>
+                  <span style={{ color: "var(--text-muted)" }}>Subtotal</span>
                   <span style={{ fontWeight: 600 }}>₹{Number(order.total_amount).toFixed(2)}</span>
                 </div>
                 {Number(order.discount || 0) > 0 && (
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px", color: "#e11d48" }}>
-                    <span><DynText text="Discount" /></span>
+                    <span>Discount</span>
                     <span style={{ fontWeight: 600 }}>-₹{Number(order.discount).toFixed(2)}</span>
                   </div>
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                  <span style={{ color: "var(--text-muted)" }}><DynText text="Tax (GST 18%)" /></span>
+                  <span style={{ color: "var(--text-muted)" }}>Tax (GST 18%)</span>
                   <span style={{ fontWeight: 600 }}>₹{Number(order.gst_total || 0).toFixed(2)}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "18px", fontWeight: 800, marginTop: "8px", borderTop: "1px solid #f1f5f9", paddingTop: "12px" }}>
-                  <span><DynText text="Grand Total" /></span>
+                  <span>Grand Total</span>
                   <span style={{ color: "var(--primary)" }}>₹{Number(order.final_amount).toFixed(2)}</span>
                 </div>
                 {balance <= 0 && (
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#059669", fontWeight: 700, fontSize: "14px" }}>
-                    <CheckCircle2 size={18} /> <DynText text="Fully Paid" />
+                    <CheckCircle2 size={18} /> Fully Paid
                   </div>
                 )}
               </div>
@@ -308,11 +307,11 @@ export default function OrderDetailsPage() {
         <div className="order-side" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           {/* ACTION CARD */}
           <div className="card" style={{ padding: "24px", borderRadius: "24px", background: "white", border: "1px solid #f1f5f9" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "16px" }}><DynText text="Order Actions" /></h3>
+            <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "16px" }}>Order Actions</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               {balance > 0 && (
                 <button className="btn btn-accent btn-full" onClick={handlePayNow} disabled={paying}>
-                  <CreditCard size={18} /> {paying ? <DynText text="Processing..." /> : <><DynText text="Pay Balance (₹" />{balance.toFixed(2)})</>}
+                  <CreditCard size={18} /> {paying ? "Processing..." : <>Pay Balance (₹{balance.toFixed(2)})</>}
                 </button>
               )}
               {/* CLIENT-SIDE INVOICE — no backend PDF needed */}
@@ -321,14 +320,14 @@ export default function OrderDetailsPage() {
                 onClick={() => printInvoice(order, customer)}
                 style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}
               >
-                <Printer size={18} /> <DynText text="View & Print Invoice" />
+                <Printer size={18} /> View & Print Invoice
               </button>
             </div>
           </div>
 
           {/* INFO CARD */}
           <div className="card" style={{ padding: "24px", borderRadius: "24px", background: "#022c22", color: "white" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "20px", color: "#34d399" }}><DynText text="Delivery Details" /></h3>
+            <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "20px", color: "#34d399" }}>Delivery Details</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div style={{ display: "flex", gap: "12px" }}>
                 <MapPin size={18} style={{ color: "#34d399", flexShrink: 0 }} />
@@ -336,12 +335,12 @@ export default function OrderDetailsPage() {
               </div>
               <div style={{ display: "flex", gap: "12px" }}>
                 <Calendar size={18} style={{ color: "#34d399", flexShrink: 0 }} />
-                <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}><DynText text="Expected within 2–5 business days" /></p>
+                <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}>Expected within 2–5 business days</p>
               </div>
               {customer?.gst && (
                 <div style={{ display: "flex", gap: "12px" }}>
                   <Building size={18} style={{ color: "#34d399", flexShrink: 0 }} />
-                  <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}><DynText text="GST:" /> {customer.gst}</p>
+                  <p style={{ fontSize: "14px", margin: 0, opacity: 0.9 }}>GST: {customer.gst}</p>
                 </div>
               )}
             </div>
@@ -349,14 +348,14 @@ export default function OrderDetailsPage() {
 
           {/* PAYMENT STATUS */}
           <div className="card" style={{ padding: "24px", borderRadius: "24px", background: "white", border: "1px solid #f1f5f9" }}>
-            <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "20px" }}><DynText text="Payment Status" /></h3>
+            <h3 style={{ fontSize: "16px", fontWeight: 800, marginBottom: "20px" }}>Payment Status</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                <span style={{ color: "var(--text-muted)" }}><DynText text="Total Paid" /></span>
+                <span style={{ color: "var(--text-muted)" }}>Total Paid</span>
                 <span style={{ fontWeight: 700, color: "#059669" }}>₹{Number(order.paid_amount || 0).toFixed(2)}</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
-                <span style={{ color: "var(--text-muted)" }}><DynText text="Balance Due" /></span>
+                <span style={{ color: "var(--text-muted)" }}>Balance Due</span>
                 <span style={{ fontWeight: 700, color: balance > 0 ? "#e11d48" : "#059669" }}>₹{balance.toFixed(2)}</span>
               </div>
             </div>
@@ -366,3 +365,4 @@ export default function OrderDetailsPage() {
     </div>
   );
 }
+

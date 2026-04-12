@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend 
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from "recharts";
-import DynText from "@core/i18n/DynText";
 import useMandiStore from "@features/agriculture/mandi/mandi.store";
 import useWeatherStore from "@features/agriculture/weather/weather.store";
 import "@/styles/Admin.css";
@@ -38,14 +37,14 @@ export default function MandiPricesPage() {
 
     useEffect(() => {
         if (selectedLocation) {
-            const cityName = selectedLocation.name;
+            const cityName = selectedLocation.name || "";
             const stateName = selectedLocation.state || "";
             
             // Try to find a match in the DISTRICTS list
             const match = DISTRICTS.find(d => 
-                cityName.toLowerCase().includes(d.toLowerCase()) || 
+                (cityName && cityName.toLowerCase().includes(d.toLowerCase())) || 
                 d.toLowerCase().includes(cityName.toLowerCase()) ||
-                stateName.toLowerCase().includes(d.toLowerCase())
+                (stateName && stateName.toLowerCase().includes(d.toLowerCase()))
             );
 
             if (match) {
@@ -73,8 +72,8 @@ export default function MandiPricesPage() {
         <div className="admin-page">
             <div className="admin-actions-bar">
                 <div>
-                    <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0f172a' }}><DynText text="Mandi Intelligence Hub" /></h1>
-                    <p style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}><DynText text="Precision commodity tracking and historical price radar." /></p>
+                    <h1 style={{ fontSize: '28px', fontWeight: '900', color: '#0f172a' }}>Mandi Intelligence Hub</h1>
+                    <p style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Precision commodity tracking and historical price radar.</p>
                 </div>
             </div>
 
@@ -91,13 +90,13 @@ export default function MandiPricesPage() {
                     <div>
                         <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#064e4b', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%' }}></span>
-                            <DynText text="Interactive Market Radar" />
+                            Interactive Market Radar
                         </h2>
-                        <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}><DynText text="Analyze price volatility for specific crop/district combinations." /></p>
+                        <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>Analyze price volatility for specific crop/district combinations.</p>
                     </div>
                     
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: '#f8fafc', padding: '6px 14px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                        <label style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}><DynText text="Radar Window:" /></label>
+                        <label style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Radar Window:</label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                             <input 
                                 type="number" 
@@ -115,7 +114,7 @@ export default function MandiPricesPage() {
                                     outline: 'none'
                                 }}
                             />
-                            <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8' }}><DynText text="Days" /></span>
+                            <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8' }}>Days</span>
                         </div>
                     </div>
                 </div>
@@ -123,33 +122,33 @@ export default function MandiPricesPage() {
                 <div className="agri-grid-1-3">
                     <div className="radar-controls" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div className="control-field">
-                            <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}><DynText text="Target Commodity" /></label>
+                            <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Target Commodity</label>
                             <select 
                                 value={selectedCrop} 
                                 onChange={(e) => setSelectedCrop(e.target.value)}
                                 className="modal-form-input" 
                                 style={{ width: '100%', borderRadius: '12px', border: '1.5px solid #e2e8f0' }}
                             >
-                                {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}><DynText text={c} /></option>)}
+                                {COMMON_CROPS.map((c, idx) => <option key={`${c}-${idx}`} value={c}>{c}</option>)}
                             </select>
                         </div>
                         <div className="control-field">
-                            <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}><DynText text="Market District" /></label>
+                            <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Market District</label>
                             <select 
                                 value={selectedDistrict} 
                                 onChange={(e) => setSelectedDistrict(e.target.value)}
                                 className="modal-form-input" 
                                 style={{ width: '100%', borderRadius: '12px', border: '1.5px solid #e2e8f0' }}
                             >
-                                {DISTRICTS.map((d, idx) => <option key={`${d}-${idx}`} value={d}><DynText text={d} /></option>)}
+                                {DISTRICTS.map((d, idx) => <option key={`${d}-${idx}`} value={d}>{d}</option>)}
                             </select>
                         </div>
                         
                         {trends.length > 0 && (
                             <div style={{ marginTop: '20px', padding: '16px', background: '#f0fdf4', borderRadius: '16px', border: '1px solid #dcfce7' }}>
-                                <p style={{ fontSize: '11px', fontWeight: '700', color: '#166534', textTransform: 'uppercase' }}><DynText text="Current Insights" /></p>
+                                <p style={{ fontSize: '11px', fontWeight: '700', color: '#166534', textTransform: 'uppercase' }}>Current Insights</p>
                                 <p style={{ fontSize: '20px', fontWeight: '900', color: '#064e4b', marginTop: '4px' }}>₹{trends[trends.length-1]?.modal || trends[trends.length-1]?.[selectedCrop] || "N/A"}</p>
-                                <p style={{ fontSize: '12px', color: '#10b981', fontWeight: '600', marginTop: '2px' }}><DynText text="Latest Modal Price" /></p>
+                                <p style={{ fontSize: '12px', color: '#10b981', fontWeight: '600', marginTop: '2px' }}>Latest Modal Price</p>
                             </div>
                         )}
                     </div>
@@ -157,7 +156,7 @@ export default function MandiPricesPage() {
                     <div className="radar-chart-container" style={{ height: '300px', background: '#fff', borderRadius: '16px', border: '1px solid #f1f5f9', padding: '20px', minWidth: 'min(500px, 100vw)' }}>
                         {trendsLoading ? (
                             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748b', fontSize: '14px' }}>
-                                <DynText text="Syncing Market Radar Data..." />
+                                Syncing Market Radar Data...
                             </div>
                         ) : trends.length > 0 ? (
                             <ResponsiveContainer width="100%" height="100%">
@@ -199,7 +198,7 @@ export default function MandiPricesPage() {
                             </ResponsiveContainer>
                         ) : (
                             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '14px' }}>
-                                <DynText text="No recent data found for this selection." />
+                                No recent data found for this selection.
                             </div>
                         )}
                     </div>
@@ -220,21 +219,21 @@ export default function MandiPricesPage() {
                 boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)'
             }}>
                 <div style={{ flex: 1, minWidth: '180px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}><DynText text="Search Crop" /></label>
+                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Search Crop</label>
                     <select name="commodity" value={filters.commodity} onChange={handleFilterChange} className="modal-form-input" style={{ width: '100%', padding: '10px', borderRadius: '12px' }}>
-                        <option value=""><DynText text="All Commodities" /></option>
-                        {COMMON_CROPS.map(c => <option key={c} value={c}><DynText text={c} /></option>)}
+                        <option value="">All Commodities</option>
+                        {COMMON_CROPS.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                 </div>
                 <div style={{ flex: 1, minWidth: '180px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}><DynText text="Market District" /></label>
+                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Market District</label>
                     <select name="district" value={filters.district} onChange={handleFilterChange} className="modal-form-input" style={{ width: '100%', padding: '10px', borderRadius: '12px' }}>
-                        <option value=""><DynText text="All Districts" /></option>
-                        {DISTRICTS.map(d => <option key={d} value={d}><DynText text={d} /></option>)}
+                        <option value="">All Districts</option>
+                        {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
                     </select>
                 </div>
                 <div style={{ flex: 1, minWidth: '180px' }}>
-                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}><DynText text="Arrival Date" /></label>
+                    <label style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Arrival Date</label>
                     <input 
                         type="date" 
                         name="date" 
@@ -253,32 +252,32 @@ export default function MandiPricesPage() {
                             fetchPrices();
                         }}
                     >
-                        <DynText text="Sync Data" />
+                        Sync Data
                     </button>
                 </div>
             </div>
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '50px' }}><DynText text="Collecting market data..." /></div>
+                <div style={{ textAlign: 'center', padding: '50px' }}>Collecting market data...</div>
             ) : (
                 <div className="mandi-table-container">
                     <table className="admin-table">
                         <thead>
                             <tr>
-                                <th><DynText text="Market (Mandi)" /></th>
-                                <th><DynText text="District" /></th>
-                                <th><DynText text="Commodity" /></th>
-                                <th><DynText text="Min Price" /></th>
-                                <th><DynText text="Max Price" /></th>
-                                <th><DynText text="Modal Price" /></th>
-                                <th><DynText text="Date" /></th>
+                                <th>Market (Mandi)</th>
+                                <th>District</th>
+                                <th>Commodity</th>
+                                <th>Min Price</th>
+                                <th>Max Price</th>
+                                <th>Modal Price</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             {prices.map((p) => (
                                 <tr key={p.id}>
-                                    <td style={{ fontWeight: '600', color: '#0f172a' }}><DynText text={p.market} /></td>
-                                    <td><DynText text={p.district} /></td>
+                                    <td style={{ fontWeight: '600', color: '#0f172a' }}>{p.market}</td>
+                                    <td>{p.district}</td>
                                     <td>
                                         <span style={{ 
                                             background: '#f0fdf4', 
@@ -287,7 +286,7 @@ export default function MandiPricesPage() {
                                             borderRadius: '4px', 
                                             fontSize: '12px',
                                             fontWeight: '600'
-                                        }}><DynText text={p.commodity} /></span>
+                                        }}>{p.commodity}</span>
                                     </td>
                                     <td>₹{p.min_price}</td>
                                     <td>₹{p.max_price}</td>
@@ -301,8 +300,8 @@ export default function MandiPricesPage() {
                     {/* Page Navigation */}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '32px', padding: '20px', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
                         <p style={{ fontSize: '13px', color: '#64748b', fontWeight: '600' }}>
-                            <DynText text="Showing page" /> <span style={{ color: '#0f172a', fontWeight: '800' }}>{page}</span> 
-                            {totalCount > 0 && <span> — <DynText text="Results" /> <span style={{ color: '#0f172a', fontWeight: '800' }}>{((page-1)*20)+1} to {Math.min(page*20, totalCount)}</span> <DynText text="of" /> <span style={{ color: '#0f172a', fontWeight: '800' }}>{totalCount}</span></span>}
+                            Showing page <span style={{ color: '#0f172a', fontWeight: '800' }}>{page}</span> 
+                            {totalCount > 0 && <span> — Results <span style={{ color: '#0f172a', fontWeight: '800' }}>{((page-1)*20)+1} to {Math.min(page*20, totalCount)}</span> of <span style={{ color: '#0f172a', fontWeight: '800' }}>{totalCount}</span></span>}
                         </p>
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button 
@@ -318,7 +317,7 @@ export default function MandiPricesPage() {
                                     window.scrollTo({ top: 400, behavior: 'smooth' });
                                 }}
                             >
-                                ← <DynText text="Previous Page" />
+                                ← Previous Page
                             </button>
                             <button 
                                 className="t-btn view" 
@@ -333,7 +332,7 @@ export default function MandiPricesPage() {
                                     window.scrollTo({ top: 400, behavior: 'smooth' });
                                 }}
                             >
-                                <DynText text="Next Page" /> →
+                                Next Page →
                             </button>
                         </div>
                     </div>

@@ -18,7 +18,6 @@ import useCartStore from "@features/checkout/store/cart.store";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
 import api from "@core/api/client";
-import DynText from '@core/i18n/DynText';
 import "@/styles/CheckoutPage.css";
 
 // ✅ Dynamically load Razorpay SDK if not already loaded
@@ -40,12 +39,12 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!customer) {
-      addToast(<DynText text="Customer profile not loaded. Please re-login." />, "error");
+      addToast("Customer profile not loaded. Please re-login.", "error");
       return;
     }
 
     if (items.length === 0) {
-      addToast(<DynText text="Your cart is empty!" />, "error");
+      addToast("Your cart is empty!", "error");
       navigate("/products");
       return;
     }
@@ -66,11 +65,11 @@ export default function CheckoutPage() {
       const orderAmount = Number(order?.final_amount) || amountBeforeCheckout || 1;
 
       if (!orderId) {
-        addToast(<DynText text="Order created but could not get order ID" />, "error");
+        addToast("Order created but could not get order ID", "error");
         return;
       }
 
-      addToast(<DynText text="Order placed! Starting payment..." />, "success");
+      addToast("Order placed! Starting payment...", "success");
 
       // ✅ STEP 2: Create Razorpay payment order
       const rzpRes = await api.post("/payments/create-order", {
@@ -101,7 +100,7 @@ export default function CheckoutPage() {
         currency: "INR",
         order_id: rzpOrder.id,
         name: "AgroMart",
-        description: <DynText text="Order" /> + ` #${orderId}`,
+        description: `Order #${orderId}`,
         prefill: {
           name: customer?.name || "Customer",
           contact: customer?.mobile || "",
@@ -120,13 +119,13 @@ export default function CheckoutPage() {
               amount: orderAmount
             });
 
-            addToast(<DynText text="Payment successful!" />, "success");
+            addToast("Payment successful!", "success");
 
             const targetPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
             navigate(targetPath);
           } catch (err) {
             console.error("VERIFY ERROR:", err);
-            addToast(<DynText text="Payment verification failed. Contact support." />, "error");
+            addToast("Payment verification failed. Contact support.", "error");
             const failPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
             navigate(failPath);
           }
@@ -134,7 +133,7 @@ export default function CheckoutPage() {
 
         modal: {
           ondismiss: function () {
-            addToast(<DynText text="Payment cancelled. You can pay later from Orders." />, "info");
+            addToast("Payment cancelled. You can pay later from Orders.", "info");
             const targetPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
             navigate(targetPath);
           }
@@ -150,7 +149,7 @@ export default function CheckoutPage() {
 
     } catch (err) {
       console.error("CHECKOUT ERROR:", err);
-      addToast(<DynText text={err.message || "Checkout failed"} />, "error");
+      addToast(err.message || "Checkout failed", "error");
     }
   };
 
@@ -161,13 +160,13 @@ export default function CheckoutPage() {
           <div className="empty-state-icon">
             <ShoppingBag size={80} strokeWidth={1} style={{ opacity: 0.2 }} />
           </div>
-          <h3><DynText text="Your cart is empty" /></h3>
-          <p><DynText text="Add products before checking out" /></p>
+          <h3>Your cart is empty</h3>
+          <p>Add products before checking out</p>
           <button
             className="btn btn-primary"
             onClick={() => navigate("/products")}
           >
-            <DynText text="Browse Products" />
+            Browse Products
           </button>
         </div>
       </div>
@@ -176,12 +175,12 @@ export default function CheckoutPage() {
 
   return (
     <div className="checkout-page container fade-in">
-      <h1 className="checkout-page__title"><DynText text="Review & Place Order" /></h1>
+      <h1 className="checkout-page__title">Review & Place Order</h1>
 
       <div className="checkout-page__layout">
         {/* ORDER ITEMS */}
         <div className="checkout-items">
-          <h2 className="checkout-items__title"><DynText text="Order Summary" /></h2>
+          <h2 className="checkout-items__title">Order Summary</h2>
 
           {items.map((item) => (
             <div key={item.id} className="checkout-item">
@@ -190,7 +189,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="checkout-item__info">
-                <p className="checkout-item__name"><DynText text={item.name} /></p>
+                <p className="checkout-item__name">{item.name}</p>
                 <p className="checkout-item__meta">
                   ₹{item.price?.toFixed(2)} × {item.quantity}
                 </p>
@@ -208,48 +207,48 @@ export default function CheckoutPage() {
               <Truck size={24} />
             </div>
             <div>
-              <p className="checkout-delivery__title"><DynText text="Farm Delivery" /></p>
+              <p className="checkout-delivery__title">Farm Delivery</p>
               <p className="checkout-delivery__desc">
-                <DynText text="Estimated 2–5 days · Delivering to" />{" "}
-                {customer?.village ? <DynText text={customer.village} /> : <DynText text="your location" />}
+                Estimated 2–5 days · Delivering to{" "}
+                {customer?.village ? customer.village : "your location"}
               </p>
             </div>
-            <span className="checkout-delivery__free"><DynText text="FREE" /></span>
+            <span className="checkout-delivery__free">FREE</span>
           </div>
         </div>
 
         {/* SUMMARY */}
         <div className="checkout-summary">
-          <h2 className="checkout-summary__title"><DynText text="Price Details" /></h2>
+          <h2 className="checkout-summary__title">Price Details</h2>
 
           <div className="checkout-summary__rows">
             <div className="checkout-summary__row">
-              <span><DynText text="Price" /> ({items.length} <DynText text="items" />)</span>
+              <span>Price ({items.length} items)</span>
               <span>₹{total?.toFixed(2)}</span>
             </div>
 
             {discount > 0 && (
               <div className="checkout-summary__row checkout-summary__row--discount">
-                <span><DynText text="Discount" /></span>
+                <span>Discount</span>
                 <span>−₹{discount?.toFixed(2)}</span>
               </div>
             )}
 
             <div className="checkout-summary__row">
-              <span><DynText text="Delivery Charges" /></span>
-              <span className="checkout-summary__free"><DynText text="FREE" /></span>
+              <span>Delivery Charges</span>
+              <span className="checkout-summary__free">FREE</span>
             </div>
 
             <hr className="divider" />
 
             <div className="checkout-summary__row checkout-summary__row--total">
-              <span><DynText text="Total Amount" /></span>
+              <span>Total Amount</span>
               <span>₹{finalAmount?.toFixed(2)}</span>
             </div>
 
             {discount > 0 && (
               <p className="checkout-summary__savings">
-                <DynText text="Great! You save" /> ₹{discount?.toFixed(2)}
+                Great! You save ₹{discount?.toFixed(2)}
               </p>
             )}
           </div>
@@ -257,9 +256,9 @@ export default function CheckoutPage() {
           {/* CUSTOMER */}
           {customer && (
             <div className="checkout-customer">
-              <h3><DynText text="Delivering to" /></h3>
+              <h3>Delivering to</h3>
               <p className="customer-name">
-                <CheckCircle size={16} /> <strong><DynText text={customer.name} /></strong>
+                <CheckCircle size={16} /> <strong>{customer.name}</strong>
               </p>
               <p><Phone size={14} /> {customer.mobile}</p>
               {customer.village && <p><MapPin size={14} /> {customer.village}</p>}
@@ -274,16 +273,16 @@ export default function CheckoutPage() {
             disabled={loading}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
           >
-            {loading ? <DynText text="Processing" /> : (
+            {loading ? "Processing" : (
               <>
-                <DynText text="Place Order & Pay" /> <CreditCard size={20} />
+                Place Order & Pay <CreditCard size={20} />
               </>
             )}
           </button>
 
           <div className="checkout-trust">
-            <div className="trust-item"><ShieldCheck size={16} /> <span><DynText text="Secure Payment" /></span></div>
-            <div className="trust-item"><CheckCircle size={16} /> <span><DynText text="Verified Products" /></span></div>
+            <div className="trust-item"><ShieldCheck size={16} /> <span>Secure Payment</span></div>
+            <div className="trust-item"><CheckCircle size={16} /> <span>Verified Products</span></div>
           </div>
         </div>
       </div>

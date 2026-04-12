@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import useAuthStore from "@features/auth/store/auth.store";
 import { useNavigate } from "react-router-dom";
-import DynText from '@core/i18n/DynText';
 import "@/styles/AdminProfile.css";
 
 export default function AdminProfilePage() {
@@ -57,13 +56,13 @@ export default function AdminProfilePage() {
                     
                     <div className="admin-profile-hero__text">
                         <div className="admin-profile-hero__badge">
-                            <Zap size={14} fill="currentColor" /> <DynText text="AgroMart Executive Council" />
+                            <Zap size={14} fill="currentColor" /> AgroMart Executive Council
                         </div>
                         <h1 className="admin-profile-hero__title">{profile.name}</h1>
                         <p className="admin-profile-hero__subtitle">
-                           <DynText text="Authenticated Executive Access" />: <span className="admin-profile-hero__email">{profile.email}</span> 
+                           Authenticated Executive Access: <span className="admin-profile-hero__email">{profile.email}</span> 
                            <br />
-                           <DynText text="Authorized for system-wide overrides, inventory management, and fiscal oversight." />
+                           Authorized for system-wide overrides, inventory management, and fiscal oversight.
                         </p>
                     </div>
                 </div>
@@ -74,7 +73,7 @@ export default function AdminProfilePage() {
                 {/* IDENTITY CARD */}
                 <div className="elite-card elite-card--tinted">
                     <h3 className="elite-card__title">
-                        <span className="elite-card__title-dot" /> <DynText text="Management Identity" />
+                        <span className="elite-card__title-dot" /> Management Identity
                     </h3>
                     <div className="elite-card__rows">
                         <InfoRow label="Personnel ID" value={`#EX-${profile.id || profile.user_id}`} icon={<User size={16} />} />
@@ -87,7 +86,7 @@ export default function AdminProfilePage() {
                 {/* PRIVILEGE ACTIONS */}
                 <div className="elite-card elite-card--tinted">
                     <h3 className="elite-card__title">
-                        <span className="elite-card__title-dot" /> <DynText text="Executive Actions" />
+                        <span className="elite-card__title-dot" /> Executive Actions
                     </h3>
                     <div className="elite-quick-links">
                         {quickLinks.map(link => (
@@ -97,7 +96,7 @@ export default function AdminProfilePage() {
                                 onClick={() => navigate(link.to)}
                             >
                                 <div className="elite-quick-link__icon">{link.icon}</div>
-                                <span><DynText text={link.label} /></span>
+                                <span>{link.label}</span>
                             </button>
                         ))}
                     </div>
@@ -106,15 +105,15 @@ export default function AdminProfilePage() {
                 {/* SYSTEM INTEGRITY STATS */}
                 <div className="elite-card elite-stats-dark">
                     <h3 className="elite-card__title">
-                        <span className="elite-card__title-dot elite-card__title-dot--pulse" /> <DynText text="System Integrity" />
+                        <span className="elite-card__title-dot elite-card__title-dot--pulse" /> System Integrity
                     </h3>
                     <div className="elite-card__rows" style={{ gap: '16px' }}>
                         {stats.map(s => (
                             <div key={s.label} className="elite-stat-item">
                                 <div className="elite-stat-item__icon-wrap">{s.icon}</div>
                                 <div className="elite-stat-item__text-wrap">
-                                    <p className="elite-stat-item__label"><DynText text={s.label} /></p>
-                                    <p className="elite-stat-item__value"><DynText text={s.value} /></p>
+                                    <p className="elite-stat-item__label">{s.label}</p>
+                                    <p className="elite-stat-item__value">{s.value}</p>
                                 </div>
                             </div>
                         ))}
@@ -130,9 +129,9 @@ function InfoRow({ label, value, icon }) {
     return (
         <div className="elite-info-row">
             <span className="elite-info-row__label">
-                {icon} <DynText text={label} />
+                {icon} {label}
             </span>
-            <span className="elite-info-row__value"><DynText text={value} /></span>
+            <span className="elite-info-row__value">{value}</span>
         </div>
     );
 }

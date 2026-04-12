@@ -4,7 +4,6 @@ import { Package, CreditCard, FileText, CheckCircle, Clock, AlertCircle, Downloa
 import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
-import DynText from '@core/i18n/DynText';
 import "@/styles/OrdersPage.css";
 
 // ✅ Dynamically load Razorpay SDK if not already present
@@ -55,7 +54,7 @@ export default function OrdersPage() {
       const pendingAmount = Number(order.final_amount) - Number(order.paid_amount || 0);
 
       if (pendingAmount <= 0) {
-        addToast(<DynText text="Order already fully paid!" />, "info");
+        addToast("Order already fully paid!", "info");
         return;
       }
 
@@ -68,14 +67,14 @@ export default function OrdersPage() {
       const rzpOrder = rzpRes;
 
       if (!rzpOrder?.id) {
-        addToast(<DynText text="Failed to create payment order" />, "error");
+        addToast("Failed to create payment order", "error");
         return;
       }
 
       // ✅ Ensure SDK is loaded before opening modal
       const sdkLoaded = await loadRazorpaySDK();
       if (!sdkLoaded || !window.Razorpay) {
-        addToast(<DynText text="Payment SDK failed to load. Please refresh and try again." />, "error");
+        addToast("Payment SDK failed to load. Please refresh and try again.", "error");
         return;
       }
 
@@ -103,24 +102,24 @@ export default function OrdersPage() {
               amount: pendingAmount
             });
 
-            addToast(<DynText text="Payment successful!" />, "success");
+            addToast("Payment successful!", "success");
             fetchOrders(); // Refresh orders list
 
           } catch (err) {
             console.error("Payment verification failed:", err);
-            addToast(<DynText text="Payment verification failed" />, "error");
+            addToast("Payment verification failed", "error");
           }
         },
 
         modal: {
           ondismiss: () => {
-            addToast(<DynText text="Payment cancelled" />, "info");
+            addToast("Payment cancelled", "info");
           }
         }
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", () => addToast(<DynText text="Payment failed" />, "error"));
+      rzp.on("payment.failed", () => addToast("Payment failed", "error"));
       rzp.open();
 
     } catch (err) {
@@ -150,8 +149,8 @@ export default function OrdersPage() {
     } catch (err) {
       addToast(
         err.response?.status === 404
-          ? <DynText text="Invoice not generated yet" />
-          : <DynText text="Failed to download invoice" />,
+          ? "Invoice not generated yet"
+          : "Failed to download invoice",
         "error"
       );
     }
@@ -172,8 +171,8 @@ export default function OrdersPage() {
   return (
     <div className="orders-page container fade-in">
       <header className="orders-page__header">
-        <h1 className="orders-page__title"><DynText text="My Orders" /></h1>
-        <p className="orders-page__subtitle"><DynText text="Track and manage your recent purchases" /></p>
+        <h1 className="orders-page__title">My Orders</h1>
+        <p className="orders-page__subtitle">Track and manage your recent purchases</p>
       </header>
 
       {loading ? (
@@ -196,10 +195,10 @@ export default function OrdersPage() {
               </defs>
             </svg>
           </div>
-          <h3><DynText text="Your order book is clear" /></h3>
-          <p><DynText text="Ready to start your first sourcing journey?" /></p>
+          <h3>Your order book is clear</h3>
+          <p>Ready to start your first sourcing journey?</p>
           <Link to="/products" className="btn btn-primary">
-            <DynText text="Browse Products" />
+            Browse Products
           </Link>
         </div>
       ) : (
@@ -226,13 +225,13 @@ export default function OrdersPage() {
 
                 <span className={`badge ${statusColor(order.status)}`} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   {getStatusIcon(order.status)}
-                  <DynText text={order.status || "PENDING"} />
+                  {order.status || "PENDING"}
                 </span>
               </div>
 
               <div className="order-card__body">
                 <div className="order-card__row">
-                  <span><DynText text="Subtotal" /></span>
+                  <span>Subtotal</span>
                   <span>
                     ₹{Number(order.total_amount || 0).toFixed(2)}
                   </span>
@@ -240,7 +239,7 @@ export default function OrdersPage() {
 
                 {order.discount > 0 && (
                   <div className="order-card__row order-card__row--discount">
-                    <span><DynText text="Discount applied" /></span>
+                    <span>Discount applied</span>
                     <span>
                       −₹{Number(order.discount).toFixed(2)}
                     </span>
@@ -249,7 +248,7 @@ export default function OrdersPage() {
 
                 {order.gst_total > 0 && (
                   <div className="order-card__row">
-                    <span><DynText text="Tax (GST)" /></span>
+                    <span>Tax (GST)</span>
                     <span>
                       ₹{Number(order.gst_total).toFixed(2)}
                     </span>
@@ -259,7 +258,7 @@ export default function OrdersPage() {
                 <hr className="divider" />
 
                 <div className="order-card__row order-card__row--total">
-                  <span><DynText text="Grand Total" /></span>
+                  <span>Grand Total</span>
                   <span>
                     ₹{Number(order.final_amount || 0).toFixed(2)}
                   </span>
@@ -276,9 +275,9 @@ export default function OrdersPage() {
                     disabled={payingOrderId === order.id}
                     style={{ gap: '8px' }}
                   >
-                    {payingOrderId === order.id ? <DynText text="Processing" /> : (
+                    {payingOrderId === order.id ? "Processing" : (
                       <>
-                        <CreditCard size={16} /> <DynText text="Pay Now" />
+                        <CreditCard size={16} /> Pay Now
                       </>
                     )}
                   </button>
@@ -290,11 +289,11 @@ export default function OrdersPage() {
                   onClick={() => downloadInvoice(order.id)}
                   style={{ gap: '8px' }}
                 >
-                  <Download size={16} /> <DynText text="Invoice" />
+                  <Download size={16} /> Invoice
                 </button>
                 
                 <Link to={`/orders/${order.id}`} className="btn btn-ghost btn-sm" style={{ gap: '8px' }}>
-                  <FileText size={16} /> <DynText text="Details" />
+                  <FileText size={16} /> Details
                 </Link>
               </div>
             </div>

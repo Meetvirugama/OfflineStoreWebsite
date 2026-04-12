@@ -51,7 +51,6 @@ const SuppliersListPage = lazy(() => import("@features/admin/pages/SuppliersList
 const SupplierDetailsPage = lazy(() => import("@features/admin/pages/SupplierDetailsPage"));
 const MandiPricesPage = lazy(() => import("@features/admin/pages/MandiPricesPage"));
 const MandiDashboardPage = lazy(() => import("@features/admin/pages/MandiDashboardPage"));
-const AdminTranslationsPage = lazy(() => import("@features/admin/pages/AdminTranslationsPage"));
 
 function App() {
   return (
@@ -107,7 +106,6 @@ function App() {
           <Route path="/admin/profile" element={<AdminProfilePage />} />
           <Route path="/admin/suppliers" element={<SuppliersListPage />} />
           <Route path="/admin/suppliers/:id" element={<SupplierDetailsPage />} />
-          <Route path="/admin/dictionary" element={<AdminTranslationsPage />} />
         </Route>
       </Routes>
       </Suspense>

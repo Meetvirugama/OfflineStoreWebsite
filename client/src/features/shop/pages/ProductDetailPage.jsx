@@ -17,7 +17,6 @@ import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useCartStore from "@features/checkout/store/cart.store";
 import useToastStore from "@core/hooks/useToast";
-import DynText from '@core/i18n/DynText';
 import "@/styles/ProductDetailPage.css";
 
 const CATEGORY_IMAGES = {
@@ -83,7 +82,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = async () => {
     if (!token) {
-      addToast(<DynText text="Please login to add items to cart" />, "info");
+      addToast("Please login to add items to cart", "info");
       navigate("/auth/login");
       return;
     }
@@ -91,7 +90,7 @@ export default function ProductDetailPage() {
     setAdding(true);
     try {
       await addToCart(customer.id, product.id, qty);
-      addToast(<><DynText text={product.name} /> <DynText text="added to cart!" /></>, "success");
+      addToast(`${product.name} added to cart!`, "success");
     } catch (err) {
       addToast(err.message, "error");
     } finally {
@@ -101,7 +100,7 @@ export default function ProductDetailPage() {
 
   const handleBuyNow = async () => {
     if (!token || !customer) {
-      addToast(<DynText text="Please login to proceed with Buy Now" />, "info");
+      addToast("Please login to proceed with Buy Now", "info");
       // Use state to remember where to return
       navigate("/auth/login", { state: { from: { pathname: window.location.pathname } } });
       return;
@@ -130,10 +129,10 @@ export default function ProductDetailPage() {
       <div className="empty-state-icon">
         <XCircle size={80} strokeWidth={1} style={{ opacity: 0.2 }} />
       </div>
-      <h3><DynText text="Product not found" /></h3>
-      <p><DynText text="This product might have been removed or doesn't exist." /></p>
+      <h3>Product not found</h3>
+      <p>This product might have been removed or doesn't exist.</p>
       <button className="btn btn-primary" onClick={() => navigate("/products")}>
-        <DynText text="Back to Products" />
+        Back to Products
       </button>
     </div>
   );
@@ -142,11 +141,11 @@ export default function ProductDetailPage() {
     <div className="product-detail container fade-in">
       {/* BREADCRUMB */}
       <nav className="product-detail__breadcrumb">
-        <span onClick={() => navigate("/")} className="product-detail__bc-link"><DynText text="Home" /></span>
+        <span onClick={() => navigate("/")} className="product-detail__bc-link">Home</span>
         <ChevronRight size={14} className="product-detail__bc-sep" />
-        <span onClick={() => navigate("/products")} className="product-detail__bc-link"><DynText text="Products" /></span>
+        <span onClick={() => navigate("/products")} className="product-detail__bc-link">Products</span>
         <ChevronRight size={14} className="product-detail__bc-sep" />
-        <span><DynText text={product.name} /></span>
+        <span>{product.name}</span>
       </nav>
 
       <div className="product-detail__grid">
@@ -154,7 +153,7 @@ export default function ProductDetailPage() {
         <div className="product-detail__img-side">
           <div className="product-detail__img-wrap">
             {discount > 0 && (
-              <div className="product-detail__discount-badge"><DynText text="Save" /> {discount}%</div>
+              <div className="product-detail__discount-badge">Save {discount}%</div>
             )}
             <img
               src={getProductImage(product)}
@@ -170,8 +169,8 @@ export default function ProductDetailPage() {
           <h1 className="product-detail__name">{product.name}</h1>
 
           <div className="product-detail__meta">
-            {product.category && <span className="tag"><DynText text={product.category} /></span>}
-            {product.unit && <span className="tag">per <DynText text={product.unit} /></span>}
+            {product.category && <span className="tag">{product.category}</span>}
+            {product.unit && <span className="tag">per {product.unit}</span>}
           </div>
 
           {/* PRICING */}
@@ -180,7 +179,7 @@ export default function ProductDetailPage() {
             {product.mrp > product.selling_price && (
               <>
                 <span className="product-detail__mrp">MRP ₹{product.mrp?.toFixed(2)}</span>
-                <span className="price-discount">{discount}% <DynText text="off" /></span>
+                <span className="price-discount">{discount}% off</span>
               </>
             )}
           </div>
@@ -189,30 +188,30 @@ export default function ProductDetailPage() {
           <div className={`product-detail__stock ${product.stock > 0 ? "product-detail__stock--in" : "product-detail__stock--out"}`}>
             {product.stock > 0 ? (
               <>
-                <CheckCircle size={18} /> <span><DynText text="In Stock" /> – {product.stock} <DynText text="units available" /></span>
+                <CheckCircle size={18} /> <span>In Stock – {product.stock} units available</span>
               </>
             ) : (
               <>
-                <XCircle size={18} /> <span><DynText text="Out of Stock" /></span>
+                <XCircle size={18} /> <span>Out of Stock</span>
               </>
             )}
           </div>
 
           {/* PRODUCT DETAILS */}
           <div className="product-detail__details">
-            <h3><DynText text="Product Specifications" /></h3>
+            <h3>Product Specifications</h3>
             <table className="product-detail__table">
               <tbody>
                 {product.batch_number && (
-                  <tr><td><DynText text="Batch No." /></td><td>{product.batch_number}</td></tr>
+                  <tr><td>Batch No.</td><td>{product.batch_number}</td></tr>
                 )}
                 {product.expiry_date && (
-                  <tr><td><DynText text="Expiry Date" /></td><td>{new Date(product.expiry_date).toLocaleDateString("en-IN")}</td></tr>
+                  <tr><td>Expiry Date</td><td>{new Date(product.expiry_date).toLocaleDateString("en-IN")}</td></tr>
                 )}
-                {product.category && <tr><td><DynText text="Category" /></td><td><DynText text={product.category} /></td></tr>}
-                {product.brand && <tr><td><DynText text="Brand" /></td><td><DynText text={product.brand} /></td></tr>}
-                {product.unit && <tr><td><DynText text="Unit" /></td><td><DynText text={product.unit} /></td></tr>}
-                {product.Supplier?.name && <tr><td><DynText text="Supplier" /></td><td><DynText text={product.Supplier.name} /></td></tr>}
+                {product.category && <tr><td>Category</td><td>{product.category}</td></tr>}
+                {product.brand && <tr><td>Brand</td><td>{product.brand}</td></tr>}
+                {product.unit && <tr><td>Unit</td><td>{product.unit}</td></tr>}
+                {product.Supplier?.name && <tr><td>Supplier</td><td>{product.Supplier.name}</td></tr>}
               </tbody>
             </table>
           </div>
@@ -220,7 +219,7 @@ export default function ProductDetailPage() {
           {/* QTY + ADD TO CART */}
           <div className="product-detail__actions">
             <div className="product-detail__qty">
-              <label className="form-label"><DynText text="Quantity" /></label>
+              <label className="form-label">Quantity</label>
               <div className="product-detail__qty-ctrl">
                 <button
                   className="product-detail__qty-btn"
@@ -244,9 +243,9 @@ export default function ProductDetailPage() {
                 disabled={adding || product.stock <= 0}
                 style={{ gap: '10px' }}
               >
-                {adding ? <DynText text="Adding" /> : (
+                {adding ? "Adding" : (
                   <>
-                    <ShoppingCart size={20} /> <DynText text="Add to Cart" />
+                    <ShoppingCart size={20} /> Add to Cart
                   </>
                 )}
               </button>
@@ -259,11 +258,11 @@ export default function ProductDetailPage() {
               >
                 {buying ? (
                   <>
-                    <span className="spinner" style={{ width: 18, height: 18, borderTopColor: 'white' }} /> <DynText text="Processing" />
+                    <span className="spinner" style={{ width: 18, height: 18, borderTopColor: 'white' }} /> Processing
                   </>
                 ) : (
                   <>
-                    <Zap size={20} /> <DynText text="Buy Now" />
+                    <Zap size={20} /> Buy Now
                   </>
                 )}
               </button>
@@ -272,10 +271,10 @@ export default function ProductDetailPage() {
 
           {/* TRUST BADGES */}
           <div className="product-detail__trust">
-            <div className="product-detail__trust-item"><Truck size={16} /> <span><DynText text="Farm Delivery" /></span></div>
-            <div className="product-detail__trust-item"><Award size={16} /> <span><DynText text="Certified Organic" /></span></div>
-            <div className="product-detail__trust-item"><ShieldCheck size={16} /> <span><DynText text="Secure Payment" /></span></div>
-            <div className="product-detail__trust-item"><RotateCcw size={16} /> <span><DynText text="Easy Return" /></span></div>
+            <div className="product-detail__trust-item"><Truck size={16} /> <span>Farm Delivery</span></div>
+            <div className="product-detail__trust-item"><Award size={16} /> <span>Certified Organic</span></div>
+            <div className="product-detail__trust-item"><ShieldCheck size={16} /> <span>Secure Payment</span></div>
+            <div className="product-detail__trust-item"><RotateCcw size={16} /> <span>Easy Return</span></div>
           </div>
         </div>
       </div>

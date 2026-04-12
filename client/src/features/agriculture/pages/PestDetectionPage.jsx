@@ -16,13 +16,12 @@ import {
     X,
     Maximize2
 } from 'lucide-react';
-import DynText from '@core/i18n/DynText';
 import '@/styles/agriIntelligence.css';
 
 const CROPS = ["Cotton", "Groundnut", "Wheat", "Rice", "Sugarcane", "Mustard"];
 
 const PestDetectionPage = () => {
-    const { history, loading, error, currentDetection, detectPest, fetchHistory, clearCurrent } = usePestStore();
+    const { history, loading, error, currentDetection, detectPest, fetchHistory } = usePestStore();
     
     const [selectedCrop, setSelectedCrop] = useState("Cotton");
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -67,10 +66,10 @@ const PestDetectionPage = () => {
     return (
         <div className="agri-page">
             <div style={{ marginBottom: '2.5rem' }}>
-                <h1 className="agri-title"><DynText text="AI Pest & Disease Detection" /></h1>
+                <h1 className="agri-title">AI Pest & Disease Detection</h1>
                 <p style={{ opacity: 0.6, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <ShieldAlert size={16} className="agri-green" />
-                    <DynText text="Instant field diagnostics with localized Gujarat Intelligence Layer" />
+                    Instant field diagnostics with localized Gujarat Intelligence Layer
                 </p>
             </div>
 
@@ -86,7 +85,7 @@ const PestDetectionPage = () => {
             }}>
                 <Info size={20} className="agri-green" />
                 <p style={{ fontSize: '0.85rem', opacity: 0.8 }}>
-                    <strong><DynText text="Note" />:</strong> <DynText text="This is an AI-based advisory tool. We strongly recommend verifying results with an agricultural expert before applying any chemical pesticides." />
+                    <strong>Note:</strong> This is an AI-based advisory tool. We strongly recommend verifying results with an agricultural expert before applying any chemical pesticides.
                 </p>
             </div>
 
@@ -96,18 +95,18 @@ const PestDetectionPage = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div className="agri-card" style={{ padding: '2rem' }}>
                         <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                            <Camera className="agri-green" /> <DynText text="Diagnostic Input" />
+                            <Camera className="agri-green" /> Diagnostic Input
                         </h3>
 
                         <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', opacity: 0.8 }}><DynText text="Target Crop" /></label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', opacity: 0.8 }}>Target Crop</label>
                             <select 
                                 value={selectedCrop}
                                 onChange={(e) => setSelectedCrop(e.target.value)}
                                 className="agri-card"
                                 style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', borderRadius: '0.6rem', color: '#1e293b', border: '1px solid rgba(0,0,0,0.08)' }}
                             >
-                                {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}><DynText text={c.toUpperCase()} /></option>)}
+                                {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}>{c.toUpperCase()}</option>)}
                             </select>
                         </div>
 
@@ -131,13 +130,13 @@ const PestDetectionPage = () => {
                                 {previewUrl ? (
                                     <div style={{ color: '#fff' }}>
                                         <CheckCircle2 size={48} style={{ margin: '0 auto 1rem', color: '#10b981' }} />
-                                        <p><DynText text="Photo ready for analysis" /></p>
+                                        <p>Photo ready for analysis</p>
                                     </div>
                                 ) : (
                                     <>
                                         <Upload size={48} style={{ margin: '0 auto 1rem', opacity: 0.3 }} />
-                                        <p style={{ opacity: 0.6 }}><DynText text="Tap to Capture or Upload Leaf Photo" /></p>
-                                        <p style={{ fontSize: '0.75rem', opacity: 0.4, marginTop: '0.5rem' }}><DynText text="JPG, PNG up to 5MB" /></p>
+                                        <p style={{ opacity: 0.6 }}>Tap to Capture or Upload Leaf Photo</p>
+                                        <p style={{ fontSize: '0.75rem', opacity: 0.4, marginTop: '0.5rem' }}>JPG, PNG up to 5MB</p>
                                     </>
                                 )}
                             </div>
@@ -174,12 +173,12 @@ const PestDetectionPage = () => {
                             {loading ? (
                                 <>
                                     <Loader2 className="spin" size={20} />
-                                    <DynText text="ANALYZING FIELD DATA" />...
+                                    ANALYZING FIELD DATA...
                                 </>
                             ) : (
                                 <>
                                     <FlaskConical size={20} />
-                                    <DynText text="IDENTIFY DISEASE" />
+                                    IDENTIFY DISEASE
                                 </>
                             )}
                         </button>
@@ -188,7 +187,7 @@ const PestDetectionPage = () => {
                     {error && (
                         <div className="agri-card" style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '1rem', display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
                             <AlertCircle size={20} />
-                            <span style={{ fontSize: '0.9rem' }}><DynText text={error} /></span>
+                            <span style={{ fontSize: '0.9rem' }}>{error}</span>
                         </div>
                     )}
                 </div>
@@ -196,7 +195,7 @@ const PestDetectionPage = () => {
                 {/* DIAGNOSTIC HISTORY */}
                 <div className="agri-card" style={{ padding: '2rem' }}>
                     <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                        <History size={20} className="agri-green" /> <DynText text="Diagnostic History" />
+                        <History size={20} className="agri-green" /> Diagnostic History
                     </h3>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
@@ -222,7 +221,7 @@ const PestDetectionPage = () => {
                                         }}></div>
                                         <div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
-                                                <h4 style={{ fontSize: '1rem', margin: 0 }}><DynText text={h.disease_name} /></h4>
+                                                <h4 style={{ fontSize: '1rem', margin: 0 }}>{h.disease_name}</h4>
                                                 <span style={{ 
                                                     fontSize: '0.7rem', 
                                                     padding: '0.2rem 0.6rem', 
@@ -231,24 +230,24 @@ const PestDetectionPage = () => {
                                                     color: sev.color,
                                                     border: `1px solid ${sev.border}`
                                                 }}>
-                                                    <DynText text={h.severity} />
+                                                    {h.severity}
                                                 </span>
                                             </div>
                                             <p style={{ fontSize: '0.8rem', opacity: 0.5 }}>
-                                                <DynText text={h.crop} /> • {new Date(h.created_at).toLocaleDateString()}
+                                                {h.crop} • {new Date(h.created_at).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
                                         <p style={{ fontSize: '0.9rem', fontWeight: 'bold' }} className="agri-green">{Math.round(h.confidence)}%</p>
-                                        <p style={{ fontSize: '0.7rem', opacity: 0.4 }}><DynText text="Confidence" /></p>
+                                        <p style={{ fontSize: '0.7rem', opacity: 0.4 }}>Confidence</p>
                                     </div>
                                 </div>
                             );
                         }) : (
                             <div style={{ textAlign: 'center', padding: '4rem', opacity: 0.3 }}>
                                 <History size={48} style={{ margin: '0 auto 1rem' }} />
-                                <p><DynText text="No previous diagnostics found." /></p>
+                                <p>No previous diagnostics found.</p>
                             </div>
                         )}
                     </div>
@@ -293,39 +292,39 @@ const PestDetectionPage = () => {
                                             color: getSeverityStyle(currentDetection.severity).color,
                                             border: `1px solid ${getSeverityStyle(currentDetection.severity).border}`
                                         }}>
-                                            <DynText text={currentDetection.severity} /> <DynText text="Severity" />
+                                            {currentDetection.severity} Severity
                                         </span>
-                                        <span style={{ fontSize: '0.8rem', opacity: 0.5 }}><DynText text={currentDetection.plant} /></span>
+                                        <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>{currentDetection.plant}</span>
                                     </div>
-                                    <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem' }}><DynText text={currentDetection.disease_name} /></h2>
+                                    <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem' }}>{currentDetection.disease_name}</h2>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                         <div style={{ height: '4px', width: '100px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px' }}>
                                             <div style={{ height: '100%', width: `${currentDetection.confidence}%`, background: '#10b981', borderRadius: '2px' }}></div>
                                         </div>
-                                        <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }} className="agri-green">{Math.round(currentDetection.confidence)}% <DynText text="Confidence" /></span>
+                                        <span style={{ fontSize: '0.85rem', fontWeight: 'bold' }} className="agri-green">{Math.round(currentDetection.confidence)}% Confidence</span>
                                     </div>
                                 </div>
 
                                 <div className="agri-card" style={{ background: 'rgba(255,255,255,0.03)', padding: '1.2rem' }}>
                                     <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem', color: '#10b981' }}>
-                                        <FlaskConical size={18} /> <DynText text="Chemical Solution" />
+                                        <FlaskConical size={18} /> Chemical Solution
                                     </h4>
                                     <p style={{ fontSize: '0.95rem', opacity: 0.8, lineHeight: 1.5 }}>
-                                        <DynText text={currentDetection.solution} />
+                                        {currentDetection.solution}
                                     </p>
                                 </div>
 
                                 <div className="agri-card" style={{ background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.1)', padding: '1.2rem' }}>
                                     <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.8rem', color: '#10b981' }}>
-                                        <Leaf size={18} /> <DynText text="Organic Solution" />
+                                        <Leaf size={18} /> Organic Solution
                                     </h4>
                                     <p style={{ fontSize: '0.95rem', opacity: 0.8, lineHeight: 1.5 }}>
-                                        <DynText text={currentDetection.organic_solution} />
+                                        {currentDetection.organic_solution}
                                     </p>
                                 </div>
 
                                 <p style={{ fontSize: '0.75rem', opacity: 0.4, fontStyle: 'italic' }}>
-                                    <DynText text={currentDetection.note} />
+                                    {currentDetection.note}
                                 </p>
                             </div>
                         </div>

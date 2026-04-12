@@ -1,20 +1,16 @@
 import { Link } from "react-router-dom";
-import useTranslation from "@core/i18n/useTranslation";
-import DynText from "@core/i18n/DynText";
 import "@/styles/Footer.css";
 
 export default function Footer() {
-  const { t } = useTranslation();
-
   return (
     <footer className="footer">
       <div className="footer__main container">
         <div className="footer__brand">
           <Link to="/" className="navbar-natural__logo">
-            <DynText text="AgroMart" />
+            AgroMart
           </Link>
           <p className="footer__tagline">
-            <DynText text="Premium Agricultural Solutions for Modern Farmers." />
+            Premium Agricultural Solutions for Modern Farmers.
           </p>
           <div className="footer__social">
             <a href="https://www.linkedin.com/in/meet-patel-76a107320/" className="footer__social-link social--linkedin" target="_blank" rel="noreferrer" aria-label="LinkedIn">
@@ -39,42 +35,42 @@ export default function Footer() {
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title"><DynText text="Quick Links" /></h4>
+          <h4 className="footer__col-title">Quick Links</h4>
           <ul className="footer__links">
-            <li><Link to="/"><DynText text="Home" /></Link></li>
-            <li><Link to="/products"><DynText text="Shop Products" /></Link></li>
-            <li><Link to="/about"><DynText text="About Us" /></Link></li>
-            <li><Link to="/contact"><DynText text="Contact" /></Link></li>
-            <li><Link to="/privacy"><DynText text="Privacy Policy" /></Link></li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/products">Shop Products</Link></li>
+            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/contact">Contact</Link></li>
+            <li><Link to="/privacy">Privacy Policy</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title"><DynText text="Management" /></h4>
+          <h4 className="footer__col-title">Management</h4>
           <ul className="footer__links">
-            <li><Link to="/auth/login"><DynText text="Sign In" /></Link></li>
-            <li><Link to="/auth/register"><DynText text="Create Account" /></Link></li>
-            <li><Link to="/profile"><DynText text="My Profile" /></Link></li>
-            <li><Link to="/orders"><DynText text="My Orders" /></Link></li>
+            <li><Link to="/auth/login">Sign In</Link></li>
+            <li><Link to="/auth/register">Create Account</Link></li>
+            <li><Link to="/profile">My Profile</Link></li>
+            <li><Link to="/orders">My Orders</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title"><DynText text="Agro Intelligence" /></h4>
+          <h4 className="footer__col-title">Agro Intelligence</h4>
           <ul className="footer__links">
-            <li><Link to="/farming-news"><DynText text="Farming News" /></Link></li>
-            <li><Link to="/nearby-mandis"><DynText text="Mandi Radar" /></Link></li>
-            <li><Link to="/pest-detection"><DynText text="Pest Detection" /></Link></li>
-            <li><Link to="/crop-advisory"><DynText text="Crop Advisory" /></Link></li>
+            <li><Link to="/farming-news">Farming News</Link></li>
+            <li><Link to="/nearby-mandis">Mandi Radar</Link></li>
+            <li><Link to="/pest-detection">Pest Detection</Link></li>
+            <li><Link to="/crop-advisory">Crop Advisory</Link></li>
           </ul>
         </div>
 
         <div className="footer__col">
-          <h4 className="footer__col-title"><DynText text="Contact Us" /></h4>
+          <h4 className="footer__col-title">Contact Us</h4>
           <ul className="footer__links footer__links--info">
             <li>📞 +91 98765 00000</li>
             <li>📧 support@agroplatform.app</li>
-            <li>📍 <DynText text="Ahmedabad, Gujarat, India" /></li>
+            <li>📍 Ahmedabad, Gujarat, India</li>
             <li>🌐 www.agroplatform.app</li>
           </ul>
         </div>
@@ -82,11 +78,11 @@ export default function Footer() {
 
       <div className="footer__bottom">
         <div className="container footer__bottom-inner">
-          <p>&copy; {new Date().getFullYear()} <DynText text="AgroMart. Powered by AGRO-INTEL Systems." /></p>
+          <p>&copy; {new Date().getFullYear()} AgroMart. Powered by AGRO-INTEL Systems.</p>
           <div className="footer__badges">
-            <span className="footer__badge"><DynText text="Certified Products" /></span>
-            <span className="footer__badge"><DynText text="Farm Delivery" /></span>
-            <span className="footer__badge"><DynText text="Secure Payments" /></span>
+            <span className="footer__badge">Certified Products</span>
+            <span className="footer__badge">Farm Delivery</span>
+            <span className="footer__badge">Secure Payments</span>
           </div>
         </div>
       </div>

@@ -50,7 +50,11 @@ const startServer = async () => {
             console.warn("   Error:", err.message);
         }
 
-        // --- 4. START LISTENING ---
+        // --- 4. INITIALIZE CRON JOBS ---
+        const { initMandiCron } = await import("./crons/mandiCron.js");
+        initMandiCron();
+
+        // --- 5. START LISTENING ---
         console.log("📡 [DEPL] Attempting to bind port...");
         app.listen(PORT, HOST, () => {
             console.log(`🚀 [DEPL] Server listening on http://${HOST}:${PORT}`);

@@ -3,7 +3,6 @@ import useCropStore from '@features/agriculture/crop/crop.store';
 import useWeatherStore from '@features/agriculture/weather/weather.store';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { TrendingUp, BarChart3, Filter, Calendar } from 'lucide-react';
-import DynText from '@core/i18n/DynText';
 import '@/styles/agriIntelligence.css';
 
 const AgriAnalyticsPage = () => {
@@ -39,15 +38,15 @@ const AgriAnalyticsPage = () => {
         <div className="agri-page">
             <div className="agri-page__header" style={{display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem'}}>
                 <div>
-                    <h1 className="agri-title"><DynText text="Market Intel Analytics" /></h1>
+                    <h1 className="agri-title">Market Intel Analytics</h1>
                     <div style={{display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.2rem', flexWrap: 'wrap'}}>
-                        <p style={{opacity: 0.5, fontSize: '0.85rem', margin: 0}}><DynText text="Predictive indexing and price telemetry." /></p>
+                        <p style={{opacity: 0.5, fontSize: '0.85rem', margin: 0}}>Predictive indexing and price telemetry.</p>
                         {selectedLocation && (
                             <span style={{
                                 fontSize: '0.7rem', padding: '0.2rem 0.6rem', background: 'rgba(16, 185, 129, 0.1)', 
                                 border: '1px solid #10b981', borderRadius: '1rem', color: '#10b981', fontWeight: 700, whiteSpace: 'nowrap'
                             }}>
-                                <DynText text="SYNC" />: <DynText text={selectedLocation.name.toUpperCase()} />
+                                SYNC: {selectedLocation.name.toUpperCase()}
                             </span>
                         )}
                     </div>
@@ -69,7 +68,7 @@ const AgriAnalyticsPage = () => {
                             whiteSpace: 'nowrap'
                         }}
                     >
-                        <DynText text="Explore Asset" />
+                        Explore Asset
                     </button>
 
                     <div className="agri-card" style={{padding: '0.4rem 0.8rem', display: 'flex', gap: '0.6rem', alignItems: 'center', background: '#f1f5f9', flexWrap: 'wrap'}}>
@@ -80,7 +79,7 @@ const AgriAnalyticsPage = () => {
                                 onChange={(e) => setSelectedCrop(e.target.value)}
                                 style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem'}}
                             >
-                                {crops.map(c => <option key={c} value={c} style={{background: '#ffffff', color: '#1e293b'}}><DynText text={c} /></option>)}
+                                {crops.map(c => <option key={c} value={c} style={{background: '#ffffff', color: '#1e293b'}}>{c}</option>)}
                             </select>
                         </div>
                         <select 
@@ -88,9 +87,9 @@ const AgriAnalyticsPage = () => {
                             onChange={(e) => setDays(e.target.value)}
                             style={{background: 'transparent', color: 'inherit', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 500, opacity: 0.7, fontSize: '0.8rem'}}
                         >
-                            <option value={7} style={{background: '#ffffff', color: '#1e293b'}}><DynText text="7D" /></option>
-                            <option value={30} style={{background: '#ffffff', color: '#1e293b'}}><DynText text="30D" /></option>
-                            <option value={90} style={{background: '#ffffff', color: '#1e293b'}}><DynText text="90D" /></option>
+                            <option value={7} style={{background: '#ffffff', color: '#1e293b'}}>7D</option>
+                            <option value={30} style={{background: '#ffffff', color: '#1e293b'}}>30D</option>
+                            <option value={90} style={{background: '#ffffff', color: '#1e293b'}}>90D</option>
                         </select>
                     </div>
                 </div>
@@ -99,7 +98,7 @@ const AgriAnalyticsPage = () => {
             {loading && (
                 <div style={{textAlign: 'center', padding: '6rem 0'}}>
                     <div className="spinner" style={{width: '30px', height: '30px', margin: '0 auto 1.5rem', borderWidth: '3px'}}></div>
-                    <p style={{opacity: 0.5}}><DynText text="Compiling Market Data" />...</p>
+                    <p style={{opacity: 0.5}}>Compiling Market Data...</p>
                 </div>
             )}
 
@@ -113,15 +112,15 @@ const AgriAnalyticsPage = () => {
                                 <TrendingUp className="agri-green" size={24} />
                             </div>
                             <div>
-                                <h3 style={{fontSize: '1.2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px'}}><DynText text="Asset Velocity" /></h3>
-                                <p style={{fontSize: '0.75rem', opacity: 0.4, margin: '2px 0 0', letterSpacing: '0.5px', fontWeight: 700}}><DynText text="TEMPORAL PRICE TELEMETRY" /></p>
+                                <h3 style={{fontSize: '1.2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px'}}>Asset Velocity</h3>
+                                <p style={{fontSize: '0.75rem', opacity: 0.4, margin: '2px 0 0', letterSpacing: '0.5px', fontWeight: 700}}>TEMPORAL PRICE TELEMETRY</p>
                             </div>
                         </div>
                         {seasonal && (
                             <div style={{textAlign: 'right'}}>
-                                <span style={{fontSize: '0.7rem', opacity: 0.4, fontWeight: 800, letterSpacing: '1px', display: 'block', marginBottom: '4px'}}><DynText text="CURRENT PHASE" /></span>
+                                <span style={{fontSize: '0.7rem', opacity: 0.4, fontWeight: 800, letterSpacing: '1px', display: 'block', marginBottom: '4px'}}>CURRENT PHASE</span>
                                 <span style={{fontSize: '0.85rem', color: 'var(--agri-green)', fontWeight: 900, background: 'rgba(16, 185, 129, 0.1)', padding: '0.4rem 1rem', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
-                                    <DynText text={seasonal.season.toUpperCase()} />
+                                    {seasonal.season.toUpperCase()}
                                 </span>
                             </div>
                         )}
@@ -178,24 +177,24 @@ const AgriAnalyticsPage = () => {
                             <BarChart3 className="agri-accent" size={24} />
                         </div>
                         <div>
-                            <h3 style={{fontSize: '1.2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px'}}><DynText text="Predictive Index" /></h3>
-                            <p style={{fontSize: '0.75rem', opacity: 0.4, margin: '2px 0 0', letterSpacing: '0.5px', fontWeight: 700}}><DynText text="MARKET EQUILIBRIUM" /></p>
+                            <h3 style={{fontSize: '1.2rem', fontWeight: 800, margin: 0, letterSpacing: '-0.5px'}}>Predictive Index</h3>
+                            <p style={{fontSize: '0.75rem', opacity: 0.4, margin: '2px 0 0', letterSpacing: '0.5px', fontWeight: 700}}>MARKET EQUILIBRIUM</p>
                         </div>
                     </div>
                     {(trends || []).length > 0 ? (
                         <div style={{display: 'flex', flexDirection: 'column', gap: '3rem', flex: 1}}>
                             <div style={{background: 'rgba(0,0,0,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(0,0,0,0.04)'}}>
-                                <h4 style={{opacity: 0.4, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem', fontWeight: 800}}><DynText text="Live Trading Price" /></h4>
+                                <h4 style={{opacity: 0.4, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1rem', fontWeight: 800}}>Live Trading Price</h4>
                                 <div style={{display: 'flex', alignItems: 'baseline', gap: '0.8rem'}}>
                                     <span style={{fontSize: 'clamp(2.5rem, 8vw, 4.5rem)', fontWeight: 900, letterSpacing: '-2px', color: 'inherit'}}>₹{trends[trends.length - 1]?.price}</span>
-                                    <span style={{fontSize: '1.2rem', opacity: 0.3, fontWeight: 700}}><DynText text="INR/Q" /></span>
+                                    <span style={{fontSize: '1.2rem', opacity: 0.3, fontWeight: 700}}>INR/Q</span>
                                 </div>
                             </div>
                             {(trends || []).length > 1 && (
                                 <div style={{padding: '1rem 0'}}>
                                     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                         <div>
-                                            <h4 style={{opacity: 0.4, fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px', marginBottom: '0.5rem'}}><DynText text="VOLATILITY SHIFT" /></h4>
+                                            <h4 style={{opacity: 0.4, fontSize: '0.75rem', fontWeight: 800, letterSpacing: '1px', marginBottom: '0.5rem'}}>VOLATILITY SHIFT</h4>
                                             <div style={{
                                                 fontSize: '2.4rem', 
                                                 fontWeight: 900, 
@@ -221,7 +220,7 @@ const AgriAnalyticsPage = () => {
                         </div>
                     ) : (
                         <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.2}}>
-                            <p><DynText text="Awaiting Price Stream" />...</p>
+                            <p>Awaiting Price Stream...</p>
                         </div>
                     )}
                 </div>
@@ -233,20 +232,20 @@ const AgriAnalyticsPage = () => {
                         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
                             <h4 style={{fontSize: '1.2rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '1rem'}}>
                                 <div style={{width: '12px', height: '12px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 15px #10b981'}}></div>
-                                <DynText text="AI Strategic Outlook" />
+                                AI Strategic Outlook
                             </h4>
                             <span style={{fontSize: '0.85rem', fontWeight: 900, color: aiAnalysis.outlook.includes('Bullish') ? '#10b981' : '#ef4444', letterSpacing: '1px', background: 'rgba(0,0,0,0.2)', padding: '0.4rem 1rem', borderRadius: '8px'}}>
-                                <DynText text={aiAnalysis.outlook.toUpperCase()} />
+                                {aiAnalysis.outlook.toUpperCase()}
                             </span>
                         </div>
-                        <p style={{fontSize: '1.05rem', lineHeight: 1.8, opacity: 0.8, fontWeight: 500}}><DynText text={aiAnalysis.ai_recommendation} /></p>
+                        <p style={{fontSize: '1.05rem', lineHeight: 1.8, opacity: 0.8, fontWeight: 500}}>{aiAnalysis.ai_recommendation}</p>
                     </div>
                 )}
 
                 {seasonal && (
                     <div className="agri-card" style={{padding: '2.5rem', background: 'rgba(245, 158, 11, 0.03)', borderLeft: '6px solid var(--agri-accent)', borderRadius: '32px'}}>
                         <h4 style={{fontSize: '1.2rem', fontWeight: 900, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem'}}>
-                            <Calendar className="agri-accent" size={24} /> <DynText text="Seasonal Pivot Strategy" />
+                            <Calendar className="agri-accent" size={24} /> Seasonal Pivot Strategy
                         </h4>
                         <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.8rem'}}>
                             {(seasonal?.crops || []).map(crop => (
@@ -260,7 +259,7 @@ const AgriAnalyticsPage = () => {
                                     fontWeight: 900,
                                     letterSpacing: '0.5px'
                                 }}>
-                                    <DynText text={crop.toUpperCase()} />
+                                    {crop.toUpperCase()}
                                 </div>
                             ))}
                         </div>

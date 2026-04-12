@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import api from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import useToastStore from "@core/hooks/useToast";
-import DynText from "@core/i18n/DynText";
 
 // ✅ Dynamically load Razorpay SDK
 const loadRazorpaySDK = () =>
@@ -67,14 +66,14 @@ export default function PaymentPage() {
 
       const rzpOrder = rzpRes;
       if (!rzpOrder?.id) {
-        addToast(<DynText text="Failed to create payment order. Try again." />, "error");
+        addToast("Failed to create payment order. Try again.", "error");
         return;
       }
 
       // ✅ STEP 2: Ensure SDK is loaded
       const sdkLoaded = await loadRazorpaySDK();
       if (!sdkLoaded || !window.Razorpay) {
-        addToast(<DynText text="Payment SDK failed to load. Please refresh." />, "error");
+        addToast("Payment SDK failed to load. Please refresh.", "error");
         return;
       }
 
@@ -104,18 +103,18 @@ export default function PaymentPage() {
               amount: amountToPay,
             });
 
-            addToast(<DynText text="Payment successful! 🎉" />, "success");
+            addToast("Payment successful! 🎉", "success");
             const targetPath = user?.role === "ADMIN" ? "/admin/orders" : "/orders";
             navigate(targetPath);
           } catch (err) {
             console.error("VERIFY ERROR:", err);
-            addToast(<DynText text="Payment verification failed. Contact support." />, "error");
+            addToast("Payment verification failed. Contact support.", "error");
           }
         },
 
         modal: {
           ondismiss: () => {
-            addToast(<DynText text="Payment cancelled. You can pay later from Orders." />, "info");
+            addToast("Payment cancelled. You can pay later from Orders.", "info");
             setPaying(false);
           },
         },
@@ -123,14 +122,14 @@ export default function PaymentPage() {
 
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", () => {
-        addToast(<DynText text="Payment failed. Please try again." />, "error");
+        addToast("Payment failed. Please try again.", "error");
         setPaying(false);
       });
       rzp.open();
 
     } catch (err) {
       console.error("PAYMENT ERROR:", err);
-      addToast(<DynText text={err.response?.data?.message || err.message || "Payment failed"} />, "error");
+      addToast(err.response?.data?.message || err.message || "Payment failed", "error");
     } finally {
       setPaying(false);
     }
@@ -150,9 +149,9 @@ export default function PaymentPage() {
     <div className="container" style={{ padding: "60px 20px", maxWidth: 480, margin: "0 auto" }}>
       <div className="card" style={{ padding: 36, textAlign: "center" }}>
         <div style={{ fontSize: 56, marginBottom: 16 }}>💳</div>
-        <h1 style={{ fontSize: 24, marginBottom: 8 }}><DynText text="Complete Payment" /></h1>
+        <h1 style={{ fontSize: 24, marginBottom: 8 }}>Complete Payment</h1>
         <p style={{ color: "var(--text-muted)", marginBottom: 32 }}>
-          <DynText text="Order #" />{orderId}
+          Order #{orderId}
         </p>
 
         <div style={{
@@ -162,18 +161,18 @@ export default function PaymentPage() {
           marginBottom: 28,
         }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ color: "var(--text-muted)" }}><DynText text="Order Total" /></span>
+            <span style={{ color: "var(--text-muted)" }}>Order Total</span>
             <span>₹{Number(order?.final_amount || 0).toFixed(2)}</span>
           </div>
           {Number(order?.paid_amount) > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-              <span style={{ color: "var(--text-muted)" }}><DynText text="Already Paid" /></span>
+              <span style={{ color: "var(--text-muted)" }}>Already Paid</span>
               <span style={{ color: "var(--success)" }}>−₹{Number(order.paid_amount).toFixed(2)}</span>
             </div>
           )}
           <hr className="divider" style={{ margin: "12px 0" }} />
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontWeight: 700 }}><DynText text="Amount Due" /></span>
+            <span style={{ fontWeight: 700 }}>Amount Due</span>
             <span style={{ fontWeight: 700, fontSize: 22, color: "var(--primary-dark)" }}>
               ₹{amountDue.toFixed(2)}
             </span>
@@ -185,7 +184,7 @@ export default function PaymentPage() {
           onClick={handlePayment}
           disabled={paying || amountDue <= 0}
         >
-          {paying ? <DynText text="Processing..." /> : <><DynText text="Pay ₹" />{amountDue.toFixed(2)}</>}
+          {paying ? "Processing..." : <>Pay ₹{amountDue.toFixed(2)}</>}
         </button>
 
         <button
@@ -196,7 +195,7 @@ export default function PaymentPage() {
             navigate(targetPath);
           }}
         >
-          <DynText text="Pay Later" />
+          Pay Later
         </button>
 
         <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 20 }}>

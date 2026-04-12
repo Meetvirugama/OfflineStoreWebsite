@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
 import AgroLoader from "@core/components/AgroLoader";
-import DynText from '@core/i18n/DynText';
 import "@/styles/ProductsPage.css";
 
 export default function ProductsPage() {
@@ -39,8 +38,6 @@ export default function ProductsPage() {
     return list;
   }, [products, sort]);
 
-
-
   return (
     <div className="products-page">
       <div className="container">
@@ -49,17 +46,17 @@ export default function ProductsPage() {
           <div>
             <h1 className="products-page__title">
               {querySearch
-                ? <><DynText text="Results for" /> "{querySearch}"</>
+                ? <>Results for "{querySearch}"</>
                 : queryCategory !== "All"
-                ? <DynText text={queryCategory} />
-                : <DynText text="All Products" />}
+                ? queryCategory
+                : "All Products"}
             </h1>
             <p className="products-page__count">
-              {loading ? <DynText text="Discovering the best for you..." /> : <>{sortedProducts.length} <DynText text="products found" /></>}
+              {loading ? "Discovering the best for you..." : <>{sortedProducts.length} products found</>}
             </p>
           </div>
           <div className="products-page__sort">
-            <label htmlFor="sort-select" className="form-label"><DynText text="Sort by" />:</label>
+            <label htmlFor="sort-select" className="form-label">Sort by:</label>
             <select
               id="sort-select"
               className="form-input"
@@ -67,10 +64,10 @@ export default function ProductsPage() {
               onChange={(e) => setSort(e.target.value)}
               style={{ width: "auto", padding: "8px 12px" }}
             >
-               <option value="default"><DynText text="Relevance" /></option>
-               <option value="price-asc"><DynText text="Price: Low to High" /></option>
-               <option value="price-desc"><DynText text="Price: High to Low" /></option>
-               <option value="name"><DynText text="Name A–Z" /></option>
+               <option value="default">Relevance</option>
+               <option value="price-asc">Price: Low to High</option>
+               <option value="price-desc">Price: High to Low</option>
+               <option value="name">Name A–Z</option>
             </select>
           </div>
         </div>
@@ -85,8 +82,8 @@ export default function ProductsPage() {
             ) : sortedProducts.length === 0 ? (
               <div className="empty-state">
                 <div className="empty-state-icon">🔍</div>
-                <h3><DynText text="No products found" /></h3>
-                <p><DynText text="Try a different category or search term." /></p>
+                <h3>No products found</h3>
+                <p>Try a different category or search term.</p>
               </div>
             ) : (
               <div className="grid-products">
