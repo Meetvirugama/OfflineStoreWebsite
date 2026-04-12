@@ -18,7 +18,7 @@ import FarmerProfit from "./profit/profit.model.js";
 import MandiPrice, { MandiCache, PriceCache } from "./mandi/mandi.model.js";
 import PriceAlert from "./alert/alert.model.js";
 import News from "./news/news.model.js";
-import Translation from "./translation/translation.model.js";
+
 
 /**
  * DEFINE ASSOCIATIONS
@@ -92,6 +92,5 @@ export {
     User, Customer, Product, Inventory, Supplier,
     Cart, CartItem, Order, OrderItem, Payment, Ledger,
     Notification, SavedCrop, PestDetection, WeatherCache,
-    FarmerProfit, MandiPrice, PriceAlert, News, Advisory,
-    Translation
+    FarmerProfit, MandiPrice, PriceAlert, News, Advisory
 };
