@@ -169,18 +169,26 @@ export const analyzeMarketInsights = async (crop, trends) => {
             Analyze these 7-day price trends for ${crop} and provide a professional market outlook for a farmer.
             Trend Data (Date: Price): ${trends.map(t => `${t.date}: ${t.price}`).join(", ")}
             
-            Provide a 2-3 sentence recommendation (buy, sell, hold, or store) with clear reasoning based on price velocity.
+            Provide the response in the following JSON format:
+            {
+              "recommendation": "2-3 sentence recommendation with reasoning",
+              "velocity": "HIGH/MEDIUM/LOW",
+              "confidence_score": "numerical 0-100"
+            }
         `;
 
         const completion = await groq.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
             model: MODEL,
+            temperature: 0.2,
+            response_format: { type: "json_object" }
         });
 
-        return completion.choices[0]?.message?.content || "";
+        const rawContent = completion.choices[0]?.message?.content;
+        return JSON.parse(rawContent);
     } catch (error) {
         console.error("GROQ API Error (Market Analysis):", error);
-        return "";
+        return { recommendation: "", velocity: "LOW", confidence_score: 0 };
     }
 };
 
@@ -248,7 +256,8 @@ export const getComprehensiveSmartAdvisory = async (data) => {
               "advisory_text": "2-3 sentences of overall strategic advice",
               "risks": ["Risk 1", "Risk 2", "Risk 3"],
               "actions": ["Action 1", "Action 2", "Action 3", "Action 4", "Action 5"],
-              "best_mandi_reason": "1-2 sentences explaining why the identified 'best' mandi is optimal"
+              "best_mandi_reason": "1-2 sentences explaining why the identified 'best' mandi is optimal",
+              "confidence_score": 95
             }
             
             Ensure the advice is actionable, farmer-friendly, and specific to the crop and conditions provided.

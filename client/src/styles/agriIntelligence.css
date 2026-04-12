@@ -7,9 +7,35 @@
   --agri-green-light: #10b981;
   --agri-dark: #064e3b;
   --agri-accent: #d97706;
-  --glass-bg: #ffffff;
-  --glass-border: rgba(0, 0, 0, 0.06);
-  --glass-glow: 0 4px 20px 0 rgba(0, 0, 0, 0.05);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-glow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --premium-shadow: 0 20px 50px rgba(0, 0, 0, 0.04);
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-glow);
+}
+
+.premium-panel {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--premium-shadow);
+}
+
+@keyframes sensor-pulse {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+
+.pulse-green {
+  animation: sensor-pulse 2s infinite ease-in-out;
+  color: var(--agri-green);
 }
 
 .agri-page {
@@ -27,14 +53,20 @@
 /* Intelligence-page agri-card (NOT product card) */
 .agri-page .agri-card,
 .intelligence-theme .agri-card {
-  background: var(--glass-bg);
+  background: #ffffff;
   border: 1px solid var(--glass-border);
-  border-radius: 1.5rem;
-  padding: 1.25rem;
+  border-radius: 2rem;
+  padding: 1.5rem;
   box-shadow: var(--glass-glow);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
   overflow: hidden;
+}
+
+.agri-card--dark {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .agri-page .agri-card:hover,

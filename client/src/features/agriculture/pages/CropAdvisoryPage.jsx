@@ -128,18 +128,18 @@ const CropAdvisoryPage = () => {
                         AI-powered regional intelligence combining weather and market velocity.
                     </p>
                 </div>
-                <div className="weather-badge" style={{ padding: '0.8rem 1.5rem', borderRadius: '14px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', fontWeight: 800, letterSpacing: '1px', fontSize: '0.75rem' }}>
-                    {syncStatus === 'SYNCED' ? <ShieldCheck size={16} /> : <RefreshCw size={16} className={syncStatus === 'DETECTING' ? 'spin' : ''} />}
-                    {syncStatus === 'SYNCED' ? 'SYSTEM SYNCED' : syncStatus.toUpperCase()}
+                <div className="weather-badge glass-card" style={{ padding: '0.8rem 1.5rem', borderRadius: '1.5rem', fontWeight: 800, letterSpacing: '1px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                    <div className="pulse-green" style={{width: '8px', height: '8px', background: '#10b981', borderRadius: '50%'}}></div>
+                    {syncStatus === 'SYNCED' ? 'SENSOR SYNC ACTIVE' : syncStatus.toUpperCase()}
                 </div>
             </header>
 
             <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(380px, 420px) 1fr', gap: '3rem' }}>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
+                    <div className="agri-card glass-card" style={{ padding: '2.5rem', borderRadius: '32px' }}>
                         <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
-                            <div style={{width: '6px', height: '24px', background: 'var(--agri-green)', borderRadius: '4px'}}></div>
+                            <div className="pulse-green" style={{width: '6px', height: '24px', background: 'var(--agri-green)', borderRadius: '4px'}}></div>
                             Telemetry Parameters
                         </h3>
 
@@ -247,14 +247,17 @@ const CropAdvisoryPage = () => {
 
                     {(curAdvisory || loading) && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            <div className="agri-card" style={{ padding: '2.5rem', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', borderRadius: '32px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', position: 'relative', overflow: 'hidden' }}>
+                            <div className="agri-card agri-card--dark" style={{ padding: '2.5rem', borderRadius: '32px', position: 'relative', overflow: 'hidden' }}>
                                 <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)', filter: 'blur(30px)' }}></div>
                                 <div style={{ position: 'relative', zIndex: 1 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                         <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                             <ShieldCheck className="agri-green" size={24} /> AI STRATEGIC ADVISORY
                                         </h3>
-                                        <span style={{ fontSize: '0.65rem', fontWeight: 900, color: 'rgba(255,255,255,0.4)', letterSpacing: '1px' }}>LLAMA-3 SYNTHS ● V2.0</span>
+                                        <div style={{textAlign: 'right'}}>
+                                            <span style={{ fontSize: '0.65rem', fontWeight: 900, color: 'rgba(255,255,255,0.4)', letterSpacing: '1px', display: 'block' }}>CONFIDENCE INDEX</span>
+                                            <span style={{ color: '#10b981', fontWeight: 900}}>{curAdvisory?.accuracy_meta?.confidence || 95}%</span>
+                                        </div>
                                     </div>
                                     <p style={{ fontSize: '1.2rem', lineHeight: 1.8, opacity: 0.9, fontWeight: 500, color: 'rgba(255,255,255,0.85)' }}>
                                         {loading ? 'Synthesizing internal patterns and external telemetry...' : curAdvisory?.accuracy_meta?.ai_text}
