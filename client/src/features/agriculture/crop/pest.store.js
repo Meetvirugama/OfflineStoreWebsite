@@ -4,20 +4,19 @@ import apiClient from "@core/api/client";
 const usePestStore = create((set, get) => ({
     history: [],
     loading: false,
-    currentDetection: null,
+    error: null,
 
     detectPest: async (formData) => {
-        set({ loading: true });
+        set({ loading: true, error: null });
         try {
             const res = await apiClient.post("/pest/detect", formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
-            // res is already flattened by interceptor
             set({ currentDetection: res || null, loading: false });
             get().fetchHistory();
             return res;
         } catch (err) {
-            set({ loading: false });
+            set({ loading: false, error: err.message });
             throw err;
         }
     },
@@ -26,7 +25,9 @@ const usePestStore = create((set, get) => ({
         try {
             const res = await apiClient.get("/pest/history");
             set({ history: Array.isArray(res) ? res : [] });
-        } catch {}
+        } catch (err) {
+            console.error("History fetch failed", err);
+        }
     }
 }));
 

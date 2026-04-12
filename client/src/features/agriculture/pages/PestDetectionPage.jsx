@@ -46,7 +46,7 @@ const PestDetectionPage = () => {
         if (!file) return;
 
         const formData = new FormData();
-        formData.append('images', file);
+        formData.append('image', file);
         formData.append('crop', selectedCrop);
 
         try {
