@@ -77,7 +77,7 @@ export const translateText = async (text, targetLang = 'en') => {
             target: 'gu',
             format: 'text'
         }, { 
-            timeout: 1000, // Very tight fallback timeout
+            timeout: 3000, // Increased for high-volume news reliability
             headers: { 'Content-Type': 'application/json' }
         });
 
@@ -87,7 +87,10 @@ export const translateText = async (text, targetLang = 'en') => {
             return mlTranslated;
         }
     } catch (error) {
-        console.warn(`[ML TRANSLATE] LibreTranslate failed for: "${text.substring(0, 15)}". Error: ${error.message}`);
+        // Log sparingly for fallback failures
+        if (text.length > 3) {
+            console.warn(`[ML FALLBACK] Engine busy for: "${text.substring(0, 10)}..."`);
+        }
     }
 
     // 5. Final Fail-Safe: Return original English

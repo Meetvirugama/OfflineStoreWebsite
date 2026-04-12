@@ -45,7 +45,15 @@ const processValue = async (value, key, targetLang, depth = 0, visited = new Wea
     // 4. Handle Arrays (e.g., News feeds)
     if (Array.isArray(normalizedValue)) {
         const limitedArray = normalizedValue.slice(0, 30); // Leaner limit for news stability
-        return await Promise.all(limitedArray.map(item => processValue(item, key, targetLang, depth + 1, visited)));
+        
+        // 🚀 SMART THROTTLING (Sequential Processing)
+        // Instead of processing 40+ items all at once (which triggers Rate Limits),
+        // we process them one-by-one to ensure high success rate.
+        const processedArray = [];
+        for (const item of limitedArray) {
+            processedArray.push(await processValue(item, key, targetLang, depth + 1, visited));
+        }
+        return processedArray;
     }
 
     // 5. Handle Objects
