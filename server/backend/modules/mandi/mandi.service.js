@@ -6,45 +6,120 @@ import { ENV } from "../../config/env.js";
 import { getDistance } from "./mandi.utils.js";
 
 import * as weatherService from "../weather/weather.service.js";
+import Apmc from "./apmc.model.js";
 
 /**
- * Robust date parser for Agmarknet (DD/MM/YYYY)
+ * HELPER: Enrich a list of mandis with latest price data from multiple cache layers
  */
-const parseDataGovDate = (dateStr) => {
-    if (!dateStr) return new Date();
-    const parts = dateStr.split("/");
-    if (parts.length === 3) {
-        return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+const enrichWithPrices = async (results) => {
+    try {
+        return await Promise.all(results.map(async (m) => {
+            const matchName = m.name;
+            
+            // Layer 1: Price Cache (Daily Updates)
+            const cachedPrice = await PriceCache.findOne({
+                where: { mandi_name: { [Op.iLike]: `%${matchName}%` } },
+                order: [['date', 'DESC']]
+            });
+
+            if (cachedPrice) {
+                return { ...m, top_crop: cachedPrice.commodity, modal_price: cachedPrice.modal_price };
+            }
+
+            // Layer 2: Legacy Price History (Agmarknet Core)
+            const legacyPrice = await MandiPrice.findOne({
+                where: { market: { [Op.iLike]: `%${matchName}%` } },
+                order: [['arrival_date', 'DESC']]
+            });
+
+            return { 
+                ...m, 
+                top_crop: legacyPrice?.commodity || "General Supply", 
+                modal_price: legacyPrice?.modal_price || 0 
+            };
+        }));
+    } catch (err) {
+        console.error("Enrichment Error:", err);
+        return results;
     }
-    return new Date(dateStr);
 };
 
 /**
- * Discovery: Fetch nearby Mandis using Overpass API (OpenStreetMap)
- * Plus caching and Administrative District Fallback
+ * PRODUCTION-GRADE DISCOVERY: DB-First Proximity Search
  */
-export const getNearbyMandis = async (lat, lon, radius = 50000) => {
+export const getNearbyApmcs = async (lat, lon, radiusKm = 50) => {
     const userLat = parseFloat(lat);
     const userLon = parseFloat(lon);
     
-    // List of reliable Overpass Mirrors for redundancy
+    // EDGE CASE: Handle NaN or Invalid Inputs
+    if (isNaN(userLat) || isNaN(userLon)) {
+        return [];
+    }
+
+    // 1. Calculate Bounding Box Ranges
+    // ~111km per degree latitude
+    const latDelta = radiusKm / 111.0;
+    
+    // EDGE CASE: Handle Polar coordinates (Math.cos(90) -> 0)
+    // Avoid division by zero. We use a floor of 0.0001 for cosine.
+    const cosLat = Math.max(0.0001, Math.cos(userLat * Math.PI / 180));
+    const lonDelta = radiusKm / (111.0 * cosLat);
+
+    // 2. Query DB: Primary Bounding Box Filter (Fastest)
+    const candidates = await Apmc.findAll({
+        where: {
+            lat: { [Op.between]: [userLat - latDelta, userLat + latDelta] },
+            lng: { [Op.between]: [userLon - lonDelta, userLon + lonDelta] }
+        }
+    });
+
+    // 3. Precision Filter: Haversine Calculation
+    const results = candidates.map(apmc => {
+        const dist = getDistance(userLat, userLon, parseFloat(apmc.lat), parseFloat(apmc.lng));
+        return {
+            id: apmc.id,
+            name: apmc.name,
+            district: apmc.district,
+            lat: parseFloat(apmc.lat),
+            lng: parseFloat(apmc.lng),
+            distance: dist.toFixed(2),
+            is_official: true
+        };
+    })
+    .filter(apmc => parseFloat(apmc.distance) <= radiusKm)
+    .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+
+    return results;
+};
+
+/**
+ * Discovery: Fetch nearby Mandis (Hybrid Logic)
+ */
+export const getNearbyMandis = async (lat, lon, radius = 50000) => {
+    // 1. High-Performance DB Discovery (Primary)
+    const dbResults = await getNearbyApmcs(lat, lon, radius / 1000);
+    
+    // If we have a healthy set of local APMCs, avoid external API overhead
+    if (dbResults.length >= 3) {
+        return await enrichWithPrices(dbResults);
+    }
+
+    // 2. Fallback: Geospatial Discovery (OSM Discovery Mode)
+    const userLat = parseFloat(lat);
+    const userLon = parseFloat(lon);
     const discoveryMirrors = [
-        "https://overpass.kumi.systems/api/interpreter",
         "https://overpass.osm.ch/api/interpreter",
-        ENV.OVERPASS_API_URL || "https://overpass-api.de/api/interpreter",
-        "https://z.overpass-api.de/api/interpreter"
+        "https://overpass.kumi.systems/api/interpreter",
+        "https://overpass-api.de/api/interpreter"
     ];
 
     let elements = [];
-    let discoveryAttemptSucceeded = false;
-
-    // Helper for retry logic
     const fetchWithRetry = async (url, query, retries = 1) => {
         for (let i = 0; i <= retries; i++) {
             try {
                 const response = await axios.post(url, query, { 
                     headers: { 'Content-Type': 'text/plain' },
-                    timeout: 25000 
+                    timeout: 20000 
                 });
                 return response;
             } catch (err) {
@@ -57,152 +132,39 @@ export const getNearbyMandis = async (lat, lon, radius = 50000) => {
         }
     };
 
-    // 1. Discovery Phase: Try mirrors sequentially
     for (const url of discoveryMirrors) {
         try {
-            // Expanded query: nodes, ways, and relations for market and APMC
-            const query = `[out:json][timeout:20];
+            const query = `[out:json][timeout:15];
                 (
                   node["amenity"="marketplace"](around:${radius},${userLat},${userLon});
                   way["amenity"="marketplace"](around:${radius},${userLat},${userLon});
-                  rel["amenity"="marketplace"](around:${radius},${userLat},${userLon});
                   node["name"~"mandi|apmc",i](around:${radius},${userLat},${userLon});
-                  way["name"~"mandi|apmc",i](around:${radius},${userLat},${userLon});
                 );
                 out center;`;
-            
             const response = await fetchWithRetry(url, query);
             if (response.data?.elements) {
                 elements = response.data.elements;
-                discoveryAttemptSucceeded = true;
                 break;
             }
-        } catch (err) {
-            continue; 
-        }
+        } catch (err) { continue; }
     }
 
-    const results = [];
-    const cacheEntries = [];
+    const results = [...dbResults]; // Start with what we found in DB
+    const processedNames = new Set(dbResults.map(r => r.name.toLowerCase()));
 
-    // Process Overpass elements
     for (const el of elements) {
         const name = el.tags?.name || "Market Node";
+        if (processedNames.has(name.toLowerCase())) continue;
+
         const mLat = el.lat || el.center?.lat;
         const mLon = el.lon || el.center?.lon;
         if (!mLat || !mLon) continue;
         
         const dist = getDistance(userLat, userLon, mLat, mLon);
         results.push({ name, lat: mLat, lng: mLon, distance: dist.toFixed(2), id: el.id });
-        cacheEntries.push({ name, lat: mLat, lng: mLon, last_updated: new Date() });
     }
 
-    // 2. District Fallback Phase (NEW)
-    // If discovery is zero/low, or always as a supplement for official APMCs
-    if (results.length < 5) {
-        try {
-            const geocode = await weatherService.reverseGeocode(userLat, userLon);
-            if (geocode && geocode.district) {
-                const district = geocode.district.replace("District", "").trim();
-                console.log(`🔍 Seeking Official APMCs for District: ${district}`);
-                
-                const officialMarkets = await MandiPrice.findAll({
-                    attributes: [[sequelize.fn('DISTINCT', sequelize.col('market')), 'market']],
-                    where: { 
-                        district: { [Op.iLike]: `%${district}%` },
-                        state: "Gujarat" // Defaulting focus to the known high-data region
-                    },
-                    limit: 10
-                });
-
-                for (const m of officialMarkets) {
-                    const marketName = m.get('market');
-                    // Avoid duplicates
-                    if (results.some(r => r.name.toLowerCase().includes(marketName.toLowerCase()))) continue;
-
-                    // Interpolate coordinates via Cache or Nominatim Search
-                    let coords = await MandiCache.findOne({ where: { name: { [Op.iLike]: `%${marketName}%` } } });
-                    
-                    if (!coords) {
-                        try {
-                            const search = await searchMandis(marketName);
-                            if (search.length > 0) {
-                                coords = { lat: search[0].lat, lng: search[0].lng };
-                            }
-                        } catch (sErr) {}
-                    }
-
-                    if (coords) {
-                        const dist = getDistance(userLat, userLon, coords.lat, coords.lng);
-                        results.push({
-                            name: marketName, // Keep original name for price matching
-                            display_name: `${marketName} (Official APMC)`,
-                            lat: coords.lat,
-                            lng: coords.lng,
-                            distance: dist.toFixed(2),
-                            is_official: true
-                        });
-                    }
-                }
-            }
-        } catch (err) {
-            console.error("District Discovery Error:", err.message);
-        }
-    }
-
-    // Async Cache Update
-    if (cacheEntries.length > 0) {
-        MandiCache.bulkCreate(cacheEntries, { ignoreDuplicates: true }).catch(() => {});
-    }
-
-    // Fallback to local bounding box if still nothing
-    if (results.length === 0) {
-        const latDelta = radius / 111000;
-        const lonDelta = radius / (111000 * Math.cos(userLat * Math.PI / 180));
-        const cachedMandis = await MandiCache.findAll({
-            where: {
-                lat: { [Op.between]: [userLat - latDelta, userLat + latDelta] },
-                lng: { [Op.between]: [userLon - lonDelta, userLon + lonDelta] }
-            },
-            limit: 10
-        });
-        cachedMandis.forEach(m => {
-            const dist = getDistance(userLat, userLon, m.lat, m.lng);
-            results.push({ name: m.name, lat: m.lat, lng: m.lng, distance: dist.toFixed(2) });
-        });
-    }
-
-    // 3. Pricing Phase: Merge with latest prices (Legacy or Cache)
-    try {
-        const enrichedResults = await Promise.all(results.map(async (m) => {
-            const matchName = m.name; // Use original name for matching
-            
-            const cachedPrice = await PriceCache.findOne({
-                where: { mandi_name: { [Op.iLike]: `%${matchName}%` } },
-                order: [['date', 'DESC']]
-            });
-
-            if (cachedPrice) {
-                return { ...m, top_crop: cachedPrice.commodity, modal_price: cachedPrice.modal_price };
-            }
-
-            const legacyPrice = await MandiPrice.findOne({
-                where: { market: { [Op.iLike]: `%${matchName}%` } },
-                order: [['arrival_date', 'DESC']]
-            });
-
-            return { 
-                ...m, 
-                top_crop: legacyPrice?.commodity || "General Supply", 
-                modal_price: legacyPrice?.modal_price || 0 
-            };
-        }));
-
-        return enrichedResults.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-    } catch (err) {
-        console.error("Enrichment Error:", err);
-        return results.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
-    }
+    return await enrichWithPrices(results.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance)));
 };
 
 /**
