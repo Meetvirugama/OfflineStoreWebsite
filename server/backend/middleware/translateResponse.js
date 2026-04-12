@@ -6,7 +6,10 @@ const EXCLUDED_KEYS = new Set([
     'price', 'amount', 'total', 'subtotal', 'discount',
     'email', 'mobile', 'phone', 'contact',
     'created_at', 'updated_at', 'date', 'timestamp',
-    'invoice_number', 'sku', 'status' // status is often a technical enum
+    'invoice_number', 'sku', 'status', 'unit',
+    'commodity', 'market', 'crop', 'apmc', 'district', 'state', // Agri Logic
+    'category', 'location', 'lat', 'lng', // Technical Locality
+    'icon', 'color', 'image', 'url', 'link' // UI Technicals
 ]);
 
 /**

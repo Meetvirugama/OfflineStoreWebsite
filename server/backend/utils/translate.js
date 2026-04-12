@@ -89,6 +89,10 @@ export const translateText = async (text, targetLang = 'en') => {
     }
 
     // 5. Final Fail-Safe: Return original English
+    // We log once to track if systems are completely down
+    if (text.length > 5) {
+        console.warn(`[TRANSLATE SYSTEM] Total failure for: "${text.substring(0, 20)}...". Returning original.`);
+    }
     return text;
 };
 
