@@ -19,7 +19,7 @@ const WeatherDashboard = () => {
         currentWeather, todayTimeline, extendedForecast, 
         alerts, indices, loading, initialize, 
         searchLocations, setSelectedLocation,
-        selectedLocation
+        selectedLocation, strategic_outlook
     } = useWeatherStore();
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -194,14 +194,16 @@ const WeatherDashboard = () => {
                             <span style={{fontSize: 'clamp(4rem, 12vw, 9rem)', fontWeight: 900, letterSpacing: '-3px', color: 'inherit', lineHeight: 1}}>{Math.round(currentWeather?.main?.temp || 0)}°</span>
                             <div style={{flex: 1, minWidth: '120px'}}>
                                 <h2 style={{fontSize: 'clamp(1.2rem, 4vw, 2.2rem)', fontWeight: 900, margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--agri-green)'}}>{currentWeather?.weather?.[0]?.main}</h2>
-                                <p style={{fontSize: 'clamp(0.75rem, 2vw, 0.9rem)', color: '#64748b', margin: '0.5rem 0 0', fontWeight: 600}}>Clear skies with optimal humidity levels for harvest.</p>
+                                <p style={{fontSize: 'clamp(0.75rem, 2vw, 0.9rem)', color: '#64748b', margin: '0.5rem 0 0', fontWeight: 600, textTransform: 'capitalize'}}>
+                                    {currentWeather?.weather?.[0]?.description || 'Optimized atmospheric conditions analyzed for your region.'}
+                                </p>
                             </div>
                         </div>
                         {/* Stats Row */}
                         <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'clamp(0.8rem, 3vw, 4rem)', marginTop: '1rem', color: 'inherit'}}>
                             <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>HUMIDITY</p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>{currentWeather?.main?.humidity}%</p></div>
                             <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>FEELS LIKE</p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>{Math.round(currentWeather?.main?.feels_like || 0)}°</p></div>
-                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>PRECIPITATION</p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>0%</p></div>
+                            <div><p style={{fontSize: '0.7rem', color: '#64748b', fontWeight: 800, margin: 0, letterSpacing: '0.1em'}}>PRECIPITATION</p><p style={{fontSize: 'clamp(1.2rem, 4vw, 1.8rem)', fontWeight: 900, margin: 0}}>{Math.round((todayTimeline[0]?.pop || 0) * 100)}%</p></div>
                         </div>
                     </div>
                     <div style={{width: 'clamp(100px, 25vw, 240px)', height: 'clamp(100px, 25vw, 240px)', background: '#f8fafc', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 20px rgba(0,0,0,0.02)', margin: '1.5rem auto 0'}}>
@@ -314,6 +316,30 @@ const WeatherDashboard = () => {
                 </div>
             </div>
 
+            {/* AI Strategic Outlook */}
+            {strategic_outlook && (
+                <div style={{background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', padding: 'clamp(1.2rem, 4vw, 2.5rem)', borderRadius: '24px', color: '#fff', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.15)', marginTop: '2rem'}}>
+                    <div style={{position: 'absolute', top: '-20%', right: '-10%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)', filter: 'blur(40px)'}}></div>
+                    <div style={{position: 'relative', zIndex: 1}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem'}}>
+                            <div style={{width: '32px', height: '32px', borderRadius: '10px', background: 'var(--agri-green)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <Zap size={18} color="#fff" />
+                            </div>
+                            <h4 style={{margin: 0, fontSize: '1rem', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.9)'}}>Expert AI Strategic Outlook</h4>
+                        </div>
+                        <p style={{fontSize: 'clamp(1rem, 3vw, 1.25rem)', lineHeight: 1.6, fontWeight: 500, margin: 0, color: 'rgba(255,255,255,0.85)', letterSpacing: '0.2px'}}>
+                            {strategic_outlook}
+                        </p>
+                        <div style={{marginTop: '2rem', display: 'flex', gap: '1rem', alignItems: 'center'}}>
+                            <div style={{padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 700, border: '1px solid rgba(255,255,255,0.1)'}}>
+                                LLAMA-3 ANALYSIS
+                            </div>
+                            <div style={{width: '6px', height: '6px', borderRadius: '50%', background: 'var(--agri-green)'}}></div>
+                            <span style={{fontSize: '0.7rem', fontWeight: 700, color: 'rgba(255,255,255,0.4)'}}>REAL-TIME SYNTHESIS</span>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

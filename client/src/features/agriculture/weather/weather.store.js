@@ -7,6 +7,7 @@ const useWeatherStore = create((set, get) => ({
     extendedForecast: [],
     alerts: [],
     indices: null,
+    strategic_outlook: "",
     loading: false,
     error: null,
     selectedLocation: (() => {
@@ -61,6 +62,7 @@ const useWeatherStore = create((set, get) => ({
                 extendedForecast: data.extendedForecast || [],
                 alerts: data.alerts || [],
                 indices: data.indices || null,
+                strategic_outlook: data.strategic_outlook || "",
                 loading: false 
             });
             

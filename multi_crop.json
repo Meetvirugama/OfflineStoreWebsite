@@ -1,0 +1,209 @@
+{
+  "success": true,
+  "message": "Multi-crop trends fetched successfully",
+  "data": [
+    {
+      "date": "2026-03-13",
+      "modal": 0,
+      "Cotton": 7141,
+      "Groundnut": 5633,
+      "Wheat": 2323
+    },
+    {
+      "date": "2026-03-14",
+      "modal": 0,
+      "Cotton": 7011,
+      "Groundnut": 5542,
+      "Wheat": 2241
+    },
+    {
+      "date": "2026-03-15",
+      "modal": 0,
+      "Cotton": 6948,
+      "Groundnut": 5441,
+      "Wheat": 2141
+    },
+    {
+      "date": "2026-03-16",
+      "modal": 0,
+      "Cotton": 6868,
+      "Groundnut": 5377,
+      "Wheat": 2103
+    },
+    {
+      "date": "2026-03-17",
+      "modal": 0,
+      "Cotton": 6834,
+      "Groundnut": 5347,
+      "Wheat": 2084
+    },
+    {
+      "date": "2026-03-18",
+      "modal": 0,
+      "Cotton": 6858,
+      "Groundnut": 5342,
+      "Wheat": 2078
+    },
+    {
+      "date": "2026-03-19",
+      "modal": 0,
+      "Cotton": 6937,
+      "Groundnut": 5442,
+      "Wheat": 2119
+    },
+    {
+      "date": "2026-03-20",
+      "modal": 0,
+      "Cotton": 7012,
+      "Groundnut": 5531,
+      "Wheat": 2233
+    },
+    {
+      "date": "2026-03-21",
+      "modal": 0,
+      "Cotton": 7112,
+      "Groundnut": 5639,
+      "Wheat": 2309
+    },
+    {
+      "date": "2026-03-22",
+      "modal": 0,
+      "Cotton": 7217,
+      "Groundnut": 5693,
+      "Wheat": 2393
+    },
+    {
+      "date": "2026-03-23",
+      "modal": 0,
+      "Cotton": 7238,
+      "Groundnut": 5754,
+      "Wheat": 2470
+    },
+    {
+      "date": "2026-03-24",
+      "modal": 0,
+      "Cotton": 7246,
+      "Groundnut": 5725,
+      "Wheat": 2425
+    },
+    {
+      "date": "2026-03-25",
+      "modal": 0,
+      "Cotton": 7172,
+      "Groundnut": 5677,
+      "Wheat": 2397
+    },
+    {
+      "date": "2026-03-26",
+      "modal": 0,
+      "Cotton": 7110,
+      "Groundnut": 5583,
+      "Wheat": 2297
+    },
+    {
+      "date": "2026-03-27",
+      "modal": 0,
+      "Cotton": 7008,
+      "Groundnut": 5520,
+      "Wheat": 2164
+    },
+    {
+      "date": "2026-03-28",
+      "modal": 0,
+      "Cotton": 6912,
+      "Groundnut": 5395,
+      "Wheat": 2104
+    },
+    {
+      "date": "2026-03-29",
+      "modal": 0,
+      "Cotton": 6882,
+      "Groundnut": 5351,
+      "Wheat": 2062
+    },
+    {
+      "date": "2026-03-30",
+      "modal": 0,
+      "Cotton": 6848,
+      "Groundnut": 5355,
+      "Wheat": 2076
+    },
+    {
+      "date": "2026-03-31",
+      "modal": 0,
+      "Cotton": 6921,
+      "Groundnut": 5412,
+      "Wheat": 2098
+    },
+    {
+      "date": "2026-04-01",
+      "modal": 0,
+      "Cotton": 6992,
+      "Groundnut": 5476,
+      "Wheat": 2177
+    },
+    {
+      "date": "2026-04-02",
+      "modal": 0,
+      "Cotton": 7044,
+      "Groundnut": 5553,
+      "Wheat": 2269
+    },
+    {
+      "date": "2026-04-03",
+      "modal": 0,
+      "Cotton": 7163,
+      "Groundnut": 5679,
+      "Wheat": 2346
+    },
+    {
+      "date": "2026-04-04",
+      "modal": 0,
+      "Cotton": 7224,
+      "Groundnut": 5733,
+      "Wheat": 2441
+    },
+    {
+      "date": "2026-04-05",
+      "modal": 0,
+      "Cotton": 7260,
+      "Groundnut": 5746,
+      "Wheat": 2443
+    },
+    {
+      "date": "2026-04-06",
+      "modal": 0,
+      "Cotton": 7238,
+      "Groundnut": 5733,
+      "Wheat": 2417
+    },
+    {
+      "date": "2026-04-07",
+      "modal": 0,
+      "Cotton": 7157,
+      "Groundnut": 5662,
+      "Wheat": 2348
+    },
+    {
+      "date": "2026-04-08",
+      "modal": 0,
+      "Cotton": 7043,
+      "Groundnut": 5546,
+      "Wheat": 2250
+    },
+    {
+      "date": "2026-04-09",
+      "modal": 0,
+      "Cotton": 7824,
+      "Groundnut": 6781,
+      "Wheat": 2430
+    },
+    {
+      "date": "2026-04-10",
+      "modal": 0,
+      "Cotton": 7655,
+      "Groundnut": 6758,
+      "Wheat": 2398
+    }
+  ]
+}
