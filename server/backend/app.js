@@ -120,7 +120,7 @@ app.use("/api/invoice", invoiceRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/ai", aiRoutes);
-app.use("/analytics", analyticsRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // --- END OF ROUTES ---
 
