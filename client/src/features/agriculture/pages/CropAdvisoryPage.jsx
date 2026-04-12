@@ -12,15 +12,16 @@ import MarketMapSection from '../components/advisory/MarketMapSection';
 import RiskAssessmentList from '../components/advisory/RiskAssessmentList';
 import ActivityPulse from '../components/advisory/ActivityPulse';
 
-import { CROP_CATALOG, CROP_STAGES } from '../constants/crops';
+import { getMergedCropCatalog, CROP_STAGES } from '../constants/crops';
+import apiClient from '@core/api/client';
 
-const CROPS = CROP_CATALOG;
 const STAGES = CROP_STAGES;
 
 const CropAdvisoryPage = () => {
     const { curAdvisory, history, loading, generateAdvisory, fetchHistory } = useAdvisoryStore();
     const { selectedLocation, initialize } = useWeatherStore();
     const [syncStatus, setSyncStatus] = useState('SYNCED');
+    const [crops, setCrops] = useState(getMergedCropCatalog());
     
     const [formData, setFormData] = useState({
         crop: "Wheat",
@@ -33,6 +34,16 @@ const CropAdvisoryPage = () => {
     const init = useCallback(async () => {
         await initialize?.();
         await fetchHistory();
+        
+        // Fetch Dynamic Crops
+        try {
+            const discovered = await apiClient.get('/mandi/crops');
+            if (discovered && Array.isArray(discovered)) {
+                setCrops(getMergedCropCatalog(discovered));
+            }
+        } catch (err) {
+            console.error("Crop discovery failed:", err);
+        }
     }, [initialize, fetchHistory]);
 
     useEffect(() => {
@@ -97,7 +108,7 @@ const CropAdvisoryPage = () => {
                         onDetect={handleLocationDetect}
                         onGenerate={handleGenerate}
                         loading={loading}
-                        crops={CROPS}
+                        crops={crops}
                         stages={STAGES}
                     />
 

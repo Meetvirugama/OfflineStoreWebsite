@@ -421,3 +421,32 @@ export const getDistrictComparison = async (crop, state) => {
         return [];
     }
 };
+
+/**
+ * NEW: Dynamic Crop Discovery Service
+ * Logic: Fetch all unique 'commodity' values from the database to build an accurate selection list.
+ */
+export const getUniqueCommodities = async () => {
+    try {
+        const [historical, cached] = await Promise.all([
+            MandiPrice.findAll({
+                attributes: [[sequelize.fn('DISTINCT', sequelize.col('commodity')), 'commodity']],
+                raw: true
+            }),
+            PriceCache.findAll({
+                attributes: [[sequelize.fn('DISTINCT', sequelize.col('commodity')), 'commodity']],
+                raw: true
+            })
+        ]);
+
+        const masterSet = new Set([
+            ...historical.map(h => h.commodity),
+            ...cached.map(c => c.commodity)
+        ]);
+
+        return Array.from(masterSet).filter(Boolean).sort();
+    } catch (err) {
+        console.error("Unique Crops Discovery Error:", err);
+        return [];
+    }
+};

@@ -89,3 +89,8 @@ export const getMultiTrends = asyncHandler(async (req, res) => {
     const data = await mandiService.getMultiCropComparison(cropList, parseInt(days) || 30, district, state);
     sendResponse(res, 200, "Multi-crop trends fetched successfully", data);
 });
+
+export const getAvailableCrops = asyncHandler(async (req, res) => {
+    const crops = await mandiService.getUniqueCommodities();
+    sendResponse(res, 200, "Available crops discovered successfully", crops);
+});

@@ -17,8 +17,8 @@ import {
 } from 'lucide-react';
 import apiClient from '@core/api/client';
 import useWeatherStore from '@features/agriculture/weather/weather.store';
+import { getMergedCropCatalog } from '../constants/crops';
 import L from 'leaflet';
-import { CROP_CATALOG } from '../constants/crops';
 import 'leaflet/dist/leaflet.css';
 import '@/styles/agriIntelligence.css';
 
@@ -43,7 +43,8 @@ const MapRecenter = ({ center }) => {
 const NearbyMandisPage = () => {
     const [viewMode, setViewMode] = useState('map');
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCrop, setSelectedCrop] = useState(CROP_CATALOG[0].id);
+    const [crops, setCrops] = useState(getMergedCropCatalog());
+    const [selectedCrop, setSelectedCrop] = useState(crops[0]?.id || 'cotton');
     const [userLocation, setUserLocation] = useState(null);
     const [mandis, setMandis] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -118,6 +119,21 @@ const NearbyMandisPage = () => {
     };
 
     useEffect(() => {
+        const initCrops = async () => {
+            try {
+                const discovered = await apiClient.get('/mandi/crops');
+                if (discovered && Array.isArray(discovered)) {
+                    const merged = getMergedCropCatalog(discovered);
+                    setCrops(merged);
+                    if (merged.length > 0 && !merged.find(c => c.id === selectedCrop)) {
+                        setSelectedCrop(merged[0].id);
+                    }
+                }
+            } catch (err) {
+                console.error("Discovery failed:", err);
+            }
+        };
+        initCrops();
         locateUser();
     }, []);
 
@@ -192,7 +208,7 @@ const NearbyMandisPage = () => {
 
             {/* CROP SELECTOR RIBBON */}
             <div style={{ marginBottom: '3rem', overflowX: 'auto', display: 'flex', gap: '1rem', paddingBottom: '1rem' }}>
-                {CROP_CATALOG.map(crop => (
+                {crops.map(crop => (
                     <button
                         key={crop.id}
                         onClick={() => setSelectedCrop(crop.id)}

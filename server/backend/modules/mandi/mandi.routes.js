@@ -13,5 +13,6 @@ router.get("/summary", mandiController.getSummary);
 router.get("/best-mandi", mandiController.getBestMandi);
 router.get("/comparison", mandiController.getDistrictComparison);
 router.get("/trends/multi", mandiController.getMultiTrends);
+router.get("/crops", mandiController.getAvailableCrops);
 
 export default router;
