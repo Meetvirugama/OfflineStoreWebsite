@@ -77,10 +77,17 @@ export const getDiseaseInsightAI = async (crop, disease) => {
         const completion = await groq.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
             model: MODEL,
+            temperature: 0.2, // ENHANCED ACCURACY
             response_format: { type: "json_object" }
         });
 
-        const content = JSON.parse(completion.choices[0]?.message?.content);
+        const rawContent = completion.choices[0]?.message?.content;
+        const jsonMatch = rawContent?.match(/\{[\s\S]*?\}/);
+        
+        let content;
+        if (jsonMatch) content = JSON.parse(jsonMatch[0]);
+        else content = JSON.parse(rawContent);
+
         return content;
     } catch (error) {
         console.error("GROQ API Error (Disease):", error);
@@ -250,16 +257,22 @@ export const getComprehensiveSmartAdvisory = async (data) => {
         const completion = await groq.chat.completions.create({
             messages: [{ role: "user", content: prompt }],
             model: MODEL,
+            temperature: 0.2, // ENHANCED ACCURACY
             response_format: { type: "json_object" }
         });
 
-        return JSON.parse(completion.choices[0]?.message?.content);
+        const rawContent = completion.choices[0]?.message?.content;
+        const jsonMatch = rawContent?.match(/\{[\s\S]*?\}/);
+        
+        if (jsonMatch) return JSON.parse(jsonMatch[0]);
+        return JSON.parse(rawContent);
+
     } catch (error) {
-        console.error("GROQ API Error (Comprehensive Advisory):", error);
+        console.error("GROQ API Error (Comprehensive Advisory):", error.message);
         return {
             advisory_text: "Strategic advice generation encountered an error. Please follow standard protocol.",
-            risks: ["Data synchronization timeout"],
-            actions: ["Verify sensor connectivity", "Re-run advisory initialization"],
+            risks: ["Data synchronization timeout", "Signal variance"],
+            actions: ["Verify sensor connectivity", "Monitor crop health daily"],
             best_mandi_reason: "Market analysis failed. Consult local price boards."
         };
     }
