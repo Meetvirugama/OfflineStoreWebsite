@@ -1,50 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import useAdvisoryStore from '@features/agriculture/crop/advisory.store';
 import useWeatherStore from '@features/agriculture/weather/weather.store';
-import { 
-    Sprout, 
-    MapPin, 
-    Navigation, 
-    AlertTriangle, 
-    History,
-    TrendingUp,
-    ShieldCheck,
-    Loader2,
-    ChevronRight,
-    Target,
-    RefreshCw
-} from 'lucide-react';
-import { 
-    MapContainer, 
-    TileLayer, 
-    Marker, 
-    Popup,
-    useMap
-} from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { Sprout, History, ChevronRight } from 'lucide-react';
+import '@/styles/agriIntelligence.css';
+
+// Sub-components
+import AdvisoryHeader from '../components/advisory/AdvisoryHeader';
+import TelemetryForm from '../components/advisory/TelemetryForm';
+import StrategicAdvisoryCard from '../components/advisory/StrategicAdvisoryCard';
+import MarketMapSection from '../components/advisory/MarketMapSection';
+import RiskAssessmentList from '../components/advisory/RiskAssessmentList';
+import ActivityPulse from '../components/advisory/ActivityPulse';
 
 const CROPS = ["Wheat", "Rice", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Maize"];
 const STAGES = ["Sowing", "Vegetative", "Flowering", "Fruiting", "Harvesting"];
 
-// Fix Leaflet icon issue
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
-
-const RecenterMap = ({ lat, lon }) => {
-    const map = useMap();
-    useEffect(() => {
-        if (lat && lon) map.setView([lat, lon], 10);
-    }, [lat, lon, map]);
-    return null;
-};
-
 const CropAdvisoryPage = () => {
-    const { curAdvisory, history, loading, error, generateAdvisory, fetchHistory } = useAdvisoryStore();
+    const { curAdvisory, history, loading, generateAdvisory, fetchHistory } = useAdvisoryStore();
     const { selectedLocation, initialize } = useWeatherStore();
     const [syncStatus, setSyncStatus] = useState('SYNCED');
     
@@ -94,7 +66,6 @@ const CropAdvisoryPage = () => {
                 setSyncStatus('MANUAL');
             },
             (err) => {
-                console.error(err);
                 setSyncStatus('ERROR');
                 alert("Unable to detect location. Please enter manually.");
             }
@@ -106,135 +77,32 @@ const CropAdvisoryPage = () => {
             alert("Please provide a location");
             return;
         }
-        try {
-            await generateAdvisory(formData);
-        } catch (err) {
-            console.error("Advisory generation failed", err);
-        }
+        await generateAdvisory(formData);
     };
 
     return (
         <div className="agri-page">
-            <header style={{ marginBottom: '3.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                    <h1 className="agri-title" style={{ fontSize: '2.8rem', fontWeight: 900, letterSpacing: '-1px', display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
-                        <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
-                            <Target className="agri-green" size={32} />
-                        </div>
-                        Smart Mandi Hub + Advisory
-                    </h1>
-                    <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                        <ShieldCheck size={18} className="agri-green" />
-                        AI-powered regional intelligence combining weather and market velocity.
-                    </p>
-                </div>
-                <div className="weather-badge glass-card" style={{ padding: '0.8rem 1.5rem', borderRadius: '1.5rem', fontWeight: 800, letterSpacing: '1px', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                    <div className="pulse-green" style={{width: '8px', height: '8px', background: '#10b981', borderRadius: '50%'}}></div>
-                    {syncStatus === 'SYNCED' ? 'SENSOR SYNC ACTIVE' : syncStatus.toUpperCase()}
-                </div>
-            </header>
+            <AdvisoryHeader syncStatus={syncStatus} />
 
             <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(380px, 420px) 1fr', gap: '3rem' }}>
                 
+                {/* Side Parameters Column */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div className="agri-card glass-card" style={{ padding: '2.5rem', borderRadius: '32px' }}>
-                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
-                            <div className="pulse-green" style={{width: '6px', height: '24px', background: 'var(--agri-green)', borderRadius: '4px'}}></div>
-                            Telemetry Parameters
-                        </h3>
+                    <TelemetryForm 
+                        formData={formData} 
+                        setFormData={setFormData}
+                        syncStatus={syncStatus}
+                        onDetect={handleLocationDetect}
+                        onGenerate={handleGenerate}
+                        loading={loading}
+                        crops={CROPS}
+                        stages={STAGES}
+                    />
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem' }}>
-                            <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}>IDENTIFIED CROP</label>
-                                <select 
-                                    value={formData.crop}
-                                    onChange={(e) => setFormData({...formData, crop: e.target.value})}
-                                    style={{ width: '100%', padding: '1.2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
-                                >
-                                    {CROPS.map(c => <option key={c} value={c}>{c.toUpperCase()}</option>)}
-                                </select>
-                            </div>
-
-                            <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}>GROWTH VELOCITY</label>
-                                <select 
-                                    value={formData.stage}
-                                    onChange={(e) => setFormData({...formData, stage: e.target.value})}
-                                    style={{ width: '100%', padding: '1.2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', cursor: 'pointer', fontWeight: 600 }}
-                                >
-                                    {STAGES.map(s => <option key={s} value={s}>{s.toUpperCase()}</option>)}
-                                </select>
-                            </div>
-
-                            <div className="form-group">
-                                <label style={{ display: 'block', marginBottom: '0.8rem', fontSize: '0.75rem', fontWeight: '900', opacity: 0.4, letterSpacing: '1.5px' }}>SPATIAL CONTEXT</label>
-                                <div style={{ display: 'flex', gap: '1rem' }}>
-                                    <div style={{ position: 'relative', flex: 1 }}>
-                                        <MapPin size={18} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
-                                        <input 
-                                            type="text"
-                                            placeholder="City / Village Index"
-                                            value={formData.location}
-                                            onChange={(e) => setFormData({...formData, location: e.target.value, lat: null, lon: null})}
-                                            style={{ width: '100%', padding: '1.2rem 1.2rem 1.2rem 3.5rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '16px', color: '#1e293b', fontSize: '1rem', fontWeight: 600 }}
-                                        />
-                                    </div>
-                                    <button 
-                                        onClick={handleLocationDetect}
-                                        style={{ padding: '0', width: '4rem', height: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(16, 185, 129, 0.1)', cursor: 'pointer', borderRadius: '16px', border: '1px solid rgba(16, 185, 129, 0.2)' }}
-                                    >
-                                        <Navigation size={22} className="agri-green" />
-                                    </button>
-                                </div>
-                            </div>
-
-                            <button 
-                                onClick={handleGenerate}
-                                disabled={loading}
-                                style={{ 
-                                    width: '100%', 
-                                    padding: '1.5rem', 
-                                    marginTop: '1.5rem',
-                                    background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', 
-                                    color: '#fff',
-                                    fontWeight: '900',
-                                    fontSize: '1rem',
-                                    cursor: 'pointer',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '1rem',
-                                    border: 'none',
-                                    borderRadius: '20px',
-                                    boxShadow: '0 15px 35px rgba(16, 185, 129, 0.3)',
-                                    letterSpacing: '1px'
-                                }}
-                            >
-                                {loading ? <Loader2 className="spin" size={24} /> : <ShieldCheck size={24} />}
-                                {loading ? 'SYNCHRONIZING' : 'INITIALIZE HUB'}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="agri-card" style={{ padding: '2rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)' }}>
-                        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '1.1rem', fontWeight: 800 }}>
-                            <TrendingUp className="agri-green" size={22} /> AI Risk Assessment
-                        </h3>
-                        {curAdvisory?.accuracy_meta?.risks_raw ? (
-                            curAdvisory.accuracy_meta.risks_raw.map((risk, idx) => (
-                                <div key={idx} style={{ padding: '1rem', background: '#fff1f2', border: '1px solid #fecaca', borderRadius: '16px', color: '#b91c1c', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.8rem' }}>
-                                    <AlertTriangle size={18} />
-                                    {risk}
-                                </div>
-                            ))
-                        ) : (
-                            <div style={{ height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3, border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
-                                <p style={{ fontWeight: 800, fontSize: '0.75rem' }}>NO RISKS DETECTED</p>
-                            </div>
-                        )}
-                    </div>
+                    <RiskAssessmentList advisory={curAdvisory} />
                 </div>
 
+                {/* Main Content Column */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                     
                     {!curAdvisory && !loading && (
@@ -247,127 +115,57 @@ const CropAdvisoryPage = () => {
 
                     {(curAdvisory || loading) && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            <div className="agri-card agri-card--dark" style={{ padding: '2.5rem', borderRadius: '32px', position: 'relative', overflow: 'hidden' }}>
-                                <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)', filter: 'blur(30px)' }}></div>
-                                <div style={{ position: 'relative', zIndex: 1 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                        <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0, display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                            <ShieldCheck className="agri-green" size={24} /> AI STRATEGIC ADVISORY
-                                        </h3>
-                                        <div style={{textAlign: 'right'}}>
-                                            <span style={{ fontSize: '0.65rem', fontWeight: 900, color: 'rgba(255,255,255,0.4)', letterSpacing: '1px', display: 'block' }}>CONFIDENCE INDEX</span>
-                                            <span style={{ color: '#10b981', fontWeight: 900}}>{curAdvisory?.accuracy_meta?.confidence || 95}%</span>
-                                        </div>
-                                    </div>
-                                    <p style={{ fontSize: '1.2rem', lineHeight: 1.8, opacity: 0.9, fontWeight: 500, color: 'rgba(255,255,255,0.85)' }}>
-                                        {loading ? 'Synthesizing internal patterns and external telemetry...' : curAdvisory?.accuracy_meta?.ai_text}
-                                    </p>
-                                </div>
-                            </div>
+                            <StrategicAdvisoryCard advisory={curAdvisory} loading={loading} />
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                                <div className="agri-card" style={{ height: '400px', borderRadius: '32px', overflow: 'hidden' }}>
-                                    <MapContainer center={[formData.lat || 22.3, formData.lon || 70.8]} zoom={10} style={{ height: '100%' }}>
-                                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                        <RecenterMap lat={formData.lat} lon={formData.lon} />
-                                        {curAdvisory?.mandis_list?.map((m, idx) => (
-                                            <Marker key={idx} position={[m.lat, m.lng]}>
-                                                <Popup><div style={{fontWeight: 800}}>{m.name}</div> ₹{m.modal_price}</Popup>
-                                            </Marker>
-                                        ))}
-                                    </MapContainer>
-                                </div>
+                            <MarketMapSection advisory={curAdvisory} formData={formData} loading={loading} />
 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                    <div className="agri-card" style={{ padding: '2rem', background: '#fff', border: '2px solid var(--agri-green)', borderRadius: '32px', boxShadow: '0 10px 30px rgba(16, 185, 129, 0.1)' }}>
-                                        <div style={{ padding: '0.4rem 0.8rem', background: 'var(--agri-green)', color: '#fff', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 900, display: 'inline-block', marginBottom: '1rem' }}>BEST MARKET LOGIC</div>
-                                        <h3 style={{ fontSize: '1.5rem', fontWeight: 900 }}>{loading ? '---' : curAdvisory?.best_mandi?.name}</h3>
-                                        <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--agri-green)', margin: '1rem 0' }}>{loading ? '---' : ('₹' + curAdvisory?.best_mandi?.modal_price)}</div>
-                                        <div style={{ padding: '1.2rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.04)', fontSize: '0.9rem', color: '#475569', lineHeight: 1.6, fontWeight: 500 }}>
-                                            {loading ? 'Analyzing market velocity...' : (curAdvisory?.accuracy_meta?.best_mandi_reason || 'AI is calculating the optimal trade node based on proximity and price ceiling.')}
-                                        </div>
-                                    </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+                                <ActivityPulse advisory={curAdvisory} loading={loading} />
 
-                                    <div className="agri-card" style={{ padding: '1.5rem', background: '#fff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', flex: 1, maxHeight: '250px', overflowY: 'auto' }}>
-                                        <h4 style={{ fontSize: '0.75rem', fontWeight: 900, opacity: 0.4, marginBottom: '1.2rem' }}>REGIONAL APMC NETWORK (50KM)</h4>
-                                        {curAdvisory?.mandis_list?.map((m, idx) => (
-                                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.8rem 0', borderBottom: '1px solid rgba(0,0,0,0.03)' }}>
-                                                <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>{m.name}</span>
-                                                <div style={{ textAlign: 'right' }}>
-                                                    <div style={{ fontWeight: 900, color: 'var(--agri-green)' }}>{'₹' + m.modal_price}</div>
-                                                    <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>{m.distance} KM</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                                 {/* Strategic Activity Pulse & History */}
-                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                                    <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px' }}>
-                                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.2rem', fontWeight: 800 }}>
-                                            <History className="agri-green" /> Strategic Activity Pulse
-                                        </h3>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                                            {(loading ? [1, 2, 3] : (curAdvisory?.advisory || [])).map((h, idx) => (
-                                                <div key={idx} style={{ padding: '1.5rem', borderRadius: '24px', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.03)', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                                                    <div style={{ padding: '0.8rem', background: '#fff', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.04)' }}>
-                                                        <ChevronRight className="agri-green" size={20} />
+                                {/* Historical Context Pulsar */}
+                                {history?.length > 0 && (
+                                    <div className="agri-card" style={{ padding: '2.5rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '32px' }}>
+                                        <h4 style={{ fontSize: '0.75rem', fontWeight: 900, opacity: 0.4, letterSpacing: '1px', marginBottom: '1.8rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                            <History size={14} /> RECENT INTELLIGENCE PULSES
+                                        </h4>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+                                            {history.slice(0, 4).map((h, idx) => (
+                                                <button 
+                                                    key={idx}
+                                                    onClick={() => useAdvisoryStore.setState({ curAdvisory: h })}
+                                                    style={{ 
+                                                        display: 'flex', 
+                                                        justifyContent: 'space-between', 
+                                                        alignItems: 'center', 
+                                                        padding: '1.2rem 1.5rem', 
+                                                        background: curAdvisory?.id === h.id ? 'var(--agri-green)' : '#fff', 
+                                                        color: curAdvisory?.id === h.id ? '#fff' : '#1e293b',
+                                                        border: 'none',
+                                                        borderRadius: '20px',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s',
+                                                        boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
+                                                    }}
+                                                >
+                                                    <div style={{ textAlign: 'left' }}>
+                                                        <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{h.crop}</div>
+                                                        <div style={{ fontSize: '0.65rem', opacity: 0.6 }}>{h.location} • {h.stage}</div>
                                                     </div>
-                                                    <div>
-                                                        <p style={{ fontWeight: '800', color: '#1e293b', fontSize: '0.95rem' }}>{loading ? '---' : h.message}</p>
-                                                        <p style={{ fontSize: '0.65rem', color: 'var(--agri-green)', fontWeight: 900, marginTop: '4px', letterSpacing: '0.5px' }}>
-                                                            ACTION REQUIRED ● PRIORITY {idx + 1}
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                                    <ChevronRight size={16} style={{ opacity: 0.4 }} />
+                                                </button>
                                             ))}
                                         </div>
                                     </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
 
-                                    {/* Historical Context Pulsar */}
-                                    {history?.length > 0 && (
-                                        <div className="agri-card" style={{ padding: '2rem', background: '#f8fafc', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '32px' }}>
-                                            <h4 style={{ fontSize: '0.75rem', fontWeight: 900, opacity: 0.4, letterSpacing: '1px', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                                <History size={14} /> RECENT INTELLIGENCE PULSES
-                                            </h4>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                                                {history.slice(0, 5).map((h, idx) => (
-                                                    <button 
-                                                        key={idx}
-                                                        onClick={() => useAdvisoryStore.setState({ curAdvisory: h })}
-                                                        style={{ 
-                                                            display: 'flex', 
-                                                            justifyContent: 'space-between', 
-                                                            alignItems: 'center', 
-                                                            padding: '1rem 1.2rem', 
-                                                            background: curAdvisory?.id === h.id ? 'var(--agri-green)' : '#fff', 
-                                                            color: curAdvisory?.id === h.id ? '#fff' : '#1e293b',
-                                                            border: 'none',
-                                                            borderRadius: '16px',
-                                                            cursor: 'pointer',
-                                                            transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                                                            boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
-                                                        }}
-                                                    >
-                                                        <div style={{ textAlign: 'left' }}>
-                                                            <div style={{ fontWeight: 800, fontSize: '0.85rem' }}>{h.crop}</div>
-                                                            <div style={{ fontSize: '0.65rem', opacity: 0.6 }}>{h.location} • {h.stage}</div>
-                                                        </div>
-                                                        <ChevronRight size={16} style={{ opacity: 0.4 }} />
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                 </div>
-                             </div>
-                     )}
-                 </div>
-             </div>
-         </div>
-     );
- };
+export default CropAdvisoryPage;
  
  export default CropAdvisoryPage;
