@@ -29,7 +29,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/weather", 
-      label: "Weather Intelligence", 
+      label: "Atmospheric Command", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
@@ -38,7 +38,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/agri/analytics", 
-      label: "Agri Intelligence", 
+      label: "Agri Analytics & Insights", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9V3m-9 9a9 9 0 0 1 9-9"></path>
@@ -47,7 +47,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/advisory", 
-      label: "Smart Advisory", 
+      label: "Precision Advisory", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="m2 4 3 12h14l3-12zm6 16a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm11 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"></path>
@@ -57,7 +57,7 @@ export default function IntelligenceLayout() {
     },
     { 
       to: "/intelligence/agri/news", 
-      label: "Market Intelligence", 
+      label: "Farming News & Trends", 
       icon: (
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"></path>

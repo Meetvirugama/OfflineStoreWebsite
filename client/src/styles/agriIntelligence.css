@@ -63,10 +63,13 @@
   overflow: hidden;
 }
 
-.agri-card--dark {
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  color: #f8fafc;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.agri-card--dark,
+.agri-page .agri-card.agri-card--dark,
+.intelligence-theme .agri-card.agri-card--dark {
+  background: linear-gradient(135deg, #0f172a 0%, #020617 100%) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(16, 185, 129, 0.05);
 }
 
 .agri-page .agri-card:hover,
