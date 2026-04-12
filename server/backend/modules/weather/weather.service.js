@@ -138,11 +138,13 @@ export const searchLocations = async (query) => {
     return res.data.results.map(item => {
         // Extract state/country from address components
         const stateComp = item.address_components.find(c => c.types.includes("administrative_area_level_1"));
+        const districtComp = item.address_components.find(c => c.types.includes("administrative_area_level_2") || c.types.includes("locality"));
         const countryComp = item.address_components.find(c => c.types.includes("country"));
         
         return {
             name: item.address_components[0].long_name,
             state: stateComp ? stateComp.long_name : "",
+            district: districtComp ? districtComp.long_name : "",
             country: countryComp ? countryComp.long_name : "",
             lat: item.geometry.location.lat,
             lon: item.geometry.location.lng, // Normalize google lng to our lon
@@ -163,11 +165,13 @@ export const reverseGeocode = async (lat, lon) => {
 
     const item = res.data.results[0];
     const stateComp = item.address_components.find(c => c.types.includes("administrative_area_level_1"));
+    const districtComp = item.address_components.find(c => c.types.includes("administrative_area_level_2") || c.types.includes("locality"));
     const countryComp = item.address_components.find(c => c.types.includes("country"));
 
     return {
         name: item.address_components[0].long_name,
         state: stateComp ? stateComp.long_name : "",
+        district: districtComp ? districtComp.long_name : "",
         country: countryComp ? countryComp.long_name : "",
         lat: parseFloat(lat),
         lon: parseFloat(lon),
