@@ -65,7 +65,7 @@ const NearbyMandisPage = () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (pos) => {
-                    const loc = [pos.coords.latitude, pos.coords.longitude];
+                    const loc = [parseFloat(pos.coords.latitude), parseFloat(pos.coords.longitude)];
                     setUserLocation(loc);
                     fetchNearbyMandis(loc[0], loc[1]);
                 },
@@ -206,7 +206,7 @@ const NearbyMandisPage = () => {
                                 <Popup>
                                     <div style={{ padding: '5px' }}>
                                         <h4 style={{ margin: '0 0 5px 0', fontSize: '1rem', fontWeight: 900 }}>{m.name}</h4>
-                                        <p style={{ margin: 0, color: 'var(--agri-green)', fontWeight: 800 }}>₹{m.modal_price} <span style={{fontSize: '0.7rem', opacity: 0.5}}>(Live)</span></p>
+                                        <p style={{ margin: 0, color: 'var(--agri-green)', fontWeight: 800 }}>{'₹' + m.modal_price} <span style={{fontSize: '0.7rem', opacity: 0.5}}>(Live)</span></p>
                                     </div>
                                 </Popup>
                             </Marker>
@@ -286,7 +286,7 @@ const NearbyMandisPage = () => {
                                         <div>
                                             <p style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 900, marginBottom: '0.5rem', textTransform: 'uppercase' }}>MARKET VOLUME</p>
                                             <div style={{ fontSize: '1.8rem', fontWeight: 900, color: m.modal_price > 0 ? 'var(--agri-green)' : '#cbd5e1', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                                {m.modal_price > 0 ? `₹${m.modal_price}` : 'RATE PENDING'}
+                                                {m.modal_price > 0 ? ("₹" + m.modal_price) : 'RATE PENDING'}
                                                 {m.modal_price > 0 && <TrendingUp size={24} />}
                                             </div>
                                             {m.modal_price === 0 && (

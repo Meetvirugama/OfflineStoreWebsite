@@ -273,7 +273,7 @@ const CropAdvisoryPage = () => {
                                     <div className="agri-card" style={{ padding: '2rem', background: '#fff', border: '2px solid var(--agri-green)', borderRadius: '32px' }}>
                                         <div style={{ padding: '0.4rem 0.8rem', background: 'var(--agri-green)', color: '#fff', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 900, display: 'inline-block', marginBottom: '1rem' }}>BEST OPTION</div>
                                         <h3 style={{ fontSize: '1.5rem', fontWeight: 900 }}>{loading ? '---' : curAdvisory?.best_mandi?.name}</h3>
-                                        <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--agri-green)', margin: '1rem 0' }}>₹{loading ? '---' : curAdvisory?.best_mandi?.modal_price}</div>
+                                        <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--agri-green)', margin: '1rem 0' }}>{loading ? '---' : ('₹' + curAdvisory?.best_mandi?.modal_price)}</div>
                                         <p style={{ fontSize: '0.9rem', opacity: 0.6 }}>{loading ? '---' : curAdvisory?.accuracy_meta?.best_mandi_reason}</p>
                                     </div>
 
@@ -283,7 +283,7 @@ const CropAdvisoryPage = () => {
                                             <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.8rem 0', borderBottom: '1px solid rgba(0,0,0,0.03)' }}>
                                                 <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>{m.name}</span>
                                                 <div style={{ textAlign: 'right' }}>
-                                                    <div style={{ fontWeight: 900, color: 'var(--agri-green)' }}>₹{m.modal_price}</div>
+                                                    <div style={{ fontWeight: 900, color: 'var(--agri-green)' }}>{'₹' + m.modal_price}</div>
                                                     <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>{m.distance} KM</span>
                                                 </div>
                                             </div>
@@ -352,7 +352,6 @@ const CropAdvisoryPage = () => {
                                     )}
                                  </div>
                              </div>
-                         </div>
                      )}
                  </div>
              </div>

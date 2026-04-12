@@ -63,8 +63,8 @@ export const getNearbyApmcs = async (lat, lon, radiusKm = 50) => {
     
     // EDGE CASE: Handle Polar coordinates (Math.cos(90) -> 0)
     // Avoid division by zero. We use a floor of 0.0001 for cosine.
-    const cosLat = Math.max(0.0001, Math.cos(userLat * Math.PI / 180));
-    const lonDelta = radiusKm / (111.0 * cosLat);
+    const cosLat = Math.max(0.0001, Math.cos(userLat * (Math.PI / 180.0)));
+    const lonDelta = (radiusKm / (111.0 * cosLat));
 
     // 2. Query DB: Primary Bounding Box Filter (Fastest)
     const candidates = await Apmc.findAll({
