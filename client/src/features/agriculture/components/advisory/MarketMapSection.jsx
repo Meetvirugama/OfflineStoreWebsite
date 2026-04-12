@@ -21,9 +21,9 @@ const RecenterMap = ({ lat, lon }) => {
 
 const MarketMapSection = ({ advisory, formData, loading }) => {
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: '2rem', marginTop: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '2rem', marginTop: '1rem' }}>
             {/* Map Area */}
-            <div className="agri-card" style={{ height: '450px', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)' }}>
+            <div className="agri-card" style={{ height: '450px', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', flex: '1 1 500px', minWidth: '300px' }}>
                 <MapContainer center={[formData.lat || 22.3, formData.lon || 70.8]} zoom={10} style={{ height: '100%' }}>
                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                     <RecenterMap lat={formData.lat} lon={formData.lon} />
@@ -36,7 +36,7 @@ const MarketMapSection = ({ advisory, formData, loading }) => {
             </div>
 
             {/* Price Details Column */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', flex: '1 1 350px' }}>
                 <div className="agri-card" style={{ padding: '2rem', background: '#fff', border: '2px solid var(--agri-green)', borderRadius: '32px', boxShadow: '0 10px 30px rgba(16, 185, 129, 0.1)' }}>
                     <div style={{ padding: '0.4rem 0.8rem', background: 'var(--agri-green)', color: '#fff', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 900, display: 'inline-block', marginBottom: '1rem', letterSpacing: '1px' }}>BEST MARKET LOGIC</div>
                     <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: '#1e293b' }}>{loading ? 'ANALYZING...' : advisory?.best_mandi?.name || 'Searching...'}</h3>

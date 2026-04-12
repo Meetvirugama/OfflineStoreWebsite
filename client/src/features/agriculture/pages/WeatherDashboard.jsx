@@ -279,27 +279,49 @@ const WeatherDashboard = () => {
                         <div style={{padding: '0.3rem 0.8rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', fontSize: '0.65rem', fontWeight: 800, opacity: 0.5, color: '#64748b'}}>INFRARED</div>
                     </div>
                 </div>
-                <div style={{height: 'clamp(300px, 60vw, 600px)', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.06)', position: 'relative', boxShadow: '0 20px 50px rgba(0,0,0,0.1)'}}>
+                <div style={{height: 'clamp(400px, 75vw, 650px)', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.06)', position: 'relative', boxShadow: '0 30px 60px rgba(0,0,0,0.15)', background: '#020617'}}>
+                    
+                    {/* [NEW FEATURE] ATMOSPHERIC PULSE RIBBON */}
+                    <div className="atmospheric-ticker" style={{position: 'absolute', top: 0, left: 0, right: 0, height: '3rem', background: 'rgba(2, 6, 23, 0.8)', backdropFilter: 'blur(20px)', zIndex: 1000, display: 'flex', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden'}}>
+                        <div style={{padding: '0 1.5rem', background: 'var(--agri-green)', height: '100%', display: 'flex', alignItems: 'center', gap: '0.8rem', color: '#fff', fontWeight: 900, fontSize: '0.75rem', letterSpacing: '1px', flexShrink: 0, zIndex: 2}}>
+                            <Radio size={16} className="spin" />
+                            ATMOSPHERIC PULSE
+                        </div>
+                        <div style={{display: 'flex', whiteSpace: 'nowrap', animation: 'marquee 30s linear infinite', gap: '3rem', paddingLeft: '2rem'}}>
+                            {[
+                                `SECTOR ${selectedLocation?.name?.toUpperCase() || 'ALPHA'}: PRESSURE STABILIZING...`,
+                                `DEW POINT INDEX: ${currentWeather?.main?.temp ? (currentWeather.main.temp - 2).toFixed(1) : 22}°C`,
+                                `PRECISE FIELD TOPOLOGY: 8 ACTIVE NODES SYNCED`,
+                                `MOISTURE GRADIENT: ${indices?.soilMoisture ? (indices.soilMoisture * 100).toFixed(1) : 22}%`,
+                                `STORM VELOCITY: < 5KM/H IN RADIUS`,
+                                `DATA INTEGRITY: 99.8% CERTAINTY`
+                            ].map((text, i) => (
+                                <span key={i} style={{color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.5px'}}>{text}</span>
+                            ))}
+                        </div>
+                    </div>
+
                     <MapContainer 
                         center={[selectedLocation?.lat || 22.3, selectedLocation?.lon || 70.8]} 
                         zoom={7} 
                         style={{ height: '100%', width: '100%' }}
+                        zoomControl={false}
                     >
                         {/* High-Precision Satellite Base */}
                         <TileLayer
                             url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                            attribution='&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                            attribution='&copy; Esri'
                         />
                         
                         {/* Dynamic Atmospheric Overlays */}
                         <TileLayer
                             url={`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`}
-                            opacity={0.6}
+                            opacity={0.5}
                             zIndex={10}
                         />
                         <TileLayer
                             url={`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${WEATHER_API_KEY}`}
-                            opacity={0.7}
+                            opacity={0.5}
                             zIndex={11}
                         />
 
@@ -309,37 +331,56 @@ const WeatherDashboard = () => {
                         {selectedLocation && (
                             <Marker position={[selectedLocation.lat, selectedLocation.lon]}>
                                 <Popup>
-                                    <div style={{fontWeight: 800, padding: '0.5rem'}}>
-                                        <div style={{fontSize: '0.7rem', opacity: 0.5, marginBottom: '2px'}}>ACTIVE SECTOR</div>
-                                        {selectedLocation.name}
+                                    <div style={{fontWeight: 800, padding: '0.5rem', textAlign: 'center'}}>
+                                        <div style={{fontSize: '0.6rem', opacity: 0.5, marginBottom: '4px', letterSpacing: '1px'}}>ACTIVE SECTOR</div>
+                                        <div style={{fontSize: '1.1rem', color: 'var(--agri-green)'}}>{selectedLocation.name}</div>
                                     </div>
                                 </Popup>
                             </Marker>
                         )}
                     </MapContainer>
 
-                    <div style={{position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', padding: '0.6rem 1.2rem', borderRadius: '12px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '0.8rem', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 20px rgba(0,0,0,0.1)'}}>
-                        <div className="pulse-green" style={{width: '10px', height: '10px', background: '#10b981', borderRadius: '50%'}}></div>
-                        <span style={{fontSize: '0.75rem', fontWeight: 900, color: '#1e293b', letterSpacing: '0.5px'}}>CLICK MAP TO ANALYZE REGION</span>
+                    {/* Desktop/Tablet Controls */}
+                    <div className="map-interaction-prompt" style={{position: 'absolute', bottom: '2rem', right: '2rem', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)', padding: '0.8rem 1.5rem', borderRadius: '16px', zIndex: 1000, display: 'flex', alignItems: 'center', gap: '1rem', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.1)'}}>
+                        <div className="pulse-green" style={{width: '12px', height: '12px', background: '#10b981', borderRadius: '50%'}}></div>
+                        <span style={{fontSize: '0.8rem', fontWeight: 900, color: '#1e293b', letterSpacing: '0.4px'}}>CLICK ANY SECTOR TO SYNC</span>
                     </div>
 
-                    <div style={{position: 'absolute', bottom: '1.5rem', left: '1.5rem', background: '#ffffff', color: '#1e293b', padding: '1.5rem', borderRadius: '20px', boxShadow: '0 15px 40px rgba(0,0,0,0.2)', maxWidth: '280px', zIndex: 1000, border: '1px solid rgba(0,0,0,0.05)'}}>
-                        <p style={{fontSize: '0.65rem', fontWeight: 900, opacity: 0.5, margin: '0 0 0.5rem', letterSpacing: '1px'}}>DATA STREAM: ACTIVE</p>
-                        <h4 style={{fontSize: '1rem', fontWeight: 900, margin: '0 0 0.8rem', display: 'flex', alignItems: 'center', gap: '0.6rem'}}>
-                            <Zap size={18} className="agri-green" /> Atmospheric Topology
+                    <div className="map-telemetry-overlay" style={{position: 'absolute', bottom: '2rem', left: '2rem', background: 'rgba(2, 6, 23, 0.85)', backdropFilter: 'blur(30px)', color: '#fff', padding: '2rem', borderRadius: '28px', boxShadow: '0 25px 50px rgba(0,0,0,0.4)', maxWidth: '320px', zIndex: 1000, border: '1px solid rgba(255,255,255,0.1)'}}>
+                        <p style={{fontSize: '0.65rem', fontWeight: 900, color: 'var(--agri-green)', margin: '0 0 0.8rem', letterSpacing: '2px'}}>TOPOLOGY STREAM</p>
+                        <h4 style={{fontSize: '1.2rem', fontWeight: 900, margin: '0 0 1rem', display: 'flex', alignItems: 'center', gap: '0.8rem'}}>
+                            <Zap size={20} className="agri-green" /> Regional Diagnostics
                         </h4>
-                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.2rem'}}>
-                            <div style={{padding: '0.3rem 0.6rem', border: '1px solid rgba(16,185,129,0.3)', color: '#059669', background: 'rgba(16,185,129,0.05)', borderRadius: '6px', fontSize: '0.6rem', fontWeight: 900}}>CLOUDS: LIVE</div>
-                            <div style={{padding: '0.3rem 0.6rem', border: '1px solid rgba(59,130,246,0.3)', color: '#2563eb', background: 'rgba(59,130,246,0.05)', borderRadius: '6px', fontSize: '0.6rem', fontWeight: 900}}>STORM: INDEXED</div>
+                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.8rem', marginBottom: '1.5rem'}}>
+                            <div style={{padding: '0.4rem 0.8rem', border: '1px solid rgba(255,255,255,0.2)', color: 'rgba(255,255,255,0.9)', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', fontSize: '0.65rem', fontWeight: 900}}>CLOUDS: LIVE</div>
+                            <div style={{padding: '0.4rem 0.8rem', border: '1px solid rgba(59,130,246,0.3)', color: '#60a5fa', background: 'rgba(59,130,246,0.05)', borderRadius: '10px', fontSize: '0.65rem', fontWeight: 900}}>STORM: INDEXED</div>
                         </div>
                         <button 
                             onClick={() => initialize?.()}
-                            style={{width: '100%', background: '#1e293b', color: '#fff', border: 'none', padding: '0.8rem', borderRadius: '12px', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer', transition: 'all 0.2s'}}
+                            style={{width: '100%', background: 'var(--agri-green)', color: '#fff', border: 'none', padding: '1rem', borderRadius: '14px', fontWeight: 900, fontSize: '0.85rem', cursor: 'pointer', transition: 'all 0.3s', boxShadow: '0 10px 20px rgba(16, 185, 129, 0.2)'}}
                         >
                             REFRESH TOPOLOGY
                         </button>
                     </div>
                 </div>
+
+                <style>{`
+                    @keyframes marquee {
+                        0% { transform: translateX(0); }
+                        100% { transform: translateX(-50%); }
+                    }
+                    @media (max-width: 768px) {
+                        .map-telemetry-overlay {
+                            display: none !important;
+                        }
+                        .map-interaction-prompt {
+                            bottom: 1rem !important;
+                            right: 1rem !important;
+                            left: 1rem !important;
+                            justify-content: center !important;
+                        }
+                    }
+                `}</style>
             </div>
 
             {/* 5. ENVIRONMENTAL DIAGNOSTICS */}

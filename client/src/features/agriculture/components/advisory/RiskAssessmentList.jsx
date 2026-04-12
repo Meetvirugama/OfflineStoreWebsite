@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, AlertTriangle } from 'lucide-react';
+import { TrendingUp, AlertTriangle, ShieldCheck } from 'lucide-react';
 
 const RiskAssessmentList = ({ advisory }) => {
     const risks = advisory?.accuracy_meta?.risks_raw || [];
@@ -20,7 +20,7 @@ const RiskAssessmentList = ({ advisory }) => {
                 ))
             ) : (
                 <div style={{ height: '120px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.3, border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px', gap: '0.8rem' }}>
-                    <ShieldCheck size={32} />
+                    <ShieldCheck size={32} className="agri-green" />
                     <p style={{ fontWeight: 800, fontSize: '0.75rem', letterSpacing: '1px' }}>NO STRATEGIC RISKS DETECTED</p>
                 </div>
             )}

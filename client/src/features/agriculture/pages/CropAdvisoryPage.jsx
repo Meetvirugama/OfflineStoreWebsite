@@ -84,10 +84,10 @@ const CropAdvisoryPage = () => {
         <div className="agri-page">
             <AdvisoryHeader syncStatus={syncStatus} />
 
-            <div className="stats-grid" style={{ gridTemplateColumns: 'minmax(380px, 420px) 1fr', gap: '3rem' }}>
+            <div className="agri-layout-responsive" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem' }}>
                 
                 {/* Side Parameters Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                <div style={{ flex: '1 1 400px', display: 'flex', flexDirection: 'column', gap: '2rem', minWidth: '320px' }}>
                     <TelemetryForm 
                         formData={formData} 
                         setFormData={setFormData}
@@ -103,10 +103,10 @@ const CropAdvisoryPage = () => {
                 </div>
 
                 {/* Main Content Column */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                <div style={{ flex: '2 1 600px', display: 'flex', flexDirection: 'column', gap: '2rem', minWidth: '320px' }}>
                     
                     {!curAdvisory && !loading && (
-                        <div className="agri-card" style={{ padding: '8rem 4rem', textAlign: 'center', background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', borderRadius: '40px' }}>
+                        <div className="agri-card" style={{ padding: 'clamp(3rem, 10vw, 8rem) 2rem', textAlign: 'center', background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', borderRadius: '40px' }}>
                             <Sprout size={48} className="agri-green" style={{ margin: '0 auto 2.5rem' }} />
                             <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 900 }}>Hub Standby</h3>
                             <p style={{ opacity: 0.5, fontSize: '1.1rem', fontWeight: 500 }}>Synchronize data to unlock AI-powered agronomy.</p>
@@ -132,14 +132,14 @@ const CropAdvisoryPage = () => {
                                             {history.slice(0, 4).map((h, idx) => (
                                                 <button 
                                                     key={idx}
-                                                    onClick={() => useAdvisoryStore.setState({ curAdvisory: h })}
+                                                    onClick={() => useAdvisoryStore.getState().generateAdvisory(h)}
                                                     style={{ 
                                                         display: 'flex', 
                                                         justifyContent: 'space-between', 
                                                         alignItems: 'center', 
                                                         padding: '1.2rem 1.5rem', 
-                                                        background: curAdvisory?.id === h.id ? 'var(--agri-green)' : '#fff', 
-                                                        color: curAdvisory?.id === h.id ? '#fff' : '#1e293b',
+                                                        background: curAdvisory?.id === h?.id ? 'var(--agri-green)' : '#fff', 
+                                                        color: curAdvisory?.id === h?.id ? '#fff' : '#1e293b',
                                                         border: 'none',
                                                         borderRadius: '20px',
                                                         cursor: 'pointer',
@@ -148,8 +148,8 @@ const CropAdvisoryPage = () => {
                                                     }}
                                                 >
                                                     <div style={{ textAlign: 'left' }}>
-                                                        <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{h.crop}</div>
-                                                        <div style={{ fontSize: '0.65rem', opacity: 0.6 }}>{h.location} • {h.stage}</div>
+                                                        <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{h?.crop || "Pulse"}</div>
+                                                        <div style={{ fontSize: '0.65rem', opacity: 0.6 }}>{h?.location || "Regional Node"} • {h?.stage || "Active"}</div>
                                                     </div>
                                                     <ChevronRight size={16} style={{ opacity: 0.4 }} />
                                                 </button>
@@ -162,6 +162,7 @@ const CropAdvisoryPage = () => {
                     )}
                 </div>
             </div>
+        </div>
         </div>
     );
 };
