@@ -29,16 +29,21 @@ const apiClient = axios.create({
 });
 
 // Request Interceptor (e.g., for Authorization)
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("agromart_token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+ apiClient.interceptors.request.use(
+   (config) => {
+     const token = localStorage.getItem("agromart_token");
+     if (token) {
+       config.headers.Authorization = `Bearer ${token}`;
+     }
+ 
+     // Localization Sync: Attach the user's preferred language (Default: 'en')
+     const lang = localStorage.getItem("agromart_lang") || "en";
+     config.headers["x-lang"] = lang;
+ 
+     return config;
+   },
+   (error) => Promise.reject(error)
+ );
 
 // Response Interceptor — auto-flatten the backend envelope
 // Backend always sends: { success: bool, message: string, data: <payload> }

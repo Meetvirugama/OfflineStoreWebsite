@@ -18,6 +18,7 @@ import {
 import apiClient from '@core/api/client';
 import useWeatherStore from '@features/agriculture/weather/weather.store';
 import L from 'leaflet';
+import { CROP_CATALOG } from '../constants/crops';
 import 'leaflet/dist/leaflet.css';
 import '@/styles/agriIntelligence.css';
 
@@ -42,6 +43,7 @@ const MapRecenter = ({ center }) => {
 const NearbyMandisPage = () => {
     const [viewMode, setViewMode] = useState('map');
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCrop, setSelectedCrop] = useState(CROP_CATALOG[0].id);
     const [userLocation, setUserLocation] = useState(null);
     const [mandis, setMandis] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -186,6 +188,35 @@ const NearbyMandisPage = () => {
                     </div>
                     <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--agri-green)', boxShadow: '0 0 10px var(--agri-green)', animation: 'pulse 2s infinite' }}></div>
                 </div>
+            </div>
+
+            {/* CROP SELECTOR RIBBON */}
+            <div style={{ marginBottom: '3rem', overflowX: 'auto', display: 'flex', gap: '1rem', paddingBottom: '1rem' }}>
+                {CROP_CATALOG.map(crop => (
+                    <button
+                        key={crop.id}
+                        onClick={() => setSelectedCrop(crop.id)}
+                        className={`agri-card hover-bg ${selectedCrop === crop.id ? 'active-crop' : ''}`}
+                        style={{
+                            padding: '1rem 2rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.8rem',
+                            minWidth: 'fit-content',
+                            borderRadius: '16px',
+                            background: selectedCrop === crop.id ? 'var(--agri-green)' : '#fff',
+                            color: selectedCrop === crop.id ? '#fff' : '#1e293b',
+                            border: '1px solid rgba(0,0,0,0.05)',
+                            cursor: 'pointer',
+                            fontWeight: 800,
+                            fontSize: '0.9rem',
+                            transition: '0.3s'
+                        }}
+                    >
+                        <span style={{ fontSize: '1.2rem' }}>{crop.icon}</span>
+                        {crop.name}
+                    </button>
+                ))}
             </div>
 
             {error && (

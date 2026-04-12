@@ -18,7 +18,8 @@ import {
   X,
   Newspaper,
   Zap,
-  MapPin
+  MapPin,
+  Languages
 } from "lucide-react";
 
 import useAuthStore from "@features/auth/store/auth.store";
@@ -41,6 +42,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentLang, setCurrentLang] = useState(localStorage.getItem("agromart_lang") || "en");
   const notifRef = useRef(null);
   const searchRef = useRef(null);
 
@@ -86,6 +88,14 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     navigate("/");
+  };
+
+  const toggleLanguage = () => {
+    const next = currentLang === "en" ? "gu" : "en";
+    localStorage.setItem("agromart_lang", next);
+    setCurrentLang(next);
+    // Refresh to apply headers globally
+    window.location.reload();
   };
 
   const isActive = (path) => location.pathname === path;
@@ -143,6 +153,30 @@ export default function Navbar() {
               <div className="action-btn cart-btn" onClick={() => setDrawerOpen && setDrawerOpen(true)}>
                 <ShoppingBag size={22} />
                 {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+              </div>
+
+              {/* LANGUAGE TOGGLE */}
+              <div 
+                className={`action-btn lang-toggle ${currentLang === 'gu' ? 'is-gu' : ''}`} 
+                onClick={toggleLanguage}
+                title="Switch Language / ભાષા બદલો"
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  padding: '8px 16px',
+                  background: currentLang === 'gu' ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                  border: `1px solid ${currentLang === 'gu' ? 'var(--agri-green)' : 'rgba(0,0,0,0.1)'}`,
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontWeight: 800,
+                  fontSize: '0.8rem',
+                  color: currentLang === 'gu' ? 'var(--agri-green)' : 'inherit',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                <Languages size={18} />
+                <span style={{ letterSpacing: '0.5px' }}>{currentLang === 'en' ? 'EN' : 'ગુજરાતી'}</span>
               </div>
 
               {token && user ? (

@@ -5,11 +5,7 @@ import {
 } from "recharts";
 import useMandiStore from "@features/agriculture/mandi/mandi.store";
 import "@/styles/Admin.css";
-
-const COMMON_CROPS = [
-    "Wheat", "Cotton", "Groundnut", "Castor Seed", "Cumin", "Mustard", "Guar Seed", 
-    "Soyabean", "Onion", "Potato", "Tomato"
-];
+import { CROP_CATALOG } from "@features/agriculture/constants/crops";
 
 export default function MandiDashboardPage() {
     const { 
@@ -60,9 +56,9 @@ export default function MandiDashboardPage() {
                         className="modal-form-input"
                         style={{ padding: '10px 20px', borderRadius: '12px', background: '#fff', border: '1.5px solid #e2e8f0', fontWeight: '700' }}
                     >
-                        {COMMON_CROPS.map((c, idx) => (
-                            <option key={`${c}-${idx}`} value={c}>
-                                {c}
+                        {CROP_CATALOG.map((c, idx) => (
+                            <option key={`${c.id}-${idx}`} value={c.name}>
+                                {c.icon} {c.name}
                             </option>
                         ))}
                     </select>
