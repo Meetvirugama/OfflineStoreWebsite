@@ -4,7 +4,6 @@ import { Sprout, Skull, Info, Leaf, ArrowRight, Star, Award, ShieldCheck } from 
 import api from "@core/api/client";
 import ProductCard from "@features/shop/components/ProductCard";
 import useTranslation from "@core/i18n/useTranslation";
-import useAuthStore from "@core/auth/useAuthStore";
 import DynText from "@core/i18n/DynText";
 import "@/styles/HomePage.css";
 
@@ -12,8 +11,6 @@ export default function HomePage() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { customer } = useAuthStore();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const CATEGORY_MAP = {

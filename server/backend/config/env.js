@@ -27,7 +27,10 @@ export const ENV = {
     // Internal Service URLs
     BASE_API_URL: process.env.BASE_API_URL || 'https://offlinestorewebsite.onrender.com/api',
     FRONTEND_URL: process.env.FRONTEND_URL || 'https://www.agroplatform.app',
-    GROQ_KEY: process.env.GROQ_API_KEY
+    GROQ_KEY: process.env.GROQ_API_KEY,
+    
+    // Translation Service (LibreTranslate)
+    LIBRETRANSLATE_URL: process.env.LIBRETRANSLATE_URL || "https://libretranslate.de/translate"
 };
 
 export default ENV;
