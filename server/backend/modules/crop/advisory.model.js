@@ -39,6 +39,14 @@ const Advisory = sequelize.define("Advisory", {
         type: DataTypes.JSON,
         allowNull: true
     },
+    best_mandi: {
+        type: DataTypes.JSON,
+        allowNull: true
+    },
+    mandis_list: {
+        type: DataTypes.JSON,
+        allowNull: true
+    },
     created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW

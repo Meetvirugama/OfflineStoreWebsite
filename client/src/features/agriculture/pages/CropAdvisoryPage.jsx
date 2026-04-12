@@ -1,36 +1,28 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import useAdvisoryStore from '@features/agriculture/crop/advisory.store';
-import useWeatherStore from '@features/agriculture/weather/weather.store';
 import { 
-    Sprout, 
-    MapPin, 
-    Navigation, 
-    AlertTriangle, 
-    Thermometer, 
-    Droplets, 
-    CloudRain,
-    ChevronRight,
-    History,
-    TrendingUp,
-    ShieldCheck,
-    Loader2,
-    Calendar,
-    Target,
-    RefreshCw
-} from 'lucide-react';
-import { 
-    XAxis, 
-    YAxis, 
-    CartesianGrid, 
-    Tooltip, 
-    ResponsiveContainer,
-    AreaChart,
-    Area
-} from 'recharts';
-import '@/styles/agriIntelligence.css';
+    MapContainer, 
+    TileLayer, 
+    Marker, 
+    Popup,
+    useMap
+} from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
-const CROPS = ["Wheat", "Rice", "Cotton", "Sugarcane", "Groundnut", "Mustard", "Soybean", "Maize"];
-const STAGES = ["Sowing", "Vegetative", "Flowering", "Fruiting", "Harvesting"];
+// Fix Leaflet icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
+const RecenterMap = ({ lat, lon }) => {
+    const map = useMap();
+    useEffect(() => {
+        if (lat && lon) map.setView([lat, lon], 10);
+    }, [lat, lon, map]);
+    return null;
+};
 
 const CropAdvisoryPage = () => {
     const { curAdvisory, history, loading, error, generateAdvisory, fetchHistory } = useAdvisoryStore();
@@ -126,11 +118,11 @@ const CropAdvisoryPage = () => {
                         <div style={{padding: '0.8rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '18px', border: '1px solid rgba(16, 185, 129, 0.2)'}}>
                             <Target className="agri-green" size={32} />
                         </div>
-                        Smart Advisory Terminal
+                        Smart Mandi Hub + Advisory
                     </h1>
                     <p style={{ opacity: 0.5, fontSize: '1.1rem', marginTop: '0.8rem', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                         <ShieldCheck size={18} className="agri-green" />
-                        Rule-based AI indexing for precision spatial agriculture.
+                        AI-powered regional intelligence combining weather and market velocity.
                     </p>
                 </div>
                 <div className="weather-badge" style={{ padding: '0.8rem 1.5rem', borderRadius: '14px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', fontWeight: 800, letterSpacing: '1px', fontSize: '0.75rem' }}>
@@ -222,39 +214,27 @@ const CropAdvisoryPage = () => {
                                 }}
                             >
                                 {loading ? <Loader2 className="spin" size={24} /> : <ShieldCheck size={24} />}
-                                {loading ? 'SYNCHRONIZING' : 'INITIALIZE ADVISORY'}
+                                {loading ? 'SYNCHRONIZING' : 'INITIALIZE HUB'}
                             </button>
                         </div>
                     </div>
 
-                    {/* HISTORY TREND */}
+                    {/* RISK DENSITY MATRIX */}
                     <div className="agri-card" style={{ padding: '2.5rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
                         <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '1.1rem', fontWeight: 800 }}>
-                            <TrendingUp className="agri-green" size={22} /> Risk Density Matrix
+                            <TrendingUp className="agri-green" size={22} /> AI Risk Assessment
                         </h3>
-                        <div style={{ width: '100%', height: '240px' }}>
-                            {chartData.length > 0 ? (
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={chartData}>
-                                        <defs>
-                                            <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
-                                                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                            </linearGradient>
-                                        </defs>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.03)" vertical={false} />
-                                        <XAxis dataKey="date" stroke="rgba(0,0,0,0.2)" fontSize={10} tickLine={false} axisLine={false} />
-                                        <YAxis stroke="rgba(0,0,0,0.2)" fontSize={10} tickLine={false} axisLine={false} />
-                                        <Tooltip 
-                                            contentStyle={{ background: '#ffffff', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '16px', color: '#1e293b', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}
-                                            itemStyle={{ color: '#10b981', fontWeight: 800 }}
-                                        />
-                                        <Area type="monotone" dataKey="temp" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorTemp)" />
-                                    </AreaChart>
-                                </ResponsiveContainer>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            {curAdvisory?.accuracy_meta?.risks_raw ? (
+                                curAdvisory.accuracy_meta.risks_raw.map((risk, idx) => (
+                                    <div key={idx} style={{ padding: '1.2rem', background: '#fff1f2', border: '1px solid #fecaca', borderRadius: '16px', color: '#b91c1c', fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <AlertTriangle size={18} />
+                                        {risk}
+                                    </div>
+                                ))
                             ) : (
-                                <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3, border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
-                                    <p style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '0.8rem', color: '#64748b' }}>WAITING FOR TELEMETRY</p>
+                                <div style={{ height: '120px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3, border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
+                                    <p style={{ fontWeight: 800, letterSpacing: '1px', fontSize: '0.8rem', color: '#64748b' }}>NO RISKS DETECTED</p>
                                 </div>
                             )}
                         </div>
@@ -279,152 +259,119 @@ const CropAdvisoryPage = () => {
                             <div style={{ width: '100px', height: '100px', borderRadius: '30px', background: 'rgba(5, 150, 105, 0.05)', border: '1px solid rgba(5, 150, 105, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2.5rem', boxShadow: '0 10px 20px rgba(0,0,0,0.03)' }}>
                                 <Sprout size={48} className="agri-green" />
                             </div>
-                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-0.5px', color: '#1e293b' }}>Terminal Standby</h3>
-                            <p style={{ opacity: 0.5, maxWidth: '450px', margin: '0 auto', fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500, color: '#64748b' }}>Synchronize your regional telemetry to generate precision-grade agricultural benchmarks and risk assessments.</p>
+                            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 900, letterSpacing: '-0.5px', color: '#1e293b' }}>Hub Standby</h3>
+                            <p style={{ opacity: 0.5, maxWidth: '450px', margin: '0 auto', fontSize: '1.1rem', lineHeight: 1.6, fontWeight: 500, color: '#64748b' }}>Synchronize crop data to unlock AI-powered agronomy and market-first selling strategies.</p>
                         </div>
                     )}
 
                     {(curAdvisory || loading) && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                            {/* Weather Header */}
-                            <div className="agri-card" style={{ padding: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(16, 185, 129, 0.05)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '32px' }}>
-                                <div style={{ display: 'flex', gap: '4rem' }}>
-                                    <div>
-                                        <p style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.8rem', letterSpacing: '2px', fontWeight: 900 }}>PRECISION TEMP</p>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '2.4rem', fontWeight: '900', letterSpacing: '-1px' }}>
-                                            <Thermometer size={32} className="agri-green" />
-                                            {loading ? '---' : Math.round(curAdvisory?.weather_data?.main?.temp || 0)}°C
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.8rem', letterSpacing: '2px', fontWeight: 900 }}>RELATIVE HUMIDITY</p>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '2.4rem', fontWeight: '900', letterSpacing: '-1px' }}>
-                                            <Droplets size={32} className="agri-green" />
-                                            {loading ? '---' : curAdvisory?.weather_data?.main?.humidity}%
-                                        </div>
-                                    </div>
-                                    <div style={{ display: 'none' }}>
-                                        {/* Hidden column to maintain grid on mobile if needed */}
-                                    </div>
+                            {/* AI Advisory Text */}
+                            <div className="agri-card" style={{ padding: '2.5rem', background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', color: '#fff', borderRadius: '32px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                                    <ShieldCheck className="agri-green" size={24} />
+                                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800, letterSpacing: '1px' }}>AI STRATEGIC ADVISORY</h3>
+                                </div>
+                                <p style={{ fontSize: '1.2rem', lineHeight: 1.8, opacity: 0.9, fontWeight: 500 }}>
+                                    {loading ? 'Synthesizing global weather patterns and local market velocities...' : curAdvisory?.accuracy_meta?.ai_text}
+                                </p>
+                            </div>
+
+                            {/* Market Intelligence Section */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                                {/* Map View */}
+                                <div className="agri-card" style={{ height: '400px', borderRadius: '32px', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.1)' }}>
+                                    <MapContainer 
+                                        center={[formData.lat || 22.3, formData.lon || 70.8]} 
+                                        zoom={10} 
+                                        style={{ height: '100%', width: '100%' }}
+                                    >
+                                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                        <RecenterMap lat={formData.lat} lon={formData.lon} />
+                                        {formData.lat && formData.lon && (
+                                            <Marker position={[formData.lat, formData.lon]}>
+                                                <Popup>Your Location</Popup>
+                                            </Marker>
+                                        )}
+                                        {curAdvisory?.mandis_list?.map((m, idx) => (
+                                            <Marker key={idx} position={[m.lat, m.lng]}>
+                                                <Popup>
+                                                    <div style={{ fontWeight: 800 }}>{m.name}</div>
+                                                    <div style={{ color: 'var(--agri-green)' }}>₹{m.modal_price}</div>
+                                                    <div>{m.distance} km</div>
+                                                </Popup>
+                                            </Marker>
+                                        ))}
+                                    </MapContainer>
                                 </div>
 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-end' }}>
-                                    <div style={{ 
-                                        padding: '0.8rem 1.8rem', 
-                                        borderRadius: '14px', 
-                                        fontSize: '0.8rem', 
-                                        fontWeight: '900',
-                                        background: curAdvisory?.accuracy_meta?.season_match ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                                        color: curAdvisory?.accuracy_meta?.season_match ? '#10b981' : '#f87171',
-                                        border: `1px solid ${curAdvisory?.accuracy_meta?.season_match ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
-                                        letterSpacing: '1px'
-                                    }}>
-                                        {curAdvisory?.accuracy_meta?.season_match ? "✓ AGRI-SYNC ACTIVE" : "⚠ SEASON MISMATCH"}
+                                {/* Best Mandi Selection */}
+                                <div className="agri-card" style={{ padding: '2.5rem', background: '#fff', border: '2px solid var(--agri-green)', borderRadius: '32px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+                                        <div>
+                                            <div style={{ padding: '0.5rem 1rem', background: 'var(--agri-green)', color: '#fff', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 900, display: 'inline-block', marginBottom: '1rem' }}>BEST OPTION</div>
+                                            <h3 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#1e293b' }}>{loading ? '---' : curAdvisory?.best_mandi?.name}</h3>
+                                        </div>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <p style={{ opacity: 0.4, fontSize: '0.7rem', fontWeight: 900 }}>EST. PRICE</p>
+                                            <div style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--agri-green)' }}>₹{loading ? '---' : curAdvisory?.best_mandi?.modal_price}</div>
+                                        </div>
                                     </div>
-                                    <div style={{ 
-                                        padding: '0.8rem 1.8rem', 
-                                        borderRadius: '14px', 
-                                        fontSize: '0.8rem', 
-                                        fontWeight: '900',
-                                        background: getRiskColor(curAdvisory?.risk_level) + '15',
-                                        color: getRiskColor(curAdvisory?.risk_level),
-                                        border: `1px solid ${getRiskColor(curAdvisory?.risk_level)}40`,
-                                        letterSpacing: '1px'
-                                    }}>
-                                        {loading ? 'CALCULATING...' : `RISK INDEX: ${curAdvisory?.risk_level}`}
+                                    <p style={{ fontSize: '1.1rem', lineHeight: 1.6, color: '#64748b', fontWeight: 500, marginBottom: '2rem' }}>
+                                        {loading ? 'Analyzing logistics...' : curAdvisory?.accuracy_meta?.best_mandi_reason}
+                                    </p>
+                                    <div style={{ display: 'flex', gap: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '20px' }}>
+                                        <div>
+                                            <p style={{ opacity: 0.4, fontSize: '0.7rem', fontWeight: 900 }}>DISTANCE</p>
+                                            <p style={{ fontWeight: 800 }}>{loading ? '---' : curAdvisory?.best_mandi?.distance} KM</p>
+                                        </div>
+                                        <div>
+                                            <p style={{ opacity: 0.4, fontSize: '0.7rem', fontWeight: 900 }}>TOP CROP</p>
+                                            <p style={{ fontWeight: 800 }}>{loading ? '---' : curAdvisory?.best_mandi?.top_crop || 'General'}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-
-                            {/* Advisory Cards */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
-                                {loading ? (
-                                    [1, 2, 3].map(i => <div key={i} className="agri-card" style={{ height: '140px', background: '#ffffff', border: '1px solid rgba(0,0,0,0.04)', borderRadius: '24px', opacity: 0.3 }}></div>)
-                                ) : (
-                                    curAdvisory?.advisory.map((item, idx) => (
-                                        <div key={idx} className="agri-card hover-bg" style={{ padding: '2.5rem', display: 'flex', gap: '2rem', alignItems: 'center', background: '#ffffff', borderRadius: '28px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 15px rgba(0,0,0,0.02)' }}>
-                                            <div style={{ 
-                                                width: '72px', 
-                                                height: '72px', 
-                                                borderRadius: '20px', 
-                                                background: '#f8fafc', 
-                                                display: 'flex', 
-                                                alignItems: 'center', 
-                                                justifyContent: 'center',
-                                                fontSize: '2.4rem',
-                                                border: '1px solid rgba(0,0,0,0.06)',
-                                                boxShadow: '0 4px 10px rgba(0,0,0,0.02)'
-                                            }}>
-                                                {item.icon}
+                            {/* Smart Activity Pulse */}
+                            <div className="agri-card" style={{ padding: '3rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)' }}>
+                                <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
+                                    <History size={24} className="agri-green" /> Smart Activity Pulse
+                                </h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                                    {curAdvisory?.advisory?.map((h, idx) => (
+                                        <div key={idx} className="history-item" style={{ 
+                                            padding: '1.8rem', 
+                                            borderRadius: '24px', 
+                                            background: '#f8fafc',
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            border: '1px solid rgba(0,0,0,0.04)'
+                                        }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.8rem' }}>
+                                                <div style={{ 
+                                                    width: '40px', 
+                                                    height: '40px', 
+                                                    background: 'rgba(16, 185, 129, 0.1)', 
+                                                    borderRadius: '12px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center'
+                                                }}>
+                                                    <ChevronRight size={20} className="agri-green" />
+                                                </div>
+                                                <div>
+                                                    <p style={{ fontWeight: '800', fontSize: '1.1rem', color: '#1e293b' }}>{h.message}</p>
+                                                    <p style={{ fontSize: '0.75rem', color: 'var(--agri-green)', fontWeight: 900, marginTop: '4px' }}>ACTION REQUIRED ● PRIORITY {idx + 1}</p>
+                                                </div>
                                             </div>
-                                            <div style={{ flex: 1 }}>
-                                                <h4 style={{ color: '#1e293b', fontSize: '1.3rem', marginBottom: '0.6rem', fontWeight: '800', letterSpacing: '-0.3px' }}>
-                                                    {item.title.toUpperCase()}
-                                                </h4>
-                                                <p style={{ fontSize: '1.05rem', color: '#64748b', opacity: 0.8, lineHeight: 1.7, fontWeight: 500 }}>
-                                                    {item.message}
-                                                </p>
-                                            </div>
-                                            <ChevronRight size={24} style={{ opacity: 0.2 }} />
                                         </div>
-                                    ))
-                                )}
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     )}
-
-                    {/* HISTORY LIST */}
-                    <div className="agri-card" style={{ padding: '3rem', background: '#ffffff', borderRadius: '32px', border: '1px solid rgba(0,0,0,0.06)', boxShadow: '0 4px 20px rgba(0,0,0,0.02)' }}>
-                        <h3 style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1.3rem', fontWeight: 800, color: '#1e293b' }}>
-                            <History size={24} className="agri-green" /> Smart Activity Pulse
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                            {history.length > 0 ? history.map((h) => (
-                                <div key={h.id} className="history-item" style={{ 
-                                    padding: '1.8rem', 
-                                    borderRadius: '24px', 
-                                    background: '#f8fafc',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    border: '1px solid rgba(0,0,0,0.04)',
-                                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                                    cursor: 'pointer'
-                                }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.8rem' }}>
-                                        <div style={{ 
-                                            width: '8px', 
-                                            height: '45px', 
-                                            background: getRiskColor(h.risk_level), 
-                                            borderRadius: '8px',
-                                            boxShadow: `0 0 15px ${getRiskColor(h.risk_level)}30`
-                                        }}></div>
-                                        <div>
-                                            <p style={{ fontWeight: '900', fontSize: '1.1rem', color: '#1e293b', letterSpacing: '-0.2px' }}>{h.crop} <span style={{ opacity: 0.2, fontWeight: '400', margin: '0 0.8rem' }}>/</span> <span style={{ opacity: 0.5 }}>{h.stage.toUpperCase()}</span></p>
-                                            <p style={{ fontSize: '0.85rem', color: '#64748b', opacity: 0.7, display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.5rem', fontWeight: 600 }}>
-                                                <Calendar size={14} /> {new Date(h.created_at).toLocaleDateString()}
-                                                <MapPin size={14} /> {h.location}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: '1.4rem', fontWeight: '900', color: '#1e293b', letterSpacing: '-1px' }}>
-                                            {Math.round(h.weather_data?.main?.temp || h.weather_data?.temp || 0)}°C
-                                        </div>
-                                        <div style={{ fontSize: '0.75rem', color: getRiskColor(h.risk_level), fontWeight: '900', letterSpacing: '1px', marginTop: '4px' }}>
-                                            {h.risk_level} RISK
-                                        </div>
-                                    </div>
-                                </div>
-                            )) : (
-                                <div style={{ textAlign: 'center', opacity: 0.4, padding: '5rem 2rem', border: '2px dashed rgba(0,0,0,0.05)', borderRadius: '24px' }}>
-                                    <Calendar size={48} style={{ marginBottom: '1.5rem', color: '#64748b' }} />
-                                    <p style={{fontWeight: 800, letterSpacing: '1px', color: '#64748b'}}>NO ARCHIVED TELEMETRY</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

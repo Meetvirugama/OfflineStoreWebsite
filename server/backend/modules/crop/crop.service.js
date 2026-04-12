@@ -155,8 +155,10 @@ export const getSeasonalSuggestions = async () => {
     };
 };
 
+import * as mandiService from "../mandi/mandi.service.js";
+
 /**
- * CROP ADVISORY ENGINE (Rule-based)
+ * CROP ADVISORY ENGINE (AI + Market Powered)
  */
 export const generateAdvisory = async (userId, formData) => {
     const { crop, stage, location, lat, lon } = formData;
@@ -177,43 +179,45 @@ export const generateAdvisory = async (userId, formData) => {
         weatherData = (await weatherService.getAtmosphericDetails(finalLat, finalLon))?.current;
     }
 
-    // 2. Core Rule Engine
-    const temp = weatherData?.main?.temp || 30;
-    const humidity = weatherData?.main?.humidity || 50;
-    const advisories = [];
-    let riskLevel = "LOW";
+    // 2. Fetch Market Context (Nearby Mandis)
+    const mandis = await mandiService.getNearbyMandis(finalLat || 22.3, finalLon || 71.2);
+    const top3Mandis = mandis.slice(0, 3);
+    
+    // Identify Best Mandi (Simplified: Highest price in the top 3)
+    let bestMandi = top3Mandis.length > 0 ? top3Mandis[0] : null;
+    top3Mandis.forEach(m => {
+        if (m.modal_price > (bestMandi?.modal_price || 0)) {
+            bestMandi = m;
+        }
+    });
 
-    // Standard Temperature Rules
-    if (temp > 38) {
-        riskLevel = "HIGH";
-        advisories.push({ title: "Heat Stress Alert", message: "Intense heat detected. Implement frequent light irrigation in early morning.", icon: "🔥" });
-    } else if (stage === "Sowing" && temp < 15) {
-        riskLevel = "MEDIUM";
-        advisories.push({ title: "Germination Delay", message: "Low temperatures may slow germination. Consider mulch usage.", icon: "❄️" });
-    }
+    // 3. AI Intelligence Synthesis
+    const aiPayload = {
+        crop,
+        stage,
+        location: location || "Detected Location",
+        weather: weatherData,
+        mandis: top3Mandis.map(m => ({ 
+            name: m.name, 
+            price: m.modal_price, 
+            distance: m.distance,
+            commodity: m.top_crop 
+        }))
+    };
 
-    // Moisture Rules
-    if (humidity > 85) {
-        riskLevel = "MEDIUM";
-        advisories.push({ title: "Fungal Risk", message: "High humidity detected. Watch for signs of rust or blight.", icon: "🍄" });
-    }
+    const aiResponse = await aiService.getComprehensiveSmartAdvisory(aiPayload);
 
-    // Stage-Specific Rules
-    if (stage === "Flowering") {
-        advisories.push({ title: "Micronutrient Support", message: "Apply Boron spray for better fruit setting during flowering.", icon: "🌸" });
-    }
+    // 4. Map back to Advisory data structure
+    const advisories = aiResponse.actions.map((action, idx) => ({
+        title: `Priority Action ${idx + 1}`,
+        message: action,
+        icon: "⚡"
+    }));
 
-    // 3. AI Strategic Enhancement (NEW)
-    const smartReview = await aiService.generateStrategicAdvisory(crop, stage, weatherData, advisories);
-    if (smartReview) {
-        advisories.push({ 
-            title: "Expert Smart Review", 
-            message: smartReview, 
-            icon: "🤖" 
-        });
-    }
+    // Detect risk level based on AI risks
+    const riskLevel = aiResponse.risks.length > 3 ? "HIGH" : aiResponse.risks.length > 1 ? "MEDIUM" : "LOW";
 
-    // 4. Persist and Return
+    // 5. Persist and Return
     const advisory = await Advisory.create({
         user_id: userId,
         crop,
@@ -221,8 +225,15 @@ export const generateAdvisory = async (userId, formData) => {
         location: location || "Detected Location",
         weather_data: weatherData,
         risk_level: riskLevel,
-        advisory: advisories,
-        accuracy_meta: { season_match: true } // Static for now
+        advisory: advisories, // Store actions as legacy list for compatibility
+        best_mandi: bestMandi,
+        mandis_list: top3Mandis,
+        accuracy_meta: { 
+            season_match: true,
+            ai_text: aiResponse.advisory_text,
+            best_mandi_reason: aiResponse.best_mandi_reason,
+            risks_raw: aiResponse.risks
+        }
     });
 
     return advisory;

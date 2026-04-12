@@ -203,3 +203,64 @@ export const generateWeatherOutlook = async (forecast) => {
         return "";
     }
 };
+/**
+ * FEATURE 4: Comprehensive Smart Advisory Package
+ */
+export const getComprehensiveSmartAdvisory = async (data) => {
+    const groq = getGroqClient();
+    const { crop, stage, location, weather, mandis } = data;
+
+    if (!groq) {
+        return {
+            advisory_text: "System is currently using fallback logic. Maintain standard crop monitoring.",
+            risks: ["Limited real-time AI context available"],
+            actions: ["Check local weather forecasts manually", "Monitor crop health daily"],
+            best_mandi_reason: "Manual comparison of nearby mandis is advised."
+        };
+    }
+
+    try {
+        const prompt = `
+            You are a professional agricultural advisor and market strategist.
+            
+            CONTEXT:
+            Crop: ${crop}
+            Growth Stage: ${stage}
+            Location: ${location}
+            
+            WEATHER DATA:
+            ${JSON.stringify(weather)}
+            
+            NEARBY MANDI DATA (Top 3):
+            ${JSON.stringify(mandis)}
+            
+            Based on this information, generate a comprehensive advisory package.
+            
+            Provide the response in the following JSON format:
+            {
+              "advisory_text": "2-3 sentences of overall strategic advice",
+              "risks": ["Risk 1", "Risk 2", "Risk 3"],
+              "actions": ["Action 1", "Action 2", "Action 3", "Action 4", "Action 5"],
+              "best_mandi_reason": "1-2 sentences explaining why the identified 'best' mandi is optimal"
+            }
+            
+            Ensure the advice is actionable, farmer-friendly, and specific to the crop and conditions provided.
+        `;
+
+        const completion = await groq.chat.completions.create({
+            messages: [{ role: "user", content: prompt }],
+            model: MODEL,
+            response_format: { type: "json_object" }
+        });
+
+        return JSON.parse(completion.choices[0]?.message?.content);
+    } catch (error) {
+        console.error("GROQ API Error (Comprehensive Advisory):", error);
+        return {
+            advisory_text: "Strategic advice generation encountered an error. Please follow standard protocol.",
+            risks: ["Data synchronization timeout"],
+            actions: ["Verify sensor connectivity", "Re-run advisory initialization"],
+            best_mandi_reason: "Market analysis failed. Consult local price boards."
+        };
+    }
+};
