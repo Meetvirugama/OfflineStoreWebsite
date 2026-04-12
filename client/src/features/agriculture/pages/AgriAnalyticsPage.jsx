@@ -54,7 +54,7 @@ const AgriAnalyticsPage = () => {
                 
                 <div style={{display: 'flex', gap: '0.6rem', alignItems: 'center', flexWrap: 'wrap'}}>
                     <button 
-                        onClick={() => window.location.href = `/admin/agri/crop/${selectedCrop}`}
+                        onClick={() => window.location.href = `/intelligence/agri/crop/${selectedCrop}`}
                         className="agri-card hover-bg" 
                         style={{
                             padding: '0.5rem 1rem', 
