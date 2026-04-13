@@ -24,14 +24,16 @@ export const register = async (data) => {
         is_verified: false
     });
 
-    // 3. Send Verification Email
-    try {
-        const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
-        const emailHtml = getOTPTemplate(otp, data.name || "Farmer");
-        await sendEmail(data.email, "Verify your AgroMart Account 🌾", `Your verification code is ${otp}`, emailHtml);
-    } catch (err) {
-        console.error("Delayed Registration Email Error:", err);
-    }
+    // 3. Send Verification Email (Non-blocking background task)
+    (async () => {
+        try {
+            const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
+            const emailHtml = getOTPTemplate(otp, data.name || "Farmer");
+            await sendEmail(data.email, "Verify your AgroMart Account 🌾", `Your verification code is ${otp}`, emailHtml);
+        } catch (err) {
+            console.error("Delayed Registration Email Error:", err);
+        }
+    })();
 
     return { name: data.name, email: data.email, otp }; 
 };
@@ -103,14 +105,16 @@ export const resendOtp = async (email) => {
     user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    // Send Resend Email
-    try {
-        const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
-        const emailHtml = getOTPTemplate(otp, user.name || "Farmer");
-        await sendEmail(user.email, "Your new AgroMart Verification Code 🌾", `Your new code is ${otp}`, emailHtml);
-    } catch (err) {
-        console.error("Delayed Resend Email Error:", err);
-    }
+    // Send Resend Email (Non-blocking)
+    (async () => {
+        try {
+            const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
+            const emailHtml = getOTPTemplate(otp, user.name || "Farmer");
+            await sendEmail(user.email, "Your new AgroMart Verification Code 🌾", `Your new code is ${otp}`, emailHtml);
+        } catch (err) {
+            console.error("Delayed Resend Email Error:", err);
+        }
+    })();
 
     return { email, otp };
 };
@@ -158,14 +162,16 @@ export const forgotPassword = async (email) => {
     user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    // Send Recovery Email
-    try {
-        const { sendEmail, getRecoveryTemplate } = await import("../../utils/email.js");
-        const emailHtml = getRecoveryTemplate(otp, user.name || "Farmer");
-        await sendEmail(user.email, "Reset your AgroMart Password 🔐", `Your recovery code is ${otp}`, emailHtml);
-    } catch (err) {
-        console.error("Delayed Recovery Email Error:", err);
-    }
+    // Send Recovery Email (Non-blocking)
+    (async () => {
+        try {
+            const { sendEmail, getRecoveryTemplate } = await import("../../utils/email.js");
+            const emailHtml = getRecoveryTemplate(otp, user.name || "Farmer");
+            await sendEmail(user.email, "Reset your AgroMart Password 🔐", `Your recovery code is ${otp}`, emailHtml);
+        } catch (err) {
+            console.error("Delayed Recovery Email Error:", err);
+        }
+    })();
 
     return { email, message: "Recovery OTP sent" };
 };
