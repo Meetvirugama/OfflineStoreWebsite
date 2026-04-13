@@ -7,7 +7,7 @@ const EXCLUDED_KEYS = new Set([
     'email', 'mobile', 'phone', 'contact',
     'created_at', 'updated_at', 'date', 'timestamp',
     'invoice_number', 'sku', 'status', 'unit',
-    'commodity', 'market', 'crop', 'apmc', 'district', 'state', // Agri Logic
+    // 'commodity', 'market', 'crop', 'apmc', 'district', 'state' - MOVED TO PRIORITY
     'category', 'location', 'lat', 'lng', // Technical Locality
     'icon', 'color', 'image', 'url', 'link' // UI Technicals
 ]);
@@ -63,7 +63,14 @@ const processValue = async (value, key, targetLang, depth = 0, visited = new Wea
             const lowKey = k.toLowerCase();
             
             // PRIORITY KEYS: Always translate these regardless of depth
-            if (['title', 'description', 'message', 'name'].includes(lowKey)) {
+            const PRIORITY_KEYS = [
+                'title', 'description', 'message', 'name', 'commodity', 'market', 'market_name',
+                'crop', 'crop_name', 'apmc', 'district', 'state', 'variety', 'mandi', 'type',
+                'disease_name', 'severity', 'solution', 'organic_solution', 'outlook', 
+                'ai_recommendation', 'season', 'stage', 'diagnosis', 'remedy', 'symptoms', 
+                'suggestion', 'ai_text', 'best_mandi_reason', 'risks_raw', 'outlook_type', 'velocity'
+            ];
+            if (PRIORITY_KEYS.includes(lowKey)) {
                 processedObj[k] = await processValue(v, k, targetLang, depth + 1, visited);
                 continue;
             }

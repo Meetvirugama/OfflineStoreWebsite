@@ -38,14 +38,14 @@ export const translateText = async (text, targetLang = 'en') => {
     if (groq && text.length < 3000) { // Safety: Skip AI for extremely massive blocks
         try {
             const prompt = `
-                Translate the following English agricultural/ERP text into localized Gujarati for a farmer.
+                Translate the following English agricultural/ERP text into localized Gujarati.
                 TEXT: "${text}"
                 
                 STRICT RULES:
-                1. Return ONLY the translated Gujarati text.
-                2. Preserve any numbers, punctuation, or technical codes (id:101, [NEW]).
-                3. Use common farming terminology used in Gujarat.
-                4. Do NOT explain the translation.
+                1. Return ONLY the translation. No conversational filler.
+                2. Preserve numbers, units (kg, ₹), and IDs (id:123).
+                3. Agricultural Context: Use local farming terms (e.g., 'Market' -> 'બજાર' or 'Mandi').
+                4. Length: Keep it similar to the original.
             `;
 
             const completion = await groq.chat.completions.create({
@@ -58,19 +58,18 @@ export const translateText = async (text, targetLang = 'en') => {
             const rawResponse = completion.choices[0]?.message?.content || '';
             let translatedText = rawResponse.trim().replace(/^"(.*)"$/, '$1');
 
-            // 🚀 SMART CLEANUP: If the response contains English preamble, extract only Gujarati characters
-            // Gujarati Unicode Range: \u0A80-\u0AFF
-            const gujaratiMatch = translatedText.match(/[\u0A80-\u0AFF][\s\S]*[\u0A80-\u0AFF]/);
-            if (gujaratiMatch && translatedText.length > rawResponse.length / 2) {
-                translatedText = gujaratiMatch[0];
-            }
+            // 🚀 SMART CLEANUP: Remove common AI chatter prefixes
+            translatedText = translatedText.replace(/^(Translation|Gujarati|Translated Text):\s*/i, '');
 
-            if (translatedText && translatedText !== text) {
+            // Verify it actually contains Gujarati characters if we expect it to
+            const hasGujarati = /[\u0A80-\u0AFF]/.test(translatedText);
+            
+            if (hasGujarati && translatedText !== text) {
                 translationCache.set(cacheKey, translatedText);
                 return translatedText;
             }
         } catch (error) {
-            console.warn(`[AI TRANSLATE] Error: ${error.message}`);
+            console.error(`[AI TRANSLATE ERROR] ${error.message}`);
         }
     }
 

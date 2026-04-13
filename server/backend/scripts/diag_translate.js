@@ -1,4 +1,4 @@
-import { translateText } from './server/backend/utils/translate.js';
+import { translateText } from '../utils/translate.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
