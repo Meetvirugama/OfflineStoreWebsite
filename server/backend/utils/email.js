@@ -22,7 +22,7 @@ const dnsLookupIPv4 = (hostname, options, callback) => {
     });
 };
 
-export const getTransporter = () => {
+export const getTransporter = async () => {
     if (transporter) return transporter;
 
     if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
@@ -31,8 +31,21 @@ export const getTransporter = () => {
     }
 
     console.log("[EMAIL] 🛠  Initializing SMTP Transporter...");
+    
+    // Render Fix: Manually resolve to IPv4 to avoid ENETUNREACH on IPv6
+    let resolvedHost = "smtp.gmail.com";
+    try {
+        const addresses = await dns.promises.resolve4("smtp.gmail.com");
+        if (addresses && addresses.length > 0) {
+            resolvedHost = addresses[0];
+            console.log(`[EMAIL-DNS] ✅ Forced IPv4: ${resolvedHost}`);
+        }
+    } catch (dnsErr) {
+        console.warn("[EMAIL-DNS-WARN] ⚠️ IPv4 resolution failed, falling back to hostname:", dnsErr.message);
+    }
+
     transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
+        host: resolvedHost,
         port: 587,
         secure: false, // Use STARTTLS
         auth: {
@@ -40,16 +53,14 @@ export const getTransporter = () => {
             pass: ENV.EMAIL_PASS,
         },
         tls: {
+            // Must specify servername if using IP address for host
+            servername: "smtp.gmail.com",
             rejectUnauthorized: true,
             minVersion: 'TLSv1.2'
         },
-        // Increased timeouts to handle cloud environment latency (Render)
-        dnsTimeout: 15000,           // 15 seconds
-        connectionTimeout: 30000,    // 30 seconds
-        greetingTimeout: 30000,      // 30 seconds
-        socketTimeout: 30000,        // 30 seconds
-        // Custom IPv4-only DNS resolver — prevents IPv6 ENETUNREACH on Render
-        lookup: dnsLookupIPv4,
+        connectionTimeout: 20000,
+        greetingTimeout: 20000,
+        socketTimeout: 20000,
     });
 
     return transporter;
@@ -58,7 +69,7 @@ export const getTransporter = () => {
 
 
 export const verifySMTP = async () => {
-    const transport = getTransporter();
+    const transport = await getTransporter();
     if (!transport) return false;
 
     try {
@@ -73,7 +84,7 @@ export const verifySMTP = async () => {
 
 export const sendEmail = async (to, subject, text, html, attachments = []) => {
     console.log(`[EMAIL] 🚀 Sending transmission to ${to}...`);
-    const transport = getTransporter();
+    const transport = await getTransporter();
 
     if (!transport) {
         console.error(`[EMAIL ERROR] ❌ Cannot send email to ${to}: SMTP not configured.`);

@@ -70,7 +70,7 @@ router.get("/diagnostics", async (req, res) => {
             // verifySMTP returns false if it fails, let's get the error from the function if possible
             // Re-run it here to capture the error in this context
             const { getTransporter } = await import("../../utils/email.js");
-            const transport = getTransporter();
+            const transport = await getTransporter();
             if (!transport) {
                 diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check EMAIL/EMAIL_PASS)";
             } else {
