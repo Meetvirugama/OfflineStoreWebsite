@@ -1,8 +1,8 @@
 import { Chat, ChatMessage, User } from "../index.js";
-import { catchAsync } from "../../utils/errorHandler.js";
+import { asyncHandler } from "../../utils/errorHandler.js";
 
 // Get or create chat session for current user (Farmer)
-export const getMyChat = catchAsync(async (req, res) => {
+export const getMyChat = asyncHandler(async (req, res) => {
     let chat = await Chat.findOne({ 
         where: { userId: req.user.id },
         include: [{ model: ChatMessage, limit: 1, order: [['createdAt', 'DESC']] }]
@@ -16,7 +16,7 @@ export const getMyChat = catchAsync(async (req, res) => {
 });
 
 // Send message from Farmer
-export const sendMessage = catchAsync(async (req, res) => {
+export const sendMessage = asyncHandler(async (req, res) => {
     const { text } = req.body;
     let chat = await Chat.findOne({ where: { userId: req.user.id } });
 
@@ -34,7 +34,7 @@ export const sendMessage = catchAsync(async (req, res) => {
 });
 
 // Get message history for Farmer
-export const getMessages = catchAsync(async (req, res) => {
+export const getMessages = asyncHandler(async (req, res) => {
     const chat = await Chat.findOne({ where: { userId: req.user.id } });
     if (!chat) return res.status(200).json({ status: "success", data: [] });
 
@@ -49,7 +49,7 @@ export const getMessages = catchAsync(async (req, res) => {
 // -- Admin Controllers --
 
 // Get all active chats for Support Dashboard
-export const getAllChats = catchAsync(async (req, res) => {
+export const getAllChats = asyncHandler(async (req, res) => {
     const chats = await Chat.findAll({
         include: [
             { model: User, attributes: ['id', 'name', 'phone'] },
@@ -62,7 +62,7 @@ export const getAllChats = catchAsync(async (req, res) => {
 });
 
 // Get specific chat messages for Admin
-export const getAdminMessages = catchAsync(async (req, res) => {
+export const getAdminMessages = asyncHandler(async (req, res) => {
     const { chatId } = req.params;
     const messages = await ChatMessage.findAll({
         where: { chatId },
@@ -74,7 +74,7 @@ export const getAdminMessages = catchAsync(async (req, res) => {
 });
 
 // Send reply from Admin
-export const sendAdminReply = catchAsync(async (req, res) => {
+export const sendAdminReply = asyncHandler(async (req, res) => {
     const { chatId, text } = req.body;
     
     const message = await ChatMessage.create({
