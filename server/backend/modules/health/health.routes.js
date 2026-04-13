@@ -63,8 +63,25 @@ router.get("/diagnostics", async (req, res) => {
     // 4. Check SMTP (Gmail)
     try {
         const { verifySMTP } = await import("../../utils/email.js");
-        const isSmtpLive = await verifySMTP();
-        diagnostics.connectivity.smtp = isSmtpLive ? "CONNECTED ✅" : "FAILED ❌";
+        const smtpResult = await verifySMTP();
+        if (smtpResult === true) {
+            diagnostics.connectivity.smtp = "CONNECTED ✅";
+        } else {
+            // verifySMTP returns false if it fails, let's get the error from the function if possible
+            // Re-run it here to capture the error in this context
+            const { getTransporter } = await import("../../utils/email.js");
+            const transport = getTransporter();
+            if (!transport) {
+                diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check EMAIL/EMAIL_PASS)";
+            } else {
+                try {
+                    await transport.verify();
+                    diagnostics.connectivity.smtp = "CONNECTED ✅";
+                } catch (vErr) {
+                    diagnostics.connectivity.smtp = `FAILED ❌ (${vErr.message})`;
+                }
+            }
+        }
     } catch (err) {
         diagnostics.connectivity.smtp = `ERROR ❌ (${err.message})`;
     }
