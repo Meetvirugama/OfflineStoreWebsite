@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Send, User, MessageSquare, Shield, Clock, CheckCircle2 } from "lucide-react";
+import { VITE_API_URL } from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import axios from "axios";
 
@@ -38,8 +39,7 @@ export default function AdminChatPage() {
 
     const fetchChats = async () => {
         try {
-            const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' });
-            const res = await api.get("/chat/admin/all", { headers: { Authorization: `Bearer ${token}` } });
+            const res = await axios.get(`${VITE_API_URL}/chat/admin/all`, { headers: { Authorization: `Bearer ${token}` } });
             setChats(res.data.data);
         } catch (err) {
             console.error("Global chat fetch failed", err);
@@ -48,8 +48,7 @@ export default function AdminChatPage() {
 
     const fetchMessages = async (chatId) => {
         try {
-            const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' });
-            const res = await api.get(`/chat/admin/messages/${chatId}`, { headers: { Authorization: `Bearer ${token}` } });
+            const res = await axios.get(`${VITE_API_URL}/chat/admin/messages/${chatId}`, { headers: { Authorization: `Bearer ${token}` } });
             setMessages(res.data.data);
         } catch (err) {
             console.error("Admin message sync failed", err);
@@ -61,8 +60,7 @@ export default function AdminChatPage() {
         if (!reply.trim() || !selectedChat) return;
 
         try {
-            const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' });
-            await api.post("/chat/admin/reply", { chatId: selectedChat.id, text: reply }, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post(`${VITE_API_URL}/chat/admin/reply`, { chatId: selectedChat.id, text: reply }, { headers: { Authorization: `Bearer ${token}` } });
             setReply("");
             fetchMessages(selectedChat.id);
         } catch (err) {
@@ -124,7 +122,7 @@ export default function AdminChatPage() {
                     <>
                         <div style={{ padding: '20px', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                <div style={{ width: '45px', height: '45px', borderRadius: '12px', background: '#ecfdf5', color: '#059669', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontWeight: 700 }}>
+                                <div style={{ width: '45px', height: '45px', borderRadius: '12px', background: '#ecfdf5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
                                     {selectedChat.User.name[0]}
                                 </div>
                                 <div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { MessageSquare, Send, X, ChevronDown, User, ShieldCheck } from "lucide-react";
+import { VITE_API_URL } from "@core/api/client";
 import useAuthStore from "@features/auth/store/auth.store";
 import axios from "axios";
 
@@ -29,8 +30,7 @@ export default function ChatWidget() {
 
     const fetchMessages = async () => {
         try {
-            const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' });
-            const res = await api.get("/chat/messages", { headers: { Authorization: `Bearer ${token}` } });
+            const res = await axios.get(`${VITE_API_URL}/chat/messages`, { headers: { Authorization: `Bearer ${token}` } });
             setMessages(res.data.data);
         } catch (err) {
             console.error("Chat sync failed", err);
@@ -43,8 +43,7 @@ export default function ChatWidget() {
 
         setLoading(true);
         try {
-            const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api' });
-            await api.post("/chat/message", { text: input }, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.post(`${VITE_API_URL}/chat/message`, { text: input }, { headers: { Authorization: `Bearer ${token}` } });
             setInput("");
             fetchMessages();
         } catch (err) {

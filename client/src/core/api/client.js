@@ -21,8 +21,10 @@ const getBaseUrl = () => {
   return "https://offlinestorewebsite.onrender.com/api";
 };
 
+export const VITE_API_URL = getBaseUrl();
+
 const apiClient = axios.create({
-  baseURL: getBaseUrl(),
+  baseURL: VITE_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
