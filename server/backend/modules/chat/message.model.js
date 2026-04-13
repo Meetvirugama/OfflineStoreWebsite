@@ -1,37 +1,35 @@
-import { DataTypes } from \"sequelize\";
-import sequelize from \"../../config/db.js\";
+import { DataTypes } from "sequelize";
+import sequelize from "../../config/db.js";
 
-const ChatMessage = sequelize.define(\"ChatMessage\", {
+const ChatMessage = sequelize.define("ChatMessage", {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
     },
-    chat_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    chatId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        field: "chat_id"
     },
-    sender_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    senderId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        field: "sender_id"
     },
     text: {
         type: DataTypes.TEXT,
         allowNull: false
     },
-    is_read: {
+    read: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
-    },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
     }
 }, {
-    tableName: \"chat_messages\",
+    tableName: "chat_messages",
     timestamps: true,
-    createdAt: \"created_at\",
-    updatedAt: false
+    createdAt: "created_at",
+    updatedAt: "updated_at"
 });
 
 export default ChatMessage;

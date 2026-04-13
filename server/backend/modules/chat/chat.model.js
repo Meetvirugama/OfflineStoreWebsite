@@ -1,33 +1,26 @@
-import { DataTypes } from \"sequelize\";
-import sequelize from \"../../config/db.js\";
+import { DataTypes } from "sequelize";
+import sequelize from "../../config/db.js";
 
-const Chat = sequelize.define(\"Chat\", {
+const Chat = sequelize.define("Chat", {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
     },
-    user_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        field: "user_id"
     },
     status: {
-        type: DataTypes.ENUM(\"OPEN\", \"CLOSED\"),
-        defaultValue: \"OPEN\"
-    },
-    created_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-    },
-    updated_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
+        type: DataTypes.ENUM("OPEN", "CLOSED"),
+        defaultValue: "OPEN"
     }
 }, {
-    tableName: \"chats\",
+    tableName: "chats",
     timestamps: true,
-    createdAt: \"created_at\",
-    updatedAt: \"updated_at\"
+    createdAt: "created_at",
+    updatedAt: "updated_at"
 });
 
 export default Chat;

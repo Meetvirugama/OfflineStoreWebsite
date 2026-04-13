@@ -1,90 +1,100 @@
-import React, { useEffect } from 'react';
-import { Target, Users, Zap, Leaf } from 'lucide-react';
-import '@/styles/global.css'; // Reusing global styles
+import { ShieldCheck, TrendingUp, Users, HeartHandshake, Leaf, Cpu } from "lucide-react";
 
-const AboutPage = () => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    document.title = "About Us - AgroMart";
-  }, []);
+export default function AboutPage() {
+  const VALUES = [
+    {
+      icon: <Leaf size={32} className="text-emerald-500" />,
+      title: "Sustainable Growth",
+      desc: "Promoting farming methods that protect the soil for the next seven generations while maximizing yield."
+    },
+    {
+      icon: <Cpu size={32} className="text-emerald-500" />,
+      title: "AI-Powered Intelligence",
+      desc: "Bringing world-class predictive analytics to the smallest farm plots in rural India."
+    },
+    {
+      icon: <HeartHandshake size={32} className="text-emerald-500" />,
+      title: "Direct Commitment",
+      desc: "Eliminating predatory middlemen to ensure farmers get the full value of their labor and crops."
+    }
+  ];
 
   return (
-    <div className="about-page fade-in">
+    <div className="about-page">
       {/* Hero Section */}
-      <section className="policy-hero" style={{ background: 'linear-gradient(135deg, #065f46 0%, #064e3b 100%)' }}>
-        <div className="container">
-          <h1 style={{ fontSize: '3.5rem', fontWeight: 900 }}>Our Mission</h1>
-          <p style={{ fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto' }}>
-            Empowering Bharat's farmers with data-driven intelligence and premium agricultural infrastructure.
+      <section style={{ 
+        background: 'linear-gradient(rgba(5, 150, 105, 0.8), rgba(6, 78, 59, 0.9)), url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        padding: '120px 20px',
+        textAlign: 'center',
+        color: '#fff'
+      }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          <h1 style={{ fontSize: '3.5rem', fontWeight: 800, marginBottom: '20px' }}>Cultivating the Future</h1>
+          <p style={{ fontSize: '1.25rem', opacity: 0.9, lineHeight: 1.6 }}>
+            AgroMart is not just an ERP; it's a movement to digitize and empower the backbone of our nation using local intelligence and global technology.
           </p>
         </div>
       </section>
 
-      {/* Narrative Section */}
-      <section className="container" style={{ padding: '80px 0' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px', alignItems: 'center' }}>
+      {/* Mission Section */}
+      <section style={{ padding: '80px 20px', background: '#fff' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '60px', alignItems: 'center' }}>
           <div>
-            <h2 style={{ fontSize: '2.5rem', color: '#111827', marginBottom: '24px' }}>Cultivating the Future</h2>
-            <p style={{ lineHeight: 1.8, color: '#4b5563', fontSize: '1.1rem', marginBottom: '20px' }}>
-              AgroMart was born out of a simple realization: the backbone of our economy—the Indian farmer—deserves the same 
-              cutting-edge technology as any modern enterprise. We are building the \"Operating System for Farming\" in Gujarat 
-              and beyond.
+            <h2 className="section-title" style={{ textAlign: 'left', marginBottom: '24px' }}>Our Mission</h2>
+            <p style={{ fontSize: '1.1rem', color: '#4b5563', lineHeight: 1.8, marginBottom: '20px' }}>
+              For decades, farmers have operated in the dark, subject to the whims of weather and volatile markets. We started AgroMart with a simple belief: a grain farmer in an Indian village deserves the same cutting-edge technology as any modern enterprise.
             </p>
-            <p style={{ lineHeight: 1.8, color: '#4b5563', fontSize: '1.1rem' }}>
-              By combining AI-powered pest detection, real-time mandi intelligence, and an elite supply chain, we ensure that 
-              every hand that sows the earth gets the highest possible return on its labor.
+            <p style={{ fontSize: '1.1rem', color: '#4b5563', lineHeight: 1.8 }}>
+              We are building the "Operating System for Farming" in Gujarat and beyond—integrating supply chains, providing AI-driven crop advisory, and creating a transparent marketplace for agricultural success.
             </p>
           </div>
-          <div style={{ background: '#f8fafc', padding: '40px', borderRadius: '24px', border: '1px solid #e2e8f0' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-              <div className="stat-card">
-                <Target color="#059669" size={32} />
-                <h3 style={{ marginTop: '16px' }}>Precision</h3>
-                <p style={{ fontSize: '0.9rem', color: '#64748b' }}>AI diagnostics with 98% accuracy.</p>
-              </div>
-              <div className="stat-card">
-                <Users color="#059669" size={32} />
-                <h3 style={{ marginTop: '16px' }}>Community</h3>
-                <h4 style={{ margin: 0, color: '#059669' }}>5,000+</h4>
-                <p style={{ fontSize: '0.9rem', color: '#64748b' }}>Active verified farmers.</p>
-              </div>
-              <div className="stat-card">
-                <Zap color="#059669" size={32} />
-                <h3 style={{ marginTop: '16px' }}>Speed</h3>
-                <p style={{ fontSize: '0.9rem', color: '#64748b' }}>Instant market price insights.</p>
-              </div>
-              <div className="stat-card">
-                <Leaf color="#059669" size={32} />
-                <h3 style={{ marginTop: '16px' }}>Quality</h3>
-                <p style={{ fontSize: '0.9rem', color: '#64748b' }}>Certified seeds and supplies.</p>
-              </div>
-            </div>
+          <div style={{ position: 'relative' }}>
+             <img 
+               src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=800&q=80" 
+               alt="Farming Innovation" 
+               style={{ width: '100%', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)' }}
+             />
+             <div className="card-premium" style={{ position: 'absolute', bottom: '-20px', left: '20px', padding: '20px', background: '#fff', maxWidth: '200px' }}>
+                <TrendingUp className="text-emerald-500" style={{ marginBottom: '10px' }} />
+                <h4 style={{ margin: 0 }}>40% Yield Increase</h4>
+                <p style={{ fontSize: '0.8rem', opacity: 0.7, margin: 0 }}>On average for our users</p>
+             </div>
           </div>
         </div>
       </section>
 
-      {/* Philosophy Section */}
-      <section style={{ background: '#f1f5f9', padding: '80px 0' }}>
-        <div className="container" style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: '2rem', marginBottom: '40px' }}>The AgroPlatform Philosophy</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '30px' }}>
-            <div className="card-premium" style={{ padding: '30px' }}>
-              <h3>Transparency</h3>
-              <p>Direct-from-source pricing and verified product history.</p>
-            </div>
-            <div className="card-premium" style={{ padding: '30px' }}>
-              <h3>Innovation</h3>
-              <p>Leveraging deep-learning for crop health and yield prediction.</p>
-            </div>
-            <div className="card-premium" style={{ padding: '30px' }}>
-              <h3>Sustainability</h3>
-              <p>Promoting practices that preserve the soil for the next generation.</p>
-            </div>
+      {/* Values Grid */}
+      <section style={{ padding: '80px 20px', background: '#f8fafc' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <h2 className="section-title">Core Philosophies</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px', marginTop: '50px' }}>
+            {VALUES.map((v, i) => (
+              <div key={i} className="card-premium" style={{ height: '100%', padding: '40px', background: '#fff' }}>
+                <div style={{ marginBottom: '20px' }}>{v.icon}</div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '15px' }}>{v.title}</h3>
+                <p style={{ color: '#64748b', lineHeight: 1.6 }}>{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Commitment Footer */}
+      <section style={{ padding: '100px 20px', textAlign: 'center', background: '#059669', color: '#fff' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+          <Users size={48} style={{ marginBottom: '24px', opacity: 0.8 }} />
+          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '24px' }}>Growing Together</h2>
+          <p style={{ fontSize: '1.15rem', opacity: 0.9, marginBottom: '40px' }}>
+            Every interaction on our platform is built on trust and a shared vision of a prosperous, digital agricultural future.
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+             <ShieldCheck size={32} />
+             <span style={{ fontSize: '1.25rem', fontWeight: 600 }}>Verified Excellence</span>
           </div>
         </div>
       </section>
     </div>
   );
-};
-
-export default AboutPage;
+}
