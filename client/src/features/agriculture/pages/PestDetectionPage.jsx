@@ -108,7 +108,11 @@ const PestDetectionPage = () => {
                                 className="agri-card"
                                 style={{ width: '100%', padding: '0.8rem', background: '#f8fafc', borderRadius: '0.6rem', color: '#1e293b', border: '1px solid rgba(0,0,0,0.08)' }}
                             >
-                                {CROPS.map(c => <option key={c} value={c} style={{ background: '#ffffff', color: '#1e293b' }}>{c.toUpperCase()}</option>)}
+                                {CROPS.map(c => (
+                                    <option key={c.id} value={c.name} style={{ background: '#ffffff', color: '#1e293b' }}>
+                                        {c.name.toUpperCase()}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 

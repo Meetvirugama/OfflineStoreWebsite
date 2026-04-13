@@ -9,7 +9,7 @@ const usePestStore = create((set, get) => ({
     detectPest: async (formData) => {
         set({ loading: true, error: null });
         try {
-            const res = await apiClient.post("/pest/detect", formData, {
+            const res = await apiClient.post("/crops/detect-pest", formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
             set({ currentDetection: res || null, loading: false });
@@ -23,7 +23,7 @@ const usePestStore = create((set, get) => ({
 
     fetchHistory: async () => {
         try {
-            const res = await apiClient.get("/pest/history");
+            const res = await apiClient.get("/crops/pest-history");
             set({ history: Array.isArray(res) ? res : [] });
         } catch (err) {
             console.error("History fetch failed", err);

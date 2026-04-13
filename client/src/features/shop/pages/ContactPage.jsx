@@ -17,7 +17,7 @@ const ContactPage = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('agromart_token');
             if (!token) {
                 setStatus({ type: 'error', text: 'You must be logged in to send a support inquiry.' });
                 return;
