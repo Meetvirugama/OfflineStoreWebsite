@@ -46,8 +46,8 @@ export const getTransporter = async () => {
 
     transporter = nodemailer.createTransport({
         host: resolvedHost,
-        port: 587,
-        secure: false, // Use STARTTLS
+        port: 465,
+        secure: true, // Use true for 465, false for other ports
         auth: {
             user: ENV.EMAIL,
             pass: ENV.EMAIL_PASS,
@@ -58,9 +58,9 @@ export const getTransporter = async () => {
             rejectUnauthorized: true,
             minVersion: 'TLSv1.2'
         },
-        connectionTimeout: 20000,
-        greetingTimeout: 20000,
-        socketTimeout: 20000,
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 15000,
     });
 
     return transporter;
