@@ -2,50 +2,11 @@ import express from "express";
 import sequelize from "../../config/db.js";
 import { ENV } from "../../config/env.js";
 import axios from "axios";
-import { translateText } from "../../utils/translate.js";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
     res.json({ success: true, message: "Health module is active" });
-});
-
-/**
- * PATH: GET /api/health/translate-test
- * Purpose: Deep Diagnostic for Hybrid AI Translation (Groq + ML)
- */
-router.get("/translate-test", async (req, res) => {
-    const testString = "Fresh cotton crop ready for market in Gujarat.";
-    try {
-        const startTime = Date.now();
-        const translated = await translateText(testString, 'gu');
-        const duration = Date.now() - startTime;
-
-        const isAI = translated.includes('કપાસ') || translated.includes('ગુજરાત');
-        const isFallback = (translated === testString);
-
-        res.json({
-            success: true,
-            status: isFallback ? "FALLBACK_ACTIVE ⚠️" : "OPERATIONAL ✅",
-            engine: isAI ? "Groq (AI-Tier)" : "LibreTranslate (ML-Tier)",
-            performance: `${duration}ms`,
-            localization: {
-                target: "Gujarati",
-                input: testString,
-                output: translated
-            },
-            config: {
-                has_groq_key: !!ENV.GROQ_KEY,
-                target_url: ENV.TRANSLATE_API_URL
-            }
-        });
-    } catch (err) {
-        res.json({
-            success: false,
-            error: err.message,
-            message: "Translation infrastructure completely unreachable"
-        });
-    }
 });
 
 router.get("/diagnostics", async (req, res) => {
