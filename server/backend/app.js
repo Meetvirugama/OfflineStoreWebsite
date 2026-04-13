@@ -32,7 +32,7 @@ import aiRoutes from "./modules/ai/ai.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 import supportRoutes from "./modules/support/support.routes.js";
 import chatRoutes from "./modules/chat/chat.routes.js";
-import { errorHandler } from "./middleware/error.middleware.js";
+import { globalErrorHandler } from "./middleware/error.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -93,6 +93,6 @@ app.use("/api/support", supportRoutes);
 app.use("/api/chat", chatRoutes);
 
 // Error Handling
-app.use(errorHandler);
+app.use(globalErrorHandler);
 
 export default app;
