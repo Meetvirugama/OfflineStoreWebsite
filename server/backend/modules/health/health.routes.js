@@ -60,7 +60,7 @@ router.get("/diagnostics", async (req, res) => {
         diagnostics.connectivity.external_apis.mandi = "UNREACHABLE ❌";
     }
 
-    // 4. Check SMTP (Gmail)
+    // 4. Check Email Service (Brevo HTTP API)
     try {
         const { verifySMTP } = await import("../../utils/email.js");
         const smtpResult = await verifySMTP();
@@ -72,7 +72,7 @@ router.get("/diagnostics", async (req, res) => {
             const { getTransporter } = await import("../../utils/email.js");
             const transport = await getTransporter();
             if (!transport) {
-                diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check EMAIL/EMAIL_PASS)";
+                diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check BREVO_API_KEY)";
             } else {
                 try {
                     await transport.verify();

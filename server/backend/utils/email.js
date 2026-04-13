@@ -1,62 +1,76 @@
-import nodemailer from "nodemailer";
-import dns from "dns";
+import axios from "axios";
 import { ENV } from "../config/env.js";
 
 /**
  * Global Email Utility for AgroPlatform ERP
- * Uses SMTP (Gmail App Password) for digital communication
- * Uses forced IPv4 DNS resolution to fix ENETUNREACH on Render (IPv6 not supported)
+ * Uses Brevo HTTP API to bypass Render's SMTP blocks
+ * Matches the Nodemailer interface to maintain compatibility
  */
 let transporter = null;
-
-// Force IPv4 DNS lookup — Render's infrastructure blocks outbound IPv6
-const dnsLookupIPv4 = (hostname, options, callback) => {
-    console.log(`[EMAIL-DNS] 🔍 Resolving ${hostname} (IPv4 preferred)...`);
-    dns.lookup(hostname, { ...options, family: 4 }, (err, address, family) => {
-        if (err) {
-            console.error(`[EMAIL-DNS-ERROR] ❌ Failed to resolve ${hostname}:`, err.message);
-        } else {
-            console.log(`[EMAIL-DNS-SUCCESS] ✅ Resolved ${hostname} to ${address}`);
-        }
-        callback(err, address, family);
-    });
-};
 
 export const getTransporter = async () => {
     if (transporter) return transporter;
 
-    if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
-        console.warn("⚠️  [EMAIL] SMTP Credentials missing. Check EMAIL and EMAIL_PASS environment variables.");
+    if (!ENV.BREVO_API_KEY) {
+        console.warn("⚠️  [EMAIL] Brevo API Key missing. Check BREVO_API_KEY environment variable.");
         return null;
     }
 
-    transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: ENV.EMAIL,
-            pass: ENV.EMAIL_PASS,
+    // Create a nodemailer-compatible interface using axios
+    transporter = {
+        verify: async () => {
+            try {
+                await axios.get("https://api.brevo.com/v3/account", {
+                    headers: { 'api-key': ENV.BREVO_API_KEY }
+                });
+                return true;
+            } catch (err) {
+                console.error("[EMAIL-AUTH-ERROR] ❌ Brevo API Key invalid:", err.response?.data || err.message);
+                return false;
+            }
         },
-        pool: true,
-        connectionTimeout: 20000,
-        greetingTimeout: 20000,
-        socketTimeout: 20000,
-    });
+        sendMail: async (options) => {
+            try {
+                const response = await axios.post("https://api.brevo.com/v3/smtp/email", {
+                    sender: { name: "AgroPlatform 🌾", email: ENV.EMAIL || "meetvirugama4902@gmail.com" },
+                    to: [{ email: options.to }],
+                    subject: options.subject,
+                    htmlContent: options.html,
+                    textContent: options.text,
+                    attachment: options.attachments?.map(att => ({
+                        name: att.filename,
+                        content: att.content?.toString('base64') || (att.path ? Buffer.from(att.path).toString('base64') : "")
+                    }))
+                }, {
+                    headers: { 
+                        'api-key': ENV.BREVO_API_KEY,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                return { messageId: response.data.messageId };
+            } catch (err) {
+                console.error("[BREVO-API-ERROR] ❌ Failed to send email via HTTP:", err.response?.data || err.message);
+                throw err;
+            }
+        }
+    };
 
     return transporter;
 };
-
-
 
 export const verifySMTP = async () => {
     const transport = await getTransporter();
     if (!transport) return false;
 
     try {
-        await transport.verify();
-        console.log("✅ [EMAIL] SMTP Link established successfully.");
-        return true;
+        const isValid = await transport.verify();
+        if (isValid) {
+            console.log("✅ [EMAIL] Brevo API Link verified successfully.");
+        }
+        return isValid;
     } catch (error) {
-        console.error("❌ [EMAIL ERROR] SMTP Verification Failed:", error.message);
+        console.error("❌ [EMAIL ERROR] Service Verification Failed:", error.message);
         return false;
     }
 };
@@ -66,13 +80,12 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
     const transport = await getTransporter();
 
     if (!transport) {
-        console.error(`[EMAIL ERROR] ❌ Cannot send email to ${to}: SMTP not configured.`);
+        console.error(`[EMAIL ERROR] ❌ Cannot send email to ${to}: Service not configured.`);
         return null;
     }
 
     try {
         const info = await transport.sendMail({
-            from: `"AgroPlatform 🌾" <${ENV.EMAIL}>`,
             to,
             subject,
             text,
@@ -82,10 +95,7 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
         console.log(`[EMAIL] ✅ Message sent successfully: %s`, info.messageId);
         return info;
     } catch (error) {
-        console.error(`[EMAIL ERROR] ❌ Failed to send email to ${to}:`, error.message);
-        if (error.code === 'EAUTH') {
-            console.error("👉 TIP: Check if your Gmail App Password is correct and EMAIL matches.");
-        }
+        console.error(`[EMAIL ERROR] ❌ Failed to send email via API to ${to}:`, error.message);
         return null;
     }
 };
