@@ -22,7 +22,7 @@ const dnsLookupIPv4 = (hostname, options, callback) => {
     });
 };
 
-const getTransporter = () => {
+export const getTransporter = () => {
     if (transporter) return transporter;
 
     if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
