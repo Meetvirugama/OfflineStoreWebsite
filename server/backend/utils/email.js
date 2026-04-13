@@ -30,37 +30,16 @@ export const getTransporter = async () => {
         return null;
     }
 
-    console.log("[EMAIL] 🛠  Initializing SMTP Transporter...");
-    
-    // Render Fix: Manually resolve to IPv4 to avoid ENETUNREACH on IPv6
-    let resolvedHost = "smtp.gmail.com";
-    try {
-        const addresses = await dns.promises.resolve4("smtp.gmail.com");
-        if (addresses && addresses.length > 0) {
-            resolvedHost = addresses[0];
-            console.log(`[EMAIL-DNS] ✅ Forced IPv4: ${resolvedHost}`);
-        }
-    } catch (dnsErr) {
-        console.warn("[EMAIL-DNS-WARN] ⚠️ IPv4 resolution failed, falling back to hostname:", dnsErr.message);
-    }
-
     transporter = nodemailer.createTransport({
-        host: resolvedHost,
-        port: 465,
-        secure: true, // Use true for 465, false for other ports
+        service: 'gmail',
         auth: {
             user: ENV.EMAIL,
             pass: ENV.EMAIL_PASS,
         },
-        tls: {
-            // Must specify servername if using IP address for host
-            servername: "smtp.gmail.com",
-            rejectUnauthorized: true,
-            minVersion: 'TLSv1.2'
-        },
-        connectionTimeout: 15000,
-        greetingTimeout: 15000,
-        socketTimeout: 15000,
+        pool: true,
+        connectionTimeout: 20000,
+        greetingTimeout: 20000,
+        socketTimeout: 20000,
     });
 
     return transporter;
