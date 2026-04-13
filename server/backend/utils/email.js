@@ -25,8 +25,8 @@ const dnsLookupIPv4 = (hostname, options, callback) => {
 const getTransporter = () => {
     if (transporter) return transporter;
 
-    if (!process.env.EMAIL || !process.env.EMAIL_PASS) {
-        console.warn("⚠️  [EMAIL] SMTP Credentials missing. Email features will be disabled.");
+    if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
+        console.warn("⚠️  [EMAIL] SMTP Credentials missing. Check EMAIL and EMAIL_PASS environment variables.");
         return null;
     }
 
@@ -36,8 +36,8 @@ const getTransporter = () => {
         port: 587,
         secure: false, // Use STARTTLS
         auth: {
-            user: process.env.EMAIL,
-            pass: process.env.EMAIL_PASS,
+            user: ENV.EMAIL,
+            pass: ENV.EMAIL_PASS,
         },
         tls: {
             rejectUnauthorized: true,
@@ -82,7 +82,7 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
 
     try {
         const info = await transport.sendMail({
-            from: `"AgroPlatform 🌾" <${process.env.EMAIL}>`,
+            from: `"AgroPlatform 🌾" <${ENV.EMAIL}>`,
             to,
             subject,
             text,

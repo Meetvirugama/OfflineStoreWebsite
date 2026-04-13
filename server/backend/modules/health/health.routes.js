@@ -60,6 +60,15 @@ router.get("/diagnostics", async (req, res) => {
         diagnostics.connectivity.external_apis.mandi = "UNREACHABLE ❌";
     }
 
+    // 4. Check SMTP (Gmail)
+    try {
+        const { verifySMTP } = await import("../../utils/email.js");
+        const isSmtpLive = await verifySMTP();
+        diagnostics.connectivity.smtp = isSmtpLive ? "CONNECTED ✅" : "FAILED ❌";
+    } catch (err) {
+        diagnostics.connectivity.smtp = `ERROR ❌ (${err.message})`;
+    }
+
     res.json({
         success: true,
         message: "AgroMart Backend Diagnostics",
