@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../user/user.model.js";
 import Customer from "../customer/customer.model.js";
+import VerificationReq from "./verification.model.js";
 import { ENV } from "../../config/env.js";
 // Note: We will need a way to handle Customer creation from here. 
 // For now, I will keep the logic and fix dependencies in the final step.
@@ -13,39 +14,18 @@ export const register = async (data) => {
         throw new Error("This email is already registered and verified. Please login.");
     }
 
-    // 2. Check if mobile already exists (if provided)
-    if (data.mobile) {
-        const existingMobile = await User.findOne({ where: { mobile: data.mobile } });
-        if (existingMobile && existingMobile.id !== existingEmail?.id) {
-            throw new Error("This mobile number is already linked to another account.");
-        }
-    }
-
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    let user;
-    if (existingEmail) {
-        // Update the existing unverified user
-        user = existingEmail;
-        user.name = data.name;
-        user.mobile = data.mobile;
-        user.password = hashedPassword;
-        user.otp = otp;
-        user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
-        await user.save();
-    } else {
-        // Create a new user
-        user = await User.create({
-            name: data.name,
-            email: data.email,
-            mobile: data.mobile,
-            password: hashedPassword,
-            otp,
-            otp_expiry: new Date(Date.now() + 10 * 60 * 1000),
-            is_verified: false
-        });
-    }
+    // 2. Store in temporary VerificationReq table
+    await VerificationReq.upsert({
+        name: data.name,
+        email: data.email,
+        mobile: data.mobile,
+        password: hashedPassword,
+        otp,
+        otp_expiry: new Date(Date.now() + 10 * 60 * 1000)
+    });
 
     // 3. Send Verification Email (Non-blocking background task)
     (async () => {
@@ -58,7 +38,7 @@ export const register = async (data) => {
         }
     })();
 
-    return { name: user.name, email: user.email, otp }; 
+    return { name: data.name, email: data.email, otp }; 
 };
 
 export const login = async (email, password) => {
@@ -83,30 +63,38 @@ export const login = async (email, password) => {
 };
 
 export const verifyOtp = async (email, otp) => {
-    const user = await User.findOne({ where: { email } });
-    if (!user) throw new Error("User not found");
-    if (user.otp !== otp || new Date(user.otp_expiry) < new Date()) {
+    // 1. Find the pending verification request
+    const pending = await VerificationReq.findOne({ where: { email } });
+    if (!pending) throw new Error("No pending registration found for this email.");
+    
+    if (pending.otp !== otp || new Date(pending.otp_expiry) < new Date()) {
         throw new Error("Invalid or expired OTP");
     }
 
-    user.is_verified = true;
-    user.otp = null;
-    user.otp_expiry = null;
-    await user.save();
+    // 2. Create the real User record
+    const user = await User.create({
+        name: pending.name,
+        email: pending.email,
+        mobile: pending.mobile,
+        password: pending.password,
+        is_verified: true,
+        role: "CUSTOMER" // Default role for new signups
+    });
 
-    // Link Customer record if role is CUSTOMER
-    if (user.role === "CUSTOMER") {
-        await Customer.findOrCreate({
-            where: { user_id: user.id },
-            defaults: {
-                name: user.name,
-                email: user.email,
-                mobile: user.mobile || ""
-            }
-        });
-    }
+    // 3. Link Customer record
+    await Customer.findOrCreate({
+        where: { user_id: user.id },
+        defaults: {
+            name: user.name,
+            email: user.email,
+            mobile: user.mobile || ""
+        }
+    });
 
-    // 3. Welcome Email
+    // 4. Delete the verification request (Cleanup)
+    await pending.destroy();
+
+    // 5. Welcome Email
     try {
         const { sendEmail, getWelcomeTemplate } = await import("../../utils/email.js");
         const emailHtml = getWelcomeTemplate(user.name || "Farmer");
@@ -119,21 +107,20 @@ export const verifyOtp = async (email, otp) => {
 };
 
 export const resendOtp = async (email) => {
-    const user = await User.findOne({ where: { email } });
-    if (!user) throw new Error("User not found");
-    if (user.is_verified) throw new Error("Email already verified");
+    const pending = await VerificationReq.findOne({ where: { email } });
+    if (!pending) throw new Error("No pending registration found.");
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    user.otp = otp;
-    user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
-    await user.save();
+    pending.otp = otp;
+    pending.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
+    await pending.save();
 
     // Send Resend Email (Non-blocking)
     (async () => {
         try {
             const { sendEmail, getOTPTemplate } = await import("../../utils/email.js");
-            const emailHtml = getOTPTemplate(otp, user.name || "Farmer");
-            await sendEmail(user.email, "Your new AgroMart Verification Code 🌾", `Your new code is ${otp}`, emailHtml);
+            const emailHtml = getOTPTemplate(otp, pending.name || "Farmer");
+            await sendEmail(pending.email, "Your new AgroMart Verification Code 🌾", `Your new code is ${otp}`, emailHtml);
         } catch (err) {
             console.error("Delayed Resend Email Error:", err);
         }

@@ -20,6 +20,7 @@ import PriceAlert from "./alert/alert.model.js";
 import News from "./news/news.model.js";
 import Chat from "./chat/chat.model.js";
 import ChatMessage from "./chat/message.model.js";
+import VerificationReq from "./auth/verification.model.js";
 
 // User - Customer
 User.hasOne(Customer, { foreignKey: "user_id" });
@@ -117,5 +118,6 @@ export {
   PriceAlert,
   News,
   Chat,
-  ChatMessage
+  ChatMessage,
+  VerificationReq
 };
