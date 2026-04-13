@@ -7,22 +7,45 @@ import { ENV } from "../../config/env.js";
 // For now, I will keep the logic and fix dependencies in the final step.
 
 export const register = async (data) => {
-    const existing = await User.findOne({ where: { email: data.email } });
-    if (existing && existing.is_verified) throw new Error("Email already registered");
+    // 1. Check if email already exists
+    const existingEmail = await User.findOne({ where: { email: data.email } });
+    if (existingEmail && existingEmail.is_verified) {
+        throw new Error("This email is already registered and verified. Please login.");
+    }
+
+    // 2. Check if mobile already exists (if provided)
+    if (data.mobile) {
+        const existingMobile = await User.findOne({ where: { mobile: data.mobile } });
+        if (existingMobile && existingMobile.id !== existingEmail?.id) {
+            throw new Error("This mobile number is already linked to another account.");
+        }
+    }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    const user = await User.upsert({
-        id: existing?.id,
-        name: data.name,
-        email: data.email,
-        mobile: data.mobile,
-        password: hashedPassword,
-        otp,
-        otp_expiry: new Date(Date.now() + 10 * 60 * 1000),
-        is_verified: false
-    });
+    let user;
+    if (existingEmail) {
+        // Update the existing unverified user
+        user = existingEmail;
+        user.name = data.name;
+        user.mobile = data.mobile;
+        user.password = hashedPassword;
+        user.otp = otp;
+        user.otp_expiry = new Date(Date.now() + 10 * 60 * 1000);
+        await user.save();
+    } else {
+        // Create a new user
+        user = await User.create({
+            name: data.name,
+            email: data.email,
+            mobile: data.mobile,
+            password: hashedPassword,
+            otp,
+            otp_expiry: new Date(Date.now() + 10 * 60 * 1000),
+            is_verified: false
+        });
+    }
 
     // 3. Send Verification Email (Non-blocking background task)
     (async () => {
@@ -35,7 +58,7 @@ export const register = async (data) => {
         }
     })();
 
-    return { name: data.name, email: data.email, otp }; 
+    return { name: user.name, email: user.email, otp }; 
 };
 
 export const login = async (email, password) => {

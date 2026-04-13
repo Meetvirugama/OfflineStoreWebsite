@@ -51,13 +51,16 @@ apiClient.interceptors.response.use(
   (response) => {
     const body = response.data;
     // Standard envelope: { success: true, message: "...", data: result }
-    if (body && typeof body === "object" && body.success === true && "data" in body) {
-      return body.data;
-    }
-    // If not standard, but success is true, return the whole body as a fallback
     if (body && typeof body === "object" && body.success === true) {
-      return body;
+      return "data" in body ? body.data : body;
     }
+
+    // Explicit success: false from backend should be treated as an error
+    if (body && typeof body === "object" && body.success === false) {
+      const errorMessage = body.message || "Operation failed";
+      return Promise.reject(new Error(errorMessage));
+    }
+
     return body;
   },
   (error) => {
