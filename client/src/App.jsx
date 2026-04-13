@@ -12,6 +12,7 @@ import ScrollToTop from "@core/components/ScrollToTop";
 const HomePage = lazy(() => import("@features/shop/pages/HomePage"));
 const ProductsPage = lazy(() => import("@features/shop/pages/ProductsPage"));
 const ProductDetailPage = lazy(() => import("@features/shop/pages/ProductDetailPage"));
+const PolicyPage = lazy(() => import("@features/shop/pages/PolicyPage"));
 
 // Features: Checkout & Orders
 const CheckoutPage = lazy(() => import("@features/checkout/pages/CheckoutPage"));
@@ -64,6 +65,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/products/:id" element={<ProductDetailPage />} />
+          <Route path="/policies" element={<PolicyPage />} />
           <Route path="/pest-detection" element={<PestDetectionPage />} />
           <Route path="/nearby-mandis" element={<NearbyMandisPage />} />
           <Route path="/farmer-dashboard" element={<FarmerDashboardPage />} />

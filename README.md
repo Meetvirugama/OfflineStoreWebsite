@@ -38,9 +38,9 @@
 ### 🧠 Agri-Intelligence
 - [x] Local Mandi (Market) Price Radars (Live Govt. Data)
 - [x] Farming News Streams Sync Pipeline
-- [x] LibreTranslate i18n Engine (Dynamic English -> Gujarati caching via RAM)
 - [x] OpenWeather Telemetry (Heat Stress/Irrigation alerts)
 - [x] AI Pesticide Analysis (Image integration)
+- [x] High-Quality Transactional Email System (SMTP/Nodemailer)
 
 ### 📊 Admin Operations
 - [x] Low-Stock automated guardrails (<20 units)
@@ -51,10 +51,10 @@
 
 ## 📚 Topics & Architecture Domains
 
-- **Frontend Core**: SPAs, Custom Hooks (`useDynamicTranslation`), Zustand Stores.
+- **Frontend Core**: SPAs, Custom Hooks, Zustand Stores, Tailwind/Glassmorphism logic.
 - **Backend Core**: Domain-Driven Router (`modules/`), Express middleware guards.
 - **Database**: PostgreSQL Relational Schemas, Sequelize ORM (HasMany, BelongsTo).
-- **Internationalization**: Local `.json` static maps + Dynamic PostgreSQL Text Proxying.
+- **Communication**: Automated SMTP transmissions via Nodemailer with Render DNS optimization.
 - **Automation**: Data synchronizations via `node-cron`.
 
 ---
@@ -68,15 +68,14 @@
 │   ├── src/
 │   │   ├── components/         # Reusable Custom Components (Toasts, Modals)
 │   │   ├── core/               
-│   │   │   ├── api/            # Axios API config & interceptors
-│   │   │   └── i18n/           # English/Gujarati logic & Dynamic Cache Hooks
+│   │   │   └── api/            # Axios API config & interceptors
 │   │   ├── features/           # Module-Specific implementations
 │   │   │   ├── admin/          # Dashboard analytics UI
 │   │   │   ├── agriculture/    # News, Weather, Mandi, Crop logic
 │   │   │   ├── auth/           # Login & OTP screens
 │   │   │   └── shop/           # Catalog, Checkout cart drawer, Orders
 │   │   └── styles/             # Global CSS & specific module styling
-│   └── vite.config.js          # Next-gen bundler configuration
+│   └── vercel.json             # Vercel SPA deployment config
 │
 ├── server/                     # Node/Express Backend Environment
 │   ├── backend/
@@ -87,13 +86,9 @@
 │   │       ├── cart/           # Basket APIs
 │   │       ├── crop/           # Advisory & Pest Detection APIs
 │   │       ├── product/        # Suppliers & Inventories
-│   │       ├── translation/    # LibreTranslate Server Proxy
 │   │       └── ...             # (Orders, Payments, Mandi, News, Weather)
 │   ├── app.js                  # Main Express Application Core
 │   └── server.js               # Application Entry & Sequelize Sync
-│
-├── database/                   # Static schema references & SQL setups
-└── docs/                       # External Architectures (API.md / project-details.md)
 ```
 
 ---
@@ -118,48 +113,15 @@
 - `NewsData.io` (Farming Announcements)
 - `data.gov.in` (Agmarknet Mandi Pricing)
 - `OpenWeather` (Synoptic Telemetry)
-- `LibreTranslate` (Open-Source Machine Translation)
+- `Groq AI` (Agricultural Analysis)
 
 ---
 
 ## 🔑 Environment Variables (`.env.example`)
 
-To deploy instances locally, place these fake `.env` structures in your `/server/backend/` directory:
+To deploy instances, set these variables in your environment:
 
 ```env
-# -----------------------------
-# DATABASE CONNECTION
-# -----------------------------
-DATABASE_URL=postgres://demo_admin:DemoSecurePass123@your-db-cluster.us-east-1.rds.amazonaws.com:5432/agromart_db
-
-# -----------------------------
-# SECURITY & AUTHENTICATION
-# -----------------------------
-JWT_SECRET=super_secret_local_dev_token_x9v2
-GOOGLE_CLIENT_ID=1234567890-fakegoogleid.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-fake_google_client_secret_xyz
-
-# -----------------------------
-# EMAIL SMTP CONFIGURATION
-# -----------------------------
-EMAIL=support_agro@fake-company.com
-EMAIL_PASS=smtp_app_password_abcd
-
-# -----------------------------
-# PAYMENT GATEWAY
-# -----------------------------
-RAZORPAY_KEY=rzp_test_fake123abc
-RAZORPAY_SECRET=rzp_secret_fakeXYZ789
-
-# -----------------------------
-# EXTERNAL INTELLIGENCE APIs
-# -----------------------------
-NEWS_KEY=pub_fake_news_api_token_001
-AGMARKNET_API_KEY=fake_data_gov_in_token_xyz
-LIBRETRANSLATE_URL=https://libretranslate.de/translate
-
-# -----------------------------
-# FRONTEND MAPPING
 # -----------------------------
 FRONTEND_URL=http://localhost:5173
 PORT=5000

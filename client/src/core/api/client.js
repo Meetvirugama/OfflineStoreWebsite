@@ -36,15 +36,6 @@ const apiClient = axios.create({
        config.headers.Authorization = `Bearer ${token}`;
      }
  
-     // Localization Sync: Attach the user's preferred language (Default: 'en')
-     const lang = localStorage.getItem("agromart_lang") || "en";
-     config.headers["x-lang"] = lang;
-
-     // 🚨 IRONCLAD FALLBACK: Append as query param to ensure detection if headers stripped
-     if (lang !== 'en') {
-         config.params = { ...config.params, lang: lang };
-     }
- 
      return config;
    },
    (error) => Promise.reject(error)

@@ -4,8 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd server && npm install && cd ../client && npm install && npm run build",
-    "postinstall": "cd server && npm install && cd ../client && npm install",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm install && npm run build",
+    "build:server": "cd server && npm install",
+    "postinstall": "npm run build:server && cd client && npm install",
     "start": "node server/backend/server.js",
     "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\""
   },

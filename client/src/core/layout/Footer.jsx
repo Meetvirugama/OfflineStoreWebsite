@@ -41,7 +41,9 @@ export default function Footer() {
             <li><Link to="/products">Shop Products</Link></li>
             <li><Link to="/about">About Us</Link></li>
             <li><Link to="/contact">Contact</Link></li>
-            <li><Link to="/privacy">Privacy Policy</Link></li>
+            <li><Link to="/policies#refund">Refund Policy</Link></li>
+            <li><Link to="/policies#safety">Safety & Privacy</Link></li>
+            <li><Link to="/policies#copyright">Copyright Notice</Link></li>
           </ul>
         </div>
 

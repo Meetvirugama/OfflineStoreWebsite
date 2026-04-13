@@ -8,7 +8,6 @@ import { fileURLToPath } from "url";
 // Utils & Middleware
 import { globalErrorHandler } from "./middleware/error.middleware.js";
 import { ENV } from "./config/env.js";
-import translateResponse from "./middleware/translateResponse.js";
 
 // Routes
 import authRoutes from "./modules/auth/auth.routes.js";
@@ -36,7 +35,7 @@ import healthRoutes from "./modules/health/health.routes.js";
 import aiRoutes from "./modules/ai/ai.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
 import pestRoutes from "./modules/pest/pest.routes.js";
-import translationRoutes from "./modules/translation/translation.routes.js";
+import supportRoutes from "./modules/support/support.routes.js";
 
 const app = express();
 
@@ -70,7 +69,7 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "x-lang", "lang"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
   optionsSuccessStatus: 200
 };
 
@@ -95,9 +94,6 @@ app.get("/", (req, res) => {
 // ─── STANDARD MIDDLEWARE ────────────────────────────────────────────────────
 app.use(express.json());
 app.use(morgan("dev"));
-
-// ─── TRANSLATION MIDDLEWARE ────────────────────────────────────────────────
-app.use(translateResponse);
 
 // Serving Uploads (Product images, Crop captures, etc.)
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -132,7 +128,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/pest", pestRoutes);
-app.use("/api/translate", translationRoutes);
+app.use("/api/support", supportRoutes);
 
 // --- END OF ROUTES ---
 

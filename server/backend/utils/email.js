@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import dns from "dns";
+import { ENV } from "../config/env.js";
 
 /**
  * Global Email Utility for AgroPlatform ERP
@@ -136,7 +137,7 @@ const MASTER_WRAPPER = (title, content, subtext = "") => `
                 ${content}
                 <div class="divider"></div>
                 <p style="font-size: 14px; text-align: center; margin: 0; color: #94a3b8;">
-                    ${subtext || "Need immediate assistance? Access our executive support node via the dashboard."}
+                    ${subtext || `Need immediate assistance? Access our executive support node via the <a href="${ENV.FRONTEND_URL}/dashboard">dashboard</a>.`}
                 </p>
             </div>
             <div class="footer">
@@ -160,7 +161,7 @@ export const getWelcomeTemplate = (name) => {
         <p>Your node has been successfully activated within the AgroPlatform ecosystem. You now have full access to our executive sourcing tools, mandi intelligence, and financial ledgers.</p>
         <p>We've prepared your environment for maximum efficiency. Start by exploring the live mandi rates or configuring your supplier profiles.</p>
         <div style="text-align: center;">
-            <a href="https://agroplatform.app/dashboard" class="btn">Initialize Your Dashboard</a>
+            <a href="${ENV.FRONTEND_URL}/dashboard" class="btn">Initialize Your Dashboard</a>
         </div>
     `;
     return MASTER_WRAPPER("Onboarding Activation", content, "Pro Tip: Complete your profile to unlock high-limit credit lines.");
@@ -274,7 +275,7 @@ export const getInvoiceSettledTemplate = (order, name) => {
             <div style="font-size: 42px; font-weight: 800;">₹${Number(order.final_amount).toFixed(2)}</div>
         </div>
         <div style="text-align: center;">
-            <a href="https://agroplatform.app/orders" class="btn">Archive & Review Invoices</a>
+            <a href="${ENV.FRONTEND_URL}/orders" class="btn">Archive & Review Invoices</a>
         </div>
     `;
     return MASTER_WRAPPER("Official Tax Invoice Settled", content, "This settlement triggers final clearance for delivery if pending.");
@@ -290,10 +291,31 @@ export const getPaymentReminderTemplate = (order, name, balance) => {
             <div style="margin-top: 16px; font-size: 14px; font-weight: 700; color: #9a3412;">Reference Order: #${order.id}</div>
         </div>
         <div style="text-align: center;">
-            <a href="https://agroplatform.app/orders/${order.id}" class="btn" style="background-color: #ea580c;">Settle Balance Now</a>
+            <a href="${ENV.FRONTEND_URL}/orders/${order.id}" class="btn" style="background-color: #ea580c;">Settle Balance Now</a>
         </div>
     `;
     return MASTER_WRAPPER("Immediate Payment Alert", content, "Late settlement may affect your credit rating within the AgroPlatform ecosystem.");
+};
+
+/**
+ * SUPPORT INQUIRY TEMPLATE
+ * Used for user messages sent to Admin
+ */
+export const getSupportInquiryTemplate = (userName, email, subject, message) => {
+    const content = `
+        <div style="background-color: #f8fafc; border-left: 4px solid #059669; padding: 20px; margin-bottom: 24px;">
+            <p style="margin: 0; color: #64748b; font-size: 12px; text-transform: uppercase; font-weight: 700;">Subject</p>
+            <p style="margin: 4px 0 0; font-size: 16px; font-weight: 700;">${subject}</p>
+        </div>
+        <p><strong>From:</strong> ${userName} (${email})</p>
+        <p style="white-space: pre-wrap; background: #ffffff; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 20px;">
+            ${message}
+        </p>
+        <div style="text-align: center; margin-top: 32px;">
+            <a href="mailto:${email}" class="btn">Reply to Farmer</a>
+        </div>
+    `;
+    return MASTER_WRAPPER("New Support Inquiry", content, "This message was sent via the AgroPlatform Executive Sourcing Node.");
 };
 
 export const getNotificationTemplate = (title, message) => {
@@ -301,7 +323,7 @@ export const getNotificationTemplate = (title, message) => {
         <h2>${title}</h2>
         <p style="font-size: 18px; color: #1e293b; margin-bottom: 32px;">${message}</p>
         <div style="text-align: center;">
-            <a href="https://agroplatform.app/dashboard" class="btn">View Details in Dashboard</a>
+            <a href="${ENV.FRONTEND_URL}/dashboard" class="btn">View Details in Dashboard</a>
         </div>
     `;
     return MASTER_WRAPPER("System Notification", content);
