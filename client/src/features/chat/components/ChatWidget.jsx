@@ -77,13 +77,15 @@ export default function ChatWidget() {
                 <div 
                     className="card-premium" 
                     style={{ 
-                        width: '350px', 
-                        height: '500px', 
+                        width: 'min(380px, 92vw)', 
+                        height: 'min(600px, 80vh)', 
                         display: 'flex', 
                         flexDirection: 'column',
                         background: '#fff',
                         padding: 0,
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        boxShadow: '0 20px 50px rgba(0,0,0,0.15)',
+                        border: '1px solid rgba(0,0,0,0.05)'
                     }}
                 >
                     {/* Header */}
