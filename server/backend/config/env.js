@@ -37,6 +37,7 @@ export const ENV = {
     // AI & Translation Services
     HF_TOKEN: process.env.HF_TOKEN,
     TRANSLATE_API_URL: process.env.TRANSLATE_API_URL || 'http://localhost:5000/translate',
+    EMAIL: process.env.EMAIL || 'meetvurigama4902@gmail.com',
 };
 
 export default ENV;
