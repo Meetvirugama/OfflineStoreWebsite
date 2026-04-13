@@ -30,7 +30,6 @@ import inventoryRoutes from "./modules/product/inventory.routes.js";
 import healthRoutes from "./modules/health/health.routes.js";
 import aiRoutes from "./modules/ai/ai.routes.js";
 import analyticsRoutes from "./modules/analytics/analytics.routes.js";
-import pestRoutes from "./modules/crop/pest.routes.js";
 import supportRoutes from "./modules/support/support.routes.js";
 import chatRoutes from "./modules/chat/chat.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
@@ -90,7 +89,6 @@ app.use("/api/inventory", inventoryRoutes);
 app.use("/api/health", healthRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/analytics", analyticsRoutes);
-app.use("/api/pest", pestRoutes);
 app.use("/api/support", supportRoutes);
 app.use("/api/chat", chatRoutes);
 
