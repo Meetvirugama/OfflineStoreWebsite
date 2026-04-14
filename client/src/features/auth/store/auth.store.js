@@ -22,7 +22,11 @@ const useAuthStore = create((set, get) => ({
       
       localStorage.setItem("agromart_token", token);
       const decoded = decodeToken(token);
-      set({ token, user: decoded || userData, loading: false });
+      
+      // Merge decoded token info with user data from response to ensure name/email are present
+      const mergedUser = { ...(userData || {}), ...(decoded || {}) };
+      
+      set({ token, user: mergedUser, loading: false });
       if (decoded?.role) await get().fetchProfile();
       return { success: true };
     } catch (err) {
@@ -83,17 +87,26 @@ const useAuthStore = create((set, get) => ({
     }
   },
 
-  init: async () => {
-    if (get().initialized) return;
+  init: async (force = false) => {
+    const { initialized, token: currentToken } = get();
     const token = localStorage.getItem("agromart_token");
+
+    // Allow re-sync if token has changed vs state, or if manually forced
+    if (!force && initialized && token === currentToken) return;
+
     if (!token) {
-      set({ initialized: true });
+      set({ token: null, user: null, profile: null, customer: null, initialized: true });
       return;
     }
-    const decoded = decodeToken(token);
-    set({ token, user: decoded });
-    if (decoded?.role) await get().fetchProfile();
-    set({ initialized: true });
+
+    try {
+      const decoded = decodeToken(token);
+      set({ token, user: decoded, initialized: true });
+      if (decoded?.role) await get().fetchProfile();
+    } catch (err) {
+      console.error("Auth init error:", err);
+      set({ initialized: true });
+    }
   },
 
   logout: async () => {
