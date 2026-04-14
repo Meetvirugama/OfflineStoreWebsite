@@ -167,7 +167,7 @@ const AgriAnalyticsPage = () => {
                                             domain={['auto', 'auto']}
                                             axisLine={false}
                                             tickLine={false}
-                                            tickFormatter={(val) => `₹${val}`}
+                                            tickFormatter={(val) => `₹${val}/kg`}
                                         />
                                         <Tooltip 
                                             contentStyle={{background: '#ffffff', border: '1px solid var(--agri-green)', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', padding: '1rem'}}
@@ -222,7 +222,7 @@ const AgriAnalyticsPage = () => {
                                         </div>
                                         <div style={{display: 'flex', alignItems: 'baseline', gap: '0.8rem'}}>
                                             <span style={{fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 900, letterSpacing: '-2px'}}>₹{lastPrice}</span>
-                                            <span style={{fontSize: '1rem', opacity: 0.3, fontWeight: 700}}>INR/Q</span>
+                                            <span style={{fontSize: '1rem', opacity: 0.3, fontWeight: 700}}>₹/kg</span>
                                         </div>
                                     </div>
 

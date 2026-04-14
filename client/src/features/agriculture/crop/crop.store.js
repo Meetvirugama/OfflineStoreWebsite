@@ -34,7 +34,14 @@ const useCropStore = create((set) => ({
         set({ loading: true, error: null });
         try {
             const res = await apiClient.get(`/crops/${name}/trends?days=${days}`);
-            set({ trends: Array.isArray(res) ? res : [], loading: false });
+            
+            // Normalize: Convert per quintal (100kg) to per kg
+            const normalizedTrends = (res || []).map(t => ({
+                ...t,
+                price: t.price ? (t.price / 100).toFixed(2) : 0
+            }));
+
+            set({ trends: normalizedTrends, loading: false });
         } catch (err) {
             set({ error: err.message, loading: false });
         }

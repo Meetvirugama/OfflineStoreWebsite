@@ -148,7 +148,7 @@ export default function MandiPricesPage() {
                             <div style={{ marginTop: '20px', padding: '16px', background: '#f0fdf4', borderRadius: '16px', border: '1px solid #dcfce7' }}>
                                 <p style={{ fontSize: '11px', fontWeight: '700', color: '#166534', textTransform: 'uppercase' }}>Current Insights</p>
                                 <p style={{ fontSize: '20px', fontWeight: '900', color: '#064e4b', marginTop: '4px' }}>₹{trends[trends.length-1]?.modal || trends[trends.length-1]?.[selectedCrop] || "N/A"}</p>
-                                <p style={{ fontSize: '12px', color: '#10b981', fontWeight: '600', marginTop: '2px' }}>Latest Modal Price</p>
+                                <p style={{ fontSize: '12px', color: '#10b981', fontWeight: '600', marginTop: '2px' }}>Latest Modal Price (per kg)</p>
                             </div>
                         )}
                     </div>
@@ -181,8 +181,10 @@ export default function MandiPricesPage() {
                                         style={{ fontSize: '12px', fontWeight: '600' }} 
                                         tick={{fill: '#94a3b8'}}
                                         domain={['auto', 'auto']}
+                                        tickFormatter={(v) => `₹${v}`}
                                     />
                                     <Tooltip 
+                                        formatter={(v) => [`₹${v}/kg`, 'Modal Price']}
                                         contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} 
                                     />
                                     <Area 
@@ -267,9 +269,9 @@ export default function MandiPricesPage() {
                                 <th>Market (Mandi)</th>
                                 <th>District</th>
                                 <th>Commodity</th>
-                                <th>Min Price</th>
-                                <th>Max Price</th>
-                                <th>Modal Price</th>
+                                <th>Min (per kg)</th>
+                                <th>Max (per kg)</th>
+                                <th>Modal (per kg)</th>
                                 <th>Date</th>
                             </tr>
                         </thead>

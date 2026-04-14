@@ -75,12 +75,12 @@ export default function MandiDashboardPage() {
                     </div>
                 </div>
                 <div className="stat-card" style={{ background: '#fff', padding: '28px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-                    <p style={{ color: '#64748b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Peak Price Index ({selectedCrop})</p>
+                    <p style={{ color: '#64748b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Peak Price Index ({selectedCrop}) (per kg)</p>
                     <h3 style={{ fontSize: '36px', margin: '12px 0', fontWeight: '900', color: '#0f172a' }}>₹{bestMandi?.modal_price || 0}</h3>
                     <p style={{ fontSize: '12px', color: '#059669', fontWeight: '700' }}>Benchmark at {bestMandi?.market || 'Primary Terminal'}</p>
                 </div>
                 <div className="stat-card" style={{ background: '#fff', padding: '28px', borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
-                    <p style={{ color: '#64748b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Market Ceiling (Highest)</p>
+                    <p style={{ color: '#64748b', fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Market Ceiling (Highest/kg)</p>
                     <h3 style={{ fontSize: '36px', margin: '12px 0', fontWeight: '900', color: '#0f172a' }}>₹{summary?.highestPrice || 0}</h3>
                     <p style={{ fontSize: '12px', color: '#10b981', fontWeight: '700' }}>Regional High Intensity Point</p>
                 </div>
@@ -131,6 +131,7 @@ export default function MandiDashboardPage() {
                                     tickFormatter={(v) => `₹${v}`}
                                 />
                                 <Tooltip 
+                                    formatter={(v) => [`₹${v}/kg`, 'Modal Price']}
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '12px' }}
                                 />
                                 <Area type="monotone" dataKey="modal" stroke="#10b981" fillOpacity={1} fill="url(#colorPrice)" strokeWidth={3} />
@@ -157,7 +158,11 @@ export default function MandiDashboardPage() {
                                     axisLine={false}
                                     tickLine={false}
                                 />
-                                <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} />
+                                <Tooltip 
+                                    cursor={{fill: '#f8fafc'}} 
+                                    formatter={(v) => [`₹${v}/kg`, 'Avg Modal Price']}
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} 
+                                />
                                 <Bar dataKey="avg_price" name="Avg Modal Price" fill="#3b82f6" radius={[6, 6, 0, 0]} barSize={24} />
                             </BarChart>
                         </ResponsiveContainer>
@@ -175,8 +180,8 @@ export default function MandiDashboardPage() {
                         <LineChart data={multiData}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                             <XAxis dataKey="date" tick={{fontSize: 10}} tickFormatter={(v) => v.split('-').slice(1).join('/')} />
-                            <YAxis tick={{fontSize: 10}} />
-                            <Tooltip />
+                            <YAxis tick={{fontSize: 10}} tickFormatter={(v) => `₹${v}`} />
+                            <Tooltip formatter={(v) => [`₹${v}/kg`, '']} />
                             <Legend />
                             <Line type="monotone" dataKey="Wheat" stroke="#10b981" strokeWidth={3} dot={false} />
                             <Line type="monotone" dataKey="Cotton" stroke="#3b82f6" strokeWidth={3} dot={false} />
