@@ -40,16 +40,6 @@ const startServer = async () => {
         await sequelize.sync({ alter: ENV.NODE_ENV !== "production" }); // Only alter in dev, safe in prod
         console.log("✅ [DB] Database Synced successfully.");
 
-        // --- 3. SMTP VERIFICATION (Non-blocking) ---
-        try {
-            const { verifySMTP } = await import("./utils/email.js");
-            await verifySMTP();
-            console.log("✅ [EMAIL] SMTP Link established successfully.");
-        } catch (err) {
-            console.warn("⚠️  [EMAIL] SMTP Verification failed. Email features may not work.");
-            console.warn("   Error:", err.message);
-        }
-
         // --- 4. INITIALIZE CRON JOBS ---
         const { initMandiCron } = await import("./crons/mandiCron.js");
         initMandiCron();
@@ -59,6 +49,15 @@ const startServer = async () => {
         app.listen(PORT, HOST, () => {
             console.log(`🚀 [DEPL] Server listening on http://${HOST}:${PORT}`);
             console.log(`🌍 [DEPL] Environment: ${ENV.NODE_ENV}`);
+            
+            // --- 6. SMTP VERIFICATION (Non-blocking) ---
+            import("./utils/email.js").then(({ verifySMTP }) => {
+                verifySMTP().then(isValid => {
+                    if (isValid) console.log("✅ [EMAIL] SMTP Link established successfully.");
+                    else console.warn("⚠️  [EMAIL] SMTP Verification failed. Check credentials.");
+                }).catch(err => console.error("❌ [EMAIL] SMTP Check error:", err.message));
+            });
+
             console.log("✅ [READY] AgroMart ERP API is fully operational 🌾");
         });
 
