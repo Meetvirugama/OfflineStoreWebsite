@@ -13,31 +13,33 @@ import Apmc from "./apmc.model.js";
  */
 const enrichWithPrices = async (results) => {
     try {
-        return await Promise.all(results.map(async (m) => {
-            const matchName = m.name;
-            
-            // Layer 1: Price Cache (Daily Updates)
-            const cachedPrice = await PriceCache.findOne({
-                where: { mandi_name: { [Op.iLike]: `%${matchName}%` } },
+        if (!results || results.length === 0) return results;
+        
+        const names = results.map(r => r.name);
+        
+        // Batch fetch from both layers to eliminate N+1 query issue
+        const [cachedRecords, legacyRecords] = await Promise.all([
+            PriceCache.findAll({
+                where: { mandi_name: { [Op.in]: names } },
                 order: [['date', 'DESC']]
-            });
-
-            if (cachedPrice) {
-                return { ...m, top_crop: cachedPrice.commodity, modal_price: cachedPrice.modal_price };
-            }
-
-            // Layer 2: Legacy Price History (Agmarknet Core)
-            const legacyPrice = await MandiPrice.findOne({
-                where: { market: { [Op.iLike]: `%${matchName}%` } },
+            }),
+            MandiPrice.findAll({
+                where: { market: { [Op.in]: names } },
                 order: [['arrival_date', 'DESC']]
-            });
+            })
+        ]);
 
-            return { 
-                ...m, 
-                top_crop: legacyPrice?.commodity || "General Supply", 
-                modal_price: legacyPrice?.modal_price || 0 
+        return results.map(m => {
+            const cached = cachedRecords.find(c => c.mandi_name.toLowerCase() === m.name.toLowerCase());
+            if (cached) return { ...m, top_crop: cached.commodity, modal_price: cached.modal_price };
+            
+            const legacy = legacyRecords.find(l => l.market.toLowerCase() === m.name.toLowerCase());
+            return {
+                ...m,
+                top_crop: legacy?.commodity || "General Supply",
+                modal_price: legacy?.modal_price || 0
             };
-        }));
+        });
     } catch (err) {
         console.error("Enrichment Error:", err);
         return results;
@@ -319,13 +321,13 @@ export const getAgriDashboardStats = async (state = "Gujarat") => {
             order: [['modal_price', 'DESC']],
         });
         return { 
-            totalMandis: totalMandis || 120, 
-            highestPrice: highestPriceRec ? highestPriceRec.modal_price : 8500, 
+            totalMandis: totalMandis || 0, 
+            highestPrice: highestPriceRec ? highestPriceRec.modal_price : 0, 
             topCrops: [], 
             trends: [] 
         };
     } catch (err) {
-        return { totalMandis: 120, highestPrice: 8500, topCrops: [], trends: [] };
+        return { totalMandis: 0, highestPrice: 0, topCrops: [], trends: [] };
     }
 };
 
@@ -382,7 +384,7 @@ export const getMultiCropComparison = async (crops, days, district, state) => {
         for (const r of results) {
             const d = r.arrival_date;
             const c = r.commodity;
-            const p = Math.round(r.getDataValue('avg_price') || 0);
+            const p = parseFloat(parseFloat(r.getDataValue('avg_price') || 0).toFixed(2));
 
             if (!pivotMap[d]) pivotMap[d] = { date: d, modal: 0 };
             pivotMap[d][c] = p;
@@ -414,7 +416,7 @@ export const getDistrictComparison = async (crop, state) => {
         
         return results.map(r => ({
             district: r.district,
-            avg_price: Math.round(r.getDataValue('avg_price') || 0)
+            avg_price: parseFloat(parseFloat(r.getDataValue('avg_price') || 0).toFixed(2))
         }));
     } catch (err) {
         console.error("District Comparison Error:", err);

@@ -13,7 +13,14 @@ const MandiPrice = sequelize.define("MandiPrice", {
     arrival_date: { type: DataTypes.DATEONLY, allowNull: false }
 }, {
     tableName: "mandi_prices",
-    timestamps: false
+    timestamps: false,
+    indexes: [
+        { fields: ['commodity'] },
+        { fields: ['market'] },
+        { fields: ['district'] },
+        { fields: ['arrival_date'] },
+        { fields: ['state'] }
+    ]
 });
 
 /**
@@ -29,7 +36,11 @@ const MandiCache = sequelize.define("MandiCache", {
     last_updated: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 }, {
     tableName: "mandi_cache",
-    timestamps: false
+    timestamps: false,
+    indexes: [
+        { fields: ['name'] },
+        { fields: ['district'] }
+    ]
 });
 
 /**
@@ -45,7 +56,12 @@ const PriceCache = sequelize.define("PriceCache", {
     date: { type: DataTypes.DATEONLY, allowNull: false }
 }, {
     tableName: "price_cache",
-    timestamps: false
+    timestamps: false,
+    indexes: [
+        { fields: ['mandi_name'] },
+        { fields: ['commodity'] },
+        { fields: ['date'] }
+    ]
 });
 
 export { MandiPrice, MandiCache, PriceCache };
