@@ -39,7 +39,6 @@ export const ENV = {
     TRANSLATE_API_URL: process.env.TRANSLATE_API_URL || 'http://localhost:5000/translate',
     EMAIL: process.env.EMAIL || 'meetvirugama4902@gmail.com',
     EMAIL_PASS: process.env.EMAIL_PASS,
-    BREVO_API_KEY: process.env.BREVO_API_KEY,
 };
 
 export default ENV;

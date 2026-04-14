@@ -60,26 +60,18 @@ router.get("/diagnostics", async (req, res) => {
         diagnostics.connectivity.external_apis.mandi = "UNREACHABLE ❌";
     }
 
-    // 4. Check Email Service (Brevo HTTP API)
+    // 4. Check Email Service (Nodemailer SMTP)
     try {
         const { verifySMTP } = await import("../../utils/email.js");
         const smtpResult = await verifySMTP();
         if (smtpResult === true) {
             diagnostics.connectivity.smtp = "CONNECTED ✅";
         } else {
-            // verifySMTP returns false if it fails, let's get the error from the function if possible
-            // Re-run it here to capture the error in this context
-            const { getTransporter } = await import("../../utils/email.js");
-            const transport = await getTransporter();
-            if (!transport) {
-                diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check BREVO_API_KEY)";
+            const { ENV } = await import("../../config/env.js");
+            if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
+                diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check EMAIL/EMAIL_PASS)";
             } else {
-                try {
-                    await transport.verify();
-                    diagnostics.connectivity.smtp = "CONNECTED ✅";
-                } catch (vErr) {
-                    diagnostics.connectivity.smtp = `FAILED ❌ (${vErr.message})`;
-                }
+                diagnostics.connectivity.smtp = "FAILED ❌ (Check SMTP credentials/network)";
             }
         }
     } catch (err) {

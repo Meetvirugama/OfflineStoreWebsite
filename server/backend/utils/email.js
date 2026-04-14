@@ -1,62 +1,41 @@
-import axios from "axios";
+import nodemailer from "nodemailer";
 import { ENV } from "../config/env.js";
 
 /**
  * Global Email Utility for AgroPlatform ERP
- * Uses Brevo HTTP API to bypass Render's SMTP blocks
- * Matches the Nodemailer interface to maintain compatibility
+ * Reverted to native Nodemailer SMTP for early-stage stability and performance.
  */
 let transporter = null;
 
 export const getTransporter = async () => {
     if (transporter) return transporter;
 
-    if (!ENV.BREVO_API_KEY) {
-        console.warn("⚠️  [EMAIL] Brevo API Key missing. Check BREVO_API_KEY environment variable.");
-        return null;
-    }
-
-    // Create a nodemailer-compatible interface using axios
-    transporter = {
-        verify: async () => {
-            try {
-                await axios.get("https://api.brevo.com/v3/account", {
-                    headers: { 'api-key': ENV.BREVO_API_KEY }
-                });
-                return true;
-            } catch (err) {
-                console.error("[EMAIL-AUTH-ERROR] ❌ Brevo API Key invalid:", err.response?.data || err.message);
-                return false;
-            }
+    // Default configuration for SMTP (Gmail optimized)
+    const smtpConfig = {
+        host: process.env.SMTP_HOST || "smtp.gmail.com",
+        port: Number(process.env.SMTP_PORT) || 465,
+        secure: process.env.SMTP_PORT == 465 || !process.env.SMTP_PORT, // true for 465, false for other ports
+        auth: {
+            user: ENV.EMAIL,
+            pass: ENV.EMAIL_PASS,
         },
-        sendMail: async (options) => {
-            try {
-                const response = await axios.post("https://api.brevo.com/v3/smtp/email", {
-                    sender: { name: "AgroPlatform 🌾", email: ENV.EMAIL || "meetvirugama4902@gmail.com" },
-                    to: [{ email: options.to }],
-                    subject: options.subject,
-                    htmlContent: options.html,
-                    textContent: options.text,
-                    attachment: options.attachments?.map(att => ({
-                        name: att.filename,
-                        content: att.content?.toString('base64') || (att.path ? Buffer.from(att.path).toString('base64') : "")
-                    }))
-                }, {
-                    headers: { 
-                        'api-key': ENV.BREVO_API_KEY,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                return { messageId: response.data.messageId };
-            } catch (err) {
-                console.error("[BREVO-API-ERROR] ❌ Failed to send email via HTTP:", err.response?.data || err.message);
-                throw err;
-            }
+        tls: {
+            rejectUnauthorized: false // Helps with some hosting environments
         }
     };
 
-    return transporter;
+    if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
+        console.warn("⚠️  [EMAIL] SMTP credentials missing. Check EMAIL/EMAIL_PASS environment variables.");
+        return null;
+    }
+
+    try {
+        transporter = nodemailer.createTransport(smtpConfig);
+        return transporter;
+    } catch (err) {
+        console.error("❌ [EMAIL] Failed to create Nodemailer transporter:", err.message);
+        return null;
+    }
 };
 
 export const verifySMTP = async () => {
@@ -64,13 +43,11 @@ export const verifySMTP = async () => {
     if (!transport) return false;
 
     try {
-        const isValid = await transport.verify();
-        if (isValid) {
-            console.log("✅ [EMAIL] Brevo API Link verified successfully.");
-        }
-        return isValid;
+        await transport.verify();
+        console.log("✅ [EMAIL] SMTP Link verified successfully.");
+        return true;
     } catch (error) {
-        console.error("❌ [EMAIL ERROR] Service Verification Failed:", error.message);
+        console.error("❌ [EMAIL ERROR] SMTP Verification Failed:", error.message);
         return false;
     }
 };
@@ -86,6 +63,7 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
 
     try {
         const info = await transport.sendMail({
+            from: `"AgroPlatform 🌾" <${ENV.EMAIL}>`,
             to,
             subject,
             text,
@@ -95,103 +73,256 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
         console.log(`[EMAIL] ✅ Message sent successfully: %s`, info.messageId);
         return info;
     } catch (error) {
-        console.error(`[EMAIL ERROR] ❌ Failed to send email via API to ${to}:`, error.message);
+        console.error(`[EMAIL ERROR] ❌ Failed to send email to ${to}:`, error.message);
         return null;
     }
 };
 
 /**
  * MASTER_WRAPPER: Premium Design System for AgroPlatform Emails
+ * Features: High-contrast gradients, modern typography, glassmorphism cards.
  */
 const MASTER_WRAPPER = (title, content, subtext = "") => `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${title}</title>
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-            body { font-family: 'Inter', -apple-system, sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-            .container { max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-            .header { background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 60px 40px; text-align: center; color: white; }
-            .content { padding: 48px 40px; color: #1e293b; line-height: 1.6; }
-            .footer { background-color: #f8fafc; padding: 32px 40px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #f1f5f9; }
-            .btn { display: inline-block; background-color: #059669; color: #ffffff !important; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 15px; margin-top: 24px; transition: all 0.2s; }
-            .status-badge { display: inline-block; padding: 6px 16px; border-radius: 99px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
-            .badge-success { background-color: #d1fae5; color: #065f46; }
-            h1, h2, h3 { color: #0f172a; margin-top: 0; font-weight: 800; letter-spacing: -0.02em; }
-            p { margin-bottom: 24px; font-size: 16px; color: #475569; }
-            .divider { height: 1px; background-color: #e2e8f0; margin: 32px 0; }
-            @media (max-width: 600px) { .container { margin: 0; border-radius: 0; } }
-        </style>
-    </head>
-    <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+        
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background-color: #0c0e12; 
+            margin: 0; 
+            padding: 0; 
+            -webkit-font-smoothing: antialiased; 
+            color: #e2e8f0;
+        }
+        
+        .main-container { 
+            width: 100%;
+            background-color: #0c0e12;
+            padding: 40px 0;
+        }
+
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: #1a1d23;
+            border-radius: 32px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.5);
+        }
+
+        .header { 
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%); 
+            padding: 80px 40px; 
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .brand-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .content { 
+            padding: 60px 50px; 
+            background: #1a1d23;
+            color: #d1d5db; 
+            line-height: 1.8; 
+        }
+
+        .footer { 
+            background-color: #111418; 
+            padding: 40px 50px; 
+            text-align: center; 
+            font-size: 12px; 
+            color: #64748b; 
+            border-top: 1px solid rgba(255, 255, 255, 0.03); 
+        }
+
+        .btn { 
+            display: inline-block; 
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+            color: #ffffff !important; 
+            padding: 18px 40px; 
+            border-radius: 16px; 
+            text-decoration: none; 
+            font-weight: 700; 
+            font-size: 16px; 
+            margin-top: 32px; 
+            box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.3);
+        }
+
+        .status-badge { 
+            display: inline-block; 
+            padding: 6px 16px; 
+            border-radius: 99px; 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em; 
+        }
+
+        .badge-success { 
+            background-color: rgba(16, 185, 129, 0.1); 
+            color: #34d399; 
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        h1, h2, h3 { 
+            font-family: 'Outfit', sans-serif;
+            color: #ffffff; 
+            margin-top: 0; 
+            font-weight: 700; 
+            letter-spacing: -0.02em; 
+        }
+        
+        h2 { font-size: 28px; line-height: 1.2; margin-bottom: 24px; }
+
+        p { margin-bottom: 24px; font-size: 17px; color: #9ca3af; }
+
+        .divider { 
+            height: 1px; 
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05), transparent); 
+            margin: 40px 0; 
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 640px) { 
+            .container { border-radius: 0; }
+            .content { padding: 40px 24px; }
+            .header { padding: 60px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
         <div class="container">
             <div class="header">
-                <div style="font-size: 42px; margin-bottom: 8px;">🌾</div>
-                <div style="font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px;">AgroPlatform</div>
-                <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; opacity: 0.85;">${title}</div>
+                <div class="header-content">
+                    <div class="logo-circle">🌾</div>
+                    <div class="brand-name">AgroPlatform</div>
+                    <div class="tagline">${title}</div>
+                </div>
             </div>
             <div class="content">
                 ${content}
                 <div class="divider"></div>
-                <p style="font-size: 14px; text-align: center; margin: 0; color: #94a3b8;">
-                    ${subtext || `Need immediate assistance? Access our executive support node via the <a href="${ENV.FRONTEND_URL}/dashboard">dashboard</a>.`}
+                <p style="font-size: 14px; text-align: center; margin: 0; color: #6b7280;">
+                    ${subtext || `Need assistance? Access our support portal via the <a href="${ENV.FRONTEND_URL}/dashboard" style="color: #10b981; font-weight: 600; text-decoration: none;">Executive Dashboard</a>.`}
                 </p>
             </div>
             <div class="footer">
-                <div style="margin-bottom: 16px; font-weight: 700; color: #334155; font-size: 14px;">AgroPlatform ERP • Decentralized Agriculture Infrastructure</div>
-                <div style="line-height: 2;">
-                    DA-IICT Research Park Node • Gandhinagar, India<br/>
+                <div style="margin-bottom: 16px; font-weight: 700; color: #94a3b8; font-size: 14px; letter-spacing: 0.05em;">AGROPLATFORM ERP • INTELLIGENT AGRICULTURE</div>
+                <div style="line-height: 2; color: #4b5563; font-weight: 500;">
+                    Global Operations Node • Gandhinagar, India<br/>
                     Managed by Elite Agriculture Operations Group
                 </div>
-                <div style="margin-top: 20px; opacity: 0.6; font-size: 11px;">
-                    This is an encrypted automated transmission. Please do not reply directly to this node.
+                <div style="margin-top: 24px; opacity: 0.4; font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">
+                    Encrypted Automated Transmission. Confidential.
                 </div>
             </div>
         </div>
-    </body>
-    </html>
+    </div>
+</body>
+</html>
 `;
 
 export const getWelcomeTemplate = (name) => {
     const content = `
-        <h2>Welcome to the Network, ${name}!</h2>
-        <p>Your node has been successfully activated within the AgroPlatform ecosystem. You now have full access to our executive sourcing tools, mandi intelligence, and financial ledgers.</p>
-        <p>We've prepared your environment for maximum efficiency. Start by exploring the live mandi rates or configuring your supplier profiles.</p>
+        <h2>Welcome to the Grid, ${name}!</h2>
+        <p>Your node has been successfully synchronized with the AgroPlatform ecosystem. You now command full access to our executive sourcing tools, mandi intelligence, and real-time financial protocols.</p>
+        <div class="card">
+            <p style="margin: 0; font-style: italic;">"Empowering the world's most vital industry through decentralized intelligence."</p>
+        </div>
+        <p>We've initialized your environment for peak performance. Begin your deployment by exploring market trends or configuring your supply nodes.</p>
         <div style="text-align: center;">
-            <a href="${ENV.FRONTEND_URL}/dashboard" class="btn">Initialize Your Dashboard</a>
+            <a href="${ENV.FRONTEND_URL}/dashboard" class="btn">Initialize Interface</a>
         </div>
     `;
-    return MASTER_WRAPPER("Onboarding Activation", content, "Pro Tip: Complete your profile to unlock high-limit credit lines.");
+    return MASTER_WRAPPER("Onboarding Activation", content, "Priority Access: Complete your profile to unlock high-limit credit lines.");
 };
 
 export const getOrderConfirmationTemplate = (order, customerName) => {
     const itemsHtml = (order.OrderItems || []).map(item => `
         <tr>
-            <td style="padding: 16px 0; border-bottom: 1px solid #f1f5f9;">
-                <div style="font-weight: 700; color: #0f172a;">${item.Product ? item.Product.name : 'Unknown Product'}</div>
-                <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Rate: ₹${item.price.toFixed(2)}</div>
+            <td style="padding: 20px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03);">
+                <div style="font-weight: 600; color: #ffffff; font-size: 16px;">${item.Product ? item.Product.name : 'Unknown Product'}</div>
+                <div style="font-size: 13px; color: #6b7280; margin-top: 4px;">Unit Value: ₹${item.price.toLocaleString('en-IN')}</div>
             </td>
-            <td style="padding: 16px 0; border-bottom: 1px solid #f1f5f9; text-align: center; color: #475569;">x${item.quantity}</td>
-            <td style="padding: 16px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0f172a;">₹${item.total.toFixed(2)}</td>
+            <td style="padding: 20px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); text-align: center; color: #9ca3af;">x${item.quantity}</td>
+            <td style="padding: 20px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.03); text-align: right; font-weight: 700; color: #10b981;">₹${item.total.toLocaleString('en-IN')}</td>
         </tr>
     `).join("");
 
     const content = `
-        <h2>Sourcing Order Confirmed</h2>
-        <p>Hello ${customerName}, your request <strong>#${order.id}</strong> has been verified. We are syncing with our warehouse nodes to synchronize your shipment.</p>
+        <h2>Transaction Authorized</h2>
+        <p>Hello ${customerName}, your sourcing requisition <strong>#${order.id}</strong> has been verified. Our logistics nodes are now synchronizing for immediate fulfillment.</p>
         
-        <div style="background-color: #f8fafc; padding: 24px; border-radius: 16px; margin-bottom: 32px; border: 1px solid #e2e8f0;">
+        <div class="card" style="padding: 24px;">
             <table width="100%">
                 <tr>
-                    <td style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Reference ID</td>
-                    <td align="right" style="font-weight: 800; color: #0f172a;">#${order.id}</td>
+                    <td style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase;">Node Reference</td>
+                    <td align="right" style="font-weight: 700; color: #ffffff;">#${order.id}</td>
                 </tr>
                 <tr>
-                    <td style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 8px;">Lifecycle Status</td>
-                    <td align="right" style="padding-top: 8px;"><span class="status-badge badge-success">Confirmed</span></td>
+                    <td style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; padding-top: 12px;">Deployment Status</td>
+                    <td align="right" style="padding-top: 12px;"><span class="status-badge badge-success">Manifested</span></td>
                 </tr>
             </table>
         </div>
@@ -199,132 +330,134 @@ export const getOrderConfirmationTemplate = (order, customerName) => {
         <table style="width: 100%; border-collapse: collapse;">
             <thead>
                 <tr>
-                    <th style="text-align: left; padding-bottom: 12px; border-bottom: 2px solid #0f172a; font-size: 12px; color: #0f172a; text-transform: uppercase;">Manifest</th>
-                    <th style="text-align: center; padding-bottom: 12px; border-bottom: 2px solid #0f172a; font-size: 12px; color: #0f172a; text-transform: uppercase;">Qty</th>
-                    <th style="text-align: right; padding-bottom: 12px; border-bottom: 2px solid #0f172a; font-size: 12px; color: #0f172a; text-transform: uppercase;">Value</th>
+                    <th style="text-align: left; padding-bottom: 16px; border-bottom: 1px solid #10b981; font-size: 11px; color: #10b981; text-transform: uppercase; letter-spacing: 0.1em;">Asset Manifest</th>
+                    <th style="text-align: center; padding-bottom: 16px; border-bottom: 1px solid #10b981; font-size: 11px; color: #10b981; text-transform: uppercase; letter-spacing: 0.1em;">Qty</th>
+                    <th style="text-align: right; padding-bottom: 16px; border-bottom: 1px solid #10b981; font-size: 11px; color: #10b981; text-transform: uppercase; letter-spacing: 0.1em;">Value</th>
                 </tr>
             </thead>
             <tbody>${itemsHtml}</tbody>
         </table>
 
-        <div style="margin-top: 32px; padding: 24px; background: linear-gradient(to right, #ffffff, #f8fafc); border-radius: 16px; border: 1px solid #e2e8f0; text-align: right;">
-            <div style="font-size: 14px; color: #64748b; margin-bottom: 4px;">Subtotal: ₹${order.total_amount.toFixed(2)}</div>
-            <div style="font-size: 14px; color: #64748b; margin-bottom: 8px;">Taxes & Fees: ₹${(order.gst_total || 0).toFixed(2)}</div>
-            <div style="font-size: 24px; font-weight: 800; color: #059669;">Total: ₹${order.final_amount.toFixed(2)}</div>
+        <div style="margin-top: 40px; padding: 32px; background: rgba(16, 185, 129, 0.05); border-radius: 24px; border: 1px solid rgba(16, 185, 129, 0.1); text-align: right;">
+            <div style="font-size: 14px; color: #64748b; margin-bottom: 6px;">Aggregate Subtotal: ₹${order.total_amount.toLocaleString('en-IN')}</div>
+            <div style="font-size: 14px; color: #64748b; margin-bottom: 10px;">Tax Deductions (GST): ₹${(order.gst_total || 0).toLocaleString('en-IN')}</div>
+            <div style="font-size: 26px; font-weight: 800; color: #ffffff; font-family: 'Outfit', sans-serif;">Net Exposure: ₹${order.final_amount.toLocaleString('en-IN')}</div>
         </div>
     `;
-    return MASTER_WRAPPER("Order Lifecycle Confirmation", content, "Track your real-time logistics units in the transit dashboard.");
+    return MASTER_WRAPPER("Inventory Requisition Sync", content, "Monitor real-time logistics units in the transit dashboard.");
 };
 
 export const getOTPTemplate = (otp, name) => {
     const content = `
-        <h2>Identity Authentication</h2>
-        <p>Hello ${name}, use the secure authorization code below to verify your session and access the AgroPlatform network.</p>
-        <div style="background-color: #f8fafc; padding: 48px 24px; border-radius: 20px; text-align: center; border: 2px solid #e2e8f0; margin: 32px 0;">
-            <div style="font-size: 56px; font-weight: 800; letter-spacing: 12px; color: #059669; font-family: monospace;">${otp}</div>
-            <div style="margin-top: 24px; font-size: 13px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Expires in 10 minutes</div>
+        <h2>Authentication Protocol</h2>
+        <p>Hello ${name}, an access request was detected. Use the secure authorization cipher below to authenticate your session.</p>
+        <div style="background: rgba(255, 255, 255, 0.02); padding: 60px 24px; border-radius: 28px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05); margin: 40px 0;">
+            <div style="font-size: 64px; font-weight: 800; letter-spacing: 16px; color: #10b981; font-family: 'Outfit', monospace; padding-left: 16px;">${otp}</div>
+            <div style="margin-top: 32px; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.3em;">Valid for 600 Seconds</div>
         </div>
-        <p style="font-size: 14px; color: #64748b;">If you didn't request this code, your account security might be compromised. Please contact support immediately.</p>
+        <div class="card" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2);">
+            <p style="font-size: 14px; color: #f87171; margin: 0; text-align: center; font-weight: 500;">If you did not initiate this sequence, your node may be compromised. Alert security immediately.</p>
+        </div>
     `;
-    return MASTER_WRAPPER("Secure Access Verification", content, "Security Note: Our executive staff will never ask for this code.");
+    return MASTER_WRAPPER("Identity Verification", content, "Notice: System administrators will never request this cipher.");
 };
 
 export const getRecoveryTemplate = (otp, name) => {
     const content = `
-        <h2>Security Recovery Initiated</h2>
-        <p>Hello ${name}, we received a request to bypass your current credentials. Use the recovery code as a one-time key to set your new password.</p>
-        <div style="background-color: #fff1f2; padding: 48px 24px; border-radius: 20px; text-align: center; border: 2px solid #fecdd3; margin: 32px 0;">
-            <div style="font-size: 56px; font-weight: 800; letter-spacing: 12px; color: #e11d48; font-family: monospace;">${otp}</div>
-            <div style="margin-top: 24px; font-size: 13px; font-weight: 700; color: #f43f5e; text-transform: uppercase; letter-spacing: 0.1em;">Valid for 10 minutes only</div>
+        <h2>Credential Recovery</h2>
+        <p>Hello ${name}, a request to override your authentication keys has been received. Use the recovery cipher to reset your security configuration.</p>
+        <div style="background: rgba(239, 68, 68, 0.02); padding: 60px 24px; border-radius: 28px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.1); margin: 40px 0;">
+            <div style="font-size: 64px; font-weight: 800; letter-spacing: 16px; color: #ef4444; font-family: 'Outfit', monospace; padding-left: 16px;">${otp}</div>
+            <div style="margin-top: 32px; font-size: 12px; font-weight: 700; color: #ef4444; text-transform: uppercase; letter-spacing: 0.3em;">Temporary Security Key</div>
         </div>
     `;
-    return MASTER_WRAPPER("Account Security Recovery", content, "If you did not request this, secure your node immediately by resetting your password.");
+    return MASTER_WRAPPER("Asset Access Recovery", content, "Action Needed: Reset your credentials immediately upon login.");
 };
 
 export const getOrderReceiptTemplate = (order, name, amount, mode) => {
     const content = `
-        <h2>Payment Processed ✅</h2>
-        <p>Success! Your financial transaction has been verified and settled in the AgroPlatform ledger.</p>
+        <h2>Settlement Authorized ✅</h2>
+        <p>Your financial transaction has been successfully cleared and recorded in the AgroPlatform ledger.</p>
         
-        <div style="background-color: #f8fafc; padding: 40px; border-radius: 20px; text-align: center; margin: 32px 0; border: 1px solid #e2e8f0;">
-            <div style="font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em;">Settlement Amount</div>
-            <div style="font-size: 48px; font-weight: 800; color: #0f172a;">₹${Number(amount).toFixed(2)}</div>
-            <div style="margin-top: 16px;"><span class="status-badge badge-success">Received via ${mode}</span></div>
+        <div class="card" style="text-align: center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);">
+            <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em;">Settled Amount</div>
+            <div style="font-size: 52px; font-weight: 800; color: #ffffff; font-family: 'Outfit', sans-serif;">₹${Number(amount).toLocaleString('en-IN')}</div>
+            <div style="margin-top: 20px;"><span class="status-badge badge-success">Processed via ${mode}</span></div>
         </div>
 
-        <div style="line-height: 2; font-size: 15px;">
-            <div style="display: flex; justify-content: space-between;">
-                <span style="color: #64748b;">Order Node:</span>
-                <span style="font-weight: 700; color: #0f172a;">#${order.id}</span>
+        <div style="background: rgba(255, 255, 255, 0.01); border-radius: 20px; padding: 24px; font-size: 15px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                <span style="color: #64748b;">Transaction Node:</span>
+                <span style="font-weight: 600; color: #ffffff;">#${order.id}</span>
             </div>
             <div style="display: flex; justify-content: space-between;">
-                <span style="color: #64748b;">Settlement Date:</span>
-                <span style="font-weight: 700; color: #0f172a;">${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                <span style="color: #64748b;">Ledger Date:</span>
+                <span style="font-weight: 600; color: #ffffff;">${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
             </div>
         </div>
     `;
-    return MASTER_WRAPPER("Digital Financial Receipt", content, "This receipt is a valid tax document for your internal auditing.");
+    return MASTER_WRAPPER("Financial Settlement Confirmed", content, "This transmission serves as an official tax document.");
 };
 
 export const getInvoiceSettledTemplate = (order, name) => {
     const content = `
-        <h2>Ledger Fully Settled</h2>
-        <p>Success! Your order <strong>#${order.id}</strong> is now fully paid and settled. Your official digital invoice is attached for your records.</p>
-        <div style="background: linear-gradient(135deg, #059669 0%, #065f46 100%); padding: 32px; border-radius: 20px; text-align: center; color: white; margin: 32px 0;">
-            <div style="font-size: 13px; font-weight: 700; opacity: 0.9; margin-bottom: 8px; text-transform: uppercase;">Final Settlement Value</div>
-            <div style="font-size: 42px; font-weight: 800;">₹${Number(order.final_amount).toFixed(2)}</div>
+        <h2>Ledger Reconciliation Complete</h2>
+        <p>Excellent progress, ${name}. Order <strong>#${order.id}</strong> has been fully reconciled. Your official digital manifest is attached.</p>
+        <div class="card" style="background: linear-gradient(135deg, #059669 0%, #064e3b 100%); text-align: center; border: none;">
+            <div style="font-size: 12px; font-weight: 700; color: rgba(255, 255, 255, 0.7); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em;">Final Reconciled Value</div>
+            <div style="font-size: 48px; font-weight: 800; color: white; font-family: 'Outfit', sans-serif;">₹${Number(order.final_amount).toLocaleString('en-IN')}</div>
         </div>
         <div style="text-align: center;">
-            <a href="${ENV.FRONTEND_URL}/orders" class="btn">Archive & Review Invoices</a>
+            <a href="${ENV.FRONTEND_URL}/orders" class="btn">Access Archive</a>
         </div>
     `;
-    return MASTER_WRAPPER("Official Tax Invoice Settled", content, "This settlement triggers final clearance for delivery if pending.");
+    return MASTER_WRAPPER("Official Invoice Settlement", content, "Settlement triggers final logistic clearance.");
 };
 
 export const getPaymentReminderTemplate = (order, name, balance) => {
     const content = `
-        <h2>Financial Action Required</h2>
-        <p>Hello ${name}, our audit shows an outstanding balance for order <strong>#${order.id}</strong>. Please settle the amount below to ensure uninterrupted service.</p>
-        <div style="background-color: #fff7ed; padding: 40px; border-radius: 20px; margin: 32px 0; border: 2px solid #ffedd5; text-align: center;">
-            <div style="font-size: 13px; font-weight: 700; color: #9a3412; text-transform: uppercase; margin-bottom: 8px;">Pending Balance</div>
-            <div style="font-size: 48px; font-weight: 800; color: #ea580c;">₹${Number(balance).toFixed(2)}</div>
-            <div style="margin-top: 16px; font-size: 14px; font-weight: 700; color: #9a3412;">Reference Order: #${order.id}</div>
+        <h2>Financial Alert</h2>
+        <p>Attention ${name}, our audit protocols detected an outstanding balance for requisition <strong>#${order.id}</strong>. Settle the exposure to maintain node integrity.</p>
+        <div class="card" style="background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.2); text-align: center;">
+            <div style="font-size: 12px; font-weight: 700; color: #f59e0b; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.1em;">Unsettled Balance</div>
+            <div style="font-size: 52px; font-weight: 800; color: #f59e0b; font-family: 'Outfit', sans-serif;">₹${Number(balance).toLocaleString('en-IN')}</div>
+            <div style="margin-top: 16px; font-size: 14px; font-weight: 600; color: #92400e;">Reference: ORDER_NODE_${order.id}</div>
         </div>
         <div style="text-align: center;">
-            <a href="${ENV.FRONTEND_URL}/orders/${order.id}" class="btn" style="background-color: #ea580c;">Settle Balance Now</a>
+            <a href="${ENV.FRONTEND_URL}/orders/${order.id}" class="btn" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.3);">Settle Exposure Now</a>
         </div>
     `;
-    return MASTER_WRAPPER("Immediate Payment Alert", content, "Late settlement may affect your credit rating within the AgroPlatform ecosystem.");
+    return MASTER_WRAPPER("Action Required: Pending Balance", content, "Late settlement may degrade your internal credit rating.");
 };
 
-/**
- * SUPPORT INQUIRY TEMPLATE
- * Used for user messages sent to Admin
- */
 export const getSupportInquiryTemplate = (userName, email, subject, message) => {
     const content = `
-        <div style="background-color: #f8fafc; border-left: 4px solid #059669; padding: 20px; margin-bottom: 24px;">
-            <p style="margin: 0; color: #64748b; font-size: 12px; text-transform: uppercase; font-weight: 700;">Subject</p>
-            <p style="margin: 4px 0 0; font-size: 16px; font-weight: 700;">${subject}</p>
+        <div style="background: rgba(16, 185, 129, 0.05); border-left: 4px solid #10b981; padding: 24px; border-radius: 4px 16px 16px 4px; margin-bottom: 32px;">
+            <p style="margin: 0; color: #10b981; font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.1em;">Communication Subject</p>
+            <p style="margin: 8px 0 0; font-size: 20px; font-weight: 700; color: white; line-height: 1.2;">${subject}</p>
         </div>
-        <p><strong>From:</strong> ${userName} (${email})</p>
-        <p style="white-space: pre-wrap; background: #ffffff; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; margin-top: 20px;">
-            ${message}
-        </p>
-        <div style="text-align: center; margin-top: 32px;">
-            <a href="mailto:${email}" class="btn">Reply to Farmer</a>
+        <div class="card" style="padding: 24px;">
+            <p style="margin-bottom: 8px; font-weight: 600; color: #ffffff;">Source Entity:</p>
+            <p style="margin-bottom: 16px;">${userName} (<a href="mailto:${email}" style="color: #10b981; text-decoration: none;">${email}</a>)</p>
+            <div style="height: 1px; background: rgba(255, 255, 255, 0.05); margin: 24px 0;"></div>
+            <p style="margin-bottom: 8px; font-weight: 600; color: #ffffff;">Transmission Content:</p>
+            <div style="white-space: pre-wrap; color: #d1d5db; font-size: 16px; line-height: 1.6;">${message}</div>
+        </div>
+        <div style="text-align: center;">
+            <a href="mailto:${email}" class="btn">Deploy Response</a>
         </div>
     `;
-    return MASTER_WRAPPER("New Support Inquiry", content, "This message was sent via the AgroPlatform Executive Sourcing Node.");
+    return MASTER_WRAPPER("Executive Support Inquiry", content, "Message originated via the Global Sourcing Node.");
 };
 
 export const getNotificationTemplate = (title, message) => {
     const content = `
         <h2>${title}</h2>
-        <p style="font-size: 18px; color: #1e293b; margin-bottom: 32px;">${message}</p>
+        <p style="font-size: 18px; color: #d1d5db; margin-bottom: 36px; line-height: 1.6;">${message}</p>
         <div style="text-align: center;">
-            <a href="${ENV.FRONTEND_URL}/dashboard" class="btn">View Details in Dashboard</a>
+            <a href="${ENV.FRONTEND_URL}/dashboard" class="btn">Analyze in Dashboard</a>
         </div>
     `;
-    return MASTER_WRAPPER("System Notification", content);
+    return MASTER_WRAPPER("System Event Notification", content);
 };
+
