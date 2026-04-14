@@ -60,18 +60,18 @@ router.get("/diagnostics", async (req, res) => {
         diagnostics.connectivity.external_apis.mandi = "UNREACHABLE ❌";
     }
 
-    // 4. Check Email Service (Nodemailer SMTP)
+    // 4. Check Email Service (Gmail REST API)
     try {
         const { verifySMTP } = await import("../../utils/email.js");
-        const smtpResult = await verifySMTP();
-        if (smtpResult === true) {
-            diagnostics.connectivity.smtp = "CONNECTED ✅";
+        const apiResult = await verifySMTP();
+        if (apiResult === true) {
+            diagnostics.connectivity.smtp = "API CONNECTED ✅";
         } else {
             const { ENV } = await import("../../config/env.js");
-            if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
-                diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check EMAIL/EMAIL_PASS)";
+            if (!ENV.GOOGLE_REFRESH_TOKEN) {
+                diagnostics.connectivity.smtp = "CONFIG MISSING ❌ (Check OAUTH credentials)";
             } else {
-                diagnostics.connectivity.smtp = "FAILED ❌ (Check SMTP credentials/network)";
+                diagnostics.connectivity.smtp = "API AUTH FAILED ❌ (Check Refresh Token)";
             }
         }
     } catch (err) {
