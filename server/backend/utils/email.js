@@ -13,8 +13,8 @@ export const getTransporter = async () => {
     // Default configuration for SMTP (Gmail optimized)
     const smtpConfig = {
         host: process.env.SMTP_HOST || "smtp.gmail.com",
-        port: Number(process.env.SMTP_PORT) || 465,
-        secure: process.env.SMTP_PORT == 465 || !process.env.SMTP_PORT, // true for 465, false for other ports
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: process.env.SMTP_PORT == 465, // Only true for 465
         auth: {
             user: ENV.EMAIL,
             pass: ENV.EMAIL_PASS,
