@@ -19,15 +19,18 @@ export const getTransporter = async () => {
     try {
         transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 465,
-            secure: true,
+            port: 587,
+            secure: false, // Must be false for port 587; STARTTLS is used instead
             auth: {
                 user: ENV.EMAIL,
                 pass: ENV.EMAIL_PASS,
             },
-            pool: true, // Use connection pooling for efficiency
+            pool: true,
             maxConnections: 5,
-            maxMessages: 100
+            maxMessages: 100,
+            socketTimeout: 30000, // 30 seconds
+            connectionTimeout: 30000,
+            family: 4 // Force IPv4 to avoid ENETUNREACH on IPv6 addresses in production
         });
         return transporter;
     } catch (err) {
