@@ -1,105 +1,32 @@
-import axios from "axios";
-import MailComposer from "nodemailer/lib/mail-composer/index.js";
+import nodemailer from "nodemailer";
 import { ENV } from "../config/env.js";
 
 /**
  * Global Email Utility for AgroPlatform ERP
- * Uses Gmail REST API (HTTP) to bypass Render's SMTP blocks.
- * Maintains Nodemailer interface for template management.
+ * Uses Standard SMTP with Email and App Password.
  */
-
-let accessToken = null;
-let tokenExpiry = 0;
-
-/**
- * Fetches a fresh Google OAuth2 Access Token using the Refresh Token
- */
-const getAccessToken = async () => {
-    // If token exists and is not expiring in next 5m, reuse it
-    if (accessToken && Date.now() < tokenExpiry - 300000) return accessToken;
-
-    if (!ENV.GOOGLE_CLIENT_ID || !ENV.GOOGLE_CLIENT_SECRET || !ENV.GOOGLE_REFRESH_TOKEN) {
-        throw new Error("[EMAIL] Missing Google OAuth2 Credentials");
-    }
-
-    try {
-        const response = await axios.post("https://oauth2.googleapis.com/token", {
-            client_id: ENV.GOOGLE_CLIENT_ID,
-            client_secret: ENV.GOOGLE_CLIENT_SECRET,
-            refresh_token: ENV.GOOGLE_REFRESH_TOKEN,
-            grant_type: "refresh_token",
-        });
-
-        accessToken = response.data.access_token;
-        tokenExpiry = Date.now() + (response.data.expires_in * 1000);
-        console.log("✅ [EMAIL] Google Access Token refreshed.");
-        return accessToken;
-    } catch (err) {
-        console.error("❌ [EMAIL] OAuth2 Token Error:", err.response?.data || err.message);
-        throw new Error("Failed to refresh Google Access Token");
-    }
-};
-
-/**
- * Custom Gmail HTTP Transport for Nodemailer
- */
-class GmailHTTPTransport {
-    constructor() {
-        this.name = 'GmailHTTPTransport';
-        this.version = '1.0.0';
-    }
-
-    async send(mail, callback) {
-        try {
-            const token = await getAccessToken();
-            
-            // 1. Generate Raw MIME Message
-            const composer = new MailComposer(mail.data);
-            const compiled = await composer.compile().build();
-            
-            // 2. Base64URL Encode
-            const raw = Buffer.from(compiled)
-                .toString('base64')
-                .replace(/\+/g, '-')
-                .replace(/\//g, '_')
-                .replace(/=+$/, '');
-
-            // 3. Send via Gmail REST API
-            const response = await axios.post(
-                "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
-                { raw },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
-
-            callback(null, { messageId: response.data.id });
-        } catch (err) {
-            console.error("❌ [GMAIL-API-ERROR] HTTP Transmission Failed:", err.response?.data || err.message);
-            callback(err);
-        }
-    }
-}
 
 let transporter = null;
 
 export const getTransporter = async () => {
     if (transporter) return transporter;
 
-    if (!ENV.GOOGLE_REFRESH_TOKEN) {
-        console.warn("⚠️  [EMAIL] Google Credentials missing. Using mock transporter.");
+    if (!ENV.EMAIL || !ENV.EMAIL_PASS) {
+        console.warn("⚠️  [EMAIL] Email credentials missing. Using mock transporter.");
         return null;
     }
 
     try {
-        const { default: nodemailer } = await import("nodemailer");
-        transporter = nodemailer.createTransport(new GmailHTTPTransport());
+        transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: ENV.EMAIL,
+                pass: ENV.EMAIL_PASS,
+            },
+        });
         return transporter;
     } catch (err) {
-        console.error("❌ [EMAIL] Failed to initialize Gmail HTTP transporter:", err.message);
+        console.error("❌ [EMAIL] Failed to initialize SMTP transporter:", err.message);
         return null;
     }
 };
@@ -143,6 +70,7 @@ export const sendEmail = async (to, subject, text, html, attachments = []) => {
         return null;
     }
 };
+
 
 /**
  * MASTER_WRAPPER: Premium Design System for AgroPlatform Emails

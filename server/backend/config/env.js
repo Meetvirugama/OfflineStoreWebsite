@@ -36,8 +36,7 @@ export const ENV = {
     
     EMAIL: process.env.EMAIL || 'meetvirugama4902@gmail.com',
     EMAIL_PASS: process.env.EMAIL_PASS,
-    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
 };
+
 
 export default ENV;
