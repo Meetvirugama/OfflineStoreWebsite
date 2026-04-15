@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
 import { ENV } from "../config/env.js";
 
 /**
@@ -28,9 +29,15 @@ export const getTransporter = async () => {
             pool: true,
             maxConnections: 5,
             maxMessages: 100,
-            socketTimeout: 30000, // 30 seconds
+            socketTimeout: 30000, 
             connectionTimeout: 30000,
-            family: 4 // Force IPv4 to avoid ENETUNREACH on IPv6 addresses in production
+            family: 4, // Hint to use IPv4
+            // CUSTOM DNS LOOKUP: Explicitly force IPv4 resolution to bypass production network blocks
+            lookup: (hostname, options, callback) => {
+                dns.lookup(hostname, { family: 4 }, (err, address, family) => {
+                    callback(err, address, family);
+                });
+            }
         });
         return transporter;
     } catch (err) {
