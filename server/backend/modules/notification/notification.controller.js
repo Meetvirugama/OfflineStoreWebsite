@@ -37,12 +37,6 @@ export const remind = asyncHandler(async (req, res) => {
     const customer = order.Customer;
     const user = customer.User;
 
-    if (user && user.email) {
-        const balance = Number(order.final_amount) - Number(order.paid_amount || 0);
-        const emailHtml = emailServ.getPaymentReminderTemplate(order, user.name || "Farmer", balance);
-        await emailServ.sendEmail(user.email, `Payment Due: Order #${order.id} 📥`, `A payment of ₹${balance.toFixed(2)} is pending.`, emailHtml);
-    }
-
     await notifyServ.notify(user.id, "Payment Reminder 📥", `Your payment for order #${order.id} is pending.`, "WARNING");
     
     sendResponse(res, 200, "Payment reminder dispatched successfully");

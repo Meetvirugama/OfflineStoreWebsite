@@ -18,11 +18,16 @@ export const getTransporter = async () => {
 
     try {
         transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 465,
+            secure: true,
             auth: {
                 user: ENV.EMAIL,
                 pass: ENV.EMAIL_PASS,
             },
+            pool: true, // Use connection pooling for efficiency
+            maxConnections: 5,
+            maxMessages: 100
         });
         return transporter;
     } catch (err) {
